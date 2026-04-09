@@ -9,13 +9,17 @@ import pandas as pd
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "상권데이터")
 AREA_FILE = "상권_영역_좌표.csv"
 
-# ── CSV 로딩 (캐싱) ─────────────────────────────────────────────
+# ── CSV 로딩 (LRU 캐싱 — 최대 2개만 유지) ─────────────────────
+import weakref
+from collections import OrderedDict
 
-_cache: dict[str, pd.DataFrame] = {}
+_cache: OrderedDict[str, pd.DataFrame] = OrderedDict()
+_CACHE_MAX = 2  # 동시에 메모리에 유지할 최대 CSV 수
 
 
 def _load(filename: str) -> pd.DataFrame:
     if filename in _cache:
+        _cache.move_to_end(filename)
         return _cache[filename]
     path = os.path.join(DATA_DIR, filename)
     if not os.path.exists(path):
@@ -25,6 +29,9 @@ def _load(filename: str) -> pd.DataFrame:
     except UnicodeDecodeError:
         df = pd.read_csv(path, encoding="utf-8-sig")
     _cache[filename] = df
+    # 오래된 캐시 제거
+    while len(_cache) > _CACHE_MAX:
+        _cache.popitem(last=False)
     return df
 
 
