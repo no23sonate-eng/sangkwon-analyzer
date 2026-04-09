@@ -8,12 +8,14 @@ import {
   Map,
   Heart,
   FileText,
+  GitCompareArrows,
   Settings,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "대시보드", href: "/", icon: LayoutDashboard },
   { label: "지도 분석", href: "/map", icon: Map },
+  { label: "입지 비교", href: "/compare", icon: GitCompareArrows },
   { label: "관심 상권", href: "/favorites", icon: Heart },
   { label: "리포트", href: "/reports", icon: FileText },
 ];
