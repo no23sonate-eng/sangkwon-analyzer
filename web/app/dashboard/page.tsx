@@ -54,7 +54,7 @@ function fmtK(n: number) {
   return n.toLocaleString();
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const BASE_URL = "";
 const PERIOD_OPTIONS = [
   { value: "3m", label: "3개월" },
   { value: "6m", label: "6개월" },

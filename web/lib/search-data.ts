@@ -164,7 +164,7 @@ export async function searchAreas(query: string): Promise<SearchResult[]> {
   if (!query.trim()) return [];
 
   try {
-    const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+    const BASE = "";
     const res = await fetch(
       `${BASE}/api/trdar/search?keyword=${encodeURIComponent(query.trim())}`,
     );
@@ -200,7 +200,7 @@ export async function searchAreas(query: string): Promise<SearchResult[]> {
 
 export async function getRecommendedAreas(): Promise<RecommendedArea[]> {
   try {
-    const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+    const BASE = "";
     const res = await fetch(`${BASE}/api/dashboard/recommended`);
     if (!res.ok) throw new Error("API error");
     const data: Array<{

@@ -4,18 +4,22 @@ import { useEffect, useState } from "react";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { palette } from "@/lib/colors";
 import { formatCount } from "@/lib/formatters";
-import Collapsible from "@/components/Collapsible";
 import BrandSynergy from "@/components/Pro/BrandSynergy";
 import GrowthPrediction from "@/components/Pro/GrowthPrediction";
-import RevenueSim from "@/components/Pro/RevenueSim";
 import type { OpportunityItem } from "@/lib/types";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell,
-} from "recharts";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-const tt = { contentStyle: { background: "#fff", border: "none", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.08)", fontSize: 12 } };
+const BASE_URL = "";
+
+/* ── 구별 토지 시세 (만원/평) ── 국토부 공시지가 기반 상업지역 실거래 추정 */
+const LAND_PRICE: Record<string, number> = {
+  "강남구": 12500, "서초구": 9800, "중구": 11000, "종로구": 8500,
+  "마포구": 6200, "용산구": 7800, "성동구": 5800, "송파구": 6500,
+  "영등포구": 5500, "광진구": 4800, "동작구": 3800, "관악구": 3200,
+  "강동구": 4500, "노원구": 2800, "은평구": 3000, "강서구": 3500,
+  "강북구": 2500, "구로구": 3400, "금천구": 3100, "도봉구": 2600,
+  "동대문구": 4200, "서대문구": 3900, "성북구": 3300, "양천구": 3700,
+  "중랑구": 2900,
+};
 
 export default function OpportunityPanel() {
   const analysisData = useAnalysisStore((s) => s.analysisData);
@@ -28,6 +32,7 @@ export default function OpportunityPanel() {
 
   const { insights } = opp;
   const vScore = insights?.vitality_score ?? 50;
+  const guName = clickedGu || analysisData?.gu_name || "";
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -49,28 +54,25 @@ export default function OpportunityPanel() {
         </>
       )}
 
-      {/* ── 2. 임대료 적정가 검증 ── */}
-      <RentVerification guName={clickedGu || analysisData?.gu_name || ""} />
+      {/* ── 2. 임대료 적정성 ── */}
+      <RentVerification guName={guName} />
 
-      {/* ── 3. 브랜드 시너지 ── */}
+      {/* ── 3. 매매가격 적정성 ── */}
+      <LandPriceVerification guName={guName} />
+
+      {/* ── 4. 브랜드 시너지 ── */}
       <section>
         <h3 className="mb-3 text-[14px] font-bold text-gray-900">브랜드 시너지</h3>
         <BrandSynergy />
       </section>
 
-      {/* ── 6. 성장 예측 (열림) ── */}
+      {/* ── 5. 성장 예측 ── */}
       <section>
         <h3 className="mb-3 text-[14px] font-bold text-gray-900">성장 예측</h3>
         <GrowthPrediction />
       </section>
 
-      {/* ── 7. 매출 시뮬레이션 (열림) ── */}
-      <section>
-        <h3 className="mb-3 text-[14px] font-bold text-gray-900">매출 시뮬레이션</h3>
-        <RevenueSim />
-      </section>
-
-      {/* ── 7. 상담 CTA ── */}
+      {/* ── 6. 상담 CTA ── */}
       <ConsultCTA />
     </div>
   );
@@ -80,13 +82,12 @@ export default function OpportunityPanel() {
    임대료 적정가 검증
    ══════════════════════════════════════════════════════════════ */
 
-// 평 기준 면적 옵션 + 체감 계수
-const AREA_OPTIONS = [
-  { pyeong: 10, m2: 33, label: "10평", discount: 1.0 },
-  { pyeong: 30, m2: 99, label: "30평", discount: 0.88 },
-  { pyeong: 50, m2: 165, label: "50평", discount: 0.78 },
-  { pyeong: 100, m2: 330, label: "100평", discount: 0.65 },
-  { pyeong: 200, m2: 660, label: "200평", discount: 0.52 },
+const RENT_AREA_OPTIONS = [
+  { pyeong: 10, label: "10평" },
+  { pyeong: 30, label: "30평" },
+  { pyeong: 50, label: "50평" },
+  { pyeong: 100, label: "100평" },
+  { pyeong: 200, label: "200평" },
 ];
 
 function RentVerification({ guName }: { guName: string }) {
@@ -103,21 +104,13 @@ function RentVerification({ guName }: { guName: string }) {
   const clickedLng = useAnalysisStore((s) => s.clickedLng);
   const radius = useAnalysisStore((s) => s.radius);
 
-  const selectedOption = AREA_OPTIONS.find((a) => a.pyeong === selectedPyeong) ?? AREA_OPTIONS[0];
-  const inputArea = selectedOption.m2;
-  const areaDiscount = selectedOption.discount;
-
   useEffect(() => {
     if (clickedLat == null || clickedLng == null) return;
     setRentLoading(true);
     setRentNearby(null);
-    const url = `${BASE_URL}/api/rent-nearby?lat=${clickedLat}&lng=${clickedLng}&radius=${radius}&target_pyeong=${selectedPyeong}&_t=${Date.now()}`;
-    fetch(url, { cache: "no-store" })
+    fetch(`${BASE_URL}/api/rent-nearby?lat=${clickedLat}&lng=${clickedLng}&radius=${radius}&target_pyeong=${selectedPyeong}&_t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.ok ? res.json() : null)
-      .then((data) => {
-        setRentNearby(data);
-        setRentLoading(false);
-      })
+      .then((data) => { setRentNearby(data); setRentLoading(false); })
       .catch(() => setRentLoading(false));
   }, [clickedLat, clickedLng, radius, selectedPyeong]);
 
@@ -126,7 +119,6 @@ function RentVerification({ guName }: { guName: string }) {
     if (!rent || !rentNearby) return;
     setVerifyLoading(true);
     setVerified(null);
-
     setTimeout(() => {
       const fs = rentNearby.stats[inputFloor];
       if (!fs || fs.count === 0) {
@@ -137,10 +129,9 @@ function RentVerification({ guName }: { guName: string }) {
       const rentPP = rent / selectedPyeong;
       const avgPP = fs.avg_pyeong;
       const ratio = rentPP / avgPP;
-
-      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다. 좋은 조건입니다.`, color: "#10B981" });
+      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.`, color: "#10B981" });
       else if (ratio <= 1.1) setVerified({ status: "적정", message: "시세 범위 내 적정 수준입니다.", color: "#6366F1" });
-      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 협상 여지가 있습니다.`, color: "#F59E0B" });
+      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.`, color: "#F59E0B" });
       else setVerified({ status: "고가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.`, color: "#EF4444" });
       setVerifyLoading(false);
     }, 2000);
@@ -150,13 +141,11 @@ function RentVerification({ guName }: { guName: string }) {
 
   return (
     <div className="rounded-xl border-2 border-primary-200 bg-white p-4">
-      <h3 className="mb-3 text-[15px] font-bold text-gray-900">💰 임대료 적정가 검증</h3>
-
-      {/* 면적 (평 기준) */}
+      <h3 className="mb-3 text-[15px] font-bold text-gray-900">💰 임대료 적정성</h3>
       <div className="mb-2">
         <label className="mb-1 block text-[10px] font-medium text-muted">면적</label>
         <div className="flex gap-1">
-          {AREA_OPTIONS.map((a) => (
+          {RENT_AREA_OPTIONS.map((a) => (
             <button key={a.pyeong} onClick={() => { setSelectedPyeong(a.pyeong); setVerified(null); }}
               className={`flex-1 rounded-lg py-2 text-[11px] font-medium ${selectedPyeong === a.pyeong ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-500"}`}>
               {a.label}
@@ -164,8 +153,6 @@ function RentVerification({ guName }: { guName: string }) {
           ))}
         </div>
       </div>
-
-      {/* 층 */}
       <div className="mb-3">
         <label className="mb-1 block text-[10px] font-medium text-muted">층</label>
         <div className="flex gap-1">
@@ -177,8 +164,6 @@ function RentVerification({ guName }: { guName: string }) {
           ))}
         </div>
       </div>
-
-      {/* 월세 입력 */}
       <div className="mb-3">
         <label className="mb-1 block text-[10px] font-medium text-muted">확인하고 싶은 월세 (만원)</label>
         <div className="flex gap-2">
@@ -189,43 +174,28 @@ function RentVerification({ guName }: { guName: string }) {
             className="flex-1 rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] font-bold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
           <button onClick={handleVerify} disabled={!inputRent || !rentNearby || verifyLoading}
             className="rounded-lg bg-primary-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-primary-700 active:scale-95 disabled:opacity-40">
-            {verifyLoading ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            ) : "검증"}
+            {verifyLoading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : "검증"}
           </button>
         </div>
       </div>
-
-      {/* 검증 결과 */}
       {verified && (
         <div className="mb-3 rounded-xl p-4" style={{ background: verified.color + "10" }}>
           <div className="flex items-center gap-2">
-            <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>
-              {verified.status}
-            </span>
-            <span className="text-[11px] text-gray-500">
-              평당 {Math.round(parseInt(inputRent) / selectedPyeong)}만 vs 시세 {fs?.avg_pyeong ?? 0}만/평 ({selectedPyeong}평 기준)
-            </span>
+            <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>{verified.status}</span>
+            <span className="text-[11px] text-gray-500">평당 {Math.round(parseInt(inputRent) / selectedPyeong)}만 vs 시세 {fs?.avg_pyeong ?? 0}만/평</span>
           </div>
           <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
         </div>
       )}
-
-      {/* 로딩 */}
       {rentLoading && (
         <div className="flex flex-col items-center gap-2 py-8">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-600 border-t-transparent" />
           <p className="text-[11px] text-muted">{selectedPyeong}평 시세 분석 중...</p>
         </div>
       )}
-
-      {/* 시세 — 로딩 완료 후 표시 */}
       {!rentLoading && rentNearby && rentNearby.total_cases > 0 && (
         <div className="border-t border-gray-100 pt-3">
-          <p className="mb-2 text-[11px] font-semibold text-gray-600">
-            이 위치 시세 · {selectedPyeong}평 기준 · {rentNearby.stats?.["1층"]?.count ?? 0}개 상권
-          </p>
-
+          <p className="mb-2 text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준 · {rentNearby.stats?.["1층"]?.count ?? 0}개 상권</p>
           <div className="overflow-hidden rounded-lg border border-gray-100">
             <table className="w-full text-[11px]">
               <thead><tr className="bg-gray-50">
@@ -239,32 +209,26 @@ function RentVerification({ guName }: { guName: string }) {
                 {["1층", "2층", "지하"].map((floor) => {
                   const s = rentNearby.stats[floor];
                   if (!s || s.count === 0) return null;
-                  const pp = s.avg_pyeong;
-                  const totalRent = s.avg_rent;
-                  const totalDep = s.avg_deposit;
                   return (
                     <tr key={floor} className={`border-t border-gray-50 ${floor === inputFloor ? "bg-primary-50" : ""}`}>
                       <td className={`px-3 py-2 font-semibold ${floor === inputFloor ? "text-primary-600" : "text-gray-700"}`}>{floor}</td>
                       <td className="px-3 py-2 text-right text-primary-600 font-semibold">{s.count}</td>
-                      <td className="px-3 py-2 text-right font-bold text-gray-900">{pp}만</td>
-                      <td className="px-3 py-2 text-right text-gray-800">{totalRent.toLocaleString()}만</td>
-                      <td className="px-3 py-2 text-right text-gray-600">{totalDep.toLocaleString()}만</td>
+                      <td className="px-3 py-2 text-right font-bold text-gray-900">{s.avg_pyeong}만</td>
+                      <td className="px-3 py-2 text-right text-gray-800">{s.avg_rent.toLocaleString()}만</td>
+                      <td className="px-3 py-2 text-right text-gray-600">{s.avg_deposit.toLocaleString()}만</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
-
-          {/* 시세 범위 바 */}
           {fs && fs.count > 0 && (
             <div className="mt-3">
               <p className="mb-1 text-[10px] text-muted">{inputFloor} 월세 분포 ({fs.count}건)</p>
               <div className="relative h-6 rounded-full bg-gray-100">
                 <div className="absolute top-0 h-full rounded-full bg-primary-100"
                   style={{ left: `${Math.max(0, (fs.min_rent / fs.max_rent) * 100 - 5)}%`, width: `${Math.min(100, 100 - (fs.min_rent / fs.max_rent) * 100 + 10)}%` }} />
-                <div className="absolute top-0 h-full w-0.5 bg-primary-600"
-                  style={{ left: `${(fs.avg_rent / fs.max_rent) * 100}%` }} />
+                <div className="absolute top-0 h-full w-0.5 bg-primary-600" style={{ left: `${(fs.avg_rent / fs.max_rent) * 100}%` }} />
                 {inputRent && (
                   <div className="absolute -top-1 h-8 w-2 rounded-full bg-red-500"
                     style={{ left: `${Math.min(98, Math.max(2, (parseInt(inputRent) / fs.max_rent) * 100))}%` }} />
@@ -277,7 +241,216 @@ function RentVerification({ guName }: { guName: string }) {
               </div>
             </div>
           )}
+        </div>
+      )}
+    </div>
+  );
+}
 
+/* ══════════════════════════════════════════════════════════════
+   매매가격 적정성 + 수익률 분석
+   ══════════════════════════════════════════════════════════════ */
+
+const LAND_AREA_OPTIONS = [
+  { pyeong: 100, label: "100평" },
+  { pyeong: 200, label: "200평" },
+  { pyeong: 300, label: "300평" },
+  { pyeong: 500, label: "500평" },
+  { pyeong: 1000, label: "1000평" },
+  { pyeong: 2000, label: "그 이상" },
+];
+
+// 면적 대형화 할인율
+const LAND_DISCOUNT: Record<number, number> = {
+  100: 1.0, 200: 0.92, 300: 0.85, 500: 0.78, 1000: 0.68, 2000: 0.55,
+};
+
+function LandPriceVerification({ guName }: { guName: string }) {
+  const [selectedPyeong, setSelectedPyeong] = useState(100);
+  const [inputPrice, setInputPrice] = useState("");
+  const [verified, setVerified] = useState<null | { status: string; message: string; color: string; ratio: number }>(null);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+
+  // 임대료 데이터 (수익률 계산용)
+  const [rentData, setRentData] = useState<{ avg_pyeong: number; avg_rent: number } | null>(null);
+  const clickedLat = useAnalysisStore((s) => s.clickedLat);
+  const clickedLng = useAnalysisStore((s) => s.clickedLng);
+  const radius = useAnalysisStore((s) => s.radius);
+
+  useEffect(() => {
+    if (clickedLat == null || clickedLng == null) return;
+    fetch(`${BASE_URL}/api/rent-nearby?lat=${clickedLat}&lng=${clickedLng}&radius=${radius}&target_pyeong=30&_t=${Date.now()}`, { cache: "no-store" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const f1 = data?.stats?.["1층"];
+        if (f1 && f1.count > 0) setRentData({ avg_pyeong: f1.avg_pyeong, avg_rent: f1.avg_rent });
+      })
+      .catch(() => {});
+  }, [clickedLat, clickedLng, radius]);
+
+  // 구별 기준 토지 시세
+  const basePricePerPyeong = LAND_PRICE[guName] ?? 4000;
+  const discount = LAND_DISCOUNT[selectedPyeong] ?? 0.55;
+  const adjustedPricePerPyeong = Math.round(basePricePerPyeong * discount);
+  const estimatedTotal = adjustedPricePerPyeong * selectedPyeong;
+
+  // 수익률 계산
+  const rentPerPyeongMonth = rentData?.avg_pyeong ?? 0;
+  const annualRentPerPyeong = rentPerPyeongMonth * 12;
+  const marketYield = adjustedPricePerPyeong > 0 ? (annualRentPerPyeong / adjustedPricePerPyeong) * 100 : 0;
+
+  const inputPriceNum = parseInt(inputPrice) || 0;
+  const inputPricePerPyeong = inputPriceNum > 0 ? Math.round(inputPriceNum / selectedPyeong) : 0;
+  const inputYield = inputPricePerPyeong > 0 ? (annualRentPerPyeong / inputPricePerPyeong) * 100 : 0;
+
+  const handleVerify = () => {
+    if (!inputPriceNum) return;
+    setVerifyLoading(true);
+    setVerified(null);
+    setTimeout(() => {
+      const ratio = inputPricePerPyeong / adjustedPricePerPyeong;
+      if (ratio <= 0.85) setVerified({ status: "저평가", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다. 매수 기회입니다.`, color: "#10B981", ratio });
+      else if (ratio <= 1.1) setVerified({ status: "적정", message: "시세 범위 내 적정 가격입니다.", color: "#6366F1", ratio });
+      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 협상 여지가 있습니다.`, color: "#F59E0B", ratio });
+      else setVerified({ status: "고평가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토 권장합니다.`, color: "#EF4444", ratio });
+      setVerifyLoading(false);
+    }, 2000);
+  };
+
+  return (
+    <div className="rounded-xl border-2 border-emerald-200 bg-white p-4">
+      <h3 className="mb-3 text-[15px] font-bold text-gray-900">🏢 매매가격 적정성</h3>
+      <p className="mb-3 text-[10px] text-muted">{guName} 상업지역 토지 기준 · 공시지가+실거래 추정</p>
+
+      {/* 토지 면적 선택 */}
+      <div className="mb-2">
+        <label className="mb-1 block text-[10px] font-medium text-muted">토지 면적</label>
+        <div className="flex gap-1">
+          {LAND_AREA_OPTIONS.map((a) => (
+            <button key={a.pyeong} onClick={() => { setSelectedPyeong(a.pyeong); setVerified(null); }}
+              className={`flex-1 rounded-lg py-2 text-[11px] font-medium ${selectedPyeong === a.pyeong ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-500"}`}>
+              {a.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 시세 정보 */}
+      <div className="mb-3 rounded-xl bg-gray-50 p-3">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-[10px] text-muted">평당 추정 시세</p>
+            <p className="text-[18px] font-black text-gray-900">{adjustedPricePerPyeong.toLocaleString()}<span className="text-[11px] font-medium text-muted">만원</span></p>
+          </div>
+          <div>
+            <p className="text-[10px] text-muted">{selectedPyeong}평 추정 총액</p>
+            <p className="text-[18px] font-black text-gray-900">{(estimatedTotal / 10000).toFixed(1)}<span className="text-[11px] font-medium text-muted">억원</span></p>
+          </div>
+        </div>
+        {selectedPyeong > 100 && (
+          <p className="mt-1 text-[9px] text-muted">* 대형 면적 할인율 {Math.round((1 - discount) * 100)}% 적용</p>
+        )}
+      </div>
+
+      {/* 매매가 입력 */}
+      <div className="mb-3">
+        <label className="mb-1 block text-[10px] font-medium text-muted">확인하고 싶은 매매가 (만원)</label>
+        <div className="flex gap-2">
+          <input type="number" value={inputPrice}
+            onChange={(e) => { setInputPrice(e.target.value); setVerified(null); }}
+            onKeyDown={(e) => e.key === "Enter" && handleVerify()}
+            placeholder={`예: ${estimatedTotal}`}
+            className="flex-1 rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] font-bold outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
+          <button onClick={handleVerify} disabled={!inputPrice || verifyLoading}
+            className="rounded-lg bg-emerald-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-emerald-700 active:scale-95 disabled:opacity-40">
+            {verifyLoading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : "검증"}
+          </button>
+        </div>
+      </div>
+
+      {/* 검증 결과 */}
+      {verified && (
+        <div className="mb-3 rounded-xl p-4" style={{ background: verified.color + "10" }}>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>{verified.status}</span>
+            <span className="text-[11px] text-gray-500">
+              평당 {inputPricePerPyeong.toLocaleString()}만 vs 시세 {adjustedPricePerPyeong.toLocaleString()}만/평
+            </span>
+          </div>
+          <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
+        </div>
+      )}
+
+      {/* ── 수익률 분석 ── */}
+      {rentData && (
+        <div className="border-t border-gray-100 pt-3">
+          <p className="mb-2 text-[12px] font-bold text-gray-800">📈 예상 수익률 분석</p>
+
+          <div className="space-y-2">
+            {/* 시세 기준 수익률 */}
+            <div className="rounded-xl bg-emerald-50 p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-medium text-emerald-600">시세 기준 예상 수익률</p>
+                  <p className="text-[9px] text-muted">1층 평당 월세 {rentPerPyeongMonth}만 × 12개월 ÷ 토지 시세</p>
+                </div>
+                <p className={`text-[22px] font-black ${marketYield >= 5 ? "text-emerald-600" : marketYield >= 3 ? "text-amber-600" : "text-red-500"}`}>
+                  {marketYield.toFixed(1)}<span className="text-[12px]">%</span>
+                </p>
+              </div>
+            </div>
+
+            {/* 입력가 기준 수익률 */}
+            {inputPriceNum > 0 && (
+              <div className="rounded-xl bg-blue-50 p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-medium text-blue-600">입력가 기준 예상 수익률</p>
+                    <p className="text-[9px] text-muted">연간 임대수입 {(annualRentPerPyeong * selectedPyeong).toLocaleString()}만 ÷ 매매가</p>
+                  </div>
+                  <p className={`text-[22px] font-black ${inputYield >= 5 ? "text-emerald-600" : inputYield >= 3 ? "text-amber-600" : "text-red-500"}`}>
+                    {inputYield.toFixed(1)}<span className="text-[12px]">%</span>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* 적정 수익률 기준선 */}
+            <div className="rounded-xl border border-gray-100 p-3">
+              <p className="mb-2 text-[10px] font-semibold text-gray-600">수익률 기준</p>
+              <div className="space-y-1.5">
+                {[
+                  { label: "고수익", min: 7, color: "#10B981", desc: "외곽 상업지 수준" },
+                  { label: "우수", min: 5, color: "#3B82F6", desc: "우량 상업 부동산" },
+                  { label: "적정", min: 3.5, color: "#6366F1", desc: "서울 상업지 평균" },
+                  { label: "보통", min: 2.5, color: "#F59E0B", desc: "도심 핵심지 수준" },
+                  { label: "미달", min: 0, color: "#EF4444", desc: "재검토 필요" },
+                ].map((tier) => {
+                  const tiers = [7, 5, 3.5, 2.5, 0];
+                  const idx = tiers.indexOf(tier.min);
+                  const upper = idx > 0 ? tiers[idx - 1] : Infinity;
+                  const current = inputPriceNum > 0 ? inputYield : marketYield;
+                  const isActive = current >= tier.min && current < upper;
+                  return (
+                    <div key={tier.label} className={`flex items-center gap-2 rounded-lg px-2 py-1.5 ${isActive ? "bg-gray-50 ring-1 ring-gray-200" : ""}`}>
+                      <div className="h-2.5 w-2.5 rounded-full" style={{ background: tier.color }} />
+                      <span className={`text-[11px] font-semibold ${isActive ? "text-gray-900" : "text-gray-400"}`}>{tier.label}</span>
+                      <span className="text-[10px] text-muted">{tier.min}%{upper < Infinity ? ` ~ ${upper}%` : "+"}</span>
+                      <span className="ml-auto text-[9px] text-muted">{tier.desc}</span>
+                      {isActive && <span className="text-[9px] font-bold text-primary-600">← 현재</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 수익 시뮬 요약 */}
+            <div className="rounded-xl bg-gray-50 p-3">
+              <p className="mb-1 text-[10px] font-semibold text-gray-600">예상 월 임대수입 ({selectedPyeong}평)</p>
+              <p className="text-[18px] font-black text-gray-900">{(rentPerPyeongMonth * selectedPyeong).toLocaleString()}<span className="text-[11px] font-medium text-muted">만원/월</span></p>
+              <p className="text-[10px] text-muted">연 {(annualRentPerPyeong * selectedPyeong).toLocaleString()}만원</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -12,7 +12,7 @@ export interface DashboardStats {
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   try {
-    const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+    const BASE = "";
     const res = await fetch(`${BASE}/api/dashboard/stats`);
     if (!res.ok) throw new Error("API error");
     const data = await res.json();
