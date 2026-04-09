@@ -760,12 +760,21 @@ def _haversine_m(lat1, lng1, lat2, lng2):
     a = _math.sin(dlat/2)**2 + _math.cos(_math.radians(lat1)) * _math.cos(_math.radians(lat2)) * _math.sin(dlng/2)**2
     return R * 2 * _math.atan2(_math.sqrt(a), _math.sqrt(1-a))
 
-def _query_rent_nearby(lat, lng, radius_m, target_pyeong):
-    """SQLite에서 반경 내 임대 사례 조회 (메모리 절약)"""
+@app.get("/api/rent-nearby")
+def rent_nearby(
+    lat: float = Query(...),
+    lng: float = Query(...),
+    radius: int = Query(500),
+    target_pyeong: int = Query(10),
+):
+    """좌표 반경 내 임대료 사례 조회 + 층별 통계"""
     if not os.path.exists(_RENT_DB_PATH):
-        return []
-    # 위경도 대략 필터 (1도 ≈ 111km, 0.01도 ≈ 1.1km)
-    deg = radius_m / 111000 * 1.2  # 여유분
+        return {"total_cases": 0, "radius": radius, "stats": {
+            "1층": {"count": 0}, "2층": {"count": 0}, "지하": {"count": 0}}, "sample_cases": []}
+
+    # 최대 반경으로 한 번만 쿼리, 거리 계산 후 필터
+    max_radius = 3000
+    deg = max_radius / 111000 * 1.2
     conn = _sqlite3.connect(_RENT_DB_PATH)
     conn.row_factory = _sqlite3.Row
     rows = conn.execute(
@@ -778,35 +787,25 @@ def _query_rent_nearby(lat, lng, radius_m, target_pyeong):
     ).fetchall()
     conn.close()
 
-    result = []
+    # 거리 계산 후 정렬
+    all_cases = []
     for r in rows:
         dist = _haversine_m(lat, lng, r["lat"], r["lng"])
-        if dist <= radius_m:
-            result.append({
+        if dist <= max_radius:
+            all_cases.append({
                 "lat": r["lat"], "lng": r["lng"], "floor": r["floor"],
                 "rent_pyeong": r["rent_pyeong"], "rent": r["rent"],
                 "deposit": r["deposit"], "distance": round(dist),
             })
-    result.sort(key=lambda x: x["distance"])
-    return result
+    all_cases.sort(key=lambda x: x["distance"])
 
-@app.get("/api/rent-nearby")
-def rent_nearby(
-    lat: float = Query(...),
-    lng: float = Query(...),
-    radius: int = Query(500),
-    target_pyeong: int = Query(10),
-):
-    """좌표 반경 내 임대료 사례 조회 + 층별 통계"""
-    nearby = _query_rent_nearby(lat, lng, radius, target_pyeong)
-
-    # 3건 미만이면 반경 자동 확장
+    # 요청 반경부터 시작, 3건 미만이면 확장
     actual_radius = radius
-    for expand_r in [r for r in [300, 500, 800, 1000, 1500, 2000, 3000] if r > radius]:
+    for try_r in [radius] + [r for r in [300, 500, 800, 1000, 1500, 2000, 3000] if r > radius]:
+        nearby = [c for c in all_cases if c["distance"] <= try_r]
+        actual_radius = try_r
         if len(nearby) >= 3:
             break
-        nearby = _query_rent_nearby(lat, lng, expand_r, target_pyeong)
-        actual_radius = expand_r
 
     # 층별 분리
     f1 = [c for c in nearby if c["floor"] == "1층"]
