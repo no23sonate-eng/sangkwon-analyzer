@@ -60,7 +60,10 @@ export default function OpportunityPanel() {
       {/* ── 3. 매매가격 적정성 ── */}
       <LandPriceVerification guName={guName} />
 
-      {/* ── 4. 브랜드 시너지 ── */}
+      {/* ── 4. 사업수지 계산기 ── */}
+      <BusinessFeasibility guName={guName} />
+
+      {/* ── 5. 브랜드 시너지 ── */}
       <section>
         <h3 className="mb-3 text-[14px] font-bold text-gray-900">브랜드 시너지</h3>
         <BrandSynergy />
@@ -450,6 +453,175 @@ function LandPriceVerification({ guName }: { guName: string }) {
               <p className="text-[18px] font-black text-gray-900">{(rentPerPyeongMonth * selectedPyeong).toLocaleString()}<span className="text-[11px] font-medium text-muted">만원/월</span></p>
               <p className="text-[10px] text-muted">연 {(annualRentPerPyeong * selectedPyeong).toLocaleString()}만원</p>
             </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   사업수지 계산기
+   ══════════════════════════════════════════════════════════════ */
+
+function BusinessFeasibility({ guName }: { guName: string }) {
+  const [purchasePrice, setPurchasePrice] = useState(""); // 만원
+  const [constructionCost, setConstructionCost] = useState(""); // 만원
+  const [loanRatio, setLoanRatio] = useState(60); // %
+  const [interestRate, setInterestRate] = useState(4.5); // %
+  const [vacancyRate, setVacancyRate] = useState(5); // %
+  const [calculated, setCalculated] = useState(false);
+
+  // 임대료 데이터
+  const [rentPerPyeong, setRentPerPyeong] = useState(0);
+  const clickedLat = useAnalysisStore((s) => s.clickedLat);
+  const clickedLng = useAnalysisStore((s) => s.clickedLng);
+  const radius = useAnalysisStore((s) => s.radius);
+
+  useEffect(() => {
+    if (clickedLat == null || clickedLng == null) return;
+    fetch(`${BASE_URL}/api/rent-nearby?lat=${clickedLat}&lng=${clickedLng}&radius=${radius}&target_pyeong=30`, { cache: "no-store" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const f1 = data?.stats?.["1층"];
+        if (f1?.avg_pyeong > 0) setRentPerPyeong(f1.avg_pyeong);
+      })
+      .catch(() => {});
+  }, [clickedLat, clickedLng, radius]);
+
+  const purchase = parseInt(purchasePrice) || 0;
+  const construction = parseInt(constructionCost) || 0;
+  const totalInvestment = purchase + construction;
+  const equityAmount = Math.round(totalInvestment * (1 - loanRatio / 100));
+  const loanAmount = totalInvestment - equityAmount;
+  const annualInterest = Math.round(loanAmount * interestRate / 100);
+
+  // 임대 면적 추정 (매입가 기반)
+  const landPP = LAND_PRICE[guName] ?? 4000;
+  const estimatedPyeong = landPP > 0 ? Math.round(purchase / landPP) : 30;
+  const rentablePyeong = Math.round(estimatedPyeong * 0.6); // 임대 가능 면적 60%
+
+  // 수익 계산
+  const grossRentMonthly = rentPerPyeong * rentablePyeong;
+  const grossRentAnnual = grossRentMonthly * 12;
+  const effectiveRent = Math.round(grossRentAnnual * (1 - vacancyRate / 100));
+  const managementCost = Math.round(effectiveRent * 0.1); // 관리비 10%
+  const noi = effectiveRent - managementCost; // 순영업수익
+  const cashFlow = noi - annualInterest; // 세전 현금흐름
+
+  const capRate = totalInvestment > 0 ? (noi / totalInvestment) * 100 : 0;
+  const leveragedReturn = equityAmount > 0 ? (cashFlow / equityAmount) * 100 : 0;
+  const paybackYears = cashFlow > 0 ? equityAmount / cashFlow : 0;
+
+  const handleCalculate = () => setCalculated(true);
+
+  return (
+    <div className="rounded-xl border-2 border-amber-200 bg-white p-4">
+      <h3 className="mb-1 text-[15px] font-bold text-gray-900">📊 사업수지 계산기</h3>
+      <p className="mb-3 text-[10px] text-muted">매입가·공사비·대출 조건을 입력하면 투자 수익률을 시뮬레이션합니다</p>
+
+      {/* 입력 */}
+      <div className="space-y-2 mb-3">
+        <div>
+          <label className="mb-1 block text-[10px] font-medium text-muted">매입가 (만원)</label>
+          <input type="number" value={purchasePrice} onChange={(e) => { setPurchasePrice(e.target.value); setCalculated(false); }}
+            placeholder="예: 100000 (10억)"
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-[14px] font-bold outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100" />
+        </div>
+        <div>
+          <label className="mb-1 block text-[10px] font-medium text-muted">공사비/리모델링 (만원, 없으면 0)</label>
+          <input type="number" value={constructionCost} onChange={(e) => { setConstructionCost(e.target.value); setCalculated(false); }}
+            placeholder="예: 20000 (2억)"
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-[14px] font-bold outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100" />
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <div>
+            <label className="mb-1 block text-[10px] font-medium text-muted">대출비율 (%)</label>
+            <input type="number" value={loanRatio} onChange={(e) => { setLoanRatio(Number(e.target.value)); setCalculated(false); }}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-[13px] font-bold outline-none focus:border-amber-400" />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-medium text-muted">금리 (%)</label>
+            <input type="number" step="0.1" value={interestRate} onChange={(e) => { setInterestRate(Number(e.target.value)); setCalculated(false); }}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-[13px] font-bold outline-none focus:border-amber-400" />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-medium text-muted">공실률 (%)</label>
+            <input type="number" value={vacancyRate} onChange={(e) => { setVacancyRate(Number(e.target.value)); setCalculated(false); }}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-[13px] font-bold outline-none focus:border-amber-400" />
+          </div>
+        </div>
+      </div>
+
+      <button onClick={handleCalculate} disabled={!purchasePrice}
+        className="w-full rounded-lg bg-amber-500 py-2.5 text-[13px] font-semibold text-white hover:bg-amber-600 active:scale-[0.98] disabled:opacity-40">
+        사업수지 계산
+      </button>
+
+      {/* 결과 */}
+      {calculated && totalInvestment > 0 && (
+        <div className="mt-4 space-y-3">
+          {/* 투자 구조 */}
+          <div className="rounded-xl bg-gray-50 p-3">
+            <p className="mb-2 text-[11px] font-semibold text-gray-600">투자 구조</p>
+            <div className="space-y-1.5 text-[12px]">
+              <div className="flex justify-between"><span className="text-gray-500">총 투자비</span><span className="font-bold">{(totalInvestment / 10000).toFixed(1)}억</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">자기자본</span><span className="font-bold text-primary-600">{(equityAmount / 10000).toFixed(1)}억 ({100 - loanRatio}%)</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">대출금</span><span className="font-bold">{(loanAmount / 10000).toFixed(1)}억 ({loanRatio}%)</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">연 이자비용</span><span className="font-bold text-red-500">{(annualInterest / 10000).toFixed(2)}억</span></div>
+            </div>
+          </div>
+
+          {/* 수익 구조 */}
+          <div className="rounded-xl bg-gray-50 p-3">
+            <p className="mb-2 text-[11px] font-semibold text-gray-600">수익 구조 (1층 {rentPerPyeong}만/평 기준)</p>
+            <div className="space-y-1.5 text-[12px]">
+              <div className="flex justify-between"><span className="text-gray-500">임대 가능 면적</span><span className="font-bold">약 {rentablePyeong}평</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">월 임대수입 (총)</span><span className="font-bold">{grossRentMonthly.toLocaleString()}만</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">연 임대수입</span><span className="font-bold">{(grossRentAnnual / 10000).toFixed(2)}억</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">공실 차감 ({vacancyRate}%)</span><span className="text-red-500">-{(grossRentAnnual - effectiveRent).toLocaleString()}만</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">관리비 (10%)</span><span className="text-red-500">-{managementCost.toLocaleString()}만</span></div>
+              <div className="flex justify-between border-t border-gray-200 pt-1.5"><span className="font-semibold text-gray-700">순영업수익 (NOI)</span><span className="font-bold text-primary-600">{(noi / 10000).toFixed(2)}억</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">이자 차감</span><span className="text-red-500">-{(annualInterest / 10000).toFixed(2)}억</span></div>
+              <div className="flex justify-between border-t border-gray-200 pt-1.5"><span className="font-semibold text-gray-700">세전 현금흐름</span><span className="font-bold text-emerald-600">{(cashFlow / 10000).toFixed(2)}억/년</span></div>
+            </div>
+          </div>
+
+          {/* 핵심 지표 */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className={`rounded-xl p-3 text-center ${capRate >= 4 ? "bg-emerald-50" : capRate >= 3 ? "bg-amber-50" : "bg-red-50"}`}>
+              <p className="text-[9px] text-muted">Cap Rate</p>
+              <p className={`text-[20px] font-black ${capRate >= 4 ? "text-emerald-600" : capRate >= 3 ? "text-amber-600" : "text-red-500"}`}>
+                {capRate.toFixed(1)}<span className="text-[11px]">%</span>
+              </p>
+              <p className="text-[8px] text-muted">NOI/총투자</p>
+            </div>
+            <div className={`rounded-xl p-3 text-center ${leveragedReturn >= 8 ? "bg-emerald-50" : leveragedReturn >= 5 ? "bg-amber-50" : "bg-red-50"}`}>
+              <p className="text-[9px] text-muted">레버리지 수익률</p>
+              <p className={`text-[20px] font-black ${leveragedReturn >= 8 ? "text-emerald-600" : leveragedReturn >= 5 ? "text-amber-600" : "text-red-500"}`}>
+                {leveragedReturn.toFixed(1)}<span className="text-[11px]">%</span>
+              </p>
+              <p className="text-[8px] text-muted">현금흐름/자기자본</p>
+            </div>
+            <div className="rounded-xl bg-gray-50 p-3 text-center">
+              <p className="text-[9px] text-muted">자본 회수</p>
+              <p className="text-[20px] font-black text-gray-900">
+                {paybackYears > 0 && paybackYears < 100 ? paybackYears.toFixed(1) : "-"}<span className="text-[11px]">년</span>
+              </p>
+              <p className="text-[8px] text-muted">자기자본 기준</p>
+            </div>
+          </div>
+
+          {/* 판단 */}
+          <div className={`rounded-xl p-3 ${capRate >= 4 ? "bg-emerald-50" : capRate >= 3 ? "bg-amber-50" : "bg-red-50"}`}>
+            <p className={`text-[12px] font-bold ${capRate >= 4 ? "text-emerald-700" : capRate >= 3 ? "text-amber-700" : "text-red-700"}`}>
+              {capRate >= 5 ? "투자 매력도 높음" : capRate >= 4 ? "적정 수익률" : capRate >= 3 ? "보수적 검토 필요" : "수익성 부족 — 재검토 권장"}
+            </p>
+            <p className="mt-1 text-[11px] text-gray-600">
+              {cashFlow > 0
+                ? `대출 이자 차감 후 연 ${(cashFlow / 10000).toFixed(2)}억 현금흐름 발생. 자기자본 ${(equityAmount / 10000).toFixed(1)}억 기준 ${leveragedReturn.toFixed(1)}% 수익률.`
+                : "대출 이자가 임대수입을 초과합니다. 대출비율 또는 매입가 조정이 필요합니다."}
+            </p>
           </div>
         </div>
       )}
