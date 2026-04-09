@@ -749,34 +749,9 @@ def naver_rent(dong: str = Query(""), floor: str = Query("1층"), days: int = Qu
 
 import math as _math
 
-_rent_est_cache = None
-_rent_est_mtime = 0
+import sqlite3 as _sqlite3
 
-def _load_rent_estimates():
-    global _rent_est_cache, _rent_est_mtime
-    path = os.path.join(ROOT, "상권데이터", "rent_estimates_all.json")
-    gz_path = path + ".gz"
-    # gz 파일 우선, 없으면 원본 json
-    if os.path.exists(gz_path):
-        mtime = os.path.getmtime(gz_path)
-        if _rent_est_cache is not None and mtime == _rent_est_mtime:
-            return _rent_est_cache
-        import json, gzip
-        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-            _rent_est_cache = json.load(f)
-        _rent_est_mtime = mtime
-    elif os.path.exists(path):
-        mtime = os.path.getmtime(path)
-        if _rent_est_cache is not None and mtime == _rent_est_mtime:
-            return _rent_est_cache
-        import json
-        with open(path, "r", encoding="utf-8") as f:
-            _rent_est_cache = json.load(f)
-        _rent_est_mtime = mtime
-    else:
-        return []
-    print(f"[임대료] 데이터 로드: {len(_rent_est_cache)}건")
-    return _rent_est_cache
+_RENT_DB_PATH = os.path.join(ROOT, "상권데이터", "rent_nearby.db")
 
 def _haversine_m(lat1, lng1, lat2, lng2):
     R = 6371000
@@ -785,6 +760,36 @@ def _haversine_m(lat1, lng1, lat2, lng2):
     a = _math.sin(dlat/2)**2 + _math.cos(_math.radians(lat1)) * _math.cos(_math.radians(lat2)) * _math.sin(dlng/2)**2
     return R * 2 * _math.atan2(_math.sqrt(a), _math.sqrt(1-a))
 
+def _query_rent_nearby(lat, lng, radius_m, target_pyeong):
+    """SQLite에서 반경 내 임대 사례 조회 (메모리 절약)"""
+    if not os.path.exists(_RENT_DB_PATH):
+        return []
+    # 위경도 대략 필터 (1도 ≈ 111km, 0.01도 ≈ 1.1km)
+    deg = radius_m / 111000 * 1.2  # 여유분
+    conn = _sqlite3.connect(_RENT_DB_PATH)
+    conn.row_factory = _sqlite3.Row
+    rows = conn.execute(
+        """SELECT lat, lng, floor, rent_pyeong, rent, deposit
+           FROM rents
+           WHERE target_pyeong = ?
+             AND lat BETWEEN ? AND ?
+             AND lng BETWEEN ? AND ?""",
+        (target_pyeong, lat - deg, lat + deg, lng - deg, lng + deg),
+    ).fetchall()
+    conn.close()
+
+    result = []
+    for r in rows:
+        dist = _haversine_m(lat, lng, r["lat"], r["lng"])
+        if dist <= radius_m:
+            result.append({
+                "lat": r["lat"], "lng": r["lng"], "floor": r["floor"],
+                "rent_pyeong": r["rent_pyeong"], "rent": r["rent"],
+                "deposit": r["deposit"], "distance": round(dist),
+            })
+    result.sort(key=lambda x: x["distance"])
+    return result
+
 @app.get("/api/rent-nearby")
 def rent_nearby(
     lat: float = Query(...),
@@ -792,149 +797,45 @@ def rent_nearby(
     radius: int = Query(500),
     target_pyeong: int = Query(10),
 ):
-    """좌표 반경 내 임대료 사례 조회 + 층별 통계
+    """좌표 반경 내 임대료 사례 조회 + 층별 통계"""
+    nearby = _query_rent_nearby(lat, lng, radius, target_pyeong)
 
-    최소 50건 이상 확보. 부족하면 반경 자동 확장.
-    50건 이상이면 가까운 상권 우선 (거리 가중 평균).
-    """
-    data = _load_rent_estimates()
-    if not data:
-        return {"cases": [], "stats": {}}
-
-    # 면적 체감 계수
-    _AREA_DISCOUNT = {10: 1.0, 30: 0.88, 50: 0.78, 100: 0.65, 200: 0.52}
-    discount = _AREA_DISCOUNT.get(target_pyeong, 1.0)
-    if target_pyeong not in _AREA_DISCOUNT:
-        # 보간
-        keys = sorted(_AREA_DISCOUNT.keys())
-        for i in range(len(keys) - 1):
-            if keys[i] <= target_pyeong <= keys[i+1]:
-                ratio = (target_pyeong - keys[i]) / (keys[i+1] - keys[i])
-                discount = _AREA_DISCOUNT[keys[i]] * (1 - ratio) + _AREA_DISCOUNT[keys[i+1]] * ratio
-                break
-
-    # 면적 구간 필터 (±50% 범위의 사례)
-    target_m2 = target_pyeong * 3.3
-    area_lo = target_m2 * 0.5
-    area_hi = target_m2 * 1.5
-
-    # 반경 내 필터 — 같은 구 우선
-    nearby = []
-    closest_gu = ""
-    closest_dist = float("inf")
-    for d in data:
-        dist = _haversine_m(lat, lng, d["lat"], d["lng"])
-        if dist < closest_dist:
-            closest_dist = dist
-            closest_gu = d.get("gu", "")
-
-    for d in data:
-        # 면적 필터: 요청한 면적의 사례만
-        d_pyeong = d.get("target_pyeong", 10)
-        if d_pyeong != target_pyeong:
-            continue
-
-        dist = _haversine_m(lat, lng, d["lat"], d["lng"])
-        if dist <= radius:
-            d_copy = dict(d)
-            effective_dist = dist if d.get("gu") == closest_gu else dist * 2
-            d_copy["distance"] = round(effective_dist)
-            nearby.append(d_copy)
-
-    # 3건 미만이면 단계적 반경 확장 (선택 반경 기준 점진적 확장)
+    # 3건 미만이면 반경 자동 확장
     actual_radius = radius
-    expand_steps = [r for r in [200, 300, 500, 800, 1000, 1500, 2000, 3000] if r > radius]
-    for expand_r in expand_steps:
+    for expand_r in [r for r in [300, 500, 800, 1000, 1500, 2000, 3000] if r > radius]:
         if len(nearby) >= 3:
             break
-        nearby = []
+        nearby = _query_rent_nearby(lat, lng, expand_r, target_pyeong)
         actual_radius = expand_r
-        for d in data:
-            d_pyeong = d.get("target_pyeong", 10)
-            if d_pyeong != target_pyeong:
-                continue
-            dist = _haversine_m(lat, lng, d["lat"], d["lng"])
-            if dist <= expand_r:
-                d_copy = dict(d)
-                effective_dist = dist if d.get("gu") == closest_gu else dist * 1.5
-                d_copy["distance"] = round(effective_dist)
-                nearby.append(d_copy)
 
-    nearby.sort(key=lambda x: x["distance"])
+    # 층별 분리
+    f1 = [c for c in nearby if c["floor"] == "1층"]
+    f2 = [c for c in nearby if c["floor"] == "2층"]
+    b1 = [c for c in nearby if c["floor"] == "지하"]
 
-    # 층별 통계 (새 구조: 각 사례에 floor 필드가 있음)
-    f1 = [c for c in nearby if c.get("floor") == "1층"]
-    f2 = [c for c in nearby if c.get("floor") == "2층"]
-    b1 = [c for c in nearby if c.get("floor") == "지하"]
-    # 구 구조 폴백 (floor 필드 없으면)
-    if not f1 and not f2 and not b1:
-        f1 = [c for c in nearby if c.get("f1_rent", 0) > 0]
-        f2 = [c for c in nearby if c.get("f2_rent", 0) > 0]
-        b1 = [c for c in nearby if c.get("b1_rent", 0) > 0]
-
-    def stats(cases, key_rent, key_deposit, key_pyeong=None):
-        if not cases:
-            return {"count": 0, "avg_rent": 0, "avg_deposit": 0, "avg_pyeong": 0, "min_rent": 0, "max_rent": 0, "median_rent": 0}
-        # 거리 가중 평균 (가까울수록 가중치 높음)
-        max_dist = max(c.get("distance", 1) for c in cases) or 1
-        weights = [max(0.3, 1 - c.get("distance", 0) / (max_dist * 1.5)) for c in cases]
-        total_w = sum(weights)
-
-        rents = [c[key_rent] for c in cases]
-        deposits = [c[key_deposit] for c in cases]
-        pyeongs = [c.get(key_pyeong, 0) for c in cases] if key_pyeong else [0]
-
-        w_avg_rent = round(sum(r * w for r, w in zip(rents, weights)) / total_w) if total_w > 0 else 0
-        w_avg_dep = round(sum(d * w for d, w in zip(deposits, weights)) / total_w) if total_w > 0 else 0
-        w_avg_pp = round(sum(p * w for p, w in zip(pyeongs, weights)) / total_w, 1) if key_pyeong and total_w > 0 else 0
-
-        rents_sorted = sorted(rents)
-        return {
-            "count": len(cases),
-            "avg_rent": w_avg_rent,
-            "median_rent": rents_sorted[len(rents_sorted)//2],
-            "min_rent": rents_sorted[0],
-            "max_rent": rents_sorted[-1],
-            "avg_deposit": w_avg_dep,
-            "avg_pyeong": w_avg_pp,
-        }
-
-    def stats_new(cases):
-        """통계 — 데이터 직접 사용 (면적별 사례가 이미 분리됨)"""
+    def calc_stats(cases):
         if not cases:
             return {"count": 0, "avg_rent": 0, "avg_deposit": 0, "avg_pyeong": 0, "min_rent": 0, "max_rent": 0, "median_rent": 0, "target_pyeong": target_pyeong}
-        max_dist = max(c.get("distance", 1) for c in cases) or 1
-        weights = [max(0.3, 1 - c.get("distance", 0) / (max_dist * 1.5)) for c in cases]
+        max_dist = max(c["distance"] for c in cases) or 1
+        weights = [max(0.3, 1 - c["distance"] / (max_dist * 1.5)) for c in cases]
         total_w = sum(weights)
-
-        rents = [c.get("rent", 0) for c in cases]
-        deposits = [c.get("deposit", 0) for c in cases]
-        pyeongs = [c.get("rent_pyeong", 0) for c in cases]
-
-        w_avg_rent = round(sum(r * w for r, w in zip(rents, weights)) / total_w) if total_w > 0 else 0
-        w_avg_dep = round(sum(d * w for d, w in zip(deposits, weights)) / total_w) if total_w > 0 else 0
-        w_avg_pp = round(sum(p * w for p, w in zip(pyeongs, weights)) / total_w, 1) if total_w > 0 else 0
-
+        rents = [c["rent"] for c in cases]
+        deposits = [c["deposit"] for c in cases]
+        pyeongs = [c["rent_pyeong"] for c in cases]
+        w_avg_rent = round(sum(r * w for r, w in zip(rents, weights)) / total_w) if total_w else 0
+        w_avg_dep = round(sum(d * w for d, w in zip(deposits, weights)) / total_w) if total_w else 0
+        w_avg_pp = round(sum(p * w for p, w in zip(pyeongs, weights)) / total_w, 1) if total_w else 0
         rents_sorted = sorted(r for r in rents if r > 0) or [0]
         return {
-            "count": len(cases),
-            "avg_rent": w_avg_rent,
-            "median_rent": rents_sorted[len(rents_sorted)//2],
-            "min_rent": rents_sorted[0],
-            "max_rent": rents_sorted[-1],
-            "avg_deposit": w_avg_dep,
-            "avg_pyeong": w_avg_pp,
-            "target_pyeong": target_pyeong,
+            "count": len(cases), "avg_rent": w_avg_rent, "avg_deposit": w_avg_dep,
+            "avg_pyeong": w_avg_pp, "min_rent": rents_sorted[0], "max_rent": rents_sorted[-1],
+            "median_rent": rents_sorted[len(rents_sorted)//2], "target_pyeong": target_pyeong,
         }
 
     return {
         "total_cases": len(nearby),
         "radius": actual_radius,
-        "stats": {
-            "1층": stats_new(f1),
-            "2층": stats_new(f2),
-            "지하": stats_new(b1),
-        },
+        "stats": {"1층": calc_stats(f1), "2층": calc_stats(f2), "지하": calc_stats(b1)},
         "sample_cases": nearby[:20],
     }
 
