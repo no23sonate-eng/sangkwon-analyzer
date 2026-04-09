@@ -4,3 +4,6 @@
 node_modules/
 __pycache__/
 *.pyc
+상권데이터/rent_estimates_all.json
+상권데이터/rent_market.db
+*.db
