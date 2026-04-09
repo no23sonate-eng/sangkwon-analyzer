@@ -755,16 +755,27 @@ _rent_est_mtime = 0
 def _load_rent_estimates():
     global _rent_est_cache, _rent_est_mtime
     path = os.path.join(ROOT, "상권데이터", "rent_estimates_all.json")
-    if not os.path.exists(path):
+    gz_path = path + ".gz"
+    # gz 파일 우선, 없으면 원본 json
+    if os.path.exists(gz_path):
+        mtime = os.path.getmtime(gz_path)
+        if _rent_est_cache is not None and mtime == _rent_est_mtime:
+            return _rent_est_cache
+        import json, gzip
+        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
+            _rent_est_cache = json.load(f)
+        _rent_est_mtime = mtime
+    elif os.path.exists(path):
+        mtime = os.path.getmtime(path)
+        if _rent_est_cache is not None and mtime == _rent_est_mtime:
+            return _rent_est_cache
+        import json
+        with open(path, "r", encoding="utf-8") as f:
+            _rent_est_cache = json.load(f)
+        _rent_est_mtime = mtime
+    else:
         return []
-    mtime = os.path.getmtime(path)
-    if _rent_est_cache is not None and mtime == _rent_est_mtime:
-        return _rent_est_cache
-    import json
-    with open(path, "r", encoding="utf-8") as f:
-        _rent_est_cache = json.load(f)
-    _rent_est_mtime = mtime
-    print(f"[임대료] 데이터 로드: {len(_rent_est_cache)}건, target_pyeong 필드: {'target_pyeong' in (_rent_est_cache[0] if _rent_est_cache else {})}")
+    print(f"[임대료] 데이터 로드: {len(_rent_est_cache)}건")
     return _rent_est_cache
 
 def _haversine_m(lat1, lng1, lat2, lng2):
