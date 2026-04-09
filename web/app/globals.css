@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* ── Tailwind v4 Design Tokens ── */
+@theme inline {
+  /* Primary (Indigo) — full scale */
+  --color-primary-50: #EEF2FF;
+  --color-primary-100: #E0E7FF;
+  --color-primary-200: #C7D2FE;
+  --color-primary-300: #A5B4FC;
+  --color-primary-400: #818CF8;
+  --color-primary-500: #6366F1;
+  --color-primary-600: #4F46E5;
+  --color-primary-700: #4338CA;
+  --color-primary: #6366F1;
+
+  /* Surfaces */
+  --color-surface: #F8F9FC;
+  --color-card: #FFFFFF;
+  --color-background: #F8F9FC;
+  --color-foreground: #1E293B;
+
+  /* Semantic */
+  --color-muted: #94A3B8;
+  --color-border: #F1F5F9;
+
+  /* Radius */
+  --radius-card: 20px;
+  --radius-button: 14px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03);
+
+  /* Fonts */
+  --font-sans: "Pretendard", "Plus Jakarta Sans", -apple-system,
+    BlinkMacSystemFont, system-ui, "Helvetica Neue", sans-serif;
+}
+
+/* ── Global resets ── */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--color-surface);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { border-color: var(--color-border); }
+
+/* ── Scrollbar ── */
+.panel-scroll::-webkit-scrollbar { width: 5px; }
+.panel-scroll::-webkit-scrollbar-track { background: transparent; }
+.panel-scroll::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 9999px; }
+
+/* ── Animations ── */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in { animation: slideInLeft 0.3s ease-out forwards; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+
+/* ── Map overrides ── */
+.mapboxgl-ctrl-attrib,
+.maplibregl-ctrl-attrib { font-size: 10px !important; }

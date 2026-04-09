@@ -1,0 +1,377 @@
+"use client";
+
+import { Suspense, useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import {
+  Search,
+  FileText,
+  Layers,
+  Circle,
+  Square,
+  Pentagon,
+  X,
+} from "lucide-react";
+import DataPanel from "@/components/Panel/DataPanel";
+import ReportModal from "@/components/Modal/ReportModal";
+import { useAnalysisStore } from "@/store/analysisStore";
+import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
+
+const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full w-full items-center justify-center bg-surface">
+      <div className="h-7 w-7 animate-spin rounded-full border-2 border-primary-600 border-t-transparent" />
+    </div>
+  ),
+});
+
+const IS_PRO = false;
+
+/* ── 검색용 좌표 매핑 ── */
+const AREA_COORDS: Record<string, { lat: number; lng: number; name: string }> = {
+  gangnam: { lat: 37.4979, lng: 127.0276, name: "강남역" },
+  hongdae: { lat: 37.5571, lng: 126.9233, name: "홍대입구" },
+  seongsu: { lat: 37.5445, lng: 127.0560, name: "성수동" },
+  itaewon: { lat: 37.5346, lng: 126.9944, name: "이태원" },
+  yeouido: { lat: 37.5218, lng: 126.9245, name: "여의도" },
+  euljiro: { lat: 37.5665, lng: 126.9918, name: "을지로" },
+  mangwon: { lat: 37.5556, lng: 126.9100, name: "망원동" },
+  yeonnam: { lat: 37.5660, lng: 126.9233, name: "연남동" },
+  jamsil: { lat: 37.5133, lng: 127.1001, name: "잠실" },
+  myeongdong: { lat: 37.5607, lng: 126.9857, name: "명동" },
+  sinchon: { lat: 37.5554, lng: 126.9368, name: "신촌" },
+  konkuk: { lat: 37.5404, lng: 127.0693, name: "건대입구" },
+  hapjeong: { lat: 37.5499, lng: 126.9145, name: "합정동" },
+  samcheong: { lat: 37.5816, lng: 126.9816, name: "삼청동" },
+  garosu: { lat: 37.5199, lng: 127.0230, name: "가로수길" },
+  apgujeong: { lat: 37.5270, lng: 127.0289, name: "압구정" },
+};
+
+const SEARCH_KEYWORDS: Record<string, { lat: number; lng: number }> = {
+  강남역: { lat: 37.4979, lng: 127.0276 },
+  홍대입구: { lat: 37.5571, lng: 126.9233 },
+  홍대: { lat: 37.5571, lng: 126.9233 },
+  성수동: { lat: 37.5445, lng: 127.0560 },
+  성수: { lat: 37.5445, lng: 127.0560 },
+  이태원: { lat: 37.5346, lng: 126.9944 },
+  여의도: { lat: 37.5218, lng: 126.9245 },
+  을지로: { lat: 37.5665, lng: 126.9918 },
+  망원동: { lat: 37.5556, lng: 126.9100 },
+  연남동: { lat: 37.5660, lng: 126.9233 },
+  잠실: { lat: 37.5133, lng: 127.1001 },
+  명동: { lat: 37.5607, lng: 126.9857 },
+  신촌: { lat: 37.5554, lng: 126.9368 },
+  건대입구: { lat: 37.5404, lng: 127.0693 },
+  합정: { lat: 37.5499, lng: 126.9145 },
+  삼청동: { lat: 37.5816, lng: 126.9816 },
+  가로수길: { lat: 37.5199, lng: 127.0230 },
+  압구정: { lat: 37.5270, lng: 127.0289 },
+  서울역: { lat: 37.5547, lng: 126.9727 },
+  종로: { lat: 37.5700, lng: 126.9832 },
+};
+
+/* ── 좌표로 자동 분석 실행 ── */
+async function triggerAnalysis(lat: number, lng: number) {
+  const store = useAnalysisStore.getState();
+  const radius = store.radius;
+  store.setClicked(lat, lng);
+  store.setViewState({ ...store.viewState, latitude: lat, longitude: lng, zoom: 15 });
+  store.setLoading(true);
+
+  try {
+    reverseGeocode(lat, lng)
+      .then((res) => store.setClickedAddress(res.address, res.gu, res.dong))
+      .catch(() => store.setClickedAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`, "", ""));
+
+    const list = await findNearbyTrdar(lat, lng, Math.max(radius, 500));
+    store.setNearbyList(list);
+
+    if (list.length > 0) {
+      const closest = list[0];
+      store.setSelectedTrdar(closest);
+      store.setPanelOpen(true);
+      const [analysis, stores] = await Promise.all([
+        analyzeArea(lat, lng, radius),
+        getStoreCount(closest.trdar_cd),
+      ]);
+      store.setAnalysisData(analysis);
+      store.setStoreCountData(stores);
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    store.setLoading(false);
+  }
+}
+
+/* ── URL 파라미터 처리 ── */
+function AutoAnalysisTrigger() {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // ?lat=&lng= 직접 좌표
+    const latP = searchParams.get("lat");
+    const lngP = searchParams.get("lng");
+    if (latP && lngP) {
+      const lat = parseFloat(latP);
+      const lng = parseFloat(lngP);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        triggerAnalysis(lat, lng);
+        return;
+      }
+    }
+
+    // ?area=코드 (하드코딩 매칭 또는 API 검색)
+    const area = searchParams.get("area");
+    if (area) {
+      const zoom = parseInt(searchParams.get("zoom") ?? "15");
+
+      // 하드코딩 매칭 (gangnam, seongsu 등)
+      if (AREA_COORDS[area]) {
+        const { lat, lng } = AREA_COORDS[area];
+        const store = useAnalysisStore.getState();
+        store.setViewState({ ...store.viewState, latitude: lat, longitude: lng, zoom });
+        triggerAnalysis(lat, lng);
+        return;
+      }
+
+      // 실제 상권 코드로 검색 (API → 좌표 조회 → 분석)
+      searchTrdar(area).then((results) => {
+        const match = results.find((r) => r.lat && r.lng);
+        if (match && match.lat && match.lng) {
+          const store = useAnalysisStore.getState();
+          store.setViewState({ ...store.viewState, latitude: match.lat, longitude: match.lng, zoom });
+          triggerAnalysis(match.lat, match.lng);
+        }
+      }).catch(console.error);
+      return;
+    }
+
+    // ?search=강남역 검색어 → API로 검색
+    const search = searchParams.get("search");
+    if (search) {
+      // 하드코딩 매칭 먼저
+      const match = SEARCH_KEYWORDS[search];
+      if (match) {
+        triggerAnalysis(match.lat, match.lng);
+      } else {
+        // API 검색
+        searchTrdar(search).then((results) => {
+          const first = results.find((r) => r.lat && r.lng);
+          if (first && first.lat && first.lng) {
+            triggerAnalysis(first.lat, first.lng);
+          }
+        }).catch(console.error);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  return null;
+}
+
+/* ── 페이지 ── */
+export default function MapPage() {
+  const panelOpen = useAnalysisStore((s) => s.panelOpen);
+  const selectedTrdar = useAnalysisStore((s) => s.selectedTrdar);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [layerMenuOpen, setLayerMenuOpen] = useState(false);
+  const heatmapOn = useAnalysisStore((s) => s.heatmapOn);
+  const setHeatmapOn = useAnalysisStore((s) => s.setHeatmapOn);
+  const heatmapType = useAnalysisStore((s) => s.heatmapType);
+  const setHeatmapType = useAnalysisStore((s) => s.setHeatmapType);
+
+  const handleSearch = useCallback(async () => {
+    const q = searchQuery.trim();
+    if (!q) return;
+
+    // 1. 하드코딩 매칭
+    const match = SEARCH_KEYWORDS[q];
+    if (match) {
+      triggerAnalysis(match.lat, match.lng);
+      setSearchQuery("");
+      return;
+    }
+
+    // 2. 지오코딩 (주소 → 좌표)
+    try {
+      const geo = await geocode(q);
+      if (geo?.lat && geo?.lng) {
+        triggerAnalysis(geo.lat, geo.lng);
+        setSearchQuery("");
+        return;
+      }
+    } catch {
+      // 지오코딩 실패 → 상권 검색으로
+    }
+
+    // 3. 상권명 검색
+    try {
+      const results = await searchTrdar(q);
+      const first = results.find((r) => r.lat && r.lng);
+      if (first && first.lat && first.lng) {
+        triggerAnalysis(first.lat, first.lng);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setSearchQuery("");
+  }, [searchQuery]);
+
+  return (
+    <div className="relative h-full overflow-hidden">
+      <Suspense fallback={null}>
+        <AutoAnalysisTrigger />
+      </Suspense>
+
+      {/* 풀스크린 지도 */}
+      <MapContainer />
+
+      {/* ── 상단 검색바 (플로팅) ── */}
+      <div className="absolute left-1/2 top-4 z-20 w-full max-w-xl -translate-x-1/2 px-4">
+        <div className="flex h-12 items-center gap-2 rounded-full border border-white/60 bg-white/90 px-5 shadow-lg backdrop-blur-md">
+          <Search size={18} className="shrink-0 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            placeholder="주소, 지역명, 건물명으로 검색"
+            className="flex-1 bg-transparent text-[14px] text-gray-800 outline-none placeholder:text-gray-400"
+          />
+          <button
+            onClick={handleSearch}
+            className="shrink-0 rounded-full bg-primary-600 px-5 py-1.5 text-[13px] font-semibold text-white transition-all hover:bg-primary-700 active:scale-95"
+          >
+            검색
+          </button>
+        </div>
+      </div>
+
+      {/* ── 좌측 분석 패널 ── */}
+      {panelOpen && <DataPanel />}
+
+      {/* ── 좌측 상단: 그리기 도구 ── */}
+      <DrawTools />
+
+      {/* ── 우측 하단 컨트롤 ── */}
+      <div className="absolute bottom-6 right-4 z-10 flex flex-col gap-2">
+        {/* 레이어 토글 */}
+        <div className="relative">
+          {layerMenuOpen && (
+            <div className="absolute bottom-12 right-0 w-48 rounded-xl bg-white p-3 shadow-lg">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[13px] font-semibold text-gray-800">레이어</span>
+                <button onClick={() => setLayerMenuOpen(false)}>
+                  <X size={14} className="text-gray-400" />
+                </button>
+              </div>
+              {([
+                { key: "openclose" as const, label: "개폐업", dot: "bg-gradient-to-r from-blue-400 to-red-400" },
+                { key: "traffic" as const, label: "유동인구", dot: "bg-gradient-to-r from-green-400 to-red-500" },
+                { key: "sales" as const, label: "매출", dot: "bg-gradient-to-r from-green-400 to-red-500" },
+              ]).map(({ key, label, dot }) => {
+                const active = heatmapOn && heatmapType === key;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      if (active) {
+                        setHeatmapOn(false);
+                      } else {
+                        setHeatmapType(key);
+                        setHeatmapOn(true);
+                      }
+                    }}
+                    className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-[13px] transition-all ${
+                      active
+                        ? "bg-primary-50 font-semibold text-primary-700"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div className={`h-2.5 w-6 rounded-full ${dot}`} />
+                    {label}
+                    {active && <span className="ml-auto text-[10px] text-primary-500">ON</span>}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <button
+            onClick={() => setLayerMenuOpen(!layerMenuOpen)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-md transition-colors hover:bg-gray-50"
+          >
+            <Layers size={18} className="text-gray-500" />
+          </button>
+        </div>
+      </div>
+
+      {/* ── 리포트 추출 버튼 ── */}
+      {panelOpen && selectedTrdar && (
+        <button
+          onClick={() => setReportOpen(true)}
+          className="absolute bottom-4 right-4 z-20 flex items-center gap-2 rounded-[var(--radius-button)]
+            bg-white px-4 py-2.5 text-[13px] font-semibold text-gray-700 shadow-lg
+            transition-all hover:bg-gray-50 hover:shadow-xl active:scale-[0.98]"
+        >
+          <FileText size={16} className="text-primary-600" />
+          리포트 추출
+        </button>
+      )}
+
+      {/* ── 리포트 모달 ── */}
+      <ReportModal
+        open={reportOpen}
+        onClose={() => setReportOpen(false)}
+        isPro={IS_PRO}
+        areaName={selectedTrdar?.trdar_nm ?? "상권"}
+      />
+    </div>
+  );
+}
+
+/* ── 그리기 도구 UI ── */
+function DrawTools() {
+  const drawMode = useAnalysisStore((s) => s.drawMode);
+  const setDrawMode = useAnalysisStore((s) => s.setDrawMode);
+
+  const tools = [
+    { icon: Circle, label: "원형 영역", mode: "circle" as const },
+    { icon: Square, label: "사각 영역", mode: "rectangle" as const },
+    { icon: Pentagon, label: "다각형 영역", mode: "polygon" as const },
+  ];
+
+  return (
+    <div className="absolute left-4 top-20 z-10 flex flex-col gap-1 rounded-xl bg-white p-2 shadow-md">
+      {tools.map(({ icon: Icon, label, mode }) => {
+        const active = drawMode === mode;
+        return (
+          <button
+            key={mode}
+            title={label}
+            onClick={() => setDrawMode(active ? "none" : mode)}
+            className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
+              active
+                ? "bg-primary-100 text-primary-600"
+                : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            }`}
+          >
+            <Icon size={18} />
+          </button>
+        );
+      })}
+      {drawMode !== "none" && (
+        <div className="mt-1 border-t border-gray-100 pt-1">
+          <button
+            onClick={() => setDrawMode("none")}
+            className="flex h-7 w-full items-center justify-center rounded text-[10px] text-red-400 hover:bg-red-50"
+          >
+            취소
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
