@@ -71,7 +71,12 @@ export const categoryColorMap: Record<string, string> = {
   부동산: "#6366F1",
   스포츠: "#EC4899",
   "수리/개인": "#94A3B8",
-  "음료/식품": "#8B5CF6",
+  "음료/식품": "#0EA5E9",
+  "시설관리/임대": "#64748B",
+  "소매/유통": "#3B82F6",
+  관광: "#F43F5E",
+  의료: "#14B8A6",
+  기타: "#94A3B8",
 };
 
 export function getCategoryColor(category: string): string {

@@ -2,6 +2,7 @@
 
 import { useAnalysisStore } from "@/store/analysisStore";
 import { palette } from "@/lib/colors";
+import { analyzeArea, getStoreCount, findNearbyTrdar } from "@/lib/api";
 import PanelNav from "./PanelNav";
 import CategoryPanel from "./CategoryPanel";
 import SalesPanel from "./SalesPanel";
@@ -19,12 +20,36 @@ export default function DataPanel() {
   const setRadius = useAnalysisStore((s) => s.setRadius);
   const analysisData = useAnalysisStore((s) => s.analysisData);
   const loading = useAnalysisStore((s) => s.loading);
+  const setLoading = useAnalysisStore((s) => s.setLoading);
   const setPanelOpen = useAnalysisStore((s) => s.setPanelOpen);
   const reset = useAnalysisStore((s) => s.reset);
+  const setAnalysisData = useAnalysisStore((s) => s.setAnalysisData);
+  const setStoreCountData = useAnalysisStore((s) => s.setStoreCountData);
+  const clickedLat = useAnalysisStore((s) => s.clickedLat);
+  const clickedLng = useAnalysisStore((s) => s.clickedLng);
 
   const trdarCount = analysisData?.trdar_count ?? 0;
 
   const RADIUS_OPTIONS = [100, 300, 500, 1000];
+
+  const handleRadiusChange = async (r: number) => {
+    setRadius(r);
+    if (clickedLat == null || clickedLng == null) return;
+    setLoading(true);
+    try {
+      const list = await findNearbyTrdar(clickedLat, clickedLng, Math.max(r, 500));
+      const [analysis, stores] = await Promise.all([
+        analyzeArea(clickedLat, clickedLng, r),
+        list.length > 0 ? getStoreCount(list[0].trdar_cd) : Promise.resolve(null),
+      ]);
+      setAnalysisData(analysis);
+      if (stores) setStoreCountData(stores);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -89,7 +114,7 @@ export default function DataPanel() {
           {RADIUS_OPTIONS.map((r) => (
             <button
               key={r}
-              onClick={() => setRadius(r)}
+              onClick={() => handleRadiusChange(r)}
               className="rounded-full px-2.5 py-1 text-xs font-medium transition-all"
               style={{
                 background: radius === r ? palette.orange : "transparent",

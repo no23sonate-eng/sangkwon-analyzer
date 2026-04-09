@@ -47,10 +47,10 @@ export default function FootTrafficPanel() {
 
   // 소비여력 비교 차트 데이터 (현재 구 + 인접 구 비교)
   const incomeChartData = Object.entries(DISTRICT_INCOME)
-    .map(([name, d]) => ({ name: name.replace("구", ""), income: d.income, rank: d.rank }))
+    .map(([name, d]) => ({ name, income: d.income, rank: d.rank }))
     .sort((a, b) => b.income - a.income);
 
-  const currentGuShort = clickedGu?.replace("구", "") ?? "";
+  const currentGuShort = clickedGu ?? "";
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -223,11 +223,11 @@ export default function FootTrafficPanel() {
             <section>
               <p className="mb-2 text-[12px] font-semibold text-gray-700">서울 25개 구 소득 비교</p>
               <div className="rounded-xl border border-gray-100 bg-white p-3">
-                <ResponsiveContainer width="100%" height={400}>
+                <ResponsiveContainer width="100%" height={620}>
                   <BarChart data={incomeChartData} layout="vertical" margin={{ left: 5, right: 10, top: 5, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
                     <XAxis type="number" domain={[300, 750]} tick={{ fill: "#94A3B8", fontSize: 10 }} tickFormatter={(v: number) => `${v}만`} />
-                    <YAxis type="category" dataKey="name" width={35} tick={{ fill: "#64748B", fontSize: 10 }} />
+                    <YAxis type="category" dataKey="name" width={50} tick={{ fill: "#64748B", fontSize: 10 }} interval={0} />
                     <Tooltip
                       formatter={(value) => [`${value}만원`, "월 가구소득"]}
                       contentStyle={{ background: "#fff", border: "none", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.08)", fontSize: 12 }}

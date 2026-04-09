@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
-  MapPin,
   Building2,
-  BarChart3,
-  Heart,
   TrendingUp,
   TrendingDown,
   ArrowRight,
@@ -28,6 +25,7 @@ import {
   LabelList,
 } from "recharts";
 import { chartTheme } from "@/lib/colors";
+import { supabase } from "@/lib/supabase";
 import {
   getDashboardStats,
   getTrendData,
@@ -143,18 +141,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ── 지표 카드 4개 ── */}
-        <div className="mt-8 grid grid-cols-4 gap-6">
-          <StatCard
-            icon={MapPin}
-            label="분석 가능 상권"
-            value={stats?.totalDistricts ?? 0}
-            suffix="개"
-            change="+12 전월 대비"
-            changeColor="text-emerald-500"
-            iconColor="#6366F1"
-            iconBg="#EEF2FF"
-          />
+        {/* ── 지표 카드 3개 ── */}
+        <div className="mt-8 grid grid-cols-3 gap-6">
           <StatCard
             icon={Building2}
             label="총 상가 데이터"
@@ -190,9 +178,6 @@ export default function DashboardPage() {
 
         {/* ── 3컬럼 카드 ── */}
         <ThreeColumnCards />
-
-        {/* ── 지도 프리뷰 ── */}
-        <MapPreview />
 
         {/* ── 상권 선택 태그 ── */}
         <div className="flex flex-wrap items-center gap-2">
@@ -679,27 +664,161 @@ const TREND_DUMMY: Record<string, Array<{ month: string; 개업: number; 폐업:
   ],
 };
 
-const TOP10_DUMMY = [
-  { rank: 1, name: "성수동", gu: "성동구", change: 24, lat: 37.5445, lng: 127.0560 },
-  { rank: 2, name: "을지로", gu: "중구", change: 18, lat: 37.5665, lng: 126.9918 },
-  { rank: 3, name: "망원동", gu: "마포구", change: 15, lat: 37.5556, lng: 126.9100 },
-  { rank: 4, name: "연남동", gu: "마포구", change: 12, lat: 37.5660, lng: 126.9233 },
-  { rank: 5, name: "이태원", gu: "용산구", change: 11, lat: 37.5346, lng: 126.9944 },
-  { rank: 6, name: "여의도", gu: "영등포구", change: 9, lat: 37.5218, lng: 126.9245 },
-  { rank: 7, name: "합정동", gu: "마포구", change: 8, lat: 37.5499, lng: 126.9145 },
-  { rank: 8, name: "삼청동", gu: "종로구", change: 7, lat: 37.5816, lng: 126.9816 },
-  { rank: 9, name: "가로수길", gu: "강남구", change: 5, lat: 37.5199, lng: 127.0230 },
-  { rank: 10, name: "압구정", gu: "강남구", change: 4, lat: 37.5270, lng: 127.0289 },
-];
+interface Top10Area {
+  rank: number;
+  name: string;
+  gu: string;
+  value: number;
+  lat: number;
+  lng: number;
+}
 
 function OpenCloseAndTop10() {
   const [trendPeriod, setTrendPeriod] = useState<"3m" | "6m" | "1y">("6m");
   const [sortBy, setSortBy] = useState("유동인구 증가율");
+  const [top10, setTop10] = useState<Top10Area[]>([]);
+  const [loading, setLoading] = useState(true);
   const trendData = TREND_DUMMY[trendPeriod];
 
   const totalOpen = trendData.reduce((s, d) => s + d.개업, 0);
   const totalClose = trendData.reduce((s, d) => s + d.폐업, 0);
   const net = totalOpen - totalClose;
+
+  // Fetch real data from Supabase
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchTop10() {
+      setLoading(true);
+      try {
+        // Fetch stores (per-area aggregation)
+        const { data: storesData } = await supabase
+          .from("stores")
+          .select("trdar_cd, store_count, open_count, close_count")
+          .limit(10000);
+
+        // Fetch foot traffic (per-area totals)
+        const { data: ftData } = await supabase
+          .from("foot_traffic")
+          .select("trdar_cd, total_ft")
+          .limit(10000);
+
+        // Fetch sales (per-area totals)
+        const { data: salesData } = await supabase
+          .from("sales")
+          .select("trdar_cd, monthly_sales")
+          .limit(10000);
+
+        // Fetch areas for names, lat, lng, gu
+        const { data: areasData } = await supabase
+          .from("areas")
+          .select("trdar_cd, trdar_nm, lat, lng, gu");
+
+        if (cancelled) return;
+
+        const areaMap = new Map(
+          (areasData ?? []).map((a) => [a.trdar_cd, a])
+        );
+
+        // Aggregate stores by area
+        const storesByArea = new Map<string, { store_count: number; open_count: number; close_count: number }>();
+        for (const r of storesData ?? []) {
+          const existing = storesByArea.get(r.trdar_cd) ?? { store_count: 0, open_count: 0, close_count: 0 };
+          existing.store_count += r.store_count ?? 0;
+          existing.open_count += r.open_count ?? 0;
+          existing.close_count += r.close_count ?? 0;
+          storesByArea.set(r.trdar_cd, existing);
+        }
+
+        // Aggregate foot traffic by area
+        const ftByArea = new Map<string, number>();
+        for (const r of ftData ?? []) {
+          ftByArea.set(r.trdar_cd, (ftByArea.get(r.trdar_cd) ?? 0) + (r.total_ft ?? 0));
+        }
+
+        // Aggregate sales by area
+        const salesByArea = new Map<string, number>();
+        for (const r of salesData ?? []) {
+          salesByArea.set(r.trdar_cd, (salesByArea.get(r.trdar_cd) ?? 0) + (r.monthly_sales ?? 0));
+        }
+
+        // Build per-area metrics
+        const allCodes = new Set([
+          ...storesByArea.keys(),
+          ...ftByArea.keys(),
+          ...salesByArea.keys(),
+        ]);
+
+        const areaMetrics: Array<{
+          trdar_cd: string;
+          name: string;
+          gu: string;
+          lat: number;
+          lng: number;
+          footTraffic: number;
+          openRate: number;
+          totalSales: number;
+        }> = [];
+
+        for (const code of allCodes) {
+          const area = areaMap.get(code);
+          if (!area) continue;
+
+          const stores = storesByArea.get(code) ?? { store_count: 0, open_count: 0, close_count: 0 };
+          const ft = ftByArea.get(code) ?? 0;
+          const sales = salesByArea.get(code) ?? 0;
+          const denom = stores.open_count + stores.close_count + stores.store_count;
+          const openRate = denom > 0 ? (stores.open_count / denom) * 100 : 0;
+
+          areaMetrics.push({
+            trdar_cd: code,
+            name: area.trdar_nm,
+            gu: area.gu ?? "",
+            lat: area.lat ?? 0,
+            lng: area.lng ?? 0,
+            footTraffic: ft,
+            openRate,
+            totalSales: sales,
+          });
+        }
+
+        // Sort by selected criteria
+        let sorted: typeof areaMetrics;
+        if (sortBy === "신규 개업률") {
+          sorted = [...areaMetrics].sort((a, b) => b.openRate - a.openRate);
+        } else if (sortBy === "매출 증가율") {
+          sorted = [...areaMetrics].sort((a, b) => b.totalSales - a.totalSales);
+        } else {
+          // 유동인구 증가율
+          sorted = [...areaMetrics].sort((a, b) => b.footTraffic - a.footTraffic);
+        }
+
+        const top = sorted.slice(0, 10).map((m, i) => ({
+          rank: i + 1,
+          name: m.name,
+          gu: m.gu,
+          value:
+            sortBy === "신규 개업률"
+              ? Math.round(m.openRate * 10) / 10
+              : sortBy === "매출 증가율"
+              ? Math.round(m.totalSales / 10000) // 만원 단위
+              : Math.round(m.footTraffic / 1000), // 천명 단위
+          lat: m.lat,
+          lng: m.lng,
+        }));
+
+        setTop10(top);
+      } catch {
+        // keep empty
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    fetchTop10();
+    return () => { cancelled = true; };
+  }, [sortBy]);
+
+  const valueSuffix =
+    sortBy === "신규 개업률" ? "%" : sortBy === "매출 증가율" ? "만" : "천명";
 
   return (
     <div className="mt-6 grid grid-cols-12 gap-6">
@@ -794,33 +913,43 @@ function OpenCloseAndTop10() {
         </div>
 
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: 340 }}>
-          {TOP10_DUMMY.map((area, idx) => (
-            <div
-              key={area.rank}
-              onClick={() => { window.location.href = `/map?lat=${area.lat}&lng=${area.lng}`; }}
-              className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-gray-50 ${
-                idx < TOP10_DUMMY.length - 1 ? "border-b border-gray-50" : ""
-              }`}
-            >
-              <span
-                className={`w-8 text-center text-[15px] font-bold ${
-                  area.rank <= 3 ? "text-primary-600" : "text-muted"
+          {loading ? (
+            <div className="flex h-full items-center justify-center text-[13px] text-muted">
+              로딩 중...
+            </div>
+          ) : top10.length === 0 ? (
+            <div className="flex h-full items-center justify-center text-[13px] text-muted">
+              데이터 없음
+            </div>
+          ) : (
+            top10.map((area, idx) => (
+              <div
+                key={area.rank}
+                onClick={() => { window.location.href = `/map?lat=${area.lat}&lng=${area.lng}`; }}
+                className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-gray-50 ${
+                  idx < top10.length - 1 ? "border-b border-gray-50" : ""
                 }`}
               >
-                {area.rank}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[14px] font-medium text-gray-800">{area.name}</p>
-                <p className="text-[11px] text-muted">{area.gu}</p>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-[14px] font-semibold text-emerald-500">
-                  +{area.change}%
+                <span
+                  className={`w-8 text-center text-[15px] font-bold ${
+                    area.rank <= 3 ? "text-primary-600" : "text-muted"
+                  }`}
+                >
+                  {area.rank}
                 </span>
-                <ArrowUpRight size={14} className="text-emerald-500" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[14px] font-medium text-gray-800">{area.name}</p>
+                  <p className="text-[11px] text-muted">{area.gu}</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[14px] font-semibold text-emerald-500">
+                    {area.value.toLocaleString()}{valueSuffix}
+                  </span>
+                  <ArrowUpRight size={14} className="text-emerald-500" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         <a
@@ -836,24 +965,6 @@ function OpenCloseAndTop10() {
 
 /* ── 3컬럼 카드: 업종별 개폐업 + 요일별 유동인구 + 바로가기 ── */
 
-const INDUSTRY_DATA = [
-  { name: "음식점", 개업: 680, 폐업: 520 },
-  { name: "카페", 개업: 420, 폐업: 310 },
-  { name: "소매", 개업: 350, 폐업: 280 },
-  { name: "서비스", 개업: 290, 폐업: 190 },
-  { name: "주점", 개업: 180, 폐업: 210 },
-];
-
-const WEEKDAY_DATA = [
-  { day: "월", value: 82400 },
-  { day: "화", value: 79100 },
-  { day: "수", value: 84300 },
-  { day: "목", value: 81200 },
-  { day: "금", value: 93800 },
-  { day: "토", value: 112400 },
-  { day: "일", value: 104700 },
-];
-
 const SHORTCUTS = [
   { name: "강남역", tag: "오피스 밀집", stat: "상가 2,100개", code: "gangnam", lat: 37.4979, lng: 127.0276 },
   { name: "홍대입구", tag: "MZ 핫플", stat: "카페 28%", code: "hongdae", lat: 37.5571, lng: 126.9233 },
@@ -863,24 +974,95 @@ const SHORTCUTS = [
   { name: "을지로", tag: "뉴트로", stat: "+18%", code: "euljiro", lat: 37.5665, lng: 126.9918 },
 ];
 
-const PEAK_VALUE = Math.max(...WEEKDAY_DATA.map((d) => d.value));
-
 function ThreeColumnCards() {
+  const [industryData, setIndustryData] = useState<Array<{ name: string; 개업: number; 폐업: number }>>([]);
+  const [weekdayData, setWeekdayData] = useState<Array<{ day: string; value: number }>>([]);
+
+  useEffect(() => {
+    // Fetch industry data from stores table
+    async function fetchIndustry() {
+      const { data } = await supabase
+        .from("stores")
+        .select("svc_nm, store_count, open_count, close_count")
+        .limit(10000);
+
+      if (!data) return;
+
+      const bySvc = new Map<string, { store_count: number; open_count: number; close_count: number }>();
+      for (const r of data) {
+        const nm = r.svc_nm ?? "기타";
+        const existing = bySvc.get(nm) ?? { store_count: 0, open_count: 0, close_count: 0 };
+        existing.store_count += r.store_count ?? 0;
+        existing.open_count += r.open_count ?? 0;
+        existing.close_count += r.close_count ?? 0;
+        bySvc.set(nm, existing);
+      }
+
+      const sorted = Array.from(bySvc.entries())
+        .map(([name, v]) => ({ name, 개업: v.open_count, 폐업: v.close_count, _total: v.store_count }))
+        .sort((a, b) => b._total - a._total)
+        .slice(0, 5)
+        .map(({ name, 개업, 폐업 }) => ({ name, 개업, 폐업 }));
+
+      setIndustryData(sorted);
+    }
+
+    // Fetch weekday foot traffic from foot_traffic table
+    async function fetchWeekday() {
+      const { data } = await supabase
+        .from("foot_traffic")
+        .select("mon, tue, wed, thu, fri, sat, sun")
+        .limit(10000);
+
+      if (!data) return;
+
+      let mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0, sun = 0;
+      for (const r of data) {
+        mon += r.mon ?? 0;
+        tue += r.tue ?? 0;
+        wed += r.wed ?? 0;
+        thu += r.thu ?? 0;
+        fri += r.fri ?? 0;
+        sat += r.sat ?? 0;
+        sun += r.sun ?? 0;
+      }
+
+      setWeekdayData([
+        { day: "월", value: mon },
+        { day: "화", value: tue },
+        { day: "수", value: wed },
+        { day: "목", value: thu },
+        { day: "금", value: fri },
+        { day: "토", value: sat },
+        { day: "일", value: sun },
+      ]);
+    }
+
+    fetchIndustry();
+    fetchWeekday();
+  }, []);
+
+  const peakValue = weekdayData.length > 0 ? Math.max(...weekdayData.map((d) => d.value)) : 0;
+
   return (
     <div className="mt-6 grid grid-cols-3 gap-6">
       {/* 카드 1: 업종별 개폐업 */}
       <div className="rounded-[20px] bg-white p-6 shadow-card">
         <h3 className="mb-4 text-[16px] font-semibold text-gray-900">업종별 개폐업</h3>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={INDUSTRY_DATA} layout="vertical" barGap={2} barSize={12}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-            <XAxis type="number" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis type="category" dataKey="name" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} width={48} />
-            <Tooltip {...tooltipStyle} />
-            <Bar dataKey="개업" fill="#818CF8" radius={[0, 4, 4, 0]} animationDuration={800} />
-            <Bar dataKey="폐업" fill="#FCA5A5" radius={[0, 4, 4, 0]} animationDuration={800} />
-          </BarChart>
-        </ResponsiveContainer>
+        {industryData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={industryData} layout="vertical" barGap={2} barSize={12}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+              <XAxis type="number" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} width={48} />
+              <Tooltip {...tooltipStyle} />
+              <Bar dataKey="개업" fill="#818CF8" radius={[0, 4, 4, 0]} animationDuration={800} />
+              <Bar dataKey="폐업" fill="#FCA5A5" radius={[0, 4, 4, 0]} animationDuration={800} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-[200px] items-center justify-center text-[13px] text-muted">로딩 중...</div>
+        )}
         <div className="mt-2 flex items-center gap-4 text-[11px] text-muted">
           <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-primary-400" />개업</span>
           <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full" style={{ background: "#FCA5A5" }} />폐업</span>
@@ -890,30 +1072,36 @@ function ThreeColumnCards() {
       {/* 카드 2: 요일별 유동인구 */}
       <div className="rounded-[20px] bg-white p-6 shadow-card">
         <h3 className="mb-4 text-[16px] font-semibold text-gray-900">요일별 유동인구</h3>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={WEEKDAY_DATA} barSize={28}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-            <XAxis dataKey="day" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis hide />
-            <Tooltip {...tooltipStyle} formatter={(v) => [`${Number(v).toLocaleString()}명`, "유동인구"]} />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]} animationDuration={800}>
-              {WEEKDAY_DATA.map((entry, i) => (
-                <Cell
-                  key={i}
-                  fill={entry.day === "토" || entry.day === "일" ? "#6366F1" : "#A5B4FC"}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        {weekdayData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={weekdayData} barSize={28}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+              <XAxis dataKey="day" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis hide />
+              <Tooltip {...tooltipStyle} formatter={(v) => [`${Number(v).toLocaleString()}명`, "유동인구"]} />
+              <Bar dataKey="value" radius={[6, 6, 0, 0]} animationDuration={800}>
+                {weekdayData.map((entry, i) => (
+                  <Cell
+                    key={i}
+                    fill={entry.day === "토" || entry.day === "일" ? "#6366F1" : "#A5B4FC"}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-[200px] items-center justify-center text-[13px] text-muted">로딩 중...</div>
+        )}
         {/* PEAK 뱃지 — 가장 높은 요일 위 */}
-        <div className="mt-1 flex justify-center text-[11px]">
-          <span className="text-muted">
-            피크: <span className="font-semibold text-primary-600">
-              {WEEKDAY_DATA.find((d) => d.value === PEAK_VALUE)?.day}요일 {(PEAK_VALUE / 10000).toFixed(1)}만명
+        {weekdayData.length > 0 && (
+          <div className="mt-1 flex justify-center text-[11px]">
+            <span className="text-muted">
+              피크: <span className="font-semibold text-primary-600">
+                {weekdayData.find((d) => d.value === peakValue)?.day}요일 {(peakValue / 10000).toFixed(1)}만명
+              </span>
             </span>
-          </span>
-        </div>
+          </div>
+        )}
       </div>
 
       {/* 카드 3: 주요 상권 바로가기 */}
@@ -936,146 +1124,6 @@ function ThreeColumnCards() {
       </div>
     </div>
   );
-}
-
-/* ── 지도 프리뷰 ── */
-
-const PREVIEW_MARKERS = [
-  { name: "강남역", lat: 37.4979, lng: 127.0276, stat: "상가 2,100개", code: "gangnam" },
-  { name: "홍대입구", lat: 37.5571, lng: 126.9233, stat: "카페 밀집", code: "hongdae" },
-  { name: "성수동", lat: 37.5445, lng: 127.0560, stat: "유동인구 +24%", code: "seongsu" },
-  { name: "이태원", lat: 37.5346, lng: 126.9944, stat: "F&B 특화", code: "itaewon" },
-  { name: "여의도", lat: 37.5218, lng: 126.9245, stat: "직장인 밀집", code: "yeouido" },
-  { name: "을지로", lat: 37.5665, lng: 126.9918, stat: "뉴트로 +18%", code: "euljiro" },
-  { name: "망원동", lat: 37.5556, lng: 126.9100, stat: "소규모 창업", code: "mangwon" },
-  { name: "연남동", lat: 37.5660, lng: 126.9233, stat: "카페 밀집", code: "yeonnam" },
-  { name: "잠실", lat: 37.5133, lng: 127.1001, stat: "대형 상권", code: "jamsil" },
-  { name: "명동", lat: 37.5607, lng: 126.9857, stat: "관광 특구", code: "myeongdong" },
-  { name: "신촌", lat: 37.5554, lng: 126.9368, stat: "대학가", code: "sinchon" },
-  { name: "건대입구", lat: 37.5404, lng: 127.0693, stat: "유흥 밀집", code: "konkuk" },
-];
-
-function MapPreview() {
-  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
-
-  return (
-    <div className="relative mt-6 h-[400px] overflow-hidden rounded-[20px] bg-white shadow-card">
-      {/* MapLibre 지도 (인터랙션 제한) */}
-      <MapPreviewInner
-        markers={PREVIEW_MARKERS}
-        hoveredMarker={hoveredMarker}
-        setHoveredMarker={setHoveredMarker}
-      />
-
-      {/* 오버레이 버튼 */}
-      <div className="absolute right-4 top-4 z-10">
-        <a
-          href="/map"
-          className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-[13px] font-semibold text-gray-700 shadow-md backdrop-blur transition-all hover:bg-white hover:shadow-lg"
-        >
-          전체 지도에서 분석하기
-          <ArrowRight size={14} />
-        </a>
-      </div>
-    </div>
-  );
-}
-
-/* 지도 프리뷰 내부 — dynamic import 필요 없이 직접 렌더 */
-function MapPreviewInner({
-  markers,
-  hoveredMarker,
-  setHoveredMarker,
-}: {
-  markers: typeof PREVIEW_MARKERS;
-  hoveredMarker: string | null;
-  setHoveredMarker: (v: string | null) => void;
-}) {
-  const mapRef = useRef<maplibregl.Map | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
-
-    import("maplibre-gl").then((maplibregl) => {
-      const map = new maplibregl.default.Map({
-        container: containerRef.current!,
-        style: {
-          version: 8,
-          sources: {
-            positron: {
-              type: "raster",
-              tiles: ["https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"],
-              tileSize: 256,
-              attribution: "© CartoDB",
-            },
-          },
-          layers: [{ id: "positron", type: "raster", source: "positron" }],
-        },
-        center: [126.978, 37.5665],
-        zoom: 10.8,
-        interactive: false, // 드래그/줌 비활성
-        attributionControl: false,
-      });
-
-      // 마커 추가
-      map.on("load", () => {
-        markers.forEach((m) => {
-          const el = document.createElement("div");
-          el.style.cssText = `
-            width: 14px; height: 14px; border-radius: 50%;
-            background: #6366F1; border: 2.5px solid white;
-            box-shadow: 0 0 8px rgba(99,102,241,0.4);
-            cursor: pointer; transition: transform 0.15s;
-          `;
-
-          // 호버/클릭 이벤트
-          el.addEventListener("mouseenter", () => {
-            el.style.transform = "scale(1.5)";
-            setHoveredMarker(m.code);
-          });
-          el.addEventListener("mouseleave", () => {
-            el.style.transform = "scale(1)";
-            setHoveredMarker(null);
-          });
-          el.addEventListener("click", () => {
-            window.location.href = `/map?lat=${m.lat}&lng=${m.lng}`;
-          });
-
-          // 툴팁
-          const popup = new maplibregl.default.Popup({
-            offset: 12,
-            closeButton: false,
-            closeOnClick: false,
-            className: "preview-popup",
-          }).setHTML(
-            `<div style="font-family:Pretendard,sans-serif;padding:4px 0">
-              <div style="font-size:13px;font-weight:600;color:#1E293B">${m.name}</div>
-              <div style="font-size:11px;color:#64748B;margin-top:2px">${m.stat}</div>
-            </div>`
-          );
-
-          const marker = new maplibregl.default.Marker({ element: el })
-            .setLngLat([m.lng, m.lat])
-            .setPopup(popup)
-            .addTo(map);
-
-          el.addEventListener("mouseenter", () => marker.togglePopup());
-          el.addEventListener("mouseleave", () => marker.togglePopup());
-        });
-      });
-
-      mapRef.current = map;
-    });
-
-    return () => {
-      mapRef.current?.remove();
-      mapRef.current = null;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return <div ref={containerRef} className="h-full w-full" />;
 }
 
 /* ── StatCard with CountUp ── */
