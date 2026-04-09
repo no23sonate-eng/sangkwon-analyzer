@@ -158,7 +158,13 @@ export default function BrandSynergy() {
       const supplyRatio = Math.round((storeCount / totalStores) * 100);
 
       // 수요-공급 갭 (수요 높고 공급 낮을수록 점수 높음)
-      const gapScore = Math.max(0, Math.min(100, Math.round(demandScore * 1.2 - supplyRatio * 2 + 30)));
+      // 수요 가중 1.2: 수요가 공급보다 사업성에 더 큰 영향
+      // 공급 패널티 2.0: 공급 과잉은 리스크 증폭
+      // 기본 오프셋 30: 수요·공급 모두 0일 때 중립(30점) 유지
+      const GAP_DEMAND_W = 1.2;
+      const GAP_SUPPLY_W = 2.0;
+      const GAP_OFFSET = 30;
+      const gapScore = Math.max(0, Math.min(100, Math.round(demandScore * GAP_DEMAND_W - supplyRatio * GAP_SUPPLY_W + GAP_OFFSET)));
 
       const avgPerStoreSales = perStoreCount > 0 ? totalPerStoreSales / perStoreCount : 0;
       const totalOC = openCount + closeCount;

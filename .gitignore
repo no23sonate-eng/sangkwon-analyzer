@@ -1,9 +1,14 @@
 .env
+.env.local
 .DS_Store
 .next/
 node_modules/
 __pycache__/
 *.pyc
-상권데이터/rent_estimates_all.json
-상권데이터/rent_estimates_all.json.gz
-상권데이터/rent_market.db
+
+# 대용량 데이터 (Supabase로 이관 완료)
+상권데이터/*.json
+상권데이터/*.json.gz
+상권데이터/*.db
+상권데이터/*.csv
+서울시 상권분석서비스*

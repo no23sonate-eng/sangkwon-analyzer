@@ -1,10 +1,37 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Plus, X, TrendingUp, TrendingDown } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, Plus, X, TrendingUp, MapPin } from "lucide-react";
+import MapGL, { Marker, Source, Layer, NavigationControl, type MapRef } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { geocode } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 
+/* ── Vworld 타일 스타일 ── */
+const MAP_STYLE = {
+  version: 8 as const,
+  sources: {
+    vworld: {
+      type: "raster" as const,
+      tiles: ["https://xdworld.vworld.kr/2d/Base/service/{z}/{x}/{y}.png"],
+      tileSize: 256,
+      attribution: "\u00a9 Vworld",
+      maxzoom: 19,
+    },
+  },
+  layers: [
+    { id: "vworld-tiles", type: "raster" as const, source: "vworld", minzoom: 0, maxzoom: 19 },
+  ],
+};
+
+/* ── 색상 테마 ── */
+const LOCATION_COLORS = [
+  { bg: "bg-indigo-600", text: "text-indigo-600", light: "bg-indigo-50", ring: "ring-indigo-200", fill: "rgba(99,102,241,0.15)", stroke: "rgba(99,102,241,0.6)", bar: "bg-indigo-500" },
+  { bg: "bg-emerald-600", text: "text-emerald-600", light: "bg-emerald-50", ring: "ring-emerald-200", fill: "rgba(16,185,129,0.15)", stroke: "rgba(16,185,129,0.6)", bar: "bg-emerald-500" },
+  { bg: "bg-amber-600", text: "text-amber-600", light: "bg-amber-50", ring: "ring-amber-200", fill: "rgba(245,158,11,0.15)", stroke: "rgba(245,158,11,0.6)", bar: "bg-amber-500" },
+];
+
+/* ── 유틸 ── */
 function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371000;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -13,6 +40,22 @@ function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): num
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+function makeCircle(lat: number, lng: number, radiusM: number, n = 64) {
+  const coords: [number, number][] = [];
+  for (let i = 0; i <= n; i++) {
+    const a = (2 * Math.PI * i) / n;
+    const dLat = (radiusM / 111320) * Math.cos(a);
+    const dLng = (radiusM / (111320 * Math.cos((lat * Math.PI) / 180))) * Math.sin(a);
+    coords.push([lng + dLng, lat + dLat]);
+  }
+  return {
+    type: "Feature" as const,
+    properties: {},
+    geometry: { type: "Polygon" as const, coordinates: [coords] },
+  };
+}
+
+/* ── 타입 ── */
 interface LocationData {
   address: string;
   lat: number;
@@ -30,15 +73,15 @@ interface LocationData {
   rentPerPyeong: number;
 }
 
+/* ── 분석 함수 (기존 유지) ── */
 async function analyzeLocation(address: string): Promise<LocationData | null> {
   try {
     const geo = await geocode(address);
     if (!geo) return null;
     const { lat, lng } = geo;
     const radius = 500;
-    const deg = radius / 111000 * 1.5;
+    const deg = (radius / 111000) * 1.5;
 
-    // 근처 상권 찾기
     const { data: areas } = await supabase
       .from("areas").select("trdar_cd, trdar_nm, gu, lat, lng")
       .gte("lat", lat - deg).lte("lat", lat + deg)
@@ -54,14 +97,12 @@ async function analyzeLocation(address: string): Promise<LocationData | null> {
     const codes = nearby.map((a) => a.trdar_cd);
     const gu = nearby[0].gu ?? "";
 
-    // 병렬 쿼리
     const [salesRes, ftRes, storeRes] = await Promise.all([
       supabase.from("sales").select("svc_nm, monthly_sales").in("trdar_cd", codes),
       supabase.from("foot_traffic").select("total_ft, time_00_06, time_06_11, time_11_14, time_14_17, time_17_21, time_21_24, age_10, age_20, age_30, age_40, age_50, age_60").in("trdar_cd", codes),
       supabase.from("stores").select("store_count, open_count, close_count, svc_nm").in("trdar_cd", codes),
     ]);
 
-    // 매출
     let totalSales = 0;
     const salesBySvc = new Map<string, number>();
     for (const r of salesRes.data ?? []) {
@@ -70,7 +111,6 @@ async function analyzeLocation(address: string): Promise<LocationData | null> {
     }
     const topIndustry = Array.from(salesBySvc.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "-";
 
-    // 유동인구
     let totalFt = 0;
     const timeSlots: Record<string, number> = {};
     const ageBuckets: Record<string, number> = {};
@@ -84,7 +124,6 @@ async function analyzeLocation(address: string): Promise<LocationData | null> {
     const peakTime = Object.entries(timeSlots).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "-";
     const dominantAge = Object.entries(ageBuckets).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "-";
 
-    // 점포
     let stores = 0, openCount = 0, closeCount = 0;
     for (const r of storeRes.data ?? []) {
       stores += r.store_count ?? 0;
@@ -92,35 +131,65 @@ async function analyzeLocation(address: string): Promise<LocationData | null> {
       closeCount += r.close_count ?? 0;
     }
 
-    // 임대료
     const rentRes = await fetch(`/api/rent-nearby?lat=${lat}&lng=${lng}&radius=${radius}&target_pyeong=30`);
     const rentData = await rentRes.json();
     const rentPerPyeong = rentData?.stats?.["1층"]?.avg_pyeong ?? 0;
 
     return {
-      address: geo.address,
-      lat, lng,
-      areaName: nearby[0].trdar_nm,
-      gu,
-      stores,
-      totalSales,
-      footTraffic: totalFt,
-      openCount,
-      closeCount,
-      topIndustry,
-      peakTime,
-      dominantAge,
-      rentPerPyeong,
+      address: geo.address, lat, lng, areaName: nearby[0].trdar_nm, gu,
+      stores, totalSales, footTraffic: totalFt, openCount, closeCount,
+      topIndustry, peakTime, dominantAge, rentPerPyeong,
     };
   } catch {
     return null;
   }
 }
 
+/* ── 비교 바 컴포넌트 ── */
+function CompareBar({ label, values, format, colors }: {
+  label: string;
+  values: (number | null)[];
+  format: (v: number) => string;
+  colors: typeof LOCATION_COLORS;
+}) {
+  const nums = values.filter((v): v is number => v !== null && v > 0);
+  const maxVal = Math.max(...nums, 1);
+
+  return (
+    <div className="py-3 border-b border-gray-50 last:border-0">
+      <p className="text-[11px] font-medium text-gray-400 mb-2">{label}</p>
+      <div className="space-y-1.5">
+        {values.map((v, i) => {
+          if (v === null) return null;
+          const pct = maxVal > 0 ? (v / maxVal) * 100 : 0;
+          const isBest = v === Math.max(...nums) && nums.length >= 2;
+          return (
+            <div key={i} className="flex items-center gap-2">
+              <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ${colors[i].bg}`}>
+                {String.fromCharCode(65 + i)}
+              </span>
+              <div className="flex-1 h-5 bg-gray-100 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-500 ${colors[i].bar}`} style={{ width: `${Math.max(pct, 2)}%` }} />
+              </div>
+              <span className={`text-[12px] tabular-nums w-16 text-right ${isBest ? `font-bold ${colors[i].text}` : "text-gray-600"}`}>
+                {format(v)}
+                {isBest && <span className="text-[9px] ml-0.5">best</span>}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ── 메인 페이지 ── */
 export default function ComparePage() {
+  const mapRef = useRef<MapRef>(null);
   const [locations, setLocations] = useState<(LocationData | null)[]>([null, null]);
   const [inputs, setInputs] = useState(["", ""]);
   const [loading, setLoading] = useState([false, false]);
+  const [viewState, setViewState] = useState({ latitude: 37.5665, longitude: 126.978, zoom: 11 });
 
   const handleSearch = async (index: number) => {
     if (!inputs[index]) return;
@@ -152,125 +221,269 @@ export default function ComparePage() {
   };
 
   const filledLocations = locations.filter((l): l is LocationData => l !== null);
+  const filledKey = filledLocations.map((l) => `${l.lat},${l.lng}`).join("|");
 
-  // 비교 지표별 최고값 (하이라이트용)
-  const maxSales = Math.max(...filledLocations.map((l) => l.totalSales), 0);
-  const maxFt = Math.max(...filledLocations.map((l) => l.footTraffic), 0);
-  const maxStores = Math.max(...filledLocations.map((l) => l.stores), 0);
+  /* 지도 자동 피팅 */
+  useEffect(() => {
+    if (filledLocations.length === 0 || !mapRef.current) return;
+
+    if (filledLocations.length === 1) {
+      setViewState({ latitude: filledLocations[0].lat, longitude: filledLocations[0].lng, zoom: 14 });
+      return;
+    }
+
+    const lats = filledLocations.map((l) => l.lat);
+    const lngs = filledLocations.map((l) => l.lng);
+    const padding = 0.008; // ~800m buffer
+    const minLat = Math.min(...lats) - padding;
+    const maxLat = Math.max(...lats) + padding;
+    const minLng = Math.min(...lngs) - padding;
+    const maxLng = Math.max(...lngs) + padding;
+
+    try {
+      mapRef.current.fitBounds(
+        [[minLng, minLat], [maxLng, maxLat]],
+        { padding: 60, duration: 800 }
+      );
+    } catch {
+      setViewState({
+        latitude: (minLat + maxLat) / 2,
+        longitude: (minLng + maxLng) / 2,
+        zoom: 13,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filledKey]);
+
+  /* 원형 GeoJSON */
+  const circleFeatures = filledLocations.map((loc) => {
+    const originalIndex = locations.findIndex((l) => l === loc);
+    return {
+      feature: makeCircle(loc.lat, loc.lng, 500),
+      color: LOCATION_COLORS[originalIndex],
+      id: `circle-${originalIndex}`,
+    };
+  });
 
   return (
-    <div className="h-full overflow-y-auto p-8">
-      <div className="space-y-6 animate-fade-in">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">입지 비교</h1>
-          <p className="mt-1 text-sm text-muted">2~3개 주소를 비교하여 최적의 입지를 찾으세요</p>
+    <div className="relative flex h-full overflow-hidden">
+      {/* ── 좌측 패널 ── */}
+      <div className="relative z-10 flex h-full w-[400px] shrink-0 flex-col border-r border-gray-200 bg-white">
+        {/* 헤더 */}
+        <div className="border-b border-gray-100 px-5 py-4">
+          <h1 className="text-[17px] font-semibold text-gray-900">입지 비교</h1>
+          <p className="mt-0.5 text-[12px] text-gray-400">2~3개 위치를 비교하여 최적 입지를 찾으세요</p>
         </div>
 
         {/* 검색 입력 */}
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${locations.length}, 1fr)` }}>
+        <div className="space-y-3 px-5 py-4 border-b border-gray-100">
           {locations.map((loc, i) => (
-            <div key={i} className="relative rounded-[20px] bg-white p-5 shadow-card">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-600 text-[13px] font-bold text-white">
+            <div key={i} className={`rounded-xl border p-3 transition-all ${loc ? `${LOCATION_COLORS[i].light} border-transparent ring-1 ${LOCATION_COLORS[i].ring}` : "border-gray-200"}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold text-white ${LOCATION_COLORS[i].bg}`}>
                   {String.fromCharCode(65 + i)}
                 </span>
-                <span className="text-[14px] font-semibold text-gray-800">
+                <span className="text-[13px] font-semibold text-gray-700">
                   {loc ? loc.areaName : `위치 ${String.fromCharCode(65 + i)}`}
                 </span>
                 {locations.length > 2 && (
                   <button onClick={() => removeSlot(i)} className="ml-auto text-gray-400 hover:text-red-500">
-                    <X size={16} />
+                    <X size={14} />
                   </button>
                 )}
               </div>
               <div className="flex gap-2">
-                <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-200 px-3 py-2">
-                  <Search size={14} className="text-gray-400" />
+                <div className="flex flex-1 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5">
+                  <Search size={13} className="text-gray-400" />
                   <input
                     value={inputs[i]}
                     onChange={(e) => { const n = [...inputs]; n[i] = e.target.value; setInputs(n); }}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch(i)}
                     placeholder="주소, 지역명 검색"
-                    className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-gray-400"
+                    className="flex-1 bg-transparent text-[12px] outline-none placeholder:text-gray-400"
                   />
                 </div>
                 <button onClick={() => handleSearch(i)} disabled={loading[i]}
-                  className="rounded-xl bg-primary-600 px-4 py-2 text-[12px] font-semibold text-white hover:bg-primary-700 disabled:opacity-50">
-                  {loading[i] ? "분석중..." : "분석"}
+                  className="rounded-lg bg-primary-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-primary-700 disabled:opacity-50 whitespace-nowrap">
+                  {loading[i] ? "..." : "분석"}
                 </button>
               </div>
               {loc && (
-                <p className="mt-2 text-[11px] text-muted">{loc.address} · {loc.gu}</p>
+                <p className="mt-1.5 text-[10px] text-gray-400 flex items-center gap-1">
+                  <MapPin size={10} /> {loc.address} · {loc.gu}
+                </p>
               )}
             </div>
           ))}
           {locations.length < 3 && (
             <button onClick={addSlot}
-              className="flex items-center justify-center gap-2 rounded-[20px] border-2 border-dashed border-gray-200 p-5 text-[13px] text-muted hover:border-primary-300 hover:text-primary-600">
-              <Plus size={16} /> 비교 추가
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 py-2.5 text-[12px] text-gray-400 hover:border-primary-300 hover:text-primary-600 transition-colors">
+              <Plus size={14} /> 비교 추가 (최대 3곳)
             </button>
           )}
         </div>
 
-        {/* 비교 테이블 */}
-        {filledLocations.length >= 2 && (
-          <div className="rounded-[20px] bg-white p-6 shadow-card">
-            <h2 className="mb-4 text-[16px] font-semibold text-gray-900">비교 결과</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-[13px]">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="px-4 py-3 text-left font-medium text-muted w-32">지표</th>
-                    {locations.map((loc, i) => (
-                      <th key={i} className="px-4 py-3 text-center font-semibold text-gray-800">
-                        {loc ? (
-                          <div>
-                            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-[11px] font-bold text-primary-600 mr-1">
-                              {String.fromCharCode(65 + i)}
-                            </span>
-                            {loc.areaName}
-                          </div>
-                        ) : "-"}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { label: "점포 수", key: "stores", format: (v: number) => `${v.toLocaleString()}개`, best: maxStores },
-                    { label: "분기 매출", key: "totalSales", format: (v: number) => `${(v / 1e8).toFixed(0)}억`, best: maxSales },
-                    { label: "유동인구", key: "footTraffic", format: (v: number) => `${(v / 10000).toFixed(1)}만`, best: maxFt },
-                    { label: "개업/폐업", key: "openClose", format: (_: number, l: LocationData) => `${l.openCount}/${l.closeCount}`, best: -1 },
-                    { label: "순증감", key: "netOpen", format: (_: number, l: LocationData) => { const n = l.openCount - l.closeCount; return n >= 0 ? `+${n}` : `${n}`; }, best: -1 },
-                    { label: "주요 업종", key: "topIndustry", format: (_: number, l: LocationData) => l.topIndustry, best: -1 },
-                    { label: "피크 시간", key: "peakTime", format: (_: number, l: LocationData) => l.peakTime, best: -1 },
-                    { label: "주요 연령", key: "dominantAge", format: (_: number, l: LocationData) => l.dominantAge, best: -1 },
-                    { label: "1층 임대료", key: "rentPerPyeong", format: (v: number) => v > 0 ? `${v}만/평` : "-", best: -1 },
-                  ].map((row) => (
-                    <tr key={row.label} className="border-b border-gray-50 hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-gray-600">{row.label}</td>
-                      {locations.map((loc, i) => {
-                        if (!loc) return <td key={i} className="px-4 py-3 text-center text-muted">-</td>;
-                        const val = (loc as unknown as Record<string, unknown>)[row.key] as number;
-                        const isBest = row.best > 0 && val === row.best && filledLocations.length >= 2;
-                        return (
-                          <td key={i} className={`px-4 py-3 text-center ${isBest ? "font-bold text-primary-600" : "text-gray-800"}`}>
-                            {row.format(val, loc)}
-                            {isBest && <span className="ml-1 text-[9px] text-primary-500">best</span>}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {/* 비교 결과 */}
+        <div className="flex-1 overflow-y-auto px-5 py-4">
+          {filledLocations.length >= 2 ? (
+            <div className="space-y-1">
+              <h2 className="text-[13px] font-semibold text-gray-800 mb-3 flex items-center gap-1.5">
+                <TrendingUp size={14} className="text-primary-600" />
+                비교 결과
+              </h2>
 
-        {filledLocations.length < 2 && (
-          <div className="flex flex-col items-center gap-3 rounded-[20px] bg-gray-50 py-16">
-            <p className="text-[14px] text-muted">두 곳 이상의 주소를 입력하면 비교 분석이 시작됩니다</p>
+              <CompareBar
+                label="점포 수"
+                values={locations.map((l) => l?.stores ?? null)}
+                format={(v) => `${v.toLocaleString()}개`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="분기 매출"
+                values={locations.map((l) => l?.totalSales ?? null)}
+                format={(v) => `${(v / 1e8).toFixed(0)}억`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="유동인구"
+                values={locations.map((l) => l?.footTraffic ?? null)}
+                format={(v) => `${(v / 10000).toFixed(1)}만`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="개업 수"
+                values={locations.map((l) => l?.openCount ?? null)}
+                format={(v) => `${v}개`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="폐업 수"
+                values={locations.map((l) => l?.closeCount ?? null)}
+                format={(v) => `${v}개`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="1층 임대료"
+                values={locations.map((l) => l?.rentPerPyeong ?? null)}
+                format={(v) => v > 0 ? `${v}만/평` : "-"}
+                colors={LOCATION_COLORS}
+              />
+
+              {/* 텍스트 지표 카드 */}
+              <div className="pt-3 mt-2 border-t border-gray-100">
+                <p className="text-[11px] font-medium text-gray-400 mb-2">업종 / 시간 / 연령</p>
+                <div className="space-y-2">
+                  {locations.map((loc, i) => {
+                    if (!loc) return null;
+                    return (
+                      <div key={i} className={`rounded-lg p-3 ${LOCATION_COLORS[i].light}`}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ${LOCATION_COLORS[i].bg}`}>
+                            {String.fromCharCode(65 + i)}
+                          </span>
+                          <span className="text-[12px] font-semibold text-gray-700">{loc.areaName}</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-[11px]">
+                          <div>
+                            <p className="text-gray-400">주요 업종</p>
+                            <p className="font-medium text-gray-700 mt-0.5">{loc.topIndustry}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">피크 시간</p>
+                            <p className="font-medium text-gray-700 mt-0.5">{loc.peakTime}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">주요 연령</p>
+                            <p className="font-medium text-gray-700 mt-0.5">{loc.dominantAge}</p>
+                          </div>
+                        </div>
+                        <div className="mt-1.5 text-[11px]">
+                          <span className="text-gray-400">순증감 </span>
+                          <span className={`font-semibold ${loc.openCount - loc.closeCount >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+                            {loc.openCount - loc.closeCount >= 0 ? "+" : ""}{loc.openCount - loc.closeCount}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                <MapPin size={24} className="text-gray-300" />
+              </div>
+              <p className="text-[13px] text-gray-400">두 곳 이상의 주소를 입력하면</p>
+              <p className="text-[13px] text-gray-400">비교 분석이 시작됩니다</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── 우측 지도 ── */}
+      <div className="relative flex-1">
+        <MapGL
+          ref={mapRef}
+          {...viewState}
+          onMove={(evt) => setViewState(evt.viewState)}
+          mapStyle={MAP_STYLE}
+          style={{ width: "100%", height: "100%" }}
+          attributionControl={false}
+        >
+          <NavigationControl position="bottom-right" />
+
+          {/* 반경 원 */}
+          {circleFeatures.map(({ feature, color, id }) => (
+            <Source key={id} id={id} type="geojson" data={feature}>
+              <Layer
+                id={`${id}-fill`}
+                type="fill"
+                paint={{ "fill-color": color.fill, "fill-opacity": 0.5 }}
+              />
+              <Layer
+                id={`${id}-stroke`}
+                type="line"
+                paint={{ "line-color": color.stroke, "line-width": 2, "line-dasharray": [3, 2] }}
+              />
+            </Source>
+          ))}
+
+          {/* 마커 */}
+          {locations.map((loc, i) => {
+            if (!loc) return null;
+            return (
+              <Marker key={`marker-${i}`} latitude={loc.lat} longitude={loc.lng} anchor="center">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-bold text-white shadow-lg border-2 border-white ${LOCATION_COLORS[i].bg}`}
+                  >
+                    {String.fromCharCode(65 + i)}
+                  </div>
+                  <div className="mt-1 rounded-md bg-white/90 px-2 py-0.5 text-[10px] font-medium text-gray-700 shadow-sm backdrop-blur-sm">
+                    {loc.areaName}
+                  </div>
+                </div>
+              </Marker>
+            );
+          })}
+        </MapGL>
+
+        {/* 지도 범례 */}
+        {filledLocations.length > 0 && (
+          <div className="absolute top-4 right-4 z-10 rounded-xl bg-white/90 px-4 py-3 shadow-md backdrop-blur-sm">
+            <p className="text-[11px] font-semibold text-gray-500 mb-1.5">비교 위치</p>
+            {locations.map((loc, i) => {
+              if (!loc) return null;
+              return (
+                <div key={i} className="flex items-center gap-2 py-0.5">
+                  <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white ${LOCATION_COLORS[i].bg}`}>
+                    {String.fromCharCode(65 + i)}
+                  </span>
+                  <span className="text-[11px] text-gray-600">{loc.areaName}</span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
