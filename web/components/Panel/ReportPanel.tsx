@@ -86,6 +86,23 @@ function generateReport(data: NonNullable<ReturnType<typeof useAnalysisStore.get
     lines.push("");
   }
 
+  // Rent info
+  const ri = data.rent_info;
+  if (ri && "1층_평" in ri) {
+    lines.push("## 임대 시세");
+    lines.push(`- 위치: **${(ri as {gu?: string}).gu ?? ""}**`);
+    lines.push(`- 1층: **${(ri as Record<string, number>)["1층_평"]}만원/평/월**`);
+    lines.push(`- 2층 이상: **${(ri as Record<string, number>)["2층이상_평"]}만원/평/월**`);
+    lines.push(`- 지하: **${(ri as Record<string, number>)["지하_평"]}만원/평/월**`);
+    lines.push("");
+  }
+
+  // 사업수지 안내
+  lines.push("## 사업수지 분석");
+  lines.push("- 기회분석 탭에서 **사업수지 계산기**를 이용하면 매입가·공사비·대출 조건별 상세 투자 수익률을 시뮬레이션할 수 있습니다.");
+  lines.push("- Cap Rate, 레버리지 수익률, DSCR, Cash-on-Cash, 10년 현금흐름 추이를 확인하세요.");
+  lines.push("");
+
   return lines.join("\n");
 }
 
