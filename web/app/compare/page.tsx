@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Plus, X, TrendingUp, MapPin } from "lucide-react";
+import { Search, Plus, X, TrendingUp, MapPin, Map as MapIcon } from "lucide-react";
 import MapGL, { Marker, Source, Layer, NavigationControl, type MapRef } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { geocode } from "@/lib/api";
@@ -271,8 +271,19 @@ export default function ComparePage() {
       <div className="relative z-10 flex h-full w-[400px] shrink-0 flex-col border-r border-gray-200 bg-white">
         {/* 헤더 */}
         <div className="border-b border-gray-100 px-5 py-4">
-          <h1 className="text-[17px] font-semibold text-gray-900">입지 비교</h1>
-          <p className="mt-0.5 text-[12px] text-gray-400">2~3개 위치를 비교하여 최적 입지를 찾으세요</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-[17px] font-semibold text-gray-900">입지 비교</h1>
+              <p className="mt-0.5 text-[12px] text-gray-400">2~3개 위치를 비교하여 최적 입지를 찾으세요</p>
+            </div>
+            <button
+              onClick={() => window.open("/map", "_blank")}
+              className="flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-200"
+            >
+              <MapIcon size={12} className="text-primary-600" />
+              지도 분석
+            </button>
+          </div>
         </div>
 
         {/* 검색 입력 */}

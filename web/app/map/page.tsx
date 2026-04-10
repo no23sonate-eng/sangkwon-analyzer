@@ -7,10 +7,8 @@ import {
   Search,
   FileText,
   Layers,
-  Circle,
-  Square,
-  Pentagon,
   X,
+  GitCompareArrows,
 } from "lucide-react";
 import DataPanel from "@/components/Panel/DataPanel";
 import ReportModal from "@/components/Modal/ReportModal";
@@ -253,8 +251,14 @@ export default function MapPage() {
       {/* ── 좌측 분석 패널 ── */}
       {panelOpen && <DataPanel />}
 
-      {/* ── 좌측 상단: 그리기 도구 ── */}
-      <DrawTools />
+      {/* ── 좌측 상단: 입지 비교 새 탭 버튼 ── */}
+      <button
+        onClick={() => window.open("/compare", "_blank")}
+        className="absolute left-4 top-20 z-10 flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-[12px] font-semibold text-gray-700 shadow-md hover:bg-gray-50 active:scale-95"
+      >
+        <GitCompareArrows size={14} className="text-primary-600" />
+        입지 비교
+      </button>
 
       {/* ── 우측 하단 컨트롤 ── */}
       <div className="absolute bottom-6 right-4 z-10 flex flex-col gap-2">
@@ -332,46 +336,3 @@ export default function MapPage() {
   );
 }
 
-/* ── 그리기 도구 UI ── */
-function DrawTools() {
-  const drawMode = useAnalysisStore((s) => s.drawMode);
-  const setDrawMode = useAnalysisStore((s) => s.setDrawMode);
-
-  const tools = [
-    { icon: Circle, label: "원형 영역", mode: "circle" as const },
-    { icon: Square, label: "사각 영역", mode: "rectangle" as const },
-    { icon: Pentagon, label: "다각형 영역", mode: "polygon" as const },
-  ];
-
-  return (
-    <div className="absolute left-4 top-20 z-10 flex flex-col gap-1 rounded-xl bg-white p-2 shadow-md">
-      {tools.map(({ icon: Icon, label, mode }) => {
-        const active = drawMode === mode;
-        return (
-          <button
-            key={mode}
-            title={label}
-            onClick={() => setDrawMode(active ? "none" : mode)}
-            className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
-              active
-                ? "bg-primary-100 text-primary-600"
-                : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            }`}
-          >
-            <Icon size={18} />
-          </button>
-        );
-      })}
-      {drawMode !== "none" && (
-        <div className="mt-1 border-t border-gray-100 pt-1">
-          <button
-            onClick={() => setDrawMode("none")}
-            className="flex h-7 w-full items-center justify-center rounded text-[10px] text-red-400 hover:bg-red-50"
-          >
-            취소
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}

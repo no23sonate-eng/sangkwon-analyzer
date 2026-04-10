@@ -7,82 +7,72 @@ import {
 } from "recharts";
 import { useAnalysisStore } from "@/store/analysisStore";
 
-/* ── 대분류 → 세부 업종 매핑 ── */
+/* ── 대분류 → 세부 업종 정확 매칭 ──
+   실제 서울시 상권 데이터의 업종명과 정확히 일치해야 함.
+   부분 문자열 매칭은 오매칭 위험이 있어서 정확 매칭만 사용.
+*/
 const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[]; targetAge: string[] }> = {
   외식: {
     label: "외식",
     icon: "🍽️",
-    subs: ["한식음식점", "중식음식점", "일식음식점", "양식음식점", "분식전문점", "패스트푸드점", "치킨전문점", "음식점"],
-    targetAge: ["30대", "40대", "50대"],
+    subs: ["한식음식점", "중식음식점", "일식음식점", "양식음식점", "분식전문점", "패스트푸드점", "치킨전문점", "제과점"],
+    targetAge: ["20", "30", "40"],
   },
-  "카페/디저트": {
-    label: "카페/디저트",
+  "카페/주류": {
+    label: "카페/주류",
     icon: "☕",
-    subs: ["커피-음료", "커피전문점", "제과점", "카페"],
-    targetAge: ["20대", "30대"],
-  },
-  주류: {
-    label: "주류",
-    icon: "🍺",
-    subs: ["호프-간이주점", "주점"],
-    targetAge: ["20대", "30대", "40대"],
+    subs: ["커피-음료", "호프-간이주점"],
+    targetAge: ["20", "30"],
   },
   "소매/유통": {
-    label: "소매/유통",
+    label: "소매",
     icon: "🛒",
-    subs: ["편의점", "슈퍼마켓", "의류", "일반의류", "화장품", "가전제품", "핸드폰", "서적", "문구", "신발", "가방", "시계및귀금속", "안경"],
-    targetAge: ["20대", "30대", "40대"],
+    subs: ["편의점", "슈퍼마켓", "일반의류", "한복점", "유아의류", "화장품", "신발", "가방", "시계및귀금속", "안경", "서적", "문구", "가전제품", "핸드폰", "운동/경기용품", "예술품", "의약품", "육류판매", "중고가구", "가구", "철물점"],
+    targetAge: ["30", "40", "50"],
   },
   "뷰티/건강": {
-    label: "뷰티/건강",
+    label: "뷰티/의료",
     icon: "💇",
-    subs: ["미용실", "피부관리실", "네일숍", "일반의원", "치과의원", "한의원", "의원", "약국"],
-    targetAge: ["30대", "40대", "50대"],
+    subs: ["미용실", "피부관리실", "네일숍", "일반의원", "치과의원", "한의원", "동물병원", "약국"],
+    targetAge: ["30", "40", "50"],
   },
   교육: {
     label: "교육",
     icon: "📚",
-    subs: ["외국어학원", "일반교습학원", "예술학원", "컴퓨터학원", "학원"],
-    targetAge: ["10대", "20대", "30대"],
+    subs: ["외국어학원", "일반교습학원", "예술학원", "컴퓨터학원", "스포츠 강습"],
+    targetAge: ["10", "20", "30"],
   },
   "생활서비스": {
     label: "생활서비스",
     icon: "🔧",
-    subs: ["세탁소", "부동산중개업", "인테리어", "자동차수리"],
-    targetAge: ["30대", "40대", "50대"],
+    subs: ["세탁소", "부동산중개업", "변호사사무소", "회계사사무소", "세무사사무소", "인테리어", "전자상거래업", "자동차수리", "철물점"],
+    targetAge: ["30", "40", "50"],
   },
-  "스포츠/여가": {
-    label: "스포츠/여가",
+  "여가/오락": {
+    label: "여가",
     icon: "🏋️",
-    subs: ["스포츠클럽", "헬스클럽", "골프연습장", "PC방", "노래방", "당구장", "볼링장"],
-    targetAge: ["20대", "30대", "40대"],
+    subs: ["스포츠클럽", "헬스클럽", "골프연습장", "PC방", "노래방", "당구장", "볼링장", "게스트하우스"],
+    targetAge: ["20", "30", "40"],
   },
 };
-
-/** 세부 업종명이 어느 대분류에 속하는지 찾기 */
-function findGroup(subName: string): string | null {
-  for (const [key, group] of Object.entries(CATEGORY_GROUPS)) {
-    if (group.subs.some((s) => subName.includes(s) || s.includes(subName))) return key;
-  }
-  return null;
-}
 
 interface GroupData {
   key: string;
   label: string;
   icon: string;
   storeCount: number;
-  supplyRatio: number;      // 전체 점포 대비 비율
-  demandScore: number;      // 수요 점수 (유동인구 연령 매칭)
-  gapScore: number;         // 수요-공급 갭 (높을수록 기회)
+  supplyRatio: number;
+  demandScore: number;
+  gapScore: number;
   totalSales: number;
   perStoreSales: number;
   openCount: number;
   closeCount: number;
   franchise: number;
   survivalRate: number;
-  rentBurden: number;       // 임대 부담률 (0~1)
+  rentBurden: number;
   franchiseRatio: number;
+  hasData: boolean;
 }
 
 export default function BrandSynergy() {
@@ -96,24 +86,26 @@ export default function BrandSynergy() {
 
   const [selected, setSelected] = useState<string | null>(null);
 
-  // 대분류별 집계
   const groups = useMemo(() => {
     if (!store || !ft) return [];
 
-    const totalStores = store.total ?? 1;
     const bySub = store.by_subcategory ?? {};
     const byService = sales?.by_service ?? [];
     const perStore = sales?.per_store ?? [];
     const scList = scSummary?.by_service ?? [];
     const rent1f = (rent?.["1층_평"] as number) ?? 0;
 
-    // 유동인구 연령 분포
+    // 유동인구 연령: 정확 매칭
     const byAge = ft.by_age ?? {};
     const ageTotalFt = Object.values(byAge).reduce((s, v) => s + v, 0) || 1;
 
+    // 전체 집계 대상 점포 수 (카테고리에 속하는 것만)
+    let categorizedStores = 0;
     const result: GroupData[] = [];
 
     for (const [key, group] of Object.entries(CATEGORY_GROUPS)) {
+      const subsSet = new Set(group.subs);
+
       let storeCount = 0;
       let totalSalesAmt = 0;
       let totalPerStoreSales = 0;
@@ -122,55 +114,45 @@ export default function BrandSynergy() {
       let closeCount = 0;
       let franchise = 0;
 
-      // 해당 대분류에 속하는 세부 업종 데이터 합산
+      // 정확 매칭
       for (const [subName, info] of Object.entries(bySub)) {
-        if (group.subs.some((s) => subName.includes(s) || s.includes(subName))) {
-          storeCount += info.count;
-        }
+        if (subsSet.has(subName)) storeCount += info.count;
       }
       for (const s of byService) {
-        if (group.subs.some((sub) => s.업종.includes(sub) || sub.includes(s.업종))) {
-          totalSalesAmt += s.매출액;
-        }
+        if (subsSet.has(s.업종)) totalSalesAmt += s.매출액;
       }
       for (const p of perStore) {
-        if (group.subs.some((sub) => p.업종.includes(sub) || sub.includes(p.업종))) {
+        if (subsSet.has(p.업종) && p.점포당_매출 > 0) {
           totalPerStoreSales += p.점포당_매출;
           perStoreCount++;
         }
       }
       for (const sc of scList) {
         const name = (sc as Record<string, unknown>)["업종"] as string;
-        if (name && group.subs.some((sub) => name.includes(sub) || sub.includes(name))) {
+        if (name && subsSet.has(name)) {
           openCount += ((sc as Record<string, unknown>)["개업수"] as number) ?? 0;
           closeCount += ((sc as Record<string, unknown>)["폐업수"] as number) ?? 0;
           franchise += ((sc as Record<string, unknown>)["프랜차이즈"] as number) ?? 0;
         }
       }
 
-      // 수요 점수: 타깃 연령 유동인구 비율
-      const targetFt = Object.entries(byAge)
-        .filter(([k]) => group.targetAge.some((a) => k.includes(a)))
-        .reduce((s, [, v]) => s + v, 0);
+      categorizedStores += storeCount;
+
+      // 수요 점수: 타깃 연령대 유동인구 비율 (정확 매칭)
+      let targetFt = 0;
+      for (const [k, v] of Object.entries(byAge)) {
+        // "20대", "30대" 등에서 숫자 부분 추출
+        const match = k.match(/(\d+)/);
+        if (match && group.targetAge.includes(match[1])) {
+          targetFt += v;
+        }
+      }
       const demandScore = Math.round((targetFt / ageTotalFt) * 100);
-
-      // 공급 비율
-      const supplyRatio = Math.round((storeCount / totalStores) * 100);
-
-      // 수요-공급 갭 (수요 높고 공급 낮을수록 점수 높음)
-      // 수요 가중 1.2: 수요가 공급보다 사업성에 더 큰 영향
-      // 공급 패널티 2.0: 공급 과잉은 리스크 증폭
-      // 기본 오프셋 30: 수요·공급 모두 0일 때 중립(30점) 유지
-      const GAP_DEMAND_W = 1.2;
-      const GAP_SUPPLY_W = 2.0;
-      const GAP_OFFSET = 30;
-      const gapScore = Math.max(0, Math.min(100, Math.round(demandScore * GAP_DEMAND_W - supplyRatio * GAP_SUPPLY_W + GAP_OFFSET)));
 
       const avgPerStoreSales = perStoreCount > 0 ? totalPerStoreSales / perStoreCount : 0;
       const totalOC = openCount + closeCount;
       const survivalRate = totalOC > 0 ? openCount / totalOC : 0.5;
 
-      // 임대 부담률
       const monthlyRent = rent1f > 0 ? rent1f * 30 : 0;
       const rentBurden = avgPerStoreSales > 0 && monthlyRent > 0
         ? monthlyRent / (avgPerStoreSales / 10000)
@@ -183,9 +165,9 @@ export default function BrandSynergy() {
         label: group.label,
         icon: group.icon,
         storeCount,
-        supplyRatio,
+        supplyRatio: 0, // 나중에 계산
         demandScore,
-        gapScore,
+        gapScore: 0,    // 나중에 계산
         totalSales: totalSalesAmt,
         perStoreSales: avgPerStoreSales,
         openCount,
@@ -194,24 +176,45 @@ export default function BrandSynergy() {
         survivalRate,
         rentBurden,
         franchiseRatio,
+        hasData: storeCount > 0 || totalSalesAmt > 0,
       });
     }
 
-    // 수요-공급 갭 높은 순 정렬
-    result.sort((a, b) => b.gapScore - a.gapScore);
-    return result;
+    // supplyRatio: 대분류 내에서 차지하는 비율 (전체 점포가 아닌 카테고리 합 기준)
+    const base = categorizedStores > 0 ? categorizedStores : 1;
+    for (const r of result) {
+      r.supplyRatio = Math.round((r.storeCount / base) * 100);
+      // gapScore: 수요(0~100) - 공급비율(0~100)
+      // 수요가 높고 공급이 적을수록 높음
+      // 공급이 평균(약 14%, 7개 카테고리 균등 기준) 정도면 중립
+      const expectedSupply = 100 / result.length; // 균등분포 기대값
+      const supplyDiff = expectedSupply - r.supplyRatio; // 양수면 공급 부족
+      r.gapScore = Math.max(0, Math.min(100, Math.round(r.demandScore * 0.6 + supplyDiff * 1.5 + 30)));
+    }
+
+    // 데이터 있는 것만 반환, 갭 점수 순 정렬
+    return result.filter((r) => r.hasData).sort((a, b) => b.gapScore - a.gapScore);
   }, [store, ft, sales, scSummary, rent]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
+  if (groups.length === 0) {
+    return (
+      <div className="rounded-xl bg-gray-50 py-8 text-center">
+        <p className="text-[12px] text-muted">이 지역의 업종 데이터가 부족합니다</p>
+      </div>
+    );
+  }
 
   const selectedGroup = groups.find((g) => g.key === selected);
 
   // 선택된 카테고리의 레이더 데이터
   const radarData = selectedGroup ? [
     { axis: "수요", value: selectedGroup.demandScore },
-    { axis: "공급 여유", value: Math.max(5, 100 - selectedGroup.supplyRatio * 3) },
+    { axis: "공급 여유", value: Math.max(5, Math.min(100, 100 - selectedGroup.supplyRatio * 2)) },
     { axis: "매출력", value: (() => {
-      const allAvg = groups.reduce((s, g) => s + g.perStoreSales, 0) / (groups.filter((g) => g.perStoreSales > 0).length || 1);
+      const valid = groups.filter((g) => g.perStoreSales > 0);
+      if (valid.length === 0 || selectedGroup.perStoreSales === 0) return 30;
+      const allAvg = valid.reduce((s, g) => s + g.perStoreSales, 0) / valid.length;
       return allAvg > 0 ? Math.min(100, Math.max(5, Math.round((selectedGroup.perStoreSales / allAvg) * 50))) : 30;
     })() },
     { axis: "생존율", value: Math.round(selectedGroup.survivalRate * 100) },
@@ -230,7 +233,7 @@ export default function BrandSynergy() {
     <div className="space-y-4">
       {/* 대분류 카테고리 선택 */}
       <div>
-        <label className="mb-1.5 block text-[10px] font-medium text-muted">업종 카테고리</label>
+        <label className="mb-1.5 block text-[10px] font-medium text-muted">업종 카테고리 ({groups.length}개)</label>
         <div className="grid grid-cols-4 gap-1.5">
           {groups.map((g) => {
             const isSelected = selected === g.key;
@@ -267,8 +270,9 @@ export default function BrandSynergy() {
             <div key={g.key} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
               <span className="text-[14px]">{g.icon}</span>
               <span className="flex-1 text-[11px] font-semibold text-gray-800">{g.label}</span>
+              <span className="text-[9px] text-muted">{g.storeCount}개 · 공급 {g.supplyRatio}%</span>
               <div className="flex items-center gap-2">
-                <div className="h-1.5 w-16 rounded-full bg-gray-200">
+                <div className="h-1.5 w-14 rounded-full bg-gray-200">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -277,7 +281,7 @@ export default function BrandSynergy() {
                     }}
                   />
                 </div>
-                <span className={`text-[10px] font-bold ${
+                <span className={`text-[10px] font-bold w-10 text-right ${
                   g.gapScore >= 60 ? "text-emerald-600" : g.gapScore >= 40 ? "text-amber-600" : "text-red-500"
                 }`}>
                   {g.gapScore >= 60 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀"}
@@ -291,7 +295,6 @@ export default function BrandSynergy() {
       {/* 선택됨: 상세 분석 */}
       {selectedGroup && radarData && (
         <>
-          {/* 종합 점수 */}
           <div className="flex items-center gap-3 rounded-xl px-4 py-3"
             style={{ background: totalScore >= 60 ? "#ECFDF5" : totalScore >= 45 ? "#FFF7ED" : "#FEF2F2" }}>
             <div className="flex h-12 w-12 items-center justify-center rounded-full"
@@ -307,7 +310,6 @@ export default function BrandSynergy() {
             </div>
           </div>
 
-          {/* 레이더 차트 */}
           <ResponsiveContainer width="100%" height={260}>
             <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="72%">
               <PolarGrid stroke="#F1F5F9" />
@@ -321,7 +323,6 @@ export default function BrandSynergy() {
             </RadarChart>
           </ResponsiveContainer>
 
-          {/* 핵심 수치 */}
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-lg bg-gray-50 p-2.5 text-center">
               <p className="text-[9px] text-muted">점포 수</p>
@@ -344,7 +345,6 @@ export default function BrandSynergy() {
             </div>
           </div>
 
-          {/* 강점 / 약점 */}
           {(strengths.length > 0 || weaknesses.length > 0) && (
             <div className="space-y-2">
               {strengths.length > 0 && (

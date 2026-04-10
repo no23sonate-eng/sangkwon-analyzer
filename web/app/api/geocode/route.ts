@@ -1,72 +1,88 @@
 import { NextResponse } from 'next/server';
 
+/**
+ * Geocode a query string to coordinates.
+ * Strategy:
+ * 1) Kakao 주소 검색 (도로명/지번 주소 정확 매칭)
+ * 2) Kakao 키워드 검색 (상호명/지역명/건물명)
+ * 3) Kakao 주소 (부분 매칭)
+ * 4) Nominatim (해외 or 최후 폴백)
+ */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const address = searchParams.get('address');
+  const query = searchParams.get('address');
 
-  if (!address) {
-    return NextResponse.json(
-      { error: 'address parameter is required' },
-      { status: 400 }
-    );
+  if (!query) {
+    return NextResponse.json({ error: 'address parameter is required' }, { status: 400 });
   }
 
-  // Try Kakao Local API first
+  const apiKey = process.env.KAKAO_REST_API_KEY;
+  const headers = { Authorization: `KakaoAK ${apiKey}` };
+
+  // 1) Kakao 주소 검색 (도로명/지번)
   try {
-    const kakaoRes = await fetch(
-      `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(address)}`,
-      {
-        headers: {
-          Authorization: `KakaoAK ${process.env.KAKAO_REST_API_KEY}`,
-        },
-      }
+    const res = await fetch(
+      `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(query)}&size=1`,
+      { headers }
     );
-
-    if (kakaoRes.ok) {
-      const data = await kakaoRes.json();
-
-      if (data.documents && data.documents.length > 0) {
+    if (res.ok) {
+      const data = await res.json();
+      if (data.documents?.length > 0) {
         const first = data.documents[0];
         return NextResponse.json({
           address: first.address_name,
           lat: parseFloat(first.y),
           lng: parseFloat(first.x),
+          source: 'kakao-address',
         });
       }
     }
-  } catch {
-    // Kakao failed, fall through to Nominatim
-  }
+  } catch {}
 
-  // Fallback to Nominatim
+  // 2) Kakao 키워드 검색 (서울 지역 우선)
   try {
-    const nominatimRes = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`,
-      {
-        headers: {
-          'User-Agent': 'commercial-area-analyzer/1.0',
-        },
-      }
+    // 서울 중심 좌표 + 반경 20km로 제한해서 정확도 ↑
+    const res = await fetch(
+      `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&x=126.9780&y=37.5665&radius=20000&size=5&sort=accuracy`,
+      { headers }
     );
-
-    if (nominatimRes.ok) {
-      const data = await nominatimRes.json();
-
-      if (data.length > 0) {
-        const first = data[0];
+    if (res.ok) {
+      const data = await res.json();
+      if (data.documents?.length > 0) {
+        // 서울 지역 결과 우선
+        const seoulResult = data.documents.find((d: { address_name?: string }) =>
+          d.address_name?.startsWith('서울')
+        ) ?? data.documents[0];
         return NextResponse.json({
-          address: first.display_name,
-          lat: parseFloat(first.lat),
-          lng: parseFloat(first.lon),
+          address: seoulResult.address_name ?? seoulResult.place_name,
+          lat: parseFloat(seoulResult.y),
+          lng: parseFloat(seoulResult.x),
+          source: 'kakao-keyword',
+          place_name: seoulResult.place_name,
         });
       }
     }
-  } catch {
-    // Nominatim also failed
-  }
+  } catch {}
 
-  return NextResponse.json(
-    { error: 'Failed to geocode address' },
-    { status: 404 }
-  );
+  // 3) Kakao 주소 검색 (전국 범위)
+  try {
+    const res = await fetch(
+      `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&size=1`,
+      { headers }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (data.documents?.length > 0) {
+        const first = data.documents[0];
+        return NextResponse.json({
+          address: first.address_name ?? first.place_name,
+          lat: parseFloat(first.y),
+          lng: parseFloat(first.x),
+          source: 'kakao-keyword-wide',
+        });
+      }
+    }
+  } catch {}
+
+  return NextResponse.json({ error: 'Failed to geocode address' }, { status: 404 });
 }
