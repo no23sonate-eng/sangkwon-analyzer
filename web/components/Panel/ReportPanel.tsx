@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { palette } from "@/lib/colors";
 import { Send, Check } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { getUserInfo } from "@/components/Modal/SignupModal";
 
 export default function ReportPanel() {
   const analysisData = useAnalysisStore((s) => s.analysisData);
@@ -19,19 +21,21 @@ export default function ReportPanel() {
     );
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!question.trim()) return;
-    // 로컬 저장
+    const user = getUserInfo();
+    // Supabase에 저장
     try {
-      const inquiries = JSON.parse(localStorage.getItem("inquiries") ?? "[]");
-      inquiries.push({
+      await supabase.from("inquiries").insert({
+        user_email: user?.email ?? null,
+        user_name: user?.name ?? null,
         address: clickedAddress,
-        area: analysisData.trdar_names?.[0] ?? "",
+        area_name: analysisData.trdar_names?.[0] ?? "",
         question: question.trim(),
-        timestamp: new Date().toISOString(),
       });
-      localStorage.setItem("inquiries", JSON.stringify(inquiries));
-    } catch {}
+    } catch (err) {
+      console.error("inquiry insert failed", err);
+    }
     setSubmitted(true);
     setTimeout(() => {
       setQuestion("");

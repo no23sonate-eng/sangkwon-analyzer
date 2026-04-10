@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 const STORAGE_KEY = "user_signup";
+// 본인용 우회 키 — URL에 ?admin=cgwoo2026 붙이면 회원가입 스킵
+const ADMIN_BYPASS = "cgwoo2026";
 
 export interface UserInfo {
   email: string;
@@ -38,21 +41,56 @@ export default function SignupModal() {
   });
 
   useEffect(() => {
-    // 클라이언트에서만 체크
+    // URL에 admin 파라미터 있으면 우회 (본인 접속용)
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === ADMIN_BYPASS) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          email: "admin@local",
+          name: "관리자",
+          job: "admin",
+          age: "",
+          gender: "",
+          ageGroup: "",
+          registeredAt: new Date().toISOString(),
+        }));
+        return;
+      }
+    }
+    // 일반 방문자 — 가입 안 했으면 모달 표시
     if (!isUserRegistered()) {
       setOpen(true);
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.email || !form.name || !form.job || !form.gender || !form.ageGroup) return;
+    setSubmitting(true);
 
     const userInfo: UserInfo = {
       ...form,
       registeredAt: new Date().toISOString(),
     };
+
+    // Supabase에 저장
+    try {
+      await supabase.from("users").insert({
+        email: form.email,
+        name: form.name,
+        job: form.job,
+        gender: form.gender,
+        age_group: form.ageGroup,
+        user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
+      });
+    } catch (err) {
+      console.error("user insert failed", err);
+    }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userInfo));
+    setSubmitting(false);
     setOpen(false);
   };
 
@@ -151,10 +189,10 @@ export default function SignupModal() {
 
           <button
             type="submit"
-            disabled={!form.email || !form.name || !form.job || !form.gender || !form.ageGroup}
+            disabled={!form.email || !form.name || !form.job || !form.gender || !form.ageGroup || submitting}
             className="mt-2 w-full rounded-xl bg-primary-600 py-3 text-[14px] font-semibold text-white hover:bg-primary-700 active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            시작하기
+            {submitting ? "저장 중..." : "시작하기"}
           </button>
         </form>
 
