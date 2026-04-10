@@ -78,11 +78,9 @@ export default function DashboardPage() {
   const [selectedArea, setSelectedArea] = useState("서울 전체");
 
   // 실제 API 트렌드 데이터
-  const [trendData, setTrendData] = useState<TrendApiPoint[]>([]);
   const [ftTrendData, setFtTrendData] = useState<FootTrafficApiPoint[]>([]);
   const [salesTrend, setSalesTrend] = useState<Array<{ quarter: string; 매출_억: number; 건수_만: number }>>([]);
   const [salesByIndustry, setSalesByIndustry] = useState<Array<{ 업종: string; 매출_억: number; 전분기대비: number }>>([]);
-  const [dataRange, setDataRange] = useState<Record<string, string>>({});
 
   useEffect(() => {
     getDashboardStats().then(setStats);
@@ -100,11 +98,9 @@ export default function DashboardPage() {
     fetch(url)
       .then((r) => r.json())
       .then((data) => {
-        setTrendData(data["개폐업"] ?? []);
         setFtTrendData(data["유동인구"] ?? []);
         setSalesTrend(data["매출"] ?? []);
         setSalesByIndustry(data["매출_업종별"] ?? []);
-        setDataRange(data["data_range"] ?? {});
       })
       .catch(() => {});
 
@@ -201,43 +197,6 @@ export default function DashboardPage() {
         <div className="grid grid-cols-12 gap-5">
           {/* 좌측: 상권 트렌드 (실제 API) */}
           <div className="col-span-8 space-y-5">
-            {/* 개업/폐업 차트 (1년 고정 — 데이터 4분기만 보유) */}
-            <div className="rounded-[20px] bg-card p-6 shadow-card">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-[16px] font-semibold text-gray-900">
-                  {selectedArea} · 분기별 개업 vs 폐업
-                </h2>
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-medium text-muted">
-                  2024년 데이터
-                </span>
-              </div>
-              {trendData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <AreaChart data={trendData}>
-                    <defs>
-                      <linearGradient id="fillOpen" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#6366F1" stopOpacity={0.15} />
-                        <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="fillClose" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#F87171" stopOpacity={0.12} />
-                        <stop offset="100%" stopColor="#F87171" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                    <XAxis dataKey="quarter" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} width={40} />
-                    <Tooltip {...tooltipStyle} />
-                    <Legend verticalAlign="bottom" iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "#64748B", paddingTop: 8 }} />
-                    <Area type="monotone" dataKey="개업" stroke="#6366F1" strokeWidth={2} fill="url(#fillOpen)" dot={{ r: 3, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 5 }} />
-                    <Area type="monotone" dataKey="폐업" stroke="#F87171" strokeWidth={2} fill="url(#fillClose)" dot={{ r: 3, fill: "#F87171", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 5 }} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex h-[220px] items-center justify-center text-[13px] text-muted">데이터 없음</div>
-              )}
-            </div>
-
             {/* 유동인구 트렌드 (기간 선택 가능 — 7년치 보유) */}
             <div className="rounded-[20px] bg-card p-6 shadow-card">
               <div className="mb-3 flex items-center justify-between">
@@ -632,37 +591,7 @@ function RentSaleCards({ selectedArea }: { selectedArea: string }) {
   );
 }
 
-/* ── 개폐업 추이 + TOP 10 ── */
-
-const TREND_DUMMY: Record<string, Array<{ month: string; 개업: number; 폐업: number }>> = {
-  "3m": [
-    { month: "1월", 개업: 3400, 폐업: 2500 },
-    { month: "2월", 개업: 3200, 폐업: 2550 },
-    { month: "3월", 개업: 3600, 폐업: 2100 },
-  ],
-  "6m": [
-    { month: "10월", 개업: 3100, 폐업: 2400 },
-    { month: "11월", 개업: 3300, 폐업: 2500 },
-    { month: "12월", 개업: 2800, 폐업: 2600 },
-    { month: "1월", 개업: 3400, 폐업: 2500 },
-    { month: "2월", 개업: 3200, 폐업: 2550 },
-    { month: "3월", 개업: 3600, 폐업: 2100 },
-  ],
-  "1y": [
-    { month: "4월", 개업: 2900, 폐업: 2300 },
-    { month: "5월", 개업: 3000, 폐업: 2350 },
-    { month: "6월", 개업: 3100, 폐업: 2200 },
-    { month: "7월", 개업: 2700, 폐업: 2500 },
-    { month: "8월", 개업: 2600, 폐업: 2450 },
-    { month: "9월", 개업: 2800, 폐업: 2400 },
-    { month: "10월", 개업: 3100, 폐업: 2400 },
-    { month: "11월", 개업: 3300, 폐업: 2500 },
-    { month: "12월", 개업: 2800, 폐업: 2600 },
-    { month: "1월", 개업: 3400, 폐업: 2500 },
-    { month: "2월", 개업: 3200, 폐업: 2550 },
-    { month: "3월", 개업: 3600, 폐업: 2100 },
-  ],
-};
+/* ── TOP 10 ── */
 
 interface Top10Area {
   rank: number;
@@ -674,15 +603,9 @@ interface Top10Area {
 }
 
 function OpenCloseAndTop10() {
-  const [trendPeriod, setTrendPeriod] = useState<"3m" | "6m" | "1y">("6m");
   const [sortBy, setSortBy] = useState("유동인구 증가율");
   const [top10, setTop10] = useState<Top10Area[]>([]);
   const [loading, setLoading] = useState(true);
-  const trendData = TREND_DUMMY[trendPeriod];
-
-  const totalOpen = trendData.reduce((s, d) => s + d.개업, 0);
-  const totalClose = trendData.reduce((s, d) => s + d.폐업, 0);
-  const net = totalOpen - totalClose;
 
   // Fetch real data from Supabase
   useEffect(() => {
@@ -821,84 +744,9 @@ function OpenCloseAndTop10() {
     sortBy === "신규 개업률" ? "%" : sortBy === "매출 증가율" ? "만" : "천명";
 
   return (
-    <div className="mt-6 grid grid-cols-12 gap-6">
-      {/* ── 좌측: 개폐업 추이 ── */}
-      <div className="col-span-8 rounded-[20px] bg-white p-6 shadow-card">
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">서울 개폐업 추이</h2>
-          <div className="flex rounded-full bg-gray-100 p-0.5">
-            {([["3m", "3개월"], ["6m", "6개월"], ["1y", "1년"]] as const).map(([val, label]) => (
-              <button
-                key={val}
-                onClick={() => setTrendPeriod(val)}
-                className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition-all ${
-                  trendPeriod === val
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <ResponsiveContainer width="100%" height={280}>
-          <AreaChart data={trendData}>
-            <defs>
-              <linearGradient id="gradOpen2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366F1" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="gradClose2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#EF4444" stopOpacity={0.2} />
-                <stop offset="100%" stopColor="#EF4444" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-            <XAxis dataKey="month" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} width={40} />
-            <Tooltip {...tooltipStyle} />
-            <Legend
-              verticalAlign="bottom"
-              iconType="circle"
-              iconSize={8}
-              wrapperStyle={{ fontSize: 12, color: "#64748B", paddingTop: 12 }}
-              formatter={(value) => <span className="text-gray-600">{value === "개업" ? "신규 개업" : "폐업"}</span>}
-            />
-            <Area
-              type="monotone"
-              dataKey="개업"
-              stroke="#6366F1"
-              strokeWidth={2.5}
-              fill="url(#gradOpen2)"
-              dot={false}
-              activeDot={{ r: 5, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }}
-              animationDuration={800}
-            />
-            <Area
-              type="monotone"
-              dataKey="폐업"
-              stroke="#EF4444"
-              strokeWidth={2}
-              fill="url(#gradClose2)"
-              dot={false}
-              activeDot={{ r: 5, fill: "#EF4444", stroke: "#fff", strokeWidth: 2 }}
-              animationDuration={800}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-
-        <p className="mt-4 text-sm text-gray-500">
-          최근 {trendPeriod === "3m" ? "3개월" : trendPeriod === "6m" ? "6개월" : "1년"}{" "}
-          순증{" "}
-          <span className="font-bold text-emerald-500">+{net.toLocaleString()}개</span>{" "}
-          (개업 {totalOpen.toLocaleString()} / 폐업 {totalClose.toLocaleString()})
-        </p>
-      </div>
-
-      {/* ── 우측: TOP 10 ── */}
-      <div className="col-span-4 flex flex-col rounded-[20px] bg-white p-6 shadow-card">
+    <div className="mt-6 grid grid-cols-1">
+      {/* ── TOP 10 ── */}
+      <div className="flex flex-col rounded-[20px] bg-white p-6 shadow-card">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">뜨는 상권 TOP 10</h2>
           <select
@@ -975,7 +823,7 @@ const SHORTCUTS = [
 ];
 
 function ThreeColumnCards() {
-  const [industryData, setIndustryData] = useState<Array<{ name: string; 개업: number; 폐업: number }>>([]);
+  const [industryData, setIndustryData] = useState<Array<{ name: string; 점포수: number }>>([]);
   const [weekdayData, setWeekdayData] = useState<Array<{ day: string; value: number }>>([]);
 
   useEffect(() => {
@@ -983,26 +831,21 @@ function ThreeColumnCards() {
     async function fetchIndustry() {
       const { data } = await supabase
         .from("stores")
-        .select("svc_nm, store_count, open_count, close_count")
+        .select("svc_nm, store_count")
         .limit(10000);
 
       if (!data) return;
 
-      const bySvc = new Map<string, { store_count: number; open_count: number; close_count: number }>();
+      const bySvc = new Map<string, number>();
       for (const r of data) {
         const nm = r.svc_nm ?? "기타";
-        const existing = bySvc.get(nm) ?? { store_count: 0, open_count: 0, close_count: 0 };
-        existing.store_count += r.store_count ?? 0;
-        existing.open_count += r.open_count ?? 0;
-        existing.close_count += r.close_count ?? 0;
-        bySvc.set(nm, existing);
+        bySvc.set(nm, (bySvc.get(nm) ?? 0) + (r.store_count ?? 0));
       }
 
       const sorted = Array.from(bySvc.entries())
-        .map(([name, v]) => ({ name, 개업: v.open_count, 폐업: v.close_count, _total: v.store_count }))
-        .sort((a, b) => b._total - a._total)
-        .slice(0, 5)
-        .map(({ name, 개업, 폐업 }) => ({ name, 개업, 폐업 }));
+        .map(([name, count]) => ({ name, 점포수: count }))
+        .sort((a, b) => b.점포수 - a.점포수)
+        .slice(0, 5);
 
       setIndustryData(sorted);
     }
@@ -1046,27 +889,22 @@ function ThreeColumnCards() {
 
   return (
     <div className="mt-6 grid grid-cols-3 gap-6">
-      {/* 카드 1: 업종별 개폐업 */}
+      {/* 카드 1: 업종별 점포수 TOP 5 */}
       <div className="rounded-[20px] bg-white p-6 shadow-card">
-        <h3 className="mb-4 text-[16px] font-semibold text-gray-900">업종별 개폐업</h3>
+        <h3 className="mb-4 text-[16px] font-semibold text-gray-900">업종별 점포수 TOP 5</h3>
         {industryData.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={industryData} layout="vertical" barGap={2} barSize={12}>
+            <BarChart data={industryData} layout="vertical" barSize={18}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} width={48} />
-              <Tooltip {...tooltipStyle} />
-              <Bar dataKey="개업" fill="#818CF8" radius={[0, 4, 4, 0]} animationDuration={800} />
-              <Bar dataKey="폐업" fill="#FCA5A5" radius={[0, 4, 4, 0]} animationDuration={800} />
+              <YAxis type="category" dataKey="name" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} width={70} />
+              <Tooltip {...tooltipStyle} formatter={(v) => [`${Number(v).toLocaleString()}개`, "점포수"]} />
+              <Bar dataKey="점포수" fill="#6366F1" radius={[0, 4, 4, 0]} animationDuration={800} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
           <div className="flex h-[200px] items-center justify-center text-[13px] text-muted">로딩 중...</div>
         )}
-        <div className="mt-2 flex items-center gap-4 text-[11px] text-muted">
-          <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-primary-400" />개업</span>
-          <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full" style={{ background: "#FCA5A5" }} />폐업</span>
-        </div>
       </div>
 
       {/* 카드 2: 요일별 유동인구 */}

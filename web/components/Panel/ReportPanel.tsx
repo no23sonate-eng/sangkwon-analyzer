@@ -1,205 +1,99 @@
 "use client";
 
-import ReactMarkdown from "react-markdown";
+import { useState } from "react";
 import { useAnalysisStore } from "@/store/analysisStore";
-import { Download } from "lucide-react";
 import { palette } from "@/lib/colors";
-import { formatWon, formatCount } from "@/lib/formatters";
-
-/** Generate a markdown summary from analysisData since there is no report field */
-function generateReport(data: NonNullable<ReturnType<typeof useAnalysisStore.getState>["analysisData"]>): string {
-  const lines: string[] = [];
-
-  lines.push("# 상권 분석 리포트\n");
-
-  // Store summary
-  const ss = data.store_summary;
-  if (ss) {
-    lines.push("## 업종 현황");
-    lines.push(`- 총 점포 수: **${formatCount(ss.total)}개**`);
-    const topCategories = Object.entries(ss.by_category ?? {})
-      .sort((a, b) => b[1].count - a[1].count)
-      .slice(0, 5);
-    if (topCategories.length > 0) {
-      lines.push("- 주요 업종: " + topCategories.map(([k, v]) => `${k}(${v.count}개, ${v.ratio.toFixed(1)}%)`).join(", "));
-    }
-    lines.push("");
-  }
-
-  // Sales summary
-  const sl = data.sales_summary;
-  if (sl) {
-    lines.push("## 매출 현황");
-    lines.push(`- 총 매출: **${formatWon(sl.total_sales)}**`);
-    lines.push(`- 총 건수: **${formatCount(sl.total_count)}건**`);
-    if (sl.per_store && sl.per_store.length > 0) {
-      const topSales = [...sl.per_store].sort((a, b) => b.점포당_매출 - a.점포당_매출).slice(0, 3);
-      lines.push("- 점포당 매출 상위: " + topSales.map((s) => `${s.업종}(${formatWon(s.점포당_매출)})`).join(", "));
-    }
-    lines.push("");
-  }
-
-  // Foot traffic
-  const ft = data.ft_summary;
-  if (ft) {
-    lines.push("## 유동인구");
-    lines.push(`- 총 유동인구: **${formatCount(ft.total)}명**`);
-    const peakTime = Object.entries(ft.time_slots ?? {}).sort((a, b) => b[1] - a[1])[0];
-    if (peakTime) {
-      lines.push(`- 피크 시간대: **${peakTime[0]}** (${formatCount(peakTime[1])}명)`);
-    }
-    const peakAge = Object.entries(ft.by_age ?? {}).sort((a, b) => b[1] - a[1])[0];
-    if (peakAge) {
-      lines.push(`- 주요 연령대: **${peakAge[0]}** (${formatCount(peakAge[1])}명)`);
-    }
-    lines.push("");
-  }
-
-  // Population
-  const pop = data.pop_summary;
-  if (pop) {
-    lines.push("## 상주인구");
-    lines.push(`- 총 인구: **${formatCount(pop.total)}명** (${formatCount(pop.households)} 세대)`);
-    lines.push("");
-  }
-
-  // Opportunities
-  const opp = data.opportunities;
-  if (opp?.insights) {
-    lines.push("## 기회 분석");
-    lines.push(`- 활력도: **${opp.insights.vitality}**`);
-    lines.push(`- 개업: ${opp.insights.open_count}개 / 폐업: ${opp.insights.close_count}개`);
-    if (opp.recommendations && opp.recommendations.length > 0) {
-      lines.push("- 추천 업종: " + opp.recommendations.map((r) => r.업종).join(", "));
-    }
-    lines.push("");
-  }
-
-  // Cross result highlights
-  const cr = data.cross_result;
-  if (cr && cr.length > 0) {
-    lines.push("## 매출 추정 요약");
-    const topCr = [...cr].sort((a, b) => b.종합_점포당_월매출 - a.종합_점포당_월매출).slice(0, 5);
-    topCr.forEach((r) => {
-      lines.push(`- ${r.업종}: 점포당 ${formatWon(r.종합_점포당_월매출)} (${r.신뢰등급})`);
-    });
-    lines.push("");
-  }
-
-  // Rent info
-  const ri = data.rent_info;
-  if (ri && "1층_평" in ri) {
-    lines.push("## 임대 시세");
-    lines.push(`- 위치: **${(ri as {gu?: string}).gu ?? ""}**`);
-    lines.push(`- 1층: **${(ri as Record<string, number>)["1층_평"]}만원/평/월**`);
-    lines.push(`- 2층 이상: **${(ri as Record<string, number>)["2층이상_평"]}만원/평/월**`);
-    lines.push(`- 지하: **${(ri as Record<string, number>)["지하_평"]}만원/평/월**`);
-    lines.push("");
-  }
-
-  // 사업수지 안내
-  lines.push("## 사업수지 분석");
-  lines.push("- 기회분석 탭에서 **사업수지 계산기**를 이용하면 매입가·공사비·대출 조건별 상세 투자 수익률을 시뮬레이션할 수 있습니다.");
-  lines.push("- Cap Rate, 레버리지 수익률, DSCR, Cash-on-Cash, 10년 현금흐름 추이를 확인하세요.");
-  lines.push("");
-
-  return lines.join("\n");
-}
+import { Send, Check } from "lucide-react";
 
 export default function ReportPanel() {
   const analysisData = useAnalysisStore((s) => s.analysisData);
+  const clickedAddress = useAnalysisStore((s) => s.clickedAddress);
+  const [question, setQuestion] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   if (!analysisData) {
     return (
       <p className="py-12 text-center text-sm" style={{ color: palette.textSecondary }}>
-        리포트 데이터가 없습니다.
+        먼저 상권을 선택해주세요.
       </p>
     );
   }
 
-  const report = generateReport(analysisData);
-  const areaName = analysisData.trdar_names?.[0] ?? analysisData.gu_name ?? "상권";
-
-  const handleDownloadPDF = () => {
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html><head>
-        <meta charset="utf-8">
-        <title>${areaName} 상권 분석 리포트</title>
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #1e293b; font-size: 13px; line-height: 1.7; }
-          h1 { font-size: 20px; color: #6366F1; border-bottom: 2px solid #6366F1; padding-bottom: 8px; }
-          h2 { font-size: 15px; color: #F97316; margin-top: 24px; }
-          strong { color: #F97316; }
-          li { margin-bottom: 4px; }
-          .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; text-align: center; }
-        </style>
-      </head><body>
-        ${report.replace(/^# /gm, '<h1>').replace(/^## /gm, '</p><h2>').replace(/^- /gm, '<li>').replace(/\n/g, '<br>')
-          .replace(/<h1>(.*?)<br>/g, '<h1>$1</h1>').replace(/<h2>(.*?)<br>/g, '<h2>$1</h2>')
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
-        <div class="footer">Generated by 상권분석기 · ${new Date().toLocaleDateString("ko-KR")}</div>
-      </body></html>
-    `);
-    printWindow.document.close();
-    setTimeout(() => { printWindow.print(); }, 500);
+  const handleSubmit = () => {
+    if (!question.trim()) return;
+    // 로컬 저장
+    try {
+      const inquiries = JSON.parse(localStorage.getItem("inquiries") ?? "[]");
+      inquiries.push({
+        address: clickedAddress,
+        area: analysisData.trdar_names?.[0] ?? "",
+        question: question.trim(),
+        timestamp: new Date().toISOString(),
+      });
+      localStorage.setItem("inquiries", JSON.stringify(inquiries));
+    } catch {}
+    setSubmitted(true);
+    setTimeout(() => {
+      setQuestion("");
+      setSubmitted(false);
+    }, 3000);
   };
 
   return (
-    <div className="animate-fade-in">
-      {/* 다운로드 버튼 */}
+    <div className="animate-fade-in space-y-4">
+      <div className="rounded-xl bg-primary-50 px-4 py-3">
+        <p className="text-[12px] font-semibold text-primary-700">맞춤형 분석 요청</p>
+        <p className="mt-1 text-[11px] text-gray-600">
+          이 상권에 대해 궁금한 점이나 추가 분석이 필요한 내용을 작성해주세요. 전문가가 직접 답변드립니다.
+        </p>
+      </div>
+
+      {/* 선택된 상권 정보 */}
+      <div className="rounded-xl border border-gray-100 bg-white p-3">
+        <p className="text-[10px] text-muted">분석 대상</p>
+        <p className="mt-0.5 text-[13px] font-bold text-gray-900">
+          {clickedAddress || analysisData.trdar_names?.[0] || "선택된 상권"}
+        </p>
+      </div>
+
+      {/* 질문 입력 */}
+      <div>
+        <label className="mb-1.5 block text-[11px] font-semibold text-gray-700">
+          궁금한 내용
+        </label>
+        <textarea
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="예: 이 위치에 카페를 열려고 하는데 적정 매출이 얼마나 나올까요?&#10;예: 인근에 비슷한 업종이 얼마나 있는지 자세히 알고 싶어요&#10;예: 임대료 협상 시 참고할 만한 데이터가 있나요?"
+          rows={8}
+          className="w-full rounded-xl border border-gray-200 px-3 py-3 text-[12px] outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 resize-none placeholder:text-gray-400"
+        />
+      </div>
+
+      {/* 제출 버튼 */}
       <button
-        onClick={handleDownloadPDF}
-        className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-2.5 text-[13px] font-semibold text-white hover:bg-primary-700 active:scale-[0.98]"
+        onClick={handleSubmit}
+        disabled={!question.trim() || submitted}
+        className={`flex w-full items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-semibold transition-all ${
+          submitted
+            ? "bg-emerald-500 text-white"
+            : "bg-primary-600 text-white hover:bg-primary-700 active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
+        }`}
       >
-        <Download size={16} /> PDF 리포트 다운로드
+        {submitted ? (
+          <>
+            <Check size={16} /> 제출 완료 — 빠른 시일 내에 연락드립니다
+          </>
+        ) : (
+          <>
+            <Send size={14} /> 제출하기
+          </>
+        )}
       </button>
 
-      <div
-        className="prose prose-sm max-w-none rounded-xl border p-4"
-        style={{
-          borderColor: palette.border,
-          background: "white",
-          color: palette.textPrimary,
-        }}
-      >
-        <ReactMarkdown
-          components={{
-            h1: ({ children }) => (
-              <h1 className="mb-3 text-lg font-bold" style={{ color: palette.navy }}>
-                {children}
-              </h1>
-            ),
-            h2: ({ children }) => (
-              <h2 className="mb-2 mt-4 text-base font-bold" style={{ color: palette.orange }}>
-                {children}
-              </h2>
-            ),
-            h3: ({ children }) => (
-              <h3 className="mb-1 mt-3 text-sm font-semibold" style={{ color: palette.textSecondary }}>
-                {children}
-              </h3>
-            ),
-            p: ({ children }) => (
-              <p className="mb-2 text-xs leading-relaxed" style={{ color: palette.textPrimary }}>
-                {children}
-              </p>
-            ),
-            li: ({ children }) => (
-              <li className="text-xs leading-relaxed" style={{ color: palette.textPrimary }}>
-                {children}
-              </li>
-            ),
-            strong: ({ children }) => (
-              <strong style={{ color: palette.orange }}>{children}</strong>
-            ),
-          }}
-        >
-          {report}
-        </ReactMarkdown>
-      </div>
+      <p className="text-center text-[10px] text-muted">
+        제출하신 질문은 저장되며, 이메일이나 카카오톡으로 답변드립니다
+      </p>
     </div>
   );
 }

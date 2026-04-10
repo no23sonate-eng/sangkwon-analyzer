@@ -14,24 +14,7 @@ export async function GET(request: Request) {
     }
   }
 
-  // ── 1. 개폐업 (stores 테이블 — quarter_cd별 집계) ──
-  let storeQuery = supabase.from("stores").select("quarter_cd, store_count, open_count, close_count");
-  if (trdarCds) storeQuery = storeQuery.in("trdar_cd", trdarCds);
-  const { data: storeData } = await storeQuery.limit(50000);
-
-  const byQuarterOC = new Map<string, { 개업: number; 폐업: number }>();
-  for (const r of storeData ?? []) {
-    const q = r.quarter_cd ?? "";
-    const existing = byQuarterOC.get(q) ?? { 개업: 0, 폐업: 0 };
-    existing.개업 += r.open_count ?? 0;
-    existing.폐업 += r.close_count ?? 0;
-    byQuarterOC.set(q, existing);
-  }
-  const 개폐업 = Array.from(byQuarterOC.entries())
-    .map(([q, v]) => ({ quarter: `${q.slice(0, 4)} Q${q.slice(4)}`, ...v }))
-    .sort((a, b) => a.quarter.localeCompare(b.quarter));
-
-  // ── 2. 유동인구 (foot_traffic — quarter_cd별) ──
+  // ── 1. 유동인구 (foot_traffic — quarter_cd별) ──
   let ftQuery = supabase.from("foot_traffic").select("quarter_cd, total_ft");
   if (trdarCds) ftQuery = ftQuery.in("trdar_cd", trdarCds);
   const { data: ftData } = await ftQuery.limit(50000);
@@ -79,10 +62,7 @@ export async function GET(request: Request) {
     .sort((a, b) => b.매출_억 - a.매출_억)
     .slice(0, 10);
 
-  // ── 4. rent-live / sale-live는 별도 API이므로 여기서 skip ──
-
   return NextResponse.json({
-    "개폐업": 개폐업,
     "유동인구": 유동인구,
     "매출": 매출,
     "매출_업종별": 매출_업종별,

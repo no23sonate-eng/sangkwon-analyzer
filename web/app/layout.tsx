@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Layout/Sidebar";
 import FloatingConsultButton from "@/components/FloatingConsultButton";
+import SignupModal from "@/components/Modal/SignupModal";
 
 export const metadata: Metadata = {
   title: "Land Analysis | 상권 분석",
@@ -39,6 +40,7 @@ export default function RootLayout({
           {children}
         </div>
         <FloatingConsultButton />
+        <SignupModal />
       </body>
     </html>
   );
