@@ -5,13 +5,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import {
   Search,
-  FileText,
   Layers,
   X,
-  GitCompareArrows,
 } from "lucide-react";
 import DataPanel from "@/components/Panel/DataPanel";
-import ReportModal from "@/components/Modal/ReportModal";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
 
@@ -173,7 +170,6 @@ function AutoAnalysisTrigger() {
 export default function MapPage() {
   const panelOpen = useAnalysisStore((s) => s.panelOpen);
   const selectedTrdar = useAnalysisStore((s) => s.selectedTrdar);
-  const [reportOpen, setReportOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [layerMenuOpen, setLayerMenuOpen] = useState(false);
   const heatmapOn = useAnalysisStore((s) => s.heatmapOn);
@@ -251,15 +247,6 @@ export default function MapPage() {
       {/* ── 좌측 분석 패널 ── */}
       {panelOpen && <DataPanel />}
 
-      {/* ── 좌측 상단: 입지 비교 새 탭 버튼 ── */}
-      <button
-        onClick={() => window.open("/compare", "_blank")}
-        className="absolute left-4 top-20 z-10 flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-[12px] font-semibold text-gray-700 shadow-md hover:bg-gray-50 active:scale-95"
-      >
-        <GitCompareArrows size={14} className="text-primary-600" />
-        입지 비교
-      </button>
-
       {/* ── 우측 하단 컨트롤 ── */}
       <div className="absolute bottom-6 right-4 z-10 flex flex-col gap-2">
         {/* 레이어 토글 */}
@@ -312,26 +299,6 @@ export default function MapPage() {
         </div>
       </div>
 
-      {/* ── 리포트 추출 버튼 ── */}
-      {panelOpen && selectedTrdar && (
-        <button
-          onClick={() => setReportOpen(true)}
-          className="absolute bottom-4 right-4 z-20 flex items-center gap-2 rounded-[var(--radius-button)]
-            bg-white px-4 py-2.5 text-[13px] font-semibold text-gray-700 shadow-lg
-            transition-all hover:bg-gray-50 hover:shadow-xl active:scale-[0.98]"
-        >
-          <FileText size={16} className="text-primary-600" />
-          리포트 추출
-        </button>
-      )}
-
-      {/* ── 리포트 모달 ── */}
-      <ReportModal
-        open={reportOpen}
-        onClose={() => setReportOpen(false)}
-        isPro={IS_PRO}
-        areaName={selectedTrdar?.trdar_nm ?? "상권"}
-      />
     </div>
   );
 }

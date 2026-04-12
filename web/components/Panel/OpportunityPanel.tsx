@@ -62,10 +62,7 @@ export default function OpportunityPanel() {
 
       {/* ── 4. 브랜드 시너지 ── */}
       <section>
-        <div className="mb-3 flex items-center gap-2">
-          <h3 className="text-[14px] font-bold text-gray-900">브랜드 시너지</h3>
-          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">To be continued</span>
-        </div>
+        <h3 className="mb-3 text-[14px] font-bold text-gray-900">브랜드 시너지</h3>
         <BrandSynergy />
       </section>
 

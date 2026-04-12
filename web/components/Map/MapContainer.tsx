@@ -330,41 +330,6 @@ export default function MapContainer() {
     }
   }, [selectedTrdar, clickedLat, clickedLng]);
 
-  // ── 상권 경계 호버 이벤트 ──
-  useEffect(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-
-    const onMouseMove = (e: maplibregl.MapMouseEvent) => {
-      const features = map.queryRenderedFeatures(e.point, { layers: ["district-fill"] });
-      if (features.length > 0) {
-        const props = features[0].properties;
-        if (props) {
-          map.getCanvas().style.cursor = "pointer";
-          setHoveredTrdar({
-            trdar_cd: props.trdar_cd,
-            trdar_nm: props.trdar_nm,
-            distance: props.distance,
-          });
-        }
-      } else {
-        map.getCanvas().style.cursor = "";
-        setHoveredTrdar(null);
-      }
-    };
-
-    const onMouseLeave = () => {
-      map.getCanvas().style.cursor = "";
-      setHoveredTrdar(null);
-    };
-
-    map.on("mousemove", "district-fill", onMouseMove);
-    map.on("mouseleave", "district-fill", onMouseLeave);
-    return () => {
-      map.off("mousemove", "district-fill", onMouseMove);
-      map.off("mouseleave", "district-fill", onMouseLeave);
-    };
-  }, [setHoveredTrdar, districtGeoJSON]);
 
   // ── 클러스터 클릭 줌인 ──
   useEffect(() => {
@@ -544,48 +509,7 @@ export default function MapContainer() {
         </Source>
       )}
 
-      {/* ── 상권 경계 폴리곤 ── */}
-      {showDistrictBounds && districtGeoJSON && (
-        <Source id="district-boundaries" type="geojson" data={districtGeoJSON}>
-          <Layer
-            id="district-fill"
-            type="fill"
-            paint={{
-              "fill-color": [
-                "case",
-                ["==", ["get", "trdar_cd"], hoveredTrdar?.trdar_cd ?? ""],
-                "#C7D2FE",
-                "#E0E7FF",
-              ],
-              "fill-opacity": [
-                "case",
-                ["==", ["get", "trdar_cd"], hoveredTrdar?.trdar_cd ?? ""],
-                0.4,
-                0.2,
-              ],
-            }}
-          />
-          <Layer
-            id="district-border"
-            type="line"
-            paint={{
-              "line-color": [
-                "case",
-                ["==", ["get", "trdar_cd"], hoveredTrdar?.trdar_cd ?? ""],
-                "#6366F1",
-                "#A5B4FC",
-              ],
-              "line-width": [
-                "case",
-                ["==", ["get", "trdar_cd"], hoveredTrdar?.trdar_cd ?? ""],
-                2,
-                1,
-              ],
-              "line-opacity": 0.6,
-            }}
-          />
-        </Source>
-      )}
+      {/* 상권 경계 폴리곤 제거됨 */}
 
       {/* ── 점포 마커 (클러스터링) ── */}
       {showStoreMarkers && storeGeoJSON && (
@@ -693,55 +617,8 @@ export default function MapContainer() {
         </Marker>
       )}
 
-      {/* ── 상권 마커 ── */}
-      {nearbyList.map((item) => {
-        if (item.lat == null || item.lng == null) return null;
-        const isSelected = selectedTrdar?.trdar_cd === item.trdar_cd;
-        return (
-          <Marker
-            key={item.trdar_cd}
-            latitude={item.lat}
-            longitude={item.lng}
-            anchor="bottom"
-            onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              setSelectedTrdar(item);
-              setPanelOpen(true);
-              setLoading(true);
-              Promise.all([
-                analyzeArea(item.lat ?? clickedLat ?? 0, item.lng ?? clickedLng ?? 0, radius),
-                getStoreCount(item.trdar_cd),
-              ])
-                .then(([a, s]) => { setAnalysisData(a); setStoreCountData(s); })
-                .catch(console.error)
-                .finally(() => setLoading(false));
-            }}
-          >
-            <div className="flex flex-col items-center">
-              <div className="rounded-full px-2 py-0.5 text-xs font-medium text-white whitespace-nowrap" style={{ background: isSelected ? palette.orange : palette.navy, boxShadow: isSelected ? "0 0 8px rgba(248,138,74,0.5)" : "0 1px 3px rgba(0,0,0,0.2)" }}>
-                {item.trdar_nm}
-              </div>
-              <div className="mt-0.5 h-2 w-2 rotate-45" style={{ background: isSelected ? palette.orange : palette.navy }} />
-            </div>
-          </Marker>
-        );
-      })}
+      {/* 상권 마커 제거됨 */}
 
-      {/* ── 호버 미니카드 ── */}
-      {hoveredTrdar && (
-        <div className="absolute left-1/2 top-4 z-20 -translate-x-1/2 animate-fade-in">
-          <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-3 shadow-lg">
-            <span className="text-[14px] font-semibold text-gray-900">
-              {hoveredTrdar.trdar_nm}
-            </span>
-            {hoveredTrdar.distance != null && (
-              <span className="rounded-full bg-primary-50 px-2.5 py-0.5 text-[11px] font-medium text-primary-600">
-                {hoveredTrdar.distance}m
-              </span>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* ── 히트맵 범례 + 안내 ── */}
       {heatmapOn && (

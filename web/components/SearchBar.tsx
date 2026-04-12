@@ -7,7 +7,7 @@ import { palette } from "@/lib/colors";
 import { Clock, X } from "lucide-react";
 
 const HISTORY_KEY = "search_history";
-const MAX_HISTORY = 10;
+const MAX_HISTORY = 5;
 
 interface HistoryItem {
   query: string;

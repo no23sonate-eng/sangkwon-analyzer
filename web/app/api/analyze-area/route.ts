@@ -67,16 +67,22 @@ type Row = Record<string, any>;
 
 function latestQuarterRows(rows: Row[]): Row[] {
   if (rows.length === 0) return [];
-  const quartersSet = new Set<string>();
+  // 상권별로 최신 분기가 다를 수 있으므로, 각 상권의 최신 분기 데이터를 사용
+  const latestByArea = new Map<string, string>();
   for (const r of rows) {
-    const q = r.quarter_cd;
-    if (q) quartersSet.add(q as string);
+    const cd = r.trdar_cd as string;
+    const q = r.quarter_cd as string;
+    if (!cd || !q) continue;
+    const prev = latestByArea.get(cd);
+    if (!prev || q > prev) latestByArea.set(cd, q);
   }
-  const quarters = Array.from(quartersSet).sort();
-  const latest = quarters[quarters.length - 1];
-  // quarter_cd가 모두 NULL인 경우 전체 rows 반환 (데이터 유실 방지)
-  if (!latest) return rows;
-  return rows.filter((r) => r.quarter_cd === latest);
+  if (latestByArea.size === 0) return rows;
+  return rows.filter((r) => {
+    const cd = r.trdar_cd as string;
+    const q = r.quarter_cd as string;
+    if (!cd || !q) return true;
+    return q === latestByArea.get(cd);
+  });
 }
 
 /* ── Main GET handler ── */
@@ -90,41 +96,56 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "lat and lng are required" }, { status: 400 });
   }
 
-  /* ── Step 1: Find nearby commercial areas ── */
-  const deg = (radius / 111000) * 1.2;
-  const { data: areaRows } = await supabase
-    .from("areas")
-    .select("trdar_cd, trdar_nm, gu, dong, lat, lng")
-    .gte("lat", lat - deg)
-    .lte("lat", lat + deg)
-    .gte("lng", lng - deg)
-    .lte("lng", lng + deg);
+  /* ── Step 1: Find nearby commercial areas ──
+     반경 내 상권이 없으면 자동으로 확대하여 최소 1개 이상 찾음 (최대 2km) */
+  const searchRadii = [radius, 500, 800, 1000, 1500, 2000];
+  // 요청 반경부터 시작, 중복 제거
+  const radiiToTry = [...new Set(searchRadii.filter((r) => r >= radius))];
 
-  if (!areaRows || areaRows.length === 0) {
-    return NextResponse.json(emptyResponse("", []), { status: 200 });
+  let nearby: Array<typeof areaRowsTyped[number] & { distance: number }> = [];
+  let actualRadius = radius;
+  type AreaRow = { trdar_cd: string; trdar_nm: string; gu: string; dong: string; lat: number; lng: number };
+  const areaRowsTyped: AreaRow[] = [];
+
+  for (const tryRadius of radiiToTry) {
+    const deg = (tryRadius / 111000) * 1.2;
+    const { data: areaRows } = await supabase
+      .from("areas")
+      .select("trdar_cd, trdar_nm, gu, dong, lat, lng")
+      .gte("lat", lat - deg)
+      .lte("lat", lat + deg)
+      .gte("lng", lng - deg)
+      .lte("lng", lng + deg);
+
+    if (!areaRows || areaRows.length === 0) continue;
+
+    nearby = areaRows
+      .map((r) => ({ ...r, distance: haversineM(lat, lng, r.lat, r.lng) }))
+      .filter((r) => r.distance <= tryRadius)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 10);
+
+    if (nearby.length > 0) {
+      actualRadius = tryRadius;
+      break;
+    }
   }
-
-  const nearby = areaRows
-    .map((r) => ({ ...r, distance: haversineM(lat, lng, r.lat, r.lng) }))
-    .filter((r) => r.distance <= radius)
-    .sort((a, b) => a.distance - b.distance)
-    .slice(0, 10);
 
   if (nearby.length === 0) {
     return NextResponse.json(emptyResponse("", []), { status: 200 });
   }
 
   const codes = nearby.map((r) => r.trdar_cd);
-  const weights = nearby.map((r) => 1.0 - 0.7 * (r.distance / radius));
+  const weights = nearby.map((r) => 1.0 - 0.7 * (r.distance / actualRadius));
   const totalWeight = weights.reduce((s, w) => s + w, 0) || 1;
   const guName = nearby[0].gu ?? "";
 
   /* ── Step 2: Fetch data in parallel (limit 확장 — 상권×분기×업종 조합이 많을 수 있음) ── */
   const [salesRes, ftRes, popRes, storesRes] = await Promise.all([
-    supabase.from("sales").select("*").in("trdar_cd", codes).limit(10000),
-    supabase.from("foot_traffic").select("*").in("trdar_cd", codes).limit(10000),
-    supabase.from("population").select("*").in("trdar_cd", codes).limit(10000),
-    supabase.from("stores").select("*").in("trdar_cd", codes).limit(10000),
+    supabase.from("sales").select("*").in("trdar_cd", codes).limit(50000),
+    supabase.from("foot_traffic").select("*").in("trdar_cd", codes).limit(50000),
+    supabase.from("population").select("*").in("trdar_cd", codes).limit(50000),
+    supabase.from("stores").select("*").in("trdar_cd", codes).limit(50000),
   ]);
 
   const salesAll = latestQuarterRows(salesRes.data ?? []);
