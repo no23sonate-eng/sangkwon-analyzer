@@ -88,6 +88,7 @@ const RENT_AREA_OPTIONS = [
   { pyeong: 50, label: "50평" },
   { pyeong: 100, label: "100평" },
   { pyeong: 200, label: "200평" },
+  { pyeong: 300, label: "그 이상" },
 ];
 
 function RentVerification({ guName }: { guName: string }) {
@@ -320,7 +321,7 @@ function LandPriceVerification({ guName }: { guName: string }) {
   const annualRentPerPyeong = rentPerPyeongMonth * 12;
   const marketYield = adjustedPricePerPyeong > 0 ? (annualRentPerPyeong / adjustedPricePerPyeong) * 100 : 0;
 
-  const inputPriceNum = parseInt(inputPrice) || 0;
+  const inputPriceNum = Math.round((parseFloat(inputPrice) || 0) * 10000); // 억→만 변환
   const inputPricePerPyeong = inputPriceNum > 0 ? Math.round(inputPriceNum / selectedPyeong) : 0;
   const inputYield = inputPricePerPyeong > 0 ? (annualRentPerPyeong / inputPricePerPyeong) * 100 : 0;
 
@@ -375,12 +376,12 @@ function LandPriceVerification({ guName }: { guName: string }) {
 
       {/* 매매가 입력 */}
       <div className="mb-3">
-        <label className="mb-1 block text-[10px] font-medium text-muted">확인하고 싶은 매매가 (만원)</label>
+        <label className="mb-1 block text-[10px] font-medium text-muted">확인하고 싶은 매매가 (억원)</label>
         <div className="flex gap-2">
-          <input type="number" value={inputPrice}
+          <input type="number" step="0.1" value={inputPrice}
             onChange={(e) => { setInputPrice(e.target.value); setVerified(null); }}
             onKeyDown={(e) => e.key === "Enter" && handleVerify()}
-            placeholder={`예: ${estimatedTotal}`}
+            placeholder={`예: ${(estimatedTotal / 10000).toFixed(1)}`}
             className="flex-1 rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] font-bold outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
           <button onClick={handleVerify} disabled={!inputPrice || verifyLoading}
             className="rounded-lg bg-emerald-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-emerald-700 active:scale-95 disabled:opacity-40">
