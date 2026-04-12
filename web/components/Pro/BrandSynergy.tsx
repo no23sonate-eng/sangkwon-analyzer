@@ -76,6 +76,7 @@ export default function BrandSynergy() {
   const sales = analysisData?.sales_summary;
   const rent = analysisData?.rent_info as Record<string, unknown> | undefined;
   const scSummary = storeCountData?.summary ?? analysisData?.sc_summary;
+  const pop = analysisData?.pop_summary;
 
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -89,6 +90,9 @@ export default function BrandSynergy() {
     const rent1f = (rent?.["1층_평"] as number) ?? 0;
     const ageSum = Object.values(ft.by_age ?? {}).reduce((s: number, v: number) => s + (v as number), 0);
     const ftTotal = ((ft.total as number) ?? ageSum) || 1;
+    const popTotal = (pop?.total as number) || 0;
+    // 잠재 소비자 = 유동인구 + 거주인구 (거주인구는 반복 소비하므로 가중)
+    const potentialConsumers = ftTotal + popTotal;
 
     let categorizedStores = 0;
     const result: GroupData[] = [];
@@ -138,10 +142,10 @@ export default function BrandSynergy() {
 
       const franchiseRatio = storeCount > 0 ? franchise / storeCount : 0;
 
-      // 수요: 1인당 소비액 = 카테고리 매출 / 유동인구 (원시값, 후처리에서 정규화)
-      const salesPerTraffic = ftTotal > 0 ? totalSalesAmt / ftTotal : 0;
-      // 공급 밀도: 유동인구 만명당 점포 수 (원시값)
-      const density = ftTotal > 0 ? (storeCount / ftTotal) * 10000 : 0;
+      // 수요: 1인당 소비액 = 카테고리 매출 / (유동인구+거주인구)
+      const salesPerPerson = potentialConsumers > 0 ? totalSalesAmt / potentialConsumers : 0;
+      // 공급 밀도: 잠재소비자 만명당 점포 수
+      const density = potentialConsumers > 0 ? (storeCount / potentialConsumers) * 10000 : 0;
 
       result.push({
         key,
@@ -149,7 +153,7 @@ export default function BrandSynergy() {
         icon: group.icon,
         storeCount,
         supplyRatio: 0,
-        demandScore: salesPerTraffic, // 임시: 원시값, 아래서 정규화
+        demandScore: salesPerPerson, // 임시: 원시값, 아래서 정규화
         gapScore: 0,
         totalSales: totalSalesAmt,
         perStoreSales: avgPerStoreSales,
@@ -171,8 +175,8 @@ export default function BrandSynergy() {
 
     // 수요: 1인당 소비액 → 카테고리 중 최고값 대비 비율 (0~100)
     const maxDemand = Math.max(...valid.map((r) => r.demandScore), 1);
-    // 공급밀도: 유동인구 만명당 점포수 → 최고 대비 비율 (높을수록 과밀)
-    const densities = valid.map((r) => ftTotal > 0 ? (r.storeCount / ftTotal) * 10000 : 0);
+    // 공급밀도: 잠재소비자 만명당 점포수 → 최고 대비 비율 (높을수록 과밀)
+    const densities = valid.map((r) => potentialConsumers > 0 ? (r.storeCount / potentialConsumers) * 10000 : 0);
     const maxDensity = Math.max(...densities, 1);
 
     for (let i = 0; i < valid.length; i++) {
@@ -191,7 +195,7 @@ export default function BrandSynergy() {
     }
 
     return valid.sort((a, b) => b.gapScore - a.gapScore);
-  }, [store, ft, sales, scSummary, rent]);
+  }, [store, ft, sales, scSummary, rent, pop]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
   if (groups.length === 0) {
@@ -205,29 +209,37 @@ export default function BrandSynergy() {
   const selectedGroup = groups.find((g) => g.key === selected);
 
   // 선택된 카테고리의 레이더 데이터 — 모두 실데이터 기반
-  const ftTotal = ft?.total ?? 1;
+  const _ftTotal = ft?.total ?? 1;
+  const _popTotal = pop?.total ?? 0;
+  const _consumers = _ftTotal + _popTotal;
   const radarData = selectedGroup ? [
-    // 수요: 유동인구 1인당 해당 업종 소비액 (카테고리 중 최고 대비 %)
+    // 수요: (유동+거주)인구 1인당 소비액 (카테고리 중 최고 대비 %)
     { axis: "수요", value: selectedGroup.demandScore,
-      desc: `1인당 소비 ${Math.round(selectedGroup.totalSales / ftTotal).toLocaleString()}원` },
-    // 공급 여유: 유동인구 만명당 점포수 — 적을수록 여유
+      desc: `1인당 ${Math.round(selectedGroup.totalSales / _consumers).toLocaleString()}원` },
+    // 공급 여유: 잠재소비자 만명당 점포수 — 적을수록 여유
     { axis: "공급 여유", value: (() => {
-      const densities = groups.map((g) => ftTotal > 0 ? (g.storeCount / ftTotal) * 10000 : 0);
+      const densities = groups.map((g) => _consumers > 0 ? (g.storeCount / _consumers) * 10000 : 0);
       const maxD = Math.max(...densities, 1);
-      const myD = ftTotal > 0 ? (selectedGroup.storeCount / ftTotal) * 10000 : 0;
+      const myD = _consumers > 0 ? (selectedGroup.storeCount / _consumers) * 10000 : 0;
       return Math.max(5, Math.round((1 - myD / maxD) * 100));
     })(),
-      desc: `만명당 ${(ftTotal > 0 ? (selectedGroup.storeCount / ftTotal) * 10000 : 0).toFixed(1)}개` },
-    // 매출력: 점포당 매출 (카테고리 중 최고 대비 %)
-    { axis: "매출력", value: (() => {
-      const valid = groups.filter((g) => g.perStoreSales > 0);
-      if (valid.length === 0 || selectedGroup.perStoreSales === 0) return 5;
-      const maxPS = Math.max(...valid.map((g) => g.perStoreSales));
-      return maxPS > 0 ? Math.min(100, Math.max(5, Math.round((selectedGroup.perStoreSales / maxPS) * 100))) : 5;
+      desc: `만명당 ${(_consumers > 0 ? (selectedGroup.storeCount / _consumers) * 10000 : 0).toFixed(1)}개` },
+    // 매출 잠재력: 잠재소비자 대비 현재 점포당 매출이 얼마나 더 나올 수 있는지
+    // = (잠재소비자 / 점포수) × (1인당소비액 대비) — 소비자 대비 점포가 적고 수요가 높으면 높음
+    { axis: "매출 잠재력", value: (() => {
+      if (selectedGroup.storeCount === 0) return 5;
+      // 점포당 잠재소비자 수 (많을수록 매출 가능성 높음)
+      const consumersPerStore = _consumers / selectedGroup.storeCount;
+      const allCPS = groups.filter((g) => g.storeCount > 0).map((g) => _consumers / g.storeCount);
+      const maxCPS = Math.max(...allCPS, 1);
+      return Math.max(5, Math.min(100, Math.round((consumersPerStore / maxCPS) * 100)));
     })(),
-      desc: `점포당 ${selectedGroup.perStoreSales > 0 ? Math.round(selectedGroup.perStoreSales / 10000).toLocaleString() + "만" : "-"}` },
-    // 생존율: 개업 / (개업+폐업)
-    { axis: "생존율", value: Math.round(selectedGroup.survivalRate * 100),
+      desc: `점포당 소비자 ${selectedGroup.storeCount > 0 ? Math.round(_consumers / selectedGroup.storeCount).toLocaleString() : "-"}명` },
+    // 개폐업률: 해당 카테고리의 개업/(개업+폐업) — 높을수록 건전
+    { axis: "개폐업률", value: (() => {
+      const oc = selectedGroup.openCount + selectedGroup.closeCount;
+      return oc > 0 ? Math.round((selectedGroup.openCount / oc) * 100) : 50;
+    })(),
       desc: `개업${selectedGroup.openCount} 폐업${selectedGroup.closeCount}` },
     // 임대 적정: 월세 / 점포당매출 비율의 역수
     { axis: "임대 적정", value: Math.min(100, Math.max(5, Math.round((1 - Math.min(selectedGroup.rentBurden, 1)) * 100))),
