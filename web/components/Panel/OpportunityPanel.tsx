@@ -62,7 +62,10 @@ export default function OpportunityPanel() {
 
       {/* ── 4. 브랜드 시너지 ── */}
       <section>
-        <h3 className="mb-3 text-[14px] font-bold text-gray-900">브랜드 시너지</h3>
+        <div className="mb-3 flex items-center gap-2">
+          <h3 className="text-[14px] font-bold text-gray-900">브랜드 시너지</h3>
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-700">To be continued</span>
+        </div>
         <BrandSynergy />
       </section>
 
@@ -96,7 +99,7 @@ function RentVerification({ guName }: { guName: string }) {
   const [inputRent, setInputRent] = useState("");
   const [selectedPyeong, setSelectedPyeong] = useState(10);
   const [inputFloor, setInputFloor] = useState("1층");
-  const [verified, setVerified] = useState<null | { status: string; message: string; color: string }>(null);
+  const [verified, setVerified] = useState<null | { status: string; message: string; color: string; avgPP?: number }>(null);
   const [rentLoading, setRentLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
 
@@ -121,18 +124,39 @@ function RentVerification({ guName }: { guName: string }) {
     setVerified(null);
     setTimeout(() => {
       const fs = rentNearby.stats[inputFloor];
-      if (!fs || fs.count === 0) {
-        setVerified({ status: "데이터 부족", message: "해당 층의 사례가 부족합니다", color: "#94A3B8" });
-        setVerifyLoading(false);
-        return;
+      let avgPP: number;
+      let estimated = false;
+
+      if (fs && fs.count > 0) {
+        avgPP = fs.avg_pyeong;
+      } else {
+        // 해당 층 데이터 없을 때: 다른 층 데이터로 보정 추정
+        const FLOOR_FACTOR: Record<string, number> = { "1층": 1.0, "2층": 0.65, "지하": 0.5 };
+        const targetFactor = FLOOR_FACTOR[inputFloor] ?? 1.0;
+        let fallbackPP = 0;
+        for (const [floor, factor] of Object.entries(FLOOR_FACTOR)) {
+          const other = rentNearby.stats[floor];
+          if (other && other.count > 0) {
+            fallbackPP = (other.avg_pyeong / factor) * targetFactor;
+            break;
+          }
+        }
+        if (fallbackPP <= 0) {
+          setVerified({ status: "데이터 부족", message: "주변 임대 사례가 없습니다. 반경을 넓혀 다시 시도해주세요.", color: "#94A3B8" });
+          setVerifyLoading(false);
+          return;
+        }
+        avgPP = Math.round(fallbackPP * 10) / 10;
+        estimated = true;
       }
+
       const rentPP = rent / selectedPyeong;
-      const avgPP = fs.avg_pyeong;
       const ratio = rentPP / avgPP;
-      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.`, color: "#10B981" });
-      else if (ratio <= 1.1) setVerified({ status: "적정", message: "시세 범위 내 적정 수준입니다.", color: "#6366F1" });
-      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.`, color: "#F59E0B" });
-      else setVerified({ status: "고가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.`, color: "#EF4444" });
+      const suffix = estimated ? " (다른 층 기준 추정)" : "";
+      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.${suffix}`, color: "#10B981", avgPP });
+      else if (ratio <= 1.1) setVerified({ status: "적정", message: `시세 범위 내 적정 수준입니다.${suffix}`, color: "#6366F1", avgPP });
+      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.${suffix}`, color: "#F59E0B", avgPP });
+      else setVerified({ status: "고가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.${suffix}`, color: "#EF4444", avgPP });
       setVerifyLoading(false);
     }, 2000);
   };
@@ -182,7 +206,7 @@ function RentVerification({ guName }: { guName: string }) {
         <div className="mb-3 rounded-xl p-4" style={{ background: verified.color + "10" }}>
           <div className="flex items-center gap-2">
             <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>{verified.status}</span>
-            <span className="text-[11px] text-gray-500">평당 {Math.round(parseInt(inputRent) / selectedPyeong)}만 vs 시세 {fs?.avg_pyeong ?? 0}만/평</span>
+            <span className="text-[11px] text-gray-500">평당 {Math.round(parseInt(inputRent) / selectedPyeong)}만 vs 시세 {verified.avgPP ?? fs?.avg_pyeong ?? 0}만/평</span>
           </div>
           <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
         </div>

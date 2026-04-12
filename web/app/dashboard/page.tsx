@@ -11,8 +11,6 @@ import {
 } from "lucide-react";
 import CountUp from "@/components/CountUp";
 import {
-  AreaChart,
-  Area,
   BarChart,
   Bar,
   XAxis,
@@ -20,27 +18,15 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
   Cell,
-  LabelList,
 } from "recharts";
 import { chartTheme } from "@/lib/colors";
 import { supabase } from "@/lib/supabase";
 import {
   getDashboardStats,
-  getTrendData,
   getTopAreas,
-  getIndustryStats,
-  getWeeklyFootTraffic,
-  getRecentAnalyses,
-  getGreeting,
-  type Period,
   type DashboardStats,
-  type TrendDataPoint,
   type TopArea,
-  type IndustryRow,
-  type FootTrafficDay,
-  type RecentAnalysis,
 } from "@/lib/dashboard-data";
 
 const tooltipStyle = chartTheme.tooltip;
@@ -53,62 +39,38 @@ function fmtK(n: number) {
 }
 
 const BASE_URL = "";
-const PERIOD_OPTIONS = [
-  { value: "3m", label: "3개월" },
-  { value: "6m", label: "6개월" },
-  { value: "1y", label: "1년" },
-  { value: "2y", label: "2년" },
-  { value: "3y", label: "3년" },
-] as const;
-
 interface AreaGroup { key: string; label: string; }
-interface TrendApiPoint { quarter: string; 개업: number; 폐업: number; }
-interface FootTrafficApiPoint { quarter: string; 유동인구: number; }
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [period, setPeriod] = useState<string>("6m");
   const [topAreas, setTopAreas] = useState<TopArea[]>([]);
-  const [industry, setIndustry] = useState<IndustryRow[]>([]);
-  const [weekly, setWeekly] = useState<FootTrafficDay[]>([]);
-  const [recent, setRecent] = useState<RecentAnalysis[]>([]);
 
   // 상권 선택
   const [areaGroups, setAreaGroups] = useState<AreaGroup[]>([]);
   const [selectedArea, setSelectedArea] = useState("서울 전체");
 
   // 실제 API 트렌드 데이터
-  const [ftTrendData, setFtTrendData] = useState<FootTrafficApiPoint[]>([]);
-  const [salesTrend, setSalesTrend] = useState<Array<{ quarter: string; 매출_억: number; 건수_만: number }>>([]);
   const [salesByIndustry, setSalesByIndustry] = useState<Array<{ 업종: string; 매출_억: number; 전분기대비: number }>>([]);
 
   useEffect(() => {
     getDashboardStats().then(setStats);
     getTopAreas().then(setTopAreas);
-    setRecent(getRecentAnalyses());
     fetch(`${BASE_URL}/api/dashboard/area-groups`)
       .then((r) => r.json())
       .then(setAreaGroups)
       .catch(() => {});
   }, []);
 
-  // 기간 + 상권 변경 시 트렌드 API 호출
+  // 상권 변경 시 트렌드 API 호출
   useEffect(() => {
-    const url = `${BASE_URL}/api/dashboard/trend?area=${encodeURIComponent(selectedArea)}&period=${period}`;
+    const url = `${BASE_URL}/api/dashboard/trend?area=${encodeURIComponent(selectedArea)}&period=6m`;
     fetch(url)
       .then((r) => r.json())
       .then((data) => {
-        setFtTrendData(data["유동인구"] ?? []);
-        setSalesTrend(data["매출"] ?? []);
         setSalesByIndustry(data["매출_업종별"] ?? []);
       })
       .catch(() => {});
-
-    // 하단 더미 차트도 갱신
-    const p = (["3m", "6m", "1y"].includes(period) ? period : "1y") as Period;
-    getIndustryStats(p).then(setIndustry);
-    getWeeklyFootTraffic(p).then(setWeekly);
-  }, [period, selectedArea]);
+  }, [selectedArea]);
 
   return (
     <div className="h-full overflow-y-auto p-8">
@@ -169,15 +131,12 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* ── 2컬럼: 개폐업 추이 + TOP 10 ── */}
+        {/* ── TOP 10 ── */}
         <OpenCloseAndTop10 />
 
-        {/* ── 3컬럼 카드 ── */}
-        <ThreeColumnCards />
-
-        {/* ── 상권 선택 태그 ── */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[13px] font-semibold text-gray-700">상권</span>
+        {/* ── 상권 선택 태그 (여기 아래 모든 차트가 상권 필터 연동) ── */}
+        <div className="flex flex-wrap items-center gap-2 rounded-[20px] bg-white p-4 shadow-card">
+          <span className="text-[13px] font-semibold text-gray-700 mr-1">분석 상권</span>
           {areaGroups.map((g) => (
             <button
               key={g.key}
@@ -185,7 +144,7 @@ export default function DashboardPage() {
               className={`rounded-full px-4 py-2 text-[13px] font-medium transition-all active:scale-95 ${
                 selectedArea === g.key
                   ? "bg-primary-600 text-white shadow-sm"
-                  : "bg-white text-gray-600 shadow-card hover:bg-primary-50 hover:text-primary-600"
+                  : "bg-gray-50 text-gray-600 hover:bg-primary-50 hover:text-primary-600"
               }`}
             >
               {g.label}
@@ -193,109 +152,64 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* ── 중단: 트렌드 차트 + TOP 5 ── */}
+        {/* ── 중단: 업종별 매출 증감 그래프 + TOP 5 ── */}
         <div className="grid grid-cols-12 gap-5">
-          {/* 좌측: 상권 트렌드 (실제 API) */}
-          <div className="col-span-8 space-y-5">
-            {/* 유동인구 트렌드 (기간 선택 가능 — 7년치 보유) */}
-            <div className="rounded-[20px] bg-card p-6 shadow-card">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-[16px] font-semibold text-gray-900">
-                  {selectedArea} · 유동인구 추이
-                </h2>
-                <div className="flex rounded-full bg-gray-100 p-0.5">
-                  {PERIOD_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => setPeriod(opt.value)}
-                      className={`rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
-                        period === opt.value
-                          ? "bg-white text-gray-800 shadow-sm"
-                          : "text-muted hover:text-gray-600"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {ftTrendData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <AreaChart data={ftTrendData}>
-                    <defs>
-                      <linearGradient id="fillFt" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#0EA5E9" stopOpacity={0.15} />
-                        <stop offset="100%" stopColor="#0EA5E9" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                    <XAxis dataKey="quarter" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} interval={ftTrendData.length > 8 ? 1 : 0} />
-                    <YAxis tickFormatter={(v: number) => v >= 10000 ? `${(v/10000).toFixed(0)}만` : `${(v/1000).toFixed(0)}k`} tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} width={40} />
-                    <Tooltip {...tooltipStyle} formatter={(v) => [`${Number(v).toLocaleString()}명`, "일평균 유동인구"]} />
-                    <Area type="monotone" dataKey="유동인구" stroke="#0EA5E9" strokeWidth={2} fill="url(#fillFt)" dot={ftTrendData.length <= 8 ? { r: 3, fill: "#0EA5E9", stroke: "#fff", strokeWidth: 2 } : false} activeDot={{ r: 5, fill: "#0EA5E9", stroke: "#fff", strokeWidth: 2 }} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex h-[220px] items-center justify-center text-[13px] text-muted">데이터 없음</div>
-              )}
-            </div>
-
-            {/* 매출 트렌드 */}
-            <div className="rounded-[20px] bg-card p-6 shadow-card">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-[16px] font-semibold text-gray-900">
-                  {selectedArea} · 분기별 매출
-                </h2>
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-medium text-muted">
-                  2025년 데이터
-                </span>
-              </div>
-              {salesTrend.length > 0 ? (
-                <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={salesTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                    <XAxis dataKey="quarter" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={(v: number) => `${v >= 1000 ? `${(v/1000).toFixed(0)}천` : v}억`} tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} width={45} />
-                    <Tooltip {...tooltipStyle} formatter={(v) => [`${Number(v).toLocaleString()}억원`, "매출"]} />
-                    <Bar dataKey="매출_억" fill="#F59E0B" radius={[6, 6, 0, 0]} barSize={32} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex h-[180px] items-center justify-center text-[13px] text-muted">
-                  해당 기간의 매출 데이터가 없습니다
-                </div>
-              )}
-            </div>
-
-            {/* 업종별 매출 증감 */}
+          {/* 좌측: 업종별 매출 증감 (바 차트) */}
+          <div className="col-span-8">
             {salesByIndustry.length > 0 && (
               <div className="rounded-[20px] bg-card p-6 shadow-card">
-                <h2 className="mb-3 text-[16px] font-semibold text-gray-900">
+                <h2 className="mb-4 text-[16px] font-semibold text-gray-900">
                   {selectedArea} · 업종별 매출 증감
                 </h2>
-                <div className="overflow-hidden rounded-xl border border-gray-100">
-                  <table className="w-full text-[13px]">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-4 py-2 text-left font-medium text-muted">업종</th>
-                        <th className="px-4 py-2 text-right font-medium text-muted">매출</th>
-                        <th className="px-4 py-2 text-right font-medium text-muted">전분기 대비</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                <ResponsiveContainer width="100%" height={360}>
+                  <BarChart
+                    data={salesByIndustry.slice(0, 10)}
+                    layout="vertical"
+                    barSize={20}
+                    margin={{ left: 80, right: 60, top: 0, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+                    <XAxis type="number" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis
+                      type="category"
+                      dataKey="업종"
+                      tick={{ fill: "#334155", fontSize: 12 }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={78}
+                    />
+                    <Tooltip
+                      {...tooltipStyle}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      formatter={(v: any) => [`${Number(v).toLocaleString()}억`, "매출"]}
+                    />
+                    <Bar dataKey="매출_억" radius={[0, 6, 6, 0]} animationDuration={800}>
                       {salesByIndustry.slice(0, 10).map((row, i) => (
-                        <tr key={i} className="border-t border-gray-50 hover:bg-gray-50">
-                          <td className="px-4 py-2 font-medium text-gray-800">{row.업종}</td>
-                          <td className="px-4 py-2 text-right text-gray-600">{row.매출_억.toLocaleString()}억</td>
-                          <td className={`px-4 py-2 text-right font-semibold ${
-                            row.전분기대비 > 0 ? "text-emerald-500" : row.전분기대비 < 0 ? "text-red-400" : "text-gray-400"
-                          }`}>
-                            {row.전분기대비 > 0 ? "+" : ""}{row.전분기대비}%
-                          </td>
-                        </tr>
+                        <Cell
+                          key={i}
+                          fill={row.전분기대비 > 0 ? "#10B981" : row.전분기대비 < 0 ? "#F43F5E" : "#94A3B8"}
+                        />
                       ))}
-                    </tbody>
-                  </table>
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+                {/* 전분기 대비 증감 레이블 */}
+                <div className="mt-3 flex flex-wrap gap-2 px-2">
+                  {salesByIndustry.slice(0, 10).map((row, i) => (
+                    <span
+                      key={i}
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                        row.전분기대비 > 0
+                          ? "bg-emerald-50 text-emerald-600"
+                          : row.전분기대비 < 0
+                          ? "bg-red-50 text-red-500"
+                          : "bg-gray-50 text-gray-400"
+                      }`}
+                    >
+                      {row.업종}
+                      {row.전분기대비 > 0 ? " +" : " "}{row.전분기대비}%
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
@@ -348,137 +262,9 @@ export default function DashboardPage() {
         {/* ── 임대료 · 매각가 (선택 상권 기준) ── */}
         <RentSaleCards selectedArea={selectedArea} />
 
-        {/* ── 하단: 3컬럼 ── */}
-        <div className="grid grid-cols-3 gap-5">
-          {/* 업종별 개폐업 현황 */}
-          <div className="rounded-[20px] bg-card p-6 shadow-card">
-            <h2 className="mb-4 text-[16px] font-semibold text-gray-900">
-              업종별 개폐업 현황
-            </h2>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={industry} layout="vertical" barGap={0} barSize={14}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fill: "#64748B", fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  tick={{ fill: "#64748B", fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={52}
-                />
-                <Tooltip {...tooltipStyle} />
-                <Bar dataKey="개업" fill="#6366F1" radius={[0, 6, 6, 0]} />
-                <Bar dataKey="폐업" fill="#FCA5A5" radius={[0, 6, 6, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-            <div className="mt-2 flex items-center gap-4 text-[11px] text-muted">
-              <span className="flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-primary-500" />
-                개업
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full" style={{ background: "#FCA5A5" }} />
-                폐업
-              </span>
-            </div>
-          </div>
+        {/* ── 업종별 점포수 · 주요 상권 바로가기 ── */}
+        <TwoColumnCards selectedArea={selectedArea} />
 
-          {/* 요일별 유동인구 패턴 */}
-          <div className="rounded-[20px] bg-card p-6 shadow-card">
-            <h2 className="mb-4 text-[16px] font-semibold text-gray-900">
-              요일별 유동인구 패턴
-            </h2>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={weekly} barSize={32}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                <XAxis
-                  dataKey="day"
-                  tick={{ fill: "#64748B", fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis hide />
-                <Tooltip
-                  {...tooltipStyle}
-                  formatter={(v) => [fmtK(Number(v)) + "명", "유동인구"]}
-                />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                  <LabelList
-                    dataKey="value"
-                    position="top"
-                    formatter={(v) => fmtK(Number(v))}
-                    style={{ fill: "#64748B", fontSize: 11, fontWeight: 500 }}
-                  />
-                  {weekly.map((entry, i) => (
-                    <Cell
-                      key={i}
-                      fill={
-                        entry.day === "토" || entry.day === "일"
-                          ? "#6366F1"
-                          : "#C7D2FE"
-                      }
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* 최근 분석 기록 */}
-          <div className="flex flex-col rounded-[20px] bg-card p-6 shadow-card">
-            <h2 className="mb-4 text-[16px] font-semibold text-gray-900">
-              최근 분석 기록
-            </h2>
-            {recent.length > 0 ? (
-              <div className="flex-1 space-y-0">
-                {recent.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    className={`flex items-center justify-between py-3.5 ${
-                      idx < recent.length - 1 ? "border-b border-gray-50" : ""
-                    }`}
-                  >
-                    <div>
-                      <p className="text-[14px] font-medium text-gray-800">
-                        {item.name}
-                      </p>
-                      <p className="mt-0.5 text-[12px] text-muted">{item.date}</p>
-                    </div>
-                    <a
-                      href="/search"
-                      className="text-[12px] font-medium text-primary-600 hover:text-primary-700"
-                    >
-                      다시 보기
-                    </a>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                  <Search size={20} className="text-muted" />
-                </div>
-                <p className="text-[13px] text-muted">
-                  아직 분석 기록이 없어요.
-                  <br />
-                  상권을 검색해보세요!
-                </p>
-                <a
-                  href="/search"
-                  className="rounded-[var(--radius-button)] bg-primary-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-primary-700"
-                >
-                  상권 검색하기
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -826,76 +612,63 @@ const SHORTCUTS = [
   { name: "을지로", tag: "뉴트로", stat: "+18%", code: "euljiro", lat: 37.5665, lng: 126.9918 },
 ];
 
-function ThreeColumnCards() {
+/* 상권 키워드 → trdar_cd 해결 (trend API와 동일 로직) */
+const AREA_KEYWORDS_CLIENT: Record<string, string[]> = {
+  "강남역": ["강남역", "강남"],
+  "도산공원": ["도산공원", "압구정", "신사동 가로수길", "가로수길"],
+  "한남동": ["한남", "이태원"],
+  "성수동": ["성수"],
+  "홍대역": ["홍대", "서교", "동교"],
+  "명동": ["명동"],
+};
+
+async function resolveTrdarCds(area: string): Promise<string[] | null> {
+  if (area === "서울 전체") return null;
+  const kws = AREA_KEYWORDS_CLIENT[area] ?? [area];
+  const all = new Set<string>();
+  for (const kw of kws) {
+    const { data } = await supabase.from("areas").select("trdar_cd").ilike("trdar_nm", `%${kw}%`);
+    if (data) for (const r of data) all.add(r.trdar_cd);
+  }
+  return all.size > 0 ? Array.from(all) : null;
+}
+
+function TwoColumnCards({ selectedArea }: { selectedArea: string }) {
   const [industryData, setIndustryData] = useState<Array<{ name: string; 점포수: number }>>([]);
-  const [weekdayData, setWeekdayData] = useState<Array<{ day: string; value: number }>>([]);
 
   useEffect(() => {
-    // Fetch industry data from stores table
-    async function fetchIndustry() {
-      const { data } = await supabase
-        .from("stores")
-        .select("svc_nm, store_count")
-        .limit(10000);
+    let cancelled = false;
+    setIndustryData([]);
+    async function fetchAll() {
+      const trdarCds = await resolveTrdarCds(selectedArea);
 
-      if (!data) return;
+      // 업종별 점포수
+      let storeQuery = supabase.from("stores").select("svc_nm, store_count");
+      if (trdarCds) storeQuery = storeQuery.in("trdar_cd", trdarCds);
+      const { data: sData } = await storeQuery.limit(50000);
 
       const bySvc = new Map<string, number>();
-      for (const r of data) {
+      for (const r of sData ?? []) {
         const nm = r.svc_nm ?? "기타";
         bySvc.set(nm, (bySvc.get(nm) ?? 0) + (r.store_count ?? 0));
       }
-
       const sorted = Array.from(bySvc.entries())
         .map(([name, count]) => ({ name, 점포수: count }))
         .sort((a, b) => b.점포수 - a.점포수)
         .slice(0, 5);
 
+      if (cancelled) return;
       setIndustryData(sorted);
     }
-
-    // Fetch weekday foot traffic from foot_traffic table
-    async function fetchWeekday() {
-      const { data } = await supabase
-        .from("foot_traffic")
-        .select("mon, tue, wed, thu, fri, sat, sun")
-        .limit(10000);
-
-      if (!data) return;
-
-      let mon = 0, tue = 0, wed = 0, thu = 0, fri = 0, sat = 0, sun = 0;
-      for (const r of data) {
-        mon += r.mon ?? 0;
-        tue += r.tue ?? 0;
-        wed += r.wed ?? 0;
-        thu += r.thu ?? 0;
-        fri += r.fri ?? 0;
-        sat += r.sat ?? 0;
-        sun += r.sun ?? 0;
-      }
-
-      setWeekdayData([
-        { day: "월", value: mon },
-        { day: "화", value: tue },
-        { day: "수", value: wed },
-        { day: "목", value: thu },
-        { day: "금", value: fri },
-        { day: "토", value: sat },
-        { day: "일", value: sun },
-      ]);
-    }
-
-    fetchIndustry();
-    fetchWeekday();
-  }, []);
-
-  const peakValue = weekdayData.length > 0 ? Math.max(...weekdayData.map((d) => d.value)) : 0;
+    fetchAll();
+    return () => { cancelled = true; };
+  }, [selectedArea]);
 
   return (
-    <div className="mt-6 grid grid-cols-3 gap-6">
+    <div className="mt-6 grid grid-cols-2 gap-6">
       {/* 카드 1: 업종별 점포수 TOP 5 */}
       <div className="rounded-[20px] bg-white p-6 shadow-card">
-        <h3 className="mb-4 text-[16px] font-semibold text-gray-900">업종별 점포수 TOP 5</h3>
+        <h3 className="mb-4 text-[16px] font-semibold text-gray-900">{selectedArea} · 업종별 점포수 TOP 5</h3>
         {industryData.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={industryData} layout="vertical" barSize={18}>
@@ -911,42 +684,7 @@ function ThreeColumnCards() {
         )}
       </div>
 
-      {/* 카드 2: 요일별 유동인구 */}
-      <div className="rounded-[20px] bg-white p-6 shadow-card">
-        <h3 className="mb-4 text-[16px] font-semibold text-gray-900">요일별 유동인구</h3>
-        {weekdayData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={weekdayData} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-              <XAxis dataKey="day" tick={{ fill: "#64748B", fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis hide />
-              <Tooltip {...tooltipStyle} formatter={(v) => [`${Number(v).toLocaleString()}명`, "유동인구"]} />
-              <Bar dataKey="value" radius={[6, 6, 0, 0]} animationDuration={800}>
-                {weekdayData.map((entry, i) => (
-                  <Cell
-                    key={i}
-                    fill={entry.day === "토" || entry.day === "일" ? "#6366F1" : "#A5B4FC"}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex h-[200px] items-center justify-center text-[13px] text-muted">로딩 중...</div>
-        )}
-        {/* PEAK 뱃지 — 가장 높은 요일 위 */}
-        {weekdayData.length > 0 && (
-          <div className="mt-1 flex justify-center text-[11px]">
-            <span className="text-muted">
-              피크: <span className="font-semibold text-primary-600">
-                {weekdayData.find((d) => d.value === peakValue)?.day}요일 {(peakValue / 10000).toFixed(1)}만명
-              </span>
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* 카드 3: 주요 상권 바로가기 */}
+      {/* 카드 2: 주요 상권 바로가기 */}
       <div className="rounded-[20px] bg-white p-6 shadow-card">
         <h3 className="mb-4 text-[16px] font-semibold text-gray-900">주요 상권 바로가기</h3>
         <div className="grid grid-cols-2 gap-3">

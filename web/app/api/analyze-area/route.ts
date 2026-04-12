@@ -74,6 +74,8 @@ function latestQuarterRows(rows: Row[]): Row[] {
   }
   const quarters = Array.from(quartersSet).sort();
   const latest = quarters[quarters.length - 1];
+  // quarter_cd가 모두 NULL인 경우 전체 rows 반환 (데이터 유실 방지)
+  if (!latest) return rows;
   return rows.filter((r) => r.quarter_cd === latest);
 }
 
@@ -117,12 +119,12 @@ export async function GET(request: Request) {
   const totalWeight = weights.reduce((s, w) => s + w, 0) || 1;
   const guName = nearby[0].gu ?? "";
 
-  /* ── Step 2: Fetch data in parallel ── */
+  /* ── Step 2: Fetch data in parallel (limit 확장 — 상권×분기×업종 조합이 많을 수 있음) ── */
   const [salesRes, ftRes, popRes, storesRes] = await Promise.all([
-    supabase.from("sales").select("*").in("trdar_cd", codes),
-    supabase.from("foot_traffic").select("*").in("trdar_cd", codes),
-    supabase.from("population").select("*").in("trdar_cd", codes),
-    supabase.from("stores").select("*").in("trdar_cd", codes),
+    supabase.from("sales").select("*").in("trdar_cd", codes).limit(10000),
+    supabase.from("foot_traffic").select("*").in("trdar_cd", codes).limit(10000),
+    supabase.from("population").select("*").in("trdar_cd", codes).limit(10000),
+    supabase.from("stores").select("*").in("trdar_cd", codes).limit(10000),
   ]);
 
   const salesAll = latestQuarterRows(salesRes.data ?? []);

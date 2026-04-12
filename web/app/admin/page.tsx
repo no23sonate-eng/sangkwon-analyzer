@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
-import { Users, MessageSquare, Download } from "lucide-react";
+import { Users, MessageSquare, Download, CheckCircle, XCircle, UserCheck } from "lucide-react";
 
 interface UserRow {
   id: number;
@@ -14,6 +14,7 @@ interface UserRow {
   gender: string;
   age_group: string;
   registered_at: string;
+  approved: boolean;
 }
 
 interface InquiryRow {
@@ -49,6 +50,21 @@ function AdminContent() {
       setLoading(false);
     })();
   }, [isAuth]);
+
+  const toggleApproval = async (userId: number, approved: boolean) => {
+    await supabase.from("users").update({ approved }).eq("id", userId);
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, approved } : u))
+    );
+  };
+
+  const approveAll = async () => {
+    const pending = users.filter((u) => !u.approved);
+    if (pending.length === 0) return;
+    const ids = pending.map((u) => u.id);
+    await supabase.from("users").update({ approved: true }).in("id", ids);
+    setUsers((prev) => prev.map((u) => ({ ...u, approved: true })));
+  };
 
   const exportCSV = (data: Record<string, unknown>[], filename: string) => {
     if (data.length === 0) return;
@@ -104,7 +120,7 @@ function AdminContent() {
         </div>
 
         {/* 통계 카드 */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div className="rounded-[20px] bg-white p-5 shadow-card">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
@@ -113,6 +129,17 @@ function AdminContent() {
               <div>
                 <p className="text-[11px] text-muted">총 가입자</p>
                 <p className="text-[24px] font-bold text-gray-900">{users.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-[20px] bg-white p-5 shadow-card">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50">
+                <UserCheck size={18} className="text-amber-600" />
+              </div>
+              <div>
+                <p className="text-[11px] text-muted">승인 대기</p>
+                <p className="text-[24px] font-bold text-amber-600">{users.filter(u => !u.approved).length}</p>
               </div>
             </div>
           </div>
@@ -130,7 +157,7 @@ function AdminContent() {
         </div>
 
         {/* 탭 */}
-        <div className="flex gap-2 border-b border-gray-200">
+        <div className="flex items-center gap-2 border-b border-gray-200">
           <button
             onClick={() => setTab("users")}
             className={`px-4 py-2 text-[13px] font-semibold border-b-2 ${tab === "users" ? "border-primary-600 text-primary-600" : "border-transparent text-gray-500"}`}
@@ -143,6 +170,14 @@ function AdminContent() {
           >
             문의 ({inquiries.length})
           </button>
+          {tab === "users" && users.some((u) => !u.approved) && (
+            <button
+              onClick={approveAll}
+              className="ml-auto flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100"
+            >
+              <CheckCircle size={13} /> 전체 승인
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -152,20 +187,33 @@ function AdminContent() {
             <table className="w-full text-[12px]">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-4 py-3 text-left font-semibold text-gray-600">상태</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-600">이메일</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-600">이름</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-600">직업</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-600">성별</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-600">연령</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-600">가입일시</th>
+                  <th className="px-4 py-3 text-center font-semibold text-gray-600">관리</th>
                 </tr>
               </thead>
               <tbody>
                 {users.length === 0 ? (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-muted">아직 가입자가 없습니다</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-8 text-center text-muted">아직 가입자가 없습니다</td></tr>
                 ) : (
                   users.map((u) => (
-                    <tr key={u.id} className="border-t border-gray-50 hover:bg-gray-50">
+                    <tr key={u.id} className={`border-t border-gray-50 hover:bg-gray-50 ${!u.approved ? "bg-amber-50/40" : ""}`}>
+                      <td className="px-4 py-3">
+                        {u.approved ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                            <CheckCircle size={11} /> 승인
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                            대기
+                          </span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-gray-800">{u.email}</td>
                       <td className="px-4 py-3 font-semibold text-gray-900">{u.name}</td>
                       <td className="px-4 py-3 text-gray-600">{u.job}</td>
@@ -173,6 +221,23 @@ function AdminContent() {
                       <td className="px-4 py-3 text-gray-600">{u.age_group}</td>
                       <td className="px-4 py-3 text-muted">
                         {new Date(u.registered_at).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {u.approved ? (
+                          <button
+                            onClick={() => toggleApproval(u.id, false)}
+                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-medium text-red-600 hover:bg-red-50"
+                          >
+                            <XCircle size={12} /> 취소
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => toggleApproval(u.id, true)}
+                            className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-emerald-700"
+                          >
+                            <CheckCircle size={12} /> 승인
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))
