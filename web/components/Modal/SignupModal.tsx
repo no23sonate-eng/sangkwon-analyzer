@@ -60,6 +60,10 @@ export default function SignupModal() {
       setOpen(false);
       return true;
     }
+    // 승인 취소된 경우: localStorage 초기화
+    localStorage.removeItem(APPROVAL_KEY);
+    setOpen(true);
+    setView("pending");
     return false;
   }, []);
 
@@ -89,14 +93,10 @@ export default function SignupModal() {
       return;
     }
 
-    // 가입은 했는데 승인 안 됐으면 승인 체크
-    if (!isUserApproved()) {
-      const userInfo = getUserInfo();
-      if (userInfo?.email) {
-        setOpen(true);
-        setView("pending");
-        checkApproval(userInfo.email);
-      }
+    // 가입한 사용자는 항상 Supabase에서 승인 상태 재확인
+    const userInfo = getUserInfo();
+    if (userInfo?.email) {
+      checkApproval(userInfo.email);
     }
   }, [checkApproval]);
 
