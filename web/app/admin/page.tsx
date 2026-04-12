@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
-import { Users, MessageSquare, Download, CheckCircle, XCircle, UserCheck } from "lucide-react";
+import { Users, MessageSquare, Download, CheckCircle, XCircle, UserCheck, ChevronDown, ChevronUp } from "lucide-react";
 
 interface UserRow {
   id: number;
@@ -37,16 +37,34 @@ function AdminContent() {
   const [inquiries, setInquiries] = useState<InquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"users" | "inquiries">("users");
+  const [expandedInquiry, setExpandedInquiry] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isAuth) return;
     (async () => {
-      const [u, i] = await Promise.all([
-        supabase.from("users").select("*").order("registered_at", { ascending: false }),
-        supabase.from("inquiries").select("*").order("submitted_at", { ascending: false }),
-      ]);
-      setUsers(u.data ?? []);
-      setInquiries(i.data ?? []);
+      try {
+        const res = await fetch(`/api/admin?key=${ADMIN_PASSWORD}`);
+        if (res.ok) {
+          const data = await res.json();
+          setUsers(data.users ?? []);
+          setInquiries(data.inquiries ?? []);
+        } else {
+          // fallback to direct supabase (if service key not set)
+          const [u, i] = await Promise.all([
+            supabase.from("users").select("*").order("registered_at", { ascending: false }),
+            supabase.from("inquiries").select("*").order("submitted_at", { ascending: false }),
+          ]);
+          setUsers(u.data ?? []);
+          setInquiries(i.data ?? []);
+        }
+      } catch {
+        const [u, i] = await Promise.all([
+          supabase.from("users").select("*").order("registered_at", { ascending: false }),
+          supabase.from("inquiries").select("*").order("submitted_at", { ascending: false }),
+        ]);
+        setUsers(u.data ?? []);
+        setInquiries(i.data ?? []);
+      }
       setLoading(false);
     })();
   }, [isAuth]);
@@ -253,23 +271,43 @@ function AdminContent() {
               </div>
             ) : (
               inquiries.map((q) => (
-                <div key={q.id} className="rounded-[20px] bg-white p-5 shadow-card">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <p className="text-[13px] font-bold text-gray-900">
-                        {q.user_name ?? "익명"} <span className="text-muted font-normal">· {q.user_email ?? "이메일 없음"}</span>
-                      </p>
-                      <p className="text-[11px] text-muted mt-0.5">
-                        {q.area_name ?? q.address ?? "위치 정보 없음"}
-                      </p>
+                <div
+                  key={q.id}
+                  className="rounded-[20px] bg-white shadow-card cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => setExpandedInquiry(expandedInquiry === q.id ? null : q.id)}
+                >
+                  <div className="flex items-center justify-between p-5">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50">
+                        <MessageSquare size={15} className="text-indigo-600" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-bold text-gray-900 truncate">
+                          {q.user_name ?? "익명"} <span className="text-muted font-normal">· {q.user_email ?? "이메일 없음"}</span>
+                        </p>
+                        <p className="text-[11px] text-muted mt-0.5 truncate">
+                          {q.area_name ?? q.address ?? "위치 정보 없음"}
+                        </p>
+                      </div>
                     </div>
-                    <span className="text-[10px] text-muted">
-                      {new Date(q.submitted_at).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0 ml-3">
+                      <span className="text-[10px] text-muted">
+                        {new Date(q.submitted_at).toLocaleString("ko-KR", { dateStyle: "short", timeStyle: "short" })}
+                      </span>
+                      {expandedInquiry === q.id ? (
+                        <ChevronUp size={14} className="text-gray-400" />
+                      ) : (
+                        <ChevronDown size={14} className="text-gray-400" />
+                      )}
+                    </div>
                   </div>
-                  <div className="rounded-xl bg-gray-50 p-3">
-                    <p className="text-[12px] text-gray-700 whitespace-pre-wrap">{q.question}</p>
-                  </div>
+                  {expandedInquiry === q.id && (
+                    <div className="border-t border-gray-100 px-5 pb-5 pt-3">
+                      <div className="rounded-xl bg-gray-50 p-4">
+                        <p className="text-[12px] text-gray-700 whitespace-pre-wrap leading-relaxed">{q.question}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))
             )}
