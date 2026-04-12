@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MessageSquare, Send, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface FormData {
   name: string;
@@ -14,9 +15,13 @@ interface FormData {
 }
 
 async function submitConsultation(data: FormData) {
-  // TODO: Replace with actual API call (email/DB)
-  console.log("[상담 신청]", data);
-  await new Promise((r) => setTimeout(r, 1000));
+  await supabase.from("inquiries").insert({
+    user_name: data.name,
+    user_email: data.phone,
+    area_name: data.area,
+    address: data.industry,
+    question: `[상담신청] 업종: ${data.industry} / 예산: ${data.budget}\n${data.message}`,
+  });
   return { success: true };
 }
 
