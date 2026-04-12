@@ -11,6 +11,18 @@ import { useAnalysisStore } from "@/store/analysisStore";
    실제 서울시 상권 데이터의 업종명과 정확히 일치해야 함.
    부분 문자열 매칭은 오매칭 위험이 있어서 정확 매칭만 사용.
 */
+/* 업종별 적정 임대비율 (매출 대비 월세 %)
+   한국 상업 부동산 업계 기준 중간값 적용 */
+const RENT_RATIO: Record<string, number> = {
+  "외식": 0.12,        // 10~15% — 재료비 30-35%, 인건비 25-30%
+  "카페/주류": 0.15,   // 15% — 원가율 낮아 임대비중 높아도 가능
+  "소매/유통": 0.07,   // 5~10% — 유통마진 얇음
+  "뷰티/건강": 0.10,   // 8~12% — 인건비 높아 임대 여력 제한
+  "교육": 0.10,        // 8~12% — 강사 인건비 40-50%
+  "생활서비스": 0.06,  // 5~8% — 매출 변동 크고 보수적
+  "여가/오락": 0.12,   // 10~15% — 면적 넓어 총액 큼
+};
+
 const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[] }> = {
   외식: {
     label: "외식",
@@ -135,10 +147,13 @@ export default function BrandSynergy() {
       const totalOC = openCount + closeCount;
       const survivalRate = totalOC > 0 ? openCount / totalOC : 0.5;
 
-      const monthlyRent = rent1f > 0 ? rent1f * 30 : 0;
-      const rentBurden = avgPerStoreSales > 0 && monthlyRent > 0
-        ? monthlyRent / (avgPerStoreSales / 10000)
-        : 0.3;
+      const monthlyRentWon = rent1f > 0 ? rent1f * 30 * 10000 : 0; // 30평 기준 월세 (원)
+      const rentRatio = RENT_RATIO[key] ?? 0.10;
+      // rentBurden: 실제 월세 / 적정 월세 (1이면 적정, 1초과면 부담)
+      const appropriateRent = avgPerStoreSales * rentRatio;
+      const rentBurden = appropriateRent > 0 && monthlyRentWon > 0
+        ? monthlyRentWon / appropriateRent
+        : 1.0;
 
       const franchiseRatio = storeCount > 0 ? franchise / storeCount : 0;
 
@@ -241,9 +256,23 @@ export default function BrandSynergy() {
       return oc > 0 ? Math.round((selectedGroup.openCount / oc) * 100) : 50;
     })(),
       desc: `개업${selectedGroup.openCount} 폐업${selectedGroup.closeCount}` },
-    // 임대 적정: 월세 / 점포당매출 비율의 역수
-    { axis: "임대 적정", value: Math.min(100, Math.max(5, Math.round((1 - Math.min(selectedGroup.rentBurden, 1)) * 100))),
-      desc: `부담률 ${Math.round(selectedGroup.rentBurden * 100)}%` },
+    // 임대 적정: 업종별 적정비율로 산출한 적정월세 vs 실제월세
+    { axis: "임대 적정", value: (() => {
+      const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
+      const expectedRent = selectedGroup.perStoreSales * ratio; // 적정 월세 (원)
+      const rent1f = (rent?.["1층_평"] as number) ?? 0;
+      const actualRent = rent1f > 0 ? rent1f * 30 * 10000 : 0; // 30평 기준 실제 월세 (원)
+      if (actualRent <= 0 || expectedRent <= 0) return 50;
+      // 적정/실제 비율: 1이상이면 여유, 1미만이면 부담
+      return Math.max(5, Math.min(100, Math.round((expectedRent / actualRent) * 50)));
+    })(),
+      desc: (() => {
+        const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
+        const expectedRent = Math.round(selectedGroup.perStoreSales * ratio / 10000);
+        const rent1f = (rent?.["1층_평"] as number) ?? 0;
+        const actualRent = rent1f * 30;
+        return `적정 ${expectedRent}만 vs 시세 ${actualRent}만`;
+      })() },
     // 진입 용이: 프랜차이즈 비율의 역수
     { axis: "진입 용이", value: Math.min(100, Math.max(5, Math.round((1 - selectedGroup.franchiseRatio) * 100))),
       desc: `프랜차이즈 ${Math.round(selectedGroup.franchiseRatio * 100)}%` },
