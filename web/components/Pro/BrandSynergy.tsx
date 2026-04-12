@@ -11,48 +11,41 @@ import { useAnalysisStore } from "@/store/analysisStore";
    실제 서울시 상권 데이터의 업종명과 정확히 일치해야 함.
    부분 문자열 매칭은 오매칭 위험이 있어서 정확 매칭만 사용.
 */
-const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[]; targetAge: string[] }> = {
+const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[] }> = {
   외식: {
     label: "외식",
     icon: "🍽️",
     subs: ["한식음식점", "중식음식점", "일식음식점", "양식음식점", "분식전문점", "패스트푸드점", "치킨전문점", "제과점"],
-    targetAge: ["20", "30", "40"],
   },
   "카페/주류": {
     label: "카페/주류",
     icon: "☕",
     subs: ["커피-음료", "호프-간이주점"],
-    targetAge: ["20", "30"],
   },
   "소매/유통": {
     label: "소매",
     icon: "🛒",
     subs: ["편의점", "슈퍼마켓", "일반의류", "한복점", "유아의류", "화장품", "신발", "가방", "시계및귀금속", "안경", "서적", "문구", "가전제품", "핸드폰", "운동/경기용품", "예술품", "의약품", "육류판매", "중고가구", "가구", "철물점"],
-    targetAge: ["30", "40", "50"],
   },
   "뷰티/건강": {
     label: "뷰티/의료",
     icon: "💇",
     subs: ["미용실", "피부관리실", "네일숍", "일반의원", "치과의원", "한의원", "동물병원", "약국"],
-    targetAge: ["30", "40", "50"],
   },
   교육: {
     label: "교육",
     icon: "📚",
     subs: ["외국어학원", "일반교습학원", "예술학원", "컴퓨터학원", "스포츠 강습"],
-    targetAge: ["10", "20", "30"],
   },
   "생활서비스": {
     label: "생활서비스",
     icon: "🔧",
     subs: ["세탁소", "부동산중개업", "변호사사무소", "회계사사무소", "세무사사무소", "인테리어", "전자상거래업", "자동차수리", "철물점"],
-    targetAge: ["30", "40", "50"],
   },
   "여가/오락": {
     label: "여가",
     icon: "🏋️",
     subs: ["스포츠클럽", "헬스클럽", "골프연습장", "PC방", "노래방", "당구장", "볼링장", "게스트하우스"],
-    targetAge: ["20", "30", "40"],
   },
 };
 
@@ -94,12 +87,9 @@ export default function BrandSynergy() {
     const perStore = sales?.per_store ?? [];
     const scList = scSummary?.by_service ?? [];
     const rent1f = (rent?.["1층_평"] as number) ?? 0;
+    const ageSum = Object.values(ft.by_age ?? {}).reduce((s: number, v: number) => s + (v as number), 0);
+    const ftTotal = ((ft.total as number) ?? ageSum) || 1;
 
-    // 유동인구 연령: 정확 매칭
-    const byAge = ft.by_age ?? {};
-    const ageTotalFt = Object.values(byAge).reduce((s, v) => s + v, 0) || 1;
-
-    // 전체 집계 대상 점포 수 (카테고리에 속하는 것만)
     let categorizedStores = 0;
     const result: GroupData[] = [];
 
@@ -114,7 +104,6 @@ export default function BrandSynergy() {
       let closeCount = 0;
       let franchise = 0;
 
-      // 정확 매칭
       for (const [subName, info] of Object.entries(bySub)) {
         if (subsSet.has(subName)) storeCount += info.count;
       }
@@ -138,17 +127,6 @@ export default function BrandSynergy() {
 
       categorizedStores += storeCount;
 
-      // 수요 점수: 타깃 연령대 유동인구 비율 (정확 매칭)
-      let targetFt = 0;
-      for (const [k, v] of Object.entries(byAge)) {
-        // "20대", "30대" 등에서 숫자 부분 추출
-        const match = k.match(/(\d+)/);
-        if (match && group.targetAge.includes(match[1])) {
-          targetFt += v;
-        }
-      }
-      const demandScore = Math.round((targetFt / ageTotalFt) * 100);
-
       const avgPerStoreSales = perStoreCount > 0 ? totalPerStoreSales / perStoreCount : 0;
       const totalOC = openCount + closeCount;
       const survivalRate = totalOC > 0 ? openCount / totalOC : 0.5;
@@ -160,14 +138,19 @@ export default function BrandSynergy() {
 
       const franchiseRatio = storeCount > 0 ? franchise / storeCount : 0;
 
+      // 수요: 1인당 소비액 = 카테고리 매출 / 유동인구 (원시값, 후처리에서 정규화)
+      const salesPerTraffic = ftTotal > 0 ? totalSalesAmt / ftTotal : 0;
+      // 공급 밀도: 유동인구 만명당 점포 수 (원시값)
+      const density = ftTotal > 0 ? (storeCount / ftTotal) * 10000 : 0;
+
       result.push({
         key,
         label: group.label,
         icon: group.icon,
         storeCount,
-        supplyRatio: 0, // 나중에 계산
-        demandScore,
-        gapScore: 0,    // 나중에 계산
+        supplyRatio: 0,
+        demandScore: salesPerTraffic, // 임시: 원시값, 아래서 정규화
+        gapScore: 0,
         totalSales: totalSalesAmt,
         perStoreSales: avgPerStoreSales,
         openCount,
@@ -180,20 +163,34 @@ export default function BrandSynergy() {
       });
     }
 
-    // supplyRatio: 대분류 내에서 차지하는 비율 (전체 점포가 아닌 카테고리 합 기준)
+    // ── 2차: 상대 정규화 (카테고리 간 비교) ──
+    const valid = result.filter((r) => r.hasData);
+    if (valid.length === 0) return [];
+
     const base = categorizedStores > 0 ? categorizedStores : 1;
-    for (const r of result) {
+
+    // 수요: 1인당 소비액 → 카테고리 중 최고값 대비 비율 (0~100)
+    const maxDemand = Math.max(...valid.map((r) => r.demandScore), 1);
+    // 공급밀도: 유동인구 만명당 점포수 → 최고 대비 비율 (높을수록 과밀)
+    const densities = valid.map((r) => ftTotal > 0 ? (r.storeCount / ftTotal) * 10000 : 0);
+    const maxDensity = Math.max(...densities, 1);
+
+    for (let i = 0; i < valid.length; i++) {
+      const r = valid[i];
+      // 수요: 최고 대비 비율 (0~100)
+      r.demandScore = Math.round((r.demandScore / maxDemand) * 100);
+      // 공급 비율
       r.supplyRatio = Math.round((r.storeCount / base) * 100);
-      // gapScore: 수요(0~100) - 공급비율(0~100)
-      // 수요가 높고 공급이 적을수록 높음
-      // 공급이 평균(약 14%, 7개 카테고리 균등 기준) 정도면 중립
-      const expectedSupply = 100 / result.length; // 균등분포 기대값
-      const supplyDiff = expectedSupply - r.supplyRatio; // 양수면 공급 부족
-      r.gapScore = Math.max(0, Math.min(100, Math.round(r.demandScore * 0.6 + supplyDiff * 1.5 + 30)));
+      // 공급 여유: 밀도가 낮을수록 높음 (0~100)
+      const densityRatio = densities[i] / maxDensity;
+      const supplySlack = Math.round((1 - densityRatio) * 100);
+
+      // 기회 점수: 수요가 높고 공급여유가 클수록 높음
+      // 단순 평균 — 임의 가중치 없음
+      r.gapScore = Math.max(0, Math.min(100, Math.round((r.demandScore + supplySlack) / 2)));
     }
 
-    // 데이터 있는 것만 반환, 갭 점수 순 정렬
-    return result.filter((r) => r.hasData).sort((a, b) => b.gapScore - a.gapScore);
+    return valid.sort((a, b) => b.gapScore - a.gapScore);
   }, [store, ft, sales, scSummary, rent]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
@@ -207,19 +204,37 @@ export default function BrandSynergy() {
 
   const selectedGroup = groups.find((g) => g.key === selected);
 
-  // 선택된 카테고리의 레이더 데이터
+  // 선택된 카테고리의 레이더 데이터 — 모두 실데이터 기반
+  const ftTotal = ft?.total ?? 1;
   const radarData = selectedGroup ? [
-    { axis: "수요", value: selectedGroup.demandScore },
-    { axis: "공급 여유", value: Math.max(5, Math.min(100, 100 - selectedGroup.supplyRatio * 2)) },
+    // 수요: 유동인구 1인당 해당 업종 소비액 (카테고리 중 최고 대비 %)
+    { axis: "수요", value: selectedGroup.demandScore,
+      desc: `1인당 소비 ${Math.round(selectedGroup.totalSales / ftTotal).toLocaleString()}원` },
+    // 공급 여유: 유동인구 만명당 점포수 — 적을수록 여유
+    { axis: "공급 여유", value: (() => {
+      const densities = groups.map((g) => ftTotal > 0 ? (g.storeCount / ftTotal) * 10000 : 0);
+      const maxD = Math.max(...densities, 1);
+      const myD = ftTotal > 0 ? (selectedGroup.storeCount / ftTotal) * 10000 : 0;
+      return Math.max(5, Math.round((1 - myD / maxD) * 100));
+    })(),
+      desc: `만명당 ${(ftTotal > 0 ? (selectedGroup.storeCount / ftTotal) * 10000 : 0).toFixed(1)}개` },
+    // 매출력: 점포당 매출 (카테고리 중 최고 대비 %)
     { axis: "매출력", value: (() => {
       const valid = groups.filter((g) => g.perStoreSales > 0);
-      if (valid.length === 0 || selectedGroup.perStoreSales === 0) return 30;
-      const allAvg = valid.reduce((s, g) => s + g.perStoreSales, 0) / valid.length;
-      return allAvg > 0 ? Math.min(100, Math.max(5, Math.round((selectedGroup.perStoreSales / allAvg) * 50))) : 30;
-    })() },
-    { axis: "생존율", value: Math.round(selectedGroup.survivalRate * 100) },
-    { axis: "임대 적정", value: Math.min(100, Math.max(5, Math.round((1 - Math.min(selectedGroup.rentBurden, 1)) * 100))) },
-    { axis: "진입 용이", value: Math.min(100, Math.max(5, Math.round((1 - selectedGroup.franchiseRatio) * 100))) },
+      if (valid.length === 0 || selectedGroup.perStoreSales === 0) return 5;
+      const maxPS = Math.max(...valid.map((g) => g.perStoreSales));
+      return maxPS > 0 ? Math.min(100, Math.max(5, Math.round((selectedGroup.perStoreSales / maxPS) * 100))) : 5;
+    })(),
+      desc: `점포당 ${selectedGroup.perStoreSales > 0 ? Math.round(selectedGroup.perStoreSales / 10000).toLocaleString() + "만" : "-"}` },
+    // 생존율: 개업 / (개업+폐업)
+    { axis: "생존율", value: Math.round(selectedGroup.survivalRate * 100),
+      desc: `개업${selectedGroup.openCount} 폐업${selectedGroup.closeCount}` },
+    // 임대 적정: 월세 / 점포당매출 비율의 역수
+    { axis: "임대 적정", value: Math.min(100, Math.max(5, Math.round((1 - Math.min(selectedGroup.rentBurden, 1)) * 100))),
+      desc: `부담률 ${Math.round(selectedGroup.rentBurden * 100)}%` },
+    // 진입 용이: 프랜차이즈 비율의 역수
+    { axis: "진입 용이", value: Math.min(100, Math.max(5, Math.round((1 - selectedGroup.franchiseRatio) * 100))),
+      desc: `프랜차이즈 ${Math.round(selectedGroup.franchiseRatio * 100)}%` },
   ] : null;
 
   const totalScore = radarData
@@ -265,7 +280,7 @@ export default function BrandSynergy() {
       {/* 미선택: 수요-공급 갭 요약 */}
       {!selected && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium text-muted">수요 대비 공급 부족 순</p>
+          <p className="text-[10px] font-medium text-muted">1인당 소비액 대비 점포밀도 기준</p>
           {groups.map((g) => (
             <div key={g.key} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
               <span className="text-[14px]">{g.icon}</span>
@@ -304,7 +319,7 @@ export default function BrandSynergy() {
             <div>
               <p className="text-[14px] font-bold text-gray-900">{selectedGroup.icon} {selectedGroup.label}</p>
               <p className="text-[11px] text-muted">
-                수요 {selectedGroup.demandScore}% · 공급 {selectedGroup.supplyRatio}%
+                수요 {selectedGroup.demandScore} · 공급비율 {selectedGroup.supplyRatio}%
                 {selectedGroup.gapScore >= 60 ? " — 진입 기회가 높습니다" : selectedGroup.gapScore >= 40 ? " — 선별적 진입 가능" : " — 공급 과잉 주의"}
               </p>
             </div>
