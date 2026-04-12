@@ -94,14 +94,17 @@ export async function GET(request: Request) {
 
   // Query with bounding box for max 3km radius
   const deg = (3000 / 111000) * 1.2;
+  // target_pyeong 300은 DB에 없으므로 200으로 대체
+  const queryPyeong = target_pyeong > 200 ? 200 : target_pyeong;
   const { data, error } = await supabase
     .from("rents")
     .select("lat, lng, floor, rent_pyeong, rent, deposit")
-    .eq("target_pyeong", target_pyeong)
+    .eq("target_pyeong", queryPyeong)
     .gte("lat", lat - deg)
     .lte("lat", lat + deg)
     .gte("lng", lng - deg)
-    .lte("lng", lng + deg);
+    .lte("lng", lng + deg)
+    .limit(50000);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

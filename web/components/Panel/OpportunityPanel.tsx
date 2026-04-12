@@ -450,14 +450,65 @@ function LandPriceVerification({ guName }: { guName: string }) {
 
       {/* 검증 결과 */}
       {verified && (
-        <div className="mb-3 rounded-xl p-4" style={{ background: verified.color + "10" }}>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>{verified.status}</span>
-            <span className="text-[11px] text-gray-500">
-              평당 {inputPricePerPyeong.toLocaleString()}만 vs 시세 {adjustedPricePerPyeong.toLocaleString()}만/평
-            </span>
+        <div className="mb-3 space-y-2">
+          <div className="rounded-xl p-4" style={{ background: verified.color + "10" }}>
+            <div className="flex items-center gap-2">
+              <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>{verified.status}</span>
+              <span className="text-[11px] text-gray-500">
+                평당 {inputPricePerPyeong.toLocaleString()}만 vs 시세 {adjustedPricePerPyeong.toLocaleString()}만/평
+              </span>
+            </div>
+            <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
           </div>
-          <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
+          {/* 수익환원 교차검증 — 임대수입 기반 적정 매매가 */}
+          {rentData && rentData.avg_pyeong > 0 && (
+            <div className="rounded-xl border border-gray-100 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-bold text-gray-500">수익환원 교차검증</span>
+                <span className="text-[9px] text-muted">임대수입 기반 적정가</span>
+              </div>
+              {(() => {
+                // 적정 매매가 = 연간 임대수입 / 적정 수익률(4.5%)
+                const annualRent = rentData.avg_pyeong * 12 * selectedPyeong; // 만원
+                const fairPrice4_5 = Math.round(annualRent / 0.045); // 수익률 4.5% 기준
+                const fairPrice5_5 = Math.round(annualRent / 0.055); // 수익률 5.5% 기준
+                const fairPriceAvg = Math.round((fairPrice4_5 + fairPrice5_5) / 2);
+                return (
+                  <>
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <p className="text-[10px] text-muted">임대수입 기준 적정 매매가</p>
+                        <p className="text-[20px] font-black text-gray-900">
+                          {(fairPriceAvg / 10000).toFixed(1)}<span className="text-[12px] font-medium text-muted">억원</span>
+                        </p>
+                        <p className="text-[9px] text-muted">수익률 4.5~5.5% 기준 · {(fairPrice5_5 / 10000).toFixed(1)}~{(fairPrice4_5 / 10000).toFixed(1)}억 범위</p>
+                      </div>
+                      {inputPriceNum > 0 && (
+                        <div className="text-right">
+                          {(() => {
+                            const diff = Math.round(((inputPriceNum - fairPriceAvg) / fairPriceAvg) * 100);
+                            const isOk = Math.abs(diff) <= 15;
+                            return (
+                              <div>
+                                <p className={`text-[14px] font-bold ${isOk ? "text-emerald-600" : diff > 0 ? "text-red-500" : "text-blue-600"}`}>
+                                  {diff > 0 ? "+" : ""}{diff}%
+                                </p>
+                                <p className="text-[9px] text-muted">{isOk ? "적정 범위" : diff > 0 ? "수익률 대비 고가" : "수익률 대비 저평가"}</p>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
+                    </div>
+                    <p className="mt-2 text-[9px] text-muted leading-relaxed">
+                      연간 임대수입 {annualRent.toLocaleString()}만원(평당 {rentData.avg_pyeong}만×12개월×{selectedPyeong}평)을
+                      적정 수익률로 역산한 매매가입니다.
+                    </p>
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
       )}
 
