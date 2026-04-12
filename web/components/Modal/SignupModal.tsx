@@ -112,7 +112,7 @@ export default function SignupModal() {
       registeredAt: new Date().toISOString(),
     };
 
-    // Supabase에 저장 (approved 기본값 false)
+    // Supabase에 저장 (가입 즉시 승인)
     try {
       await supabase.from("users").insert({
         email: form.email,
@@ -121,16 +121,17 @@ export default function SignupModal() {
         gender: form.gender,
         age_group: form.ageGroup,
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
-        approved: false,
+        approved: true,
       });
     } catch (err) {
       console.error("user insert failed", err);
     }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userInfo));
+    localStorage.setItem(APPROVAL_KEY, "true");
     setSubmitting(false);
-    // 가입 후 승인 대기 화면으로 전환
-    setView("pending");
+    // 가입 완료 → 바로 서비스 이용
+    setOpen(false);
   };
 
   const handleRefreshApproval = async () => {
