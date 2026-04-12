@@ -204,9 +204,31 @@ export default function BrandSynergy() {
       const densityRatio = densities[i] / maxDensity;
       const supplySlack = Math.round((1 - densityRatio) * 100);
 
-      // 기회 점수: 수요가 높고 공급여유가 클수록 높음
-      // 단순 평균 — 임의 가중치 없음
-      r.gapScore = Math.max(0, Math.min(100, Math.round((r.demandScore + supplySlack) / 2)));
+      // 매출 잠재력
+      const consumersPerStore = r.storeCount > 0 ? potentialConsumers / r.storeCount : 0;
+      const allCPS = valid.filter((g) => g.storeCount > 0).map((g) => potentialConsumers / g.storeCount);
+      const maxCPS = Math.max(...allCPS, 1);
+      const revPotential = Math.round((consumersPerStore / maxCPS) * 100);
+
+      // 개폐업률
+      const oc = r.openCount + r.closeCount;
+      const openRate = oc > 0 ? Math.round((r.openCount / oc) * 100) : 50;
+
+      // 임대 적정
+      const rentRatio = RENT_RATIO[r.key] ?? 0.10;
+      const appropriateRent = r.perStoreSales * rentRatio;
+      const actualRentWon = (rent?.["1층_평"] as number ?? 0) * 30 * 10000;
+      const rentFit = appropriateRent > 0 && actualRentWon > 0
+        ? Math.max(5, Math.min(100, Math.round((appropriateRent / actualRentWon) * 50)))
+        : 50;
+
+      // 진입 용이
+      const entryEase = Math.round((1 - r.franchiseRatio) * 100);
+
+      // 기회 점수: 레이더 6축 전체 평균
+      r.gapScore = Math.max(0, Math.min(100, Math.round(
+        (r.demandScore + supplySlack + revPotential + openRate + rentFit + entryEase) / 6
+      )));
     }
 
     return valid.sort((a, b) => b.gapScore - a.gapScore);
@@ -293,7 +315,7 @@ export default function BrandSynergy() {
         <div className="grid grid-cols-4 gap-1.5">
           {groups.map((g) => {
             const isSelected = selected === g.key;
-            const isTop = g.gapScore >= 60;
+            const isTop = g.gapScore >= 55;
             return (
               <button
                 key={g.key}
@@ -333,14 +355,14 @@ export default function BrandSynergy() {
                     className="h-full rounded-full"
                     style={{
                       width: `${g.gapScore}%`,
-                      background: g.gapScore >= 60 ? "#10B981" : g.gapScore >= 40 ? "#F59E0B" : "#EF4444",
+                      background: g.gapScore >= 55 ? "#10B981" : g.gapScore >= 40 ? "#F59E0B" : "#EF4444",
                     }}
                   />
                 </div>
                 <span className={`text-[10px] font-bold w-10 text-right ${
-                  g.gapScore >= 60 ? "text-emerald-600" : g.gapScore >= 40 ? "text-amber-600" : "text-red-500"
+                  g.gapScore >= 55 ? "text-emerald-600" : g.gapScore >= 40 ? "text-amber-600" : "text-red-500"
                 }`}>
-                  {g.gapScore >= 60 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀"}
+                  {g.gapScore >= 55 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀"}
                 </span>
               </div>
             </div>
@@ -360,8 +382,14 @@ export default function BrandSynergy() {
             <div>
               <p className="text-[14px] font-bold text-gray-900">{selectedGroup.icon} {selectedGroup.label}</p>
               <p className="text-[11px] text-muted">
-                수요 {selectedGroup.demandScore} · 공급비율 {selectedGroup.supplyRatio}%
-                {selectedGroup.gapScore >= 60 ? " — 진입 기회가 높습니다" : selectedGroup.gapScore >= 40 ? " — 선별적 진입 가능" : " — 공급 과잉 주의"}
+                {(() => {
+                  const g = selectedGroup;
+                  const s = g.gapScore;
+                  if (s >= 70) return "소비 수요 대비 점포가 적어 진입 여건이 우수합니다";
+                  if (s >= 55) return "수익성과 경쟁 환경이 양호한 편입니다";
+                  if (s >= 40) return "경쟁은 있지만 차별화 전략으로 가능성 있습니다";
+                  return "점포 밀도가 높고 수익 압박이 예상됩니다";
+                })()}
               </p>
             </div>
           </div>
