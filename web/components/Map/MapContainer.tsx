@@ -12,6 +12,7 @@ import MapGL, {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode } from "@/lib/api";
+import { requireSignup } from "@/components/Modal/SignupModal";
 import { palette, getCategoryColor } from "@/lib/colors";
 import {
   getTrafficHeatmap, getSalesHeatmap,
@@ -183,6 +184,7 @@ export default function MapContainer() {
   // ── 분석 로드 ──
   const loadAnalysis = useCallback(
     async (lat: number, lng: number, r: number) => {
+      if (!requireSignup()) return;
       setLoading(true);
       try {
         reverseGeocode(lat, lng)

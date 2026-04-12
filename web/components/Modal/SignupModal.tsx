@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
 const STORAGE_KEY = "user_signup";
-const APPROVAL_KEY = "user_approved";
 // 본인용 우회 키 — URL에 ?admin=cgwoo2026 붙이면 회원가입 스킵
 const ADMIN_BYPASS = "cgwoo2026";
 
@@ -23,11 +22,6 @@ export function isUserRegistered(): boolean {
   return !!localStorage.getItem(STORAGE_KEY);
 }
 
-export function isUserApproved(): boolean {
-  if (typeof window === "undefined") return true;
-  return localStorage.getItem(APPROVAL_KEY) === "true";
-}
-
 export function getUserInfo(): UserInfo | null {
   if (typeof window === "undefined") return null;
   try {
@@ -35,10 +29,17 @@ export function getUserInfo(): UserInfo | null {
   } catch { return null; }
 }
 
+/** 가입 안 된 사용자에게 가입 모달을 띄움. 가입 완료 시 true 반환용 */
+export function requireSignup(): boolean {
+  if (isUserRegistered()) return true;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("open-signup"));
+  }
+  return false;
+}
+
 export default function SignupModal() {
   const [open, setOpen] = useState(false);
-  // "form" = 가입 폼, "pending" = 승인 대기
-  const [view, setView] = useState<"form" | "pending">("form");
   const [form, setForm] = useState({
     email: "",
     name: "",
@@ -47,25 +48,6 @@ export default function SignupModal() {
     gender: "",
     ageGroup: "",
   });
-
-  // 승인 여부를 Supabase에서 확인
-  const checkApproval = useCallback(async (email: string) => {
-    const { data } = await supabase
-      .from("users")
-      .select("approved")
-      .eq("email", email)
-      .single();
-    if (data?.approved) {
-      localStorage.setItem(APPROVAL_KEY, "true");
-      setOpen(false);
-      return true;
-    }
-    // 승인 취소된 경우: localStorage 초기화
-    localStorage.removeItem(APPROVAL_KEY);
-    setOpen(true);
-    setView("pending");
-    return false;
-  }, []);
 
   useEffect(() => {
     // URL에 admin 파라미터 있으면 우회 (본인 접속용)
@@ -81,24 +63,17 @@ export default function SignupModal() {
           ageGroup: "",
           registeredAt: new Date().toISOString(),
         }));
-        localStorage.setItem(APPROVAL_KEY, "true");
         return;
       }
     }
 
-    // 가입 안 했으면 폼 표시
-    if (!isUserRegistered()) {
-      setOpen(true);
-      setView("form");
-      return;
-    }
-
-    // 가입한 사용자는 항상 Supabase에서 승인 상태 재확인
-    const userInfo = getUserInfo();
-    if (userInfo?.email) {
-      checkApproval(userInfo.email);
-    }
-  }, [checkApproval]);
+    // 커스텀 이벤트로 가입 모달 열기 (기능 사용 시 트리거)
+    const handleOpen = () => {
+      if (!isUserRegistered()) setOpen(true);
+    };
+    window.addEventListener("open-signup", handleOpen);
+    return () => window.removeEventListener("open-signup", handleOpen);
+  }, []);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -128,21 +103,8 @@ export default function SignupModal() {
     }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userInfo));
-    localStorage.setItem(APPROVAL_KEY, "true");
     setSubmitting(false);
-    // 가입 완료 → 바로 서비스 이용
     setOpen(false);
-  };
-
-  const handleRefreshApproval = async () => {
-    const userInfo = getUserInfo();
-    if (!userInfo?.email) return;
-    setSubmitting(true);
-    const approved = await checkApproval(userInfo.email);
-    setSubmitting(false);
-    if (!approved) {
-      alert("아직 승인되지 않았습니다. 관리자 승인을 기다려주세요.");
-    }
   };
 
   if (!open) return null;
@@ -150,32 +112,6 @@ export default function SignupModal() {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-fade-in">
-        {view === "pending" ? (
-          /* ── 승인 대기 화면 ── */
-          <div className="text-center py-4">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-[18px] font-bold text-gray-900">승인 대기 중</h2>
-            <p className="mt-2 text-[13px] text-gray-500 leading-relaxed">
-              가입 신청이 완료되었습니다.<br/>
-              관리자 승인 후 서비스를 이용하실 수 있습니다.
-            </p>
-            <p className="mt-1 text-[11px] text-gray-400">
-              승인이 완료되면 아래 버튼을 눌러 확인해주세요.
-            </p>
-            <button
-              onClick={handleRefreshApproval}
-              disabled={submitting}
-              className="mt-5 w-full rounded-xl bg-primary-600 py-3 text-[14px] font-semibold text-white hover:bg-primary-700 active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              {submitting ? "확인 중..." : "승인 여부 확인"}
-            </button>
-          </div>
-        ) : (
-          /* ── 가입 폼 ── */
           <>
             <div className="mb-5 text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-600 text-[20px] font-extrabold text-white">B</div>
@@ -278,7 +214,6 @@ export default function SignupModal() {
               입력하신 정보는 서비스 개선 목적으로만 사용됩니다
             </p>
           </>
-        )}
       </div>
     </div>
   );
