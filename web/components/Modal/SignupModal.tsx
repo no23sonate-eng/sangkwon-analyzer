@@ -29,14 +29,6 @@ export function getUserInfo(): UserInfo | null {
   } catch { return null; }
 }
 
-/** 가입 안 된 사용자에게 가입 모달을 띄움. 가입 완료 시 true 반환용 */
-export function requireSignup(): boolean {
-  if (isUserRegistered()) return true;
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new Event("open-signup"));
-  }
-  return false;
-}
 
 export default function SignupModal() {
   const [open, setOpen] = useState(false);
@@ -67,12 +59,10 @@ export default function SignupModal() {
       }
     }
 
-    // 커스텀 이벤트로 가입 모달 열기 (기능 사용 시 트리거)
-    const handleOpen = () => {
-      if (!isUserRegistered()) setOpen(true);
-    };
-    window.addEventListener("open-signup", handleOpen);
-    return () => window.removeEventListener("open-signup", handleOpen);
+    // 가입 안 했으면 폼 표시
+    if (!isUserRegistered()) {
+      setOpen(true);
+    }
   }, []);
 
   const [submitting, setSubmitting] = useState(false);

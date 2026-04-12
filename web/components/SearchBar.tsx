@@ -3,7 +3,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { geocode, findNearbyTrdar, analyzeArea, getStoreCount, searchTrdar, reverseGeocode } from "@/lib/api";
-import { requireSignup } from "@/components/Modal/SignupModal";
 import { palette } from "@/lib/colors";
 import { Clock, X } from "lucide-react";
 
@@ -81,7 +80,6 @@ export default function SearchBar() {
   }, []);
 
   const runAnalysis = useCallback(async (lat: number, lng: number, address: string, originalQuery: string) => {
-    if (!requireSignup()) return;
     setClicked(lat, lng);
     setClickedAddress(address, "", "");
     // 줌 16으로 더 정확하게
