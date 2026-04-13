@@ -103,7 +103,7 @@ function RentVerification({ guName }: { guName: string }) {
   const [inputRent, setInputRent] = useState("");
   const [selectedPyeong, setSelectedPyeong] = useState(10);
   const [inputFloor, setInputFloor] = useState("1층");
-  const [verified, setVerified] = useState<null | { status: string; message: string; color: string; avgPP?: number; incomeRent?: number }>(null);
+  const [verified, setVerified] = useState<null | { status: string; message: string; color: string; avgPP?: number }>(null);
   const [rentLoading, setRentLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
 
@@ -159,21 +159,10 @@ function RentVerification({ guName }: { guName: string }) {
       const ratio = rentPP / avgPP;
       const suffix = estimated ? " (다른 층 기준 추정)" : "";
 
-      // 수익환원법: 이 지역 평균 점포당 매출 기반 적정 월세 산출
-      const salesSummary = analysisData?.sales_summary;
-      const storeSummary = analysisData?.store_summary;
-      const totalSales = salesSummary?.total_sales ?? 0;
-      const totalStores = storeSummary?.total ?? 0;
-      const avgPerStoreSales = totalStores > 0 ? totalSales / totalStores : 0;
-      // 업종 평균 임대비율 (~10%) 적용
-      const avgRentRatio = 0.10;
-      const incomeBasedRentTotal = avgPerStoreSales * avgRentRatio; // 원
-      const incomeRent = Math.round(incomeBasedRentTotal / 10000); // 만원
-
-      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.${suffix}`, color: "#10B981", avgPP, incomeRent });
-      else if (ratio <= 1.1) setVerified({ status: "적정", message: `시세 범위 내 적정 수준입니다.${suffix}`, color: "#6366F1", avgPP, incomeRent });
-      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.${suffix}`, color: "#F59E0B", avgPP, incomeRent });
-      else setVerified({ status: "고가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.${suffix}`, color: "#EF4444", avgPP, incomeRent });
+      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.${suffix}`, color: "#10B981", avgPP });
+      else if (ratio <= 1.1) setVerified({ status: "적정", message: `시세 범위 내 적정 수준입니다.${suffix}`, color: "#6366F1", avgPP });
+      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.${suffix}`, color: "#F59E0B", avgPP });
+      else setVerified({ status: "고가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.${suffix}`, color: "#EF4444", avgPP });
       setVerifyLoading(false);
     }, 2000);
   };
@@ -229,42 +218,6 @@ function RentVerification({ guName }: { guName: string }) {
             </div>
             <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
           </div>
-          {/* 수익환원 교차검증 */}
-          {verified.incomeRent != null && verified.incomeRent > 0 && (
-            <div className="rounded-xl border border-gray-100 p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-bold text-gray-500">수익환원 교차검증</span>
-                <span className="text-[9px] text-muted">점포 평균 매출 기반</span>
-              </div>
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-[10px] text-muted">이 상권 매출 기준 적정 월세</p>
-                  <p className="text-[20px] font-black text-gray-900">{verified.incomeRent.toLocaleString()}<span className="text-[12px] font-medium text-muted">만원</span></p>
-                </div>
-                <div className="text-right">
-                  {(() => {
-                    const input = parseInt(inputRent);
-                    const ir = verified.incomeRent ?? 0;
-                    if (!input || !ir) return null;
-                    const diff = Math.round(((input - ir) / ir) * 100);
-                    const isOk = Math.abs(diff) <= 15;
-                    return (
-                      <div>
-                        <p className={`text-[14px] font-bold ${isOk ? "text-emerald-600" : diff > 0 ? "text-red-500" : "text-blue-600"}`}>
-                          {diff > 0 ? "+" : ""}{diff}%
-                        </p>
-                        <p className="text-[9px] text-muted">{isOk ? "적정 범위" : diff > 0 ? "매출 대비 높음" : "매출 대비 여유"}</p>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-              <p className="mt-2 text-[9px] text-muted leading-relaxed">
-                주변 점포 평균 매출의 10%(업종 평균 임대비율)를 적정 월세로 산출합니다.
-                시세 비교와 함께 교차 확인하세요.
-              </p>
-            </div>
-          )}
         </div>
       )}
       {rentLoading && (
@@ -432,9 +385,6 @@ function LandPriceVerification({ guName }: { guName: string }) {
             <p className="text-[18px] font-black text-gray-900">{(estimatedTotal / 10000).toFixed(1)}<span className="text-[11px] font-medium text-muted">억원</span></p>
           </div>
         </div>
-        {selectedPyeong > 100 && (
-          <p className="mt-1 text-[9px] text-muted">* 대형 면적 할인율 {Math.round((1 - discount) * 100)}% 적용</p>
-        )}
       </div>
 
       {/* 매매가 입력 */}
