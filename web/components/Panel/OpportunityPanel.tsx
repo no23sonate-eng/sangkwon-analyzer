@@ -116,7 +116,7 @@ function RentVerification({ guName }: { guName: string }) {
     if (clickedLat == null || clickedLng == null) return;
     setRentLoading(true);
     setRentNearby(null);
-    fetch(`${BASE_URL}/api/rent-nearby?lat=${clickedLat}&lng=${clickedLng}&radius=${radius}&target_pyeong=${selectedPyeong}&_t=${Date.now()}`, { cache: "no-store" })
+    fetch(`${BASE_URL}/api/rent-nearby?lat=${clickedLat}&lng=${clickedLng}&radius=${radius}&target_pyeong=${selectedPyeong}&gu=${encodeURIComponent(guName)}&_t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => { setRentNearby(data); setRentLoading(false); })
       .catch(() => setRentLoading(false));
@@ -275,7 +275,12 @@ function RentVerification({ guName }: { guName: string }) {
       )}
       {!rentLoading && rentNearby && rentNearby.total_cases > 0 && (
         <div className="border-t border-gray-100 pt-3">
-          <p className="mb-2 text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준 · {rentNearby.stats?.["1층"]?.count ?? 0}개 상권</p>
+          <p className="mb-2 text-[11px] font-semibold text-gray-600">
+            이 위치 시세 · {selectedPyeong}평 기준
+            {rentNearby.fallback
+              ? <span className="ml-1 text-amber-600">({rentNearby.fallback_source})</span>
+              : ` · ${rentNearby.stats?.["1층"]?.count ?? 0}개 상권`}
+          </p>
           <div className="overflow-hidden rounded-lg border border-gray-100">
             <table className="w-full text-[11px]">
               <thead><tr className="bg-gray-50">

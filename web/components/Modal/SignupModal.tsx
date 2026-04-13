@@ -42,8 +42,9 @@ export default function SignupModal() {
   });
 
   useEffect(() => {
-    // URL에 admin 파라미터 있으면 우회 (본인 접속용)
+    // 관리자 페이지이거나 admin 파라미터 있으면 우회
     if (typeof window !== "undefined") {
+      if (window.location.pathname === "/admin") return;
       const params = new URLSearchParams(window.location.search);
       if (params.get("admin") === ADMIN_BYPASS) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
