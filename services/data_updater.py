@@ -16,13 +16,12 @@ from datetime import datetime, timedelta
 from supabase import create_client, Client
 
 # ── Supabase 클라이언트 ──
-SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
-
 def _get_sb() -> Client:
-    if not SUPABASE_URL or not SUPABASE_KEY:
+    url = os.getenv("NEXT_PUBLIC_SUPABASE_URL", "")
+    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+    if not url or not key:
         raise RuntimeError("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 환경변수 필요")
-    return create_client(SUPABASE_URL, SUPABASE_KEY)
+    return create_client(url, key)
 
 
 # ═══════════════════════════════════════════════════════════
@@ -226,27 +225,23 @@ def run_all():
     print(f"[updater] 전체 업데이트 완료: {datetime.now()}")
 
 
+def _load_env():
+    """프로젝트 .env 파일들을 환경변수로 로드"""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for env_file in ["web/.env.local", ".env"]:
+        path = os.path.join(root, env_file)
+        if os.path.exists(path):
+            with open(path) as f:
+                for line in f:
+                    line = line.strip()
+                    if "=" in line and not line.startswith("#"):
+                        k, v = line.split("=", 1)
+                        os.environ.setdefault(k, v)
+
+
 if __name__ == "__main__":
     import sys
-    # .env 파일 로드
-    env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "web", ".env.local")
-    if os.path.exists(env_path):
-        with open(env_path) as f:
-            for line in f:
-                line = line.strip()
-                if "=" in line and not line.startswith("#"):
-                    k, v = line.split("=", 1)
-                    os.environ.setdefault(k, v)
-
-    # .env도 로드 (서울 API 키 등)
-    env_path2 = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-    if os.path.exists(env_path2):
-        with open(env_path2) as f:
-            for line in f:
-                line = line.strip()
-                if "=" in line and not line.startswith("#"):
-                    k, v = line.split("=", 1)
-                    os.environ.setdefault(k, v)
+    _load_env()
 
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
     if cmd == "naver":
