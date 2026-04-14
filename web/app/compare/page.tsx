@@ -267,20 +267,6 @@ export default function ComparePage() {
 
   return (
     <div className="relative flex h-full overflow-hidden">
-      {/* ── 업데이트 예정 오버레이 ── */}
-      <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[2px]">
-        <div className="rounded-2xl bg-white/90 border border-gray-200 px-10 py-8 text-center shadow-xl">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50">
-            <MapIcon size={28} className="text-primary-400" />
-          </div>
-          <h2 className="text-[18px] font-bold text-gray-900">향후 업데이트 예정</h2>
-          <p className="mt-2 text-[13px] text-gray-500 leading-relaxed">
-            입지 비교 기능을 준비하고 있습니다.<br/>
-            빠른 시일 내 제공될 예정입니다.
-          </p>
-        </div>
-      </div>
-
       {/* ── 좌측 패널 ── */}
       <div className="relative z-10 flex h-full w-[400px] shrink-0 flex-col border-r border-gray-200 bg-white">
         {/* 헤더 */}

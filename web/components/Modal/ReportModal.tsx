@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { X, FileText, Download, Check, Lock, Sparkles, Crown } from "lucide-react";
+import { X, FileText, Download, Check, Lock, Crown } from "lucide-react";
 import ModalOverlay from "./ModalOverlay";
+import { useAnalysisStore } from "@/store/analysisStore";
 
 /* ── 섹션 목록 ── */
 const SECTIONS = [
@@ -21,14 +22,11 @@ interface ReportModalProps {
   areaName?: string;
 }
 
-export default function ReportModal({ open, onClose, isPro, areaName = "강남역 상권" }: ReportModalProps) {
+export default function ReportModal({ open, onClose, isPro: _isPro, areaName = "강남역 상권" }: ReportModalProps) {
+  // PDF 리포트는 현재 모두에게 제공 (베타)
   return (
     <ModalOverlay open={open} onClose={onClose}>
-      {isPro ? (
-        <ProReportContent onClose={onClose} areaName={areaName} />
-      ) : (
-        <FreeReportContent onClose={onClose} />
-      )}
+      <ProReportContent onClose={onClose} areaName={areaName} />
     </ModalOverlay>
   );
 }
@@ -42,6 +40,10 @@ function ProReportContent({ onClose, areaName }: { onClose: () => void; areaName
     new Set(SECTIONS.map((s) => s.id)),
   );
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
+
+  const analysisData = useAnalysisStore((s) => s.analysisData);
+  const clickedAddress = useAnalysisStore((s) => s.clickedAddress);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -60,15 +62,41 @@ function ProReportContent({ onClose, areaName }: { onClose: () => void; areaName
     }
   };
 
-  const handleGenerate = () => {
-    if (selected.size === 0) return;
+  const handleGenerate = async () => {
+    if (selected.size === 0 || !analysisData) return;
     setStatus("loading");
-    // 더미: 3초 후 완료
-    setTimeout(() => setStatus("done"), 3000);
+    try {
+      const { pdf } = await import("@react-pdf/renderer");
+      const { default: ReportPDF } = await import("@/components/Report/ReportPDF");
+      const generatedAt = new Date().toLocaleDateString("ko-KR");
+      const doc = (
+        <ReportPDF
+          data={analysisData}
+          areaName={areaName}
+          address={clickedAddress || ""}
+          generatedAt={generatedAt}
+        />
+      );
+      const blob = await pdf(doc).toBlob();
+      setPdfBlob(blob);
+      setStatus("done");
+    } catch (err) {
+      console.error("PDF 생성 실패:", err);
+      alert("PDF 생성 중 오류가 발생했습니다.");
+      setStatus("idle");
+    }
   };
 
   const handleDownload = () => {
-    // TODO: 실제 PDF 다운로드 구현
+    if (!pdfBlob) return;
+    const url = URL.createObjectURL(pdfBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${areaName}_상권분석리포트_${new Date().toISOString().slice(0, 10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
     onClose();
   };
 
