@@ -65,13 +65,14 @@ async function fetchSaleData(): Promise<SeoulSaleRow[]> {
 
 async function updateRentStats(rows: SeoulRentRow[]) {
   let updated = 0;
-  const currentYear = String(new Date().getFullYear());
+  const year = new Date().getFullYear();
+  const acceptedYears = new Set([String(year), String(year - 1)]);
 
   for (const [guName, guCode] of Object.entries(GU_CODE)) {
     const guPrefix = guCode.slice(0, 5);
     const filtered = rows.filter((r) => {
       return (r.CGG_CD ?? "").toString().slice(0, 5) === guPrefix
-        && String(r.RCPT_YR ?? "") === currentYear
+        && acceptedYears.has(String(r.RCPT_YR ?? ""))
         && r.RENT_SE === "월세"
         && num(r.RENT_AREA) > 0;
     });
@@ -108,14 +109,15 @@ async function updateRentStats(rows: SeoulRentRow[]) {
 
 async function updateSaleStats(rows: SeoulSaleRow[]) {
   let updated = 0;
-  const currentYear = String(new Date().getFullYear());
+  const year = new Date().getFullYear();
+  const acceptedYears = new Set([String(year), String(year - 1)]);  // 올해 + 작년 포함
   const validUsages = new Set(["오피스텔", "상가", "업무용", "근린생활시설"]);
 
   for (const [guName, guCode] of Object.entries(GU_CODE)) {
     const guPrefix = guCode.slice(0, 5);
     const filtered = rows.filter((r) => {
       return (r.CGG_CD ?? "").toString().slice(0, 5) === guPrefix
-        && String(r.DEAL_YR ?? "") === currentYear
+        && acceptedYears.has(String(r.DEAL_YR ?? ""))
         && validUsages.has(r.BLDG_USG ?? "")
         && num(r.BLDG_AREA) > 0
         && num(r.THING_AMT) > 0;
