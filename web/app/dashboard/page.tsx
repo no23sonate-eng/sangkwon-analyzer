@@ -273,7 +273,7 @@ export default function DashboardPage() {
 /* ── 임대료 · 매각가 카드 (상권에 해당하는 구 기준) ── */
 
 const AREA_TO_GU: Record<string, string> = {
-  "서울 전체": "강남구",
+  "서울 전체": "서울 전체",
   "강남역": "강남구",
   "도산공원": "강남구",
   "한남동": "용산구",
@@ -293,7 +293,8 @@ function RentSaleCards({ selectedArea }: { selectedArea: string }) {
   } | null>(null);
 
   useEffect(() => {
-    const gu = AREA_TO_GU[selectedArea] ?? "강남구";
+    const gu = AREA_TO_GU[selectedArea] ?? selectedArea;
+    if (gu === "서울 전체") { setRent(null); setSale(null); return; }
     fetch(`${BASE_URL}/api/rent-live/${encodeURIComponent(gu)}`)
       .then((r) => r.json())
       .then(setRent)
@@ -393,7 +394,7 @@ interface Top10Area {
 }
 
 function OpenCloseAndTop10() {
-  const [sortBy, setSortBy] = useState("유동인구 증가율");
+  const [sortBy, setSortBy] = useState("유동인구 규모");
   const [top10, setTop10] = useState<Top10Area[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -479,8 +480,8 @@ function OpenCloseAndTop10() {
           const stores = storesByArea.get(code) ?? { store_count: 0, open_count: 0, close_count: 0 };
           const ft = ftByArea.get(code) ?? 0;
           const sales = salesByArea.get(code) ?? 0;
-          const denom = stores.open_count + stores.close_count + stores.store_count;
-          const openRate = denom > 0 ? (stores.open_count / denom) * 100 : 0;
+          const ocTotal = stores.open_count + stores.close_count;
+          const openRate = ocTotal > 0 ? (stores.open_count / ocTotal) * 100 : 0;
 
           areaMetrics.push({
             trdar_cd: code,
@@ -498,10 +499,10 @@ function OpenCloseAndTop10() {
         let sorted: typeof areaMetrics;
         if (sortBy === "신규 개업률") {
           sorted = [...areaMetrics].sort((a, b) => b.openRate - a.openRate);
-        } else if (sortBy === "매출 증가율") {
+        } else if (sortBy === "매출 규모") {
           sorted = [...areaMetrics].sort((a, b) => b.totalSales - a.totalSales);
         } else {
-          // 유동인구 증가율
+          // 유동인구 규모
           sorted = [...areaMetrics].sort((a, b) => b.footTraffic - a.footTraffic);
         }
 
@@ -512,7 +513,7 @@ function OpenCloseAndTop10() {
           value:
             sortBy === "신규 개업률"
               ? Math.round(m.openRate * 10) / 10
-              : sortBy === "매출 증가율"
+              : sortBy === "매출 규모"
               ? Math.round(m.totalSales / 10000) // 만원 단위
               : Math.round(m.footTraffic / 1000), // 천명 단위
           lat: m.lat,
@@ -531,7 +532,7 @@ function OpenCloseAndTop10() {
   }, [sortBy]);
 
   const valueSuffix =
-    sortBy === "신규 개업률" ? "%" : sortBy === "매출 증가율" ? "만" : "천명";
+    sortBy === "신규 개업률" ? "%" : sortBy === "매출 규모" ? "만" : "천명";
 
   return (
     <div className="mt-6 grid grid-cols-1">
@@ -544,9 +545,9 @@ function OpenCloseAndTop10() {
             onChange={(e) => setSortBy(e.target.value)}
             className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[12px] text-gray-600 outline-none focus:border-primary-300"
           >
-            <option>유동인구 증가율</option>
+            <option>유동인구 규모</option>
             <option>신규 개업률</option>
-            <option>매출 증가율</option>
+            <option>매출 규모</option>
           </select>
         </div>
 

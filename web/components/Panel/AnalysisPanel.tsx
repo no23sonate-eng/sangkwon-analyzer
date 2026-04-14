@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
@@ -189,8 +189,8 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
                   <div key={h} className="text-center text-[9px] text-muted">{h}</div>
                 ))}
                 {traffic.heatmap.map((row, ri) => (
-                  <>
-                    <div key={`day-${ri}`} className="flex items-center justify-end pr-1 text-[10px] text-muted">
+                  <React.Fragment key={ri}>
+                    <div className="flex items-center justify-end pr-1 text-[10px] text-muted">
                       {DAYS[ri]}
                     </div>
                     {row.map((val, ci) => {
@@ -205,7 +205,7 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
                         />
                       );
                     })}
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
 

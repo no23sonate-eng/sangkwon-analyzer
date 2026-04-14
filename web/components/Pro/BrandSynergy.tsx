@@ -106,6 +106,12 @@ export default function BrandSynergy() {
     // 잠재 소비자 = 유동인구 + 거주인구 (거주인구는 반복 소비하므로 가중)
     const potentialConsumers = ftTotal + popTotal;
 
+    // 업종별 평균 면적(평) 추정
+    const AVG_PYEONG: Record<string, number> = {
+      "외식": 20, "카페/주류": 15, "소매/유통": 25,
+      "뷰티/건강": 15, "교육": 25, "생활서비스": 10, "여가/오락": 40,
+    };
+
     let categorizedStores = 0;
     const result: GroupData[] = [];
 
@@ -147,7 +153,8 @@ export default function BrandSynergy() {
       const totalOC = openCount + closeCount;
       const survivalRate = totalOC > 0 ? openCount / totalOC : 0.5;
 
-      const monthlyRentWon = rent1f > 0 ? rent1f * 30 * 10000 : 0; // 30평 기준 월세 (원)
+      const avgPyeong = AVG_PYEONG[key] ?? 20;
+      const monthlyRentWon = rent1f > 0 ? rent1f * avgPyeong * 10000 : 0; // 업종별 면적 기준 월세 (원)
       const rentRatio = RENT_RATIO[key] ?? 0.10;
       // rentBurden: 실제 월세 / 적정 월세 (1이면 적정, 1초과면 부담)
       const appropriateRent = avgPerStoreSales * rentRatio;
@@ -217,7 +224,8 @@ export default function BrandSynergy() {
       // 임대 적정
       const rentRatio = RENT_RATIO[r.key] ?? 0.10;
       const appropriateRent = r.perStoreSales * rentRatio;
-      const actualRentWon = (rent?.["1층_평"] as number ?? 0) * 30 * 10000;
+      const avgPy = AVG_PYEONG[r.key] ?? 20;
+      const actualRentWon = (rent?.["1층_평"] as number ?? 0) * avgPy * 10000;
       const rentFit = appropriateRent > 0 && actualRentWon > 0
         ? Math.max(5, Math.min(100, Math.round((appropriateRent / actualRentWon) * 50)))
         : 50;

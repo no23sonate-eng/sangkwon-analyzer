@@ -56,6 +56,7 @@ export default function GrowthPrediction() {
   if (!opp) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
 
   const ins = opp.insights;
+  if (!ins) return <p className="text-[12px] text-muted">성장 분석 데이터가 없습니다.</p>;
   const score = ins.vitality_score ?? 50;
   const scoreLabel = score >= 65 ? "성장 유망" : score >= 45 ? "안정" : "주의";
   const scoreColor = score >= 65 ? "#10B981" : score >= 45 ? "#F59E0B" : "#EF4444";

@@ -40,11 +40,19 @@ export async function GET(request: Request) {
 
     const doc = data.documents[0];
     const addr = doc.address;
+    const road = doc.road_address;
+
+    if (!addr && !road) {
+      return NextResponse.json(
+        { error: 'No address found for the given coordinates' },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
-      address: addr.address_name,
-      gu: addr.region_2depth_name,
-      dong: addr.region_3depth_name,
+      address: addr?.address_name ?? road?.address_name ?? '',
+      gu: addr?.region_2depth_name ?? road?.region_2depth_name ?? '',
+      dong: addr?.region_3depth_name ?? road?.region_3depth_name ?? '',
     });
   } catch {
     return NextResponse.json(

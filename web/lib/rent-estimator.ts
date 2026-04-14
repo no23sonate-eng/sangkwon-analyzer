@@ -115,7 +115,7 @@ export function estimateRent(
   // ── 방법 2: 부동산원 호가 ──
   let method2_rent = 0;
   if (rentApi?.["1층_평"]) {
-    method2_rent = Math.round(rentApi["1층_평"] / 10); // 천원 → 만원
+    method2_rent = Math.round(rentApi["1층_평"]); // 만원/평/월
     methods.push({ method: "부동산원 호가 (1층)", value: method2_rent, weight: 0.2 });
     sources.push("한국부동산원 호가");
   }
@@ -154,13 +154,13 @@ export function estimateRent(
 
     // 부동산원 호가가 있으면 해당 층 값으로 보정
     if (floor === "2층" && rentApi?.["2층이상_평"]) {
-      floorRent = Math.round(rentApi["2층이상_평"] / 10);
+      floorRent = Math.round(rentApi["2층이상_평"]); // 만원/평/월
     }
     if (floor === "지하" && rentApi?.["지하_평"]) {
-      floorRent = Math.round(rentApi["지하_평"] / 10);
+      floorRent = Math.round(rentApi["지하_평"]); // 만원/평/월
     }
 
-    const depositMonths = DEPOSIT_MONTHS[floor] ?? 50;
+    const depositMonths = DEPOSIT_MONTHS[floor] ?? 12;
 
     return {
       floor,

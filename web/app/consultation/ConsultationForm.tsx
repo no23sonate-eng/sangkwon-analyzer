@@ -19,8 +19,8 @@ async function submitConsultation(data: FormData) {
     user_name: data.name,
     user_email: data.phone,
     area_name: data.area,
-    address: data.industry,
-    question: `[상담신청] 업종: ${data.industry} / 예산: ${data.budget}\n${data.message}`,
+    address: data.area,
+    question: `[상담신청] 업종: ${data.industry} / 예산: ${data.budget} / 연락처: ${data.phone}\n${data.message}`,
   });
   return { success: true };
 }

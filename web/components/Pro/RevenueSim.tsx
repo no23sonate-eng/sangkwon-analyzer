@@ -29,7 +29,8 @@ export default function RevenueSim() {
   const [staff, setStaff] = useState(1); // 추가 직원 수
 
   const totalDailyFt = ft ? Math.round(ft.total / 90) : 10000;
-  const rentPerPyeong = rent ? ((rent["1층_평"] as number) ?? 0) / 10 : 15; // 만원
+  const raw1f = rent ? (rent["1층_평"] as number) ?? 0 : 0;
+  const rentPerPyeong = raw1f > 0 ? raw1f / 10 : 15; // 만원 (데이터 없으면 15만원 기본값)
 
   const result = useMemo(() => {
     const config = INDUSTRY_CONFIG[industry];

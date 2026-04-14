@@ -45,15 +45,15 @@ export async function getFootTraffic(_areaCode: string): Promise<FootTrafficData
   return {
     dailyAvg: 32450,
     hourly: [
-      { hour: "06", value: 2100 },
-      { hour: "08", value: 5800 },
-      { hour: "10", value: 4200 },
-      { hour: "12", value: 7500 },
-      { hour: "14", value: 5100 },
-      { hour: "16", value: 4800 },
-      { hour: "18", value: 6900 },
-      { hour: "20", value: 5200 },
-      { hour: "22", value: 2800 },
+      { hour: "06", value: 1500 },
+      { hour: "08", value: 4200 },
+      { hour: "10", value: 3100 },
+      { hour: "12", value: 5800 },
+      { hour: "14", value: 3900 },
+      { hour: "16", value: 3500 },
+      { hour: "18", value: 5100 },
+      { hour: "20", value: 3600 },
+      { hour: "22", value: 1750 },
     ],
     heatmap: [
       [12, 35, 28, 52, 38, 32, 48, 35, 18], // 월
@@ -94,7 +94,7 @@ export interface RentalData {
 export async function getRentalData(_areaCode: string): Promise<RentalData> {
   // TODO: Connect to DB
   return {
-    avgRentPerM2: 42,
+    avgRentPerM2: 42, // 만원/평/월 (3.3㎡ 기준)
     rentChangeQoQ: 3.2,
     vacancyRate: 12.4,
     vacancyChange: -1.8,

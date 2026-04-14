@@ -35,9 +35,9 @@ export default function FootTrafficPanel() {
   const popAgeData = Object.entries(pop?.by_age ?? {}).map(([name, value]) => ({ name, value }));
   const popGenderData = Object.entries(pop?.by_gender ?? {}).map(([name, value]) => ({ name, value }));
 
-  // 상권 유형 판별
+  // 상권 유형 판별: 유동인구 대비 배후인구 비율이 높으면 주거형, 낮으면 유입형
   const ftPopRatio = dailyFt > 0 ? popTotal / dailyFt : 0;
-  const areaType = ftPopRatio > 0.5 ? "직장인 중심" : ftPopRatio > 0.3 ? "혼합형" : "유입형 (관광·상업)";
+  const areaType = ftPopRatio > 0.5 ? "주거·직장 밀집형" : ftPopRatio > 0.2 ? "혼합형" : "유입형 (관광·상업)";
 
   // 소비여력
   const incomeData = clickedGu ? getDistrictIncome(clickedGu) : null;

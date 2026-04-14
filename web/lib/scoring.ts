@@ -43,7 +43,7 @@ export function calculateRecommendations(
       storeCount: info.count,
       saturation: info.ratio,
       salesAmount: 0,
-      salesRank: 0,
+      salesRank: -1,
       openCount: 0,
       closeCount: 0,
       perStoreSales: 0,
@@ -110,8 +110,8 @@ export function calculateRecommendations(
     // 포화도 역수 (낮을수록 좋음)
     const satScore = (1 - data.saturation / 100) * 25;
 
-    // 매출 순위 (높을수록 좋음)
-    const salesScore = sortedSales.length > 0
+    // 매출 순위 (높을수록 좋음, -1이면 매출 데이터 없음)
+    const salesScore = sortedSales.length > 0 && data.salesRank >= 0
       ? ((sortedSales.length - data.salesRank) / sortedSales.length) * 25
       : 0;
 

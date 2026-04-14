@@ -27,11 +27,10 @@ interface InquiryRow {
   submitted_at: string;
 }
 
-const ADMIN_PASSWORD = "cgwoo2026";
-
 function AdminContent() {
   const params = useSearchParams();
-  const isAuth = params.get("key") === ADMIN_PASSWORD;
+  const authKey = params.get("key") ?? "";
+  const [isAuth, setIsAuth] = useState(false);
 
   const [users, setUsers] = useState<UserRow[]>([]);
   const [inquiries, setInquiries] = useState<InquiryRow[]>([]);
@@ -40,34 +39,28 @@ function AdminContent() {
   const [expandedInquiry, setExpandedInquiry] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!isAuth) return;
+    if (!authKey) return;
     (async () => {
       try {
-        const res = await fetch(`/api/admin?key=${ADMIN_PASSWORD}`);
+        const res = await fetch(`/api/admin?key=${encodeURIComponent(authKey)}`);
         if (res.ok) {
+          setIsAuth(true);
           const data = await res.json();
           setUsers(data.users ?? []);
           setInquiries(data.inquiries ?? []);
         } else {
-          // fallback to direct supabase (if service key not set)
-          const [u, i] = await Promise.all([
-            supabase.from("users").select("*").order("registered_at", { ascending: false }),
-            supabase.from("inquiries").select("*").order("submitted_at", { ascending: false }),
-          ]);
-          setUsers(u.data ?? []);
-          setInquiries(i.data ?? []);
+          // API rejected the key — don't show admin content
+          setLoading(false);
+          return;
         }
       } catch {
-        const [u, i] = await Promise.all([
-          supabase.from("users").select("*").order("registered_at", { ascending: false }),
-          supabase.from("inquiries").select("*").order("submitted_at", { ascending: false }),
-        ]);
-        setUsers(u.data ?? []);
-        setInquiries(i.data ?? []);
+        // Network error — don't show admin content
+        setLoading(false);
+        return;
       }
       setLoading(false);
     })();
-  }, [isAuth]);
+  }, [authKey]);
 
   const toggleApproval = async (userId: number, approved: boolean) => {
     await supabase.from("users").update({ approved }).eq("id", userId);

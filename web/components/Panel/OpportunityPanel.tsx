@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { palette } from "@/lib/colors";
 import { formatCount } from "@/lib/formatters";
+import { estimateRent, type RentEstimate } from "@/lib/rent-estimator";
 import BrandSynergy from "@/components/Pro/BrandSynergy";
 import GrowthPrediction from "@/components/Pro/GrowthPrediction";
 import type { OpportunityItem } from "@/lib/types";
@@ -107,10 +108,30 @@ function RentVerification({ guName }: { guName: string }) {
   const [rentLoading, setRentLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
 
+  // 교차검증용 추가 데이터
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [rentApiData, setRentApiData] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [saleLiveData, setSaleLiveData] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [rentLiveData, setRentLiveData] = useState<any>(null);
+
   const clickedLat = useAnalysisStore((s) => s.clickedLat);
   const clickedLng = useAnalysisStore((s) => s.clickedLng);
   const radius = useAnalysisStore((s) => s.radius);
   const analysisData = useAnalysisStore((s) => s.analysisData);
+
+  // 부동산원 호가 + 임대 실거래 + 매매 실거래 fetch (구 변경 시)
+  useEffect(() => {
+    if (!guName) return;
+    const gu = encodeURIComponent(guName);
+    fetch(`${BASE_URL}/api/rent/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null)
+      .then((d) => setRentApiData(d));
+    fetch(`${BASE_URL}/api/rent-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null)
+      .then((d) => setRentLiveData(d));
+    fetch(`${BASE_URL}/api/sale-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null)
+      .then((d) => setSaleLiveData(d));
+  }, [guName]);
 
   useEffect(() => {
     if (clickedLat == null || clickedLng == null) return;
@@ -120,7 +141,20 @@ function RentVerification({ guName }: { guName: string }) {
       .then((res) => res.ok ? res.json() : null)
       .then((data) => { setRentNearby(data); setRentLoading(false); })
       .catch(() => setRentLoading(false));
-  }, [clickedLat, clickedLng, radius, selectedPyeong]);
+  }, [clickedLat, clickedLng, radius, selectedPyeong, guName]);
+
+  // 교차검증 결과 계산
+  const crossValidation = useMemo<RentEstimate | null>(() => {
+    if (!guName) return null;
+    return estimateRent(
+      guName,
+      rentApiData,
+      rentLiveData,
+      saleLiveData,
+      selectedPyeong * 3.3, // 평 → m²
+      inputFloor,
+    );
+  }, [guName, rentApiData, rentLiveData, saleLiveData, selectedPyeong, inputFloor]);
 
   const handleVerify = () => {
     const rent = parseInt(inputRent);
@@ -279,6 +313,56 @@ function RentVerification({ guName }: { guName: string }) {
               </div>
             </div>
           )}
+        </div>
+      )}
+      {/* ── 교차검증 (3소스 가중평균) ── */}
+      {crossValidation && crossValidation.method_details.length > 0 && (
+        <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50/50 p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[11px] font-bold text-gray-700">📊 교차검증 (신뢰도: {crossValidation.confidence})</p>
+            <span className="text-[9px] text-muted">{crossValidation.sources.length}개 소스 종합</span>
+          </div>
+          <div className="space-y-1.5">
+            {crossValidation.method_details.map((m, i) => {
+              const maxVal = Math.max(...crossValidation.method_details.map((d) => d.value));
+              const barW = maxVal > 0 ? Math.round((m.value / maxVal) * 100) : 0;
+              const colors = ["#F59E0B", "#6366F1", "#10B981"];
+              return (
+                <div key={i}>
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="text-gray-600">{m.method}</span>
+                    <span className="font-bold text-gray-800">{m.value}만/평</span>
+                  </div>
+                  <div className="mt-0.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div className="h-full rounded-full transition-all" style={{ width: `${barW}%`, background: colors[i % 3] }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-2 flex items-center justify-between border-t border-indigo-200 pt-2">
+            <span className="text-[10px] font-semibold text-gray-700">가중평균 추정 시세</span>
+            <span className="text-[13px] font-black text-primary-600">
+              {crossValidation.floors.find((f) => f.floor === inputFloor)?.rent_per_pyeong ?? 0}만/평
+            </span>
+          </div>
+          {inputRent && (() => {
+            const inputPP = parseInt(inputRent) / selectedPyeong;
+            const estPP = crossValidation.floors.find((f) => f.floor === inputFloor)?.rent_per_pyeong ?? 0;
+            if (estPP <= 0) return null;
+            const diff = Math.round(((inputPP - estPP) / estPP) * 100);
+            const isOk = Math.abs(diff) <= 15;
+            return (
+              <div className="mt-1.5 flex items-center gap-2">
+                <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold text-white ${isOk ? "bg-emerald-500" : diff > 0 ? "bg-red-400" : "bg-amber-500"}`}>
+                  {isOk ? "적정" : diff > 0 ? `+${diff}%` : `${diff}%`}
+                </span>
+                <span className="text-[9px] text-gray-500">
+                  입력 {Math.round(inputPP)}만/평 vs 교차검증 {estPP}만/평
+                </span>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
@@ -455,10 +539,6 @@ function LandPriceVerification({ guName }: { guName: string }) {
                         </div>
                       )}
                     </div>
-                    <p className="mt-2 text-[9px] text-muted leading-relaxed">
-                      연간 임대수입 {annualRent.toLocaleString()}만원(평당 {rentData.avg_pyeong}만×12개월×{selectedPyeong}평)을
-                      적정 수익률로 역산한 매매가입니다.
-                    </p>
                   </>
                 );
               })()}
