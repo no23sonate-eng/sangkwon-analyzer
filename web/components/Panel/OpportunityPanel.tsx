@@ -125,12 +125,16 @@ function RentVerification({ guName }: { guName: string }) {
   useEffect(() => {
     if (!guName) return;
     const gu = encodeURIComponent(guName);
-    fetch(`${BASE_URL}/api/rent/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null)
-      .then((d) => setRentApiData(d));
-    fetch(`${BASE_URL}/api/rent-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null)
-      .then((d) => setRentLiveData(d));
-    fetch(`${BASE_URL}/api/sale-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null)
-      .then((d) => setSaleLiveData(d));
+    Promise.all([
+      fetch(`/api/rent/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch(`/api/rent-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch(`/api/sale-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([a, b, c]) => {
+      console.log("[교차검증] fetch 결과:", { rentApi: a, rentLive: b, saleLive: c });
+      setRentApiData(a);
+      setRentLiveData(b);
+      setSaleLiveData(c);
+    });
   }, [guName]);
 
   useEffect(() => {
@@ -146,7 +150,7 @@ function RentVerification({ guName }: { guName: string }) {
   // 교차검증 결과 계산
   const crossValidation = useMemo<RentEstimate | null>(() => {
     if (!guName) return null;
-    return estimateRent(
+    const result = estimateRent(
       guName,
       rentApiData,
       rentLiveData,
@@ -154,6 +158,8 @@ function RentVerification({ guName }: { guName: string }) {
       selectedPyeong * 3.3, // 평 → m²
       inputFloor,
     );
+    console.log("[교차검증] estimateRent 결과:", { methods: result.method_details.length, confidence: result.confidence, floors: result.floors });
+    return result;
   }, [guName, rentApiData, rentLiveData, saleLiveData, selectedPyeong, inputFloor]);
 
   const handleVerify = () => {
