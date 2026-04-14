@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-const RENT_DATA: Record<string, { f1: number; b1: number; f2: number }> = {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+);
+
+// DB 실패 시 폴백
+const FALLBACK: Record<string, { f1: number; b1: number; f2: number }> = {
   "강남구": { f1: 53.3, b1: 30.9, f2: 32.0 },
   "서초구": { f1: 42.5, b1: 24.7, f2: 25.5 },
   "마포구": { f1: 33.8, b1: 19.6, f2: 20.3 },
@@ -30,7 +37,27 @@ const RENT_DATA: Record<string, { f1: number; b1: number; f2: number }> = {
 
 export async function GET(_: Request, { params }: { params: Promise<{ gu_name: string }> }) {
   const { gu_name } = await params;
-  const d = RENT_DATA[gu_name];
+
+  // DB에서 조회
+  const { data } = await supabase
+    .from("gu_rent_stats")
+    .select("f1_pyeong, f2_pyeong, b1_pyeong, source, updated_at")
+    .eq("gu", gu_name)
+    .single();
+
+  if (data && data.f1_pyeong > 0) {
+    return NextResponse.json({
+      gu: gu_name,
+      "1층_평": data.f1_pyeong,
+      "지하_평": data.b1_pyeong,
+      "2층이상_평": data.f2_pyeong,
+      source: data.source,
+      updated_at: data.updated_at,
+    });
+  }
+
+  // 폴백
+  const d = FALLBACK[gu_name];
   if (!d) {
     return NextResponse.json({ gu: gu_name, "1층_평": 25, "지하_평": 14, "2층이상_평": 15, source: "기본값" });
   }
@@ -39,6 +66,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ gu_name: s
     "1층_평": d.f1,
     "지하_평": d.b1,
     "2층이상_평": d.f2,
-    source: "한국부동산원 2025 Q3",
+    source: "한국부동산원 2025 Q3 (폴백)",
   });
 }

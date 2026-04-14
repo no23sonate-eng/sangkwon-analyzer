@@ -67,6 +67,14 @@ def _run_crawl_safe():
         conn.close()
         print(f"[스케줄러] 완료: {total}건 수집")
 
+        # ── Supabase 동기화 + 통계 갱신 ──
+        try:
+            from services.data_updater import sync_naver_to_supabase, update_dashboard_stats
+            sync_naver_to_supabase()
+            update_dashboard_stats()
+        except Exception as e2:
+            print(f"[스케줄러] Supabase 동기화 오류: {e2}")
+
     except Exception as e:
         print(f"[스케줄러] 크롤링 오류: {e}")
 

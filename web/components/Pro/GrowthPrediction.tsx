@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   RadialBarChart, RadialBar,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -53,6 +54,16 @@ export default function GrowthPrediction() {
   const clickedGu = useAnalysisStore((s) => s.clickedGu);
   const guName = clickedGu || analysisData?.gu_name || "";
 
+  // DB에서 가격 추이 가져오기 (폴백: 하드코딩 PRICE_HISTORY)
+  const [dbHistory, setDbHistory] = useState<{ years: string[]; land: number[]; rent: number[] } | null>(null);
+  useEffect(() => {
+    if (!guName) return;
+    fetch(`/api/price-history?gu=${encodeURIComponent(guName)}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d && d.years?.length > 0) setDbHistory(d); })
+      .catch(() => {});
+  }, [guName]);
+
   if (!opp) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
 
   const ins = opp.insights;
@@ -69,16 +80,23 @@ export default function GrowthPrediction() {
   const totalFt = ft?.total ?? 0;
   const dailyFt = Math.round(totalFt / 90);
 
-  // 10년 가격 추이
-  const history = PRICE_HISTORY[guName] ?? null;
-  const landChartData = history ? YEARS.map((y, i) => ({ year: y, 토지시세: history.land[i] })) : [];
-  const rentChartData = history ? YEARS.map((y, i) => ({ year: y, 임대시세: history.rent[i] })) : [];
+  // 10년 가격 추이 — DB 우선, 폴백 하드코딩
+  const fallbackHistory = PRICE_HISTORY[guName] ?? null;
+  const histYears = dbHistory?.years ?? (fallbackHistory ? YEARS : []);
+  const histLand = dbHistory?.land ?? (fallbackHistory?.land ?? []);
+  const histRent = dbHistory?.rent ?? (fallbackHistory?.rent ?? []);
+  const hasHistory = histYears.length > 0;
 
-  // 10년 상승률
-  const landGrowth10y = history ? Math.round(((history.land[10] - history.land[0]) / history.land[0]) * 100) : 0;
-  const rentGrowth10y = history ? Math.round(((history.rent[10] - history.rent[0]) / history.rent[0]) * 100) : 0;
-  const landCagr = history ? (Math.pow(history.land[10] / history.land[0], 1 / 10) - 1) * 100 : 0;
-  const rentCagr = history ? (Math.pow(history.rent[10] / history.rent[0], 1 / 10) - 1) * 100 : 0;
+  const landChartData = hasHistory ? histYears.map((y, i) => ({ year: y, 토지시세: histLand[i] })) : [];
+  const rentChartData = hasHistory ? histYears.map((y, i) => ({ year: y, 임대시세: histRent[i] })) : [];
+
+  // 상승률 계산
+  const n = histLand.length;
+  const landGrowth10y = n >= 2 ? Math.round(((histLand[n - 1] - histLand[0]) / histLand[0]) * 100) : 0;
+  const rentGrowth10y = n >= 2 ? Math.round(((histRent[n - 1] - histRent[0]) / histRent[0]) * 100) : 0;
+  const yrs = Math.max(n - 1, 1);
+  const landCagr = n >= 2 ? (Math.pow(histLand[n - 1] / histLand[0], 1 / yrs) - 1) * 100 : 0;
+  const rentCagr = n >= 2 ? (Math.pow(histRent[n - 1] / histRent[0], 1 / yrs) - 1) * 100 : 0;
 
   const indicators = [
     { label: "개업 vs 폐업", value: `${openCount} / ${closeCount}`, sub: netOpen >= 0 ? `순증 +${netOpen}` : `순감 ${netOpen}`, up: netOpen >= 0, color: netOpen >= 0 ? "emerald" : "red" },
@@ -129,7 +147,7 @@ export default function GrowthPrediction() {
       </div>
 
       {/* ── 임대료 10년 추이 ── */}
-      {history && (
+      {hasHistory && (
         <section>
           <div className="flex items-center justify-between mb-2">
             <p className="text-[12px] font-bold text-gray-800">임대 시세 추이 (1층 평당/월)</p>
@@ -155,7 +173,7 @@ export default function GrowthPrediction() {
       )}
 
       {/* ── 토지 시세 10년 추이 ── */}
-      {history && (
+      {hasHistory && (
         <section>
           <div className="flex items-center justify-between mb-2">
             <p className="text-[12px] font-bold text-gray-800">토지 시세 추이 (상업지역 평당)</p>
@@ -181,7 +199,7 @@ export default function GrowthPrediction() {
       )}
 
       {/* ── 투자 성장성 요약 ── */}
-      {history && (
+      {hasHistory && (
         <div className="rounded-xl bg-primary-50 p-3">
           <p className="text-[12px] font-semibold text-primary-700">투자 성장성 종합</p>
           <div className="mt-2 grid grid-cols-2 gap-2">

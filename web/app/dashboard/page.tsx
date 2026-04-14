@@ -49,12 +49,16 @@ export default function DashboardPage() {
   const [areaGroups, setAreaGroups] = useState<AreaGroup[]>([]);
   const [selectedArea, setSelectedArea] = useState("서울 전체");
 
+  // KPI 데이터
+  const [kpi, setKpi] = useState<Record<string, { value: number; label: string; change_pct: number }> | null>(null);
+
   // 실제 API 트렌드 데이터
   const [salesByIndustry, setSalesByIndustry] = useState<Array<{ 업종: string; 매출_억: number; 전분기대비: number }>>([]);
 
   useEffect(() => {
     getDashboardStats().then(setStats);
     getTopAreas().then(setTopAreas);
+    fetch(`${BASE_URL}/api/dashboard/kpi`).then((r) => r.json()).then(setKpi).catch(() => {});
     fetch(`${BASE_URL}/api/dashboard/area-groups`)
       .then((r) => r.json())
       .then(setAreaGroups)
@@ -99,32 +103,32 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ── 지표 카드 3개 ── */}
+        {/* ── 지표 카드 3개 (DB 기반) ── */}
         <div className="mt-8 grid grid-cols-3 gap-6">
           <StatCard
             icon={Building2}
-            label="총 상가 데이터"
-            value={1284}
+            label={kpi?.total_stores?.label ?? "총 상가 데이터"}
+            value={Math.round((kpi?.total_stores?.value ?? 12840000) / 10000)}
             suffix="만 건"
             iconColor="#0EA5E9"
             iconBg="#F0F9FF"
           />
           <StatCard
             icon={TrendingUp}
-            label="이번 달 신규 개업"
-            value={3241}
+            label={kpi?.monthly_open?.label ?? "신규 개업"}
+            value={kpi?.monthly_open?.value ?? 3241}
             suffix="개"
-            change="+8.2%"
+            change={kpi?.monthly_open ? `${kpi.monthly_open.change_pct > 0 ? "+" : ""}${kpi.monthly_open.change_pct}%` : undefined}
             changeColor="text-emerald-500"
             iconColor="#10B981"
             iconBg="#ECFDF5"
           />
           <StatCard
             icon={TrendingDown}
-            label="이번 달 폐업"
-            value={2103}
+            label={kpi?.monthly_close?.label ?? "폐업"}
+            value={kpi?.monthly_close?.value ?? 2103}
             suffix="개"
-            change="-3.1%"
+            change={kpi?.monthly_close ? `${kpi.monthly_close.change_pct > 0 ? "+" : ""}${kpi.monthly_close.change_pct}%` : undefined}
             changeColor="text-emerald-500"
             iconColor="#F43F5E"
             iconBg="#FFF1F2"

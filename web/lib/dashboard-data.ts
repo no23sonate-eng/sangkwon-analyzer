@@ -91,14 +91,52 @@ export interface TopArea {
 }
 
 export async function getTopAreas(): Promise<TopArea[]> {
-  // TODO: Replace with actual API call
-  return [
-    { rank: 1, name: "성수동", change: 24 },
-    { rank: 2, name: "을지로", change: 18 },
-    { rank: 3, name: "망원동", change: 15 },
-    { rank: 4, name: "연남동", change: 12 },
-    { rank: 5, name: "익선동", change: 9 },
-  ];
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+    );
+    const { data: storesData } = await supabase
+      .from("stores")
+      .select("trdar_cd, open_count, close_count")
+      .gt("open_count", 0)
+      .limit(10000);
+    const { data: areasData } = await supabase
+      .from("areas")
+      .select("trdar_cd, trdar_nm");
+
+    if (!storesData?.length || !areasData?.length) throw new Error("no data");
+
+    const areaMap = new Map(areasData.map((a) => [a.trdar_cd, a.trdar_nm]));
+    const byArea = new Map<string, { name: string; open: number; close: number }>();
+    for (const r of storesData) {
+      const name = areaMap.get(r.trdar_cd);
+      if (!name) continue;
+      const existing = byArea.get(r.trdar_cd) ?? { name, open: 0, close: 0 };
+      existing.open += r.open_count ?? 0;
+      existing.close += r.close_count ?? 0;
+      byArea.set(r.trdar_cd, existing);
+    }
+    const sorted = [...byArea.values()]
+      .filter((a) => a.open + a.close > 0)
+      .sort((a, b) => (b.open - b.close) - (a.open - a.close))
+      .slice(0, 5);
+
+    return sorted.map((a, i) => ({
+      rank: i + 1,
+      name: a.name,
+      change: a.open + a.close > 0 ? Math.round(((a.open - a.close) / (a.open + a.close)) * 100) : 0,
+    }));
+  } catch {
+    return [
+      { rank: 1, name: "성수동", change: 24 },
+      { rank: 2, name: "을지로", change: 18 },
+      { rank: 3, name: "망원동", change: 15 },
+      { rank: 4, name: "연남동", change: 12 },
+      { rank: 5, name: "익선동", change: 9 },
+    ];
+  }
 }
 
 /* ── 업종별 개폐업 (기간별 다른 데이터) ── */

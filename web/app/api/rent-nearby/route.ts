@@ -190,20 +190,44 @@ export async function GET(request: Request) {
     stats[key] = calcStats(cases, maxDistance, target_pyeong);
   }
 
-  // DB에 사례가 없으면 구 단위 평균 임대료를 fallback으로 사용
+  // DB에 사례가 없으면 gu_rent_stats → 하드코딩 순서로 fallback
   if (filtered.length === 0 && gu) {
+    const makeGuStats = (avgPyeong: number) => ({
+      count: 1,
+      avg_rent: Math.round(avgPyeong * target_pyeong),
+      avg_deposit: Math.round(avgPyeong * target_pyeong * 10),
+      avg_pyeong: avgPyeong,
+      min_rent: Math.round(avgPyeong * target_pyeong * 0.8),
+      max_rent: Math.round(avgPyeong * target_pyeong * 1.2),
+      median_rent: Math.round(avgPyeong * target_pyeong),
+      target_pyeong,
+    });
+
+    // 1차: DB에서 구 통계 조회
+    const { data: guStats } = await supabase
+      .from("gu_rent_stats")
+      .select("f1_pyeong, f2_pyeong, b1_pyeong, source")
+      .eq("gu", gu)
+      .single();
+
+    if (guStats && guStats.f1_pyeong > 0) {
+      return NextResponse.json({
+        total_cases: 1,
+        radius: actualRadius,
+        fallback: true,
+        fallback_source: `${gu} 평균 (${guStats.source})`,
+        stats: {
+          "1층": makeGuStats(guStats.f1_pyeong),
+          "2층": makeGuStats(guStats.f2_pyeong),
+          "지하": makeGuStats(guStats.b1_pyeong),
+        },
+        sample_cases: [],
+      });
+    }
+
+    // 2차: 하드코딩 폴백
     const fallback = GU_RENT_FALLBACK[gu];
     if (fallback) {
-      const makeGuStats = (avgPyeong: number) => ({
-        count: 1,
-        avg_rent: Math.round(avgPyeong * target_pyeong),
-        avg_deposit: Math.round(avgPyeong * target_pyeong * 10),
-        avg_pyeong: avgPyeong,
-        min_rent: Math.round(avgPyeong * target_pyeong * 0.8),
-        max_rent: Math.round(avgPyeong * target_pyeong * 1.2),
-        median_rent: Math.round(avgPyeong * target_pyeong),
-        target_pyeong,
-      });
       return NextResponse.json({
         total_cases: 1,
         radius: actualRadius,

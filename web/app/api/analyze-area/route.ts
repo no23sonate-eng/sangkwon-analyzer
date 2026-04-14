@@ -411,17 +411,34 @@ export async function GET(request: Request) {
     by_subcategory: bySubcategory,
   };
 
-  /* ── Step 4: Rent info ── */
-  const rentData = RENT_DATA[guName];
-  const rentInfo = rentData
-    ? {
+  /* ── Step 4: Rent info (DB → 폴백) ── */
+  let rentInfo: Record<string, unknown> = {};
+  const { data: rentDbRow } = await supabase
+    .from("gu_rent_stats")
+    .select("f1_pyeong, f2_pyeong, b1_pyeong, source")
+    .eq("gu", guName)
+    .single();
+
+  if (rentDbRow && rentDbRow.f1_pyeong > 0) {
+    rentInfo = {
+      gu: guName,
+      "1층_평": rentDbRow.f1_pyeong,
+      "지하_평": rentDbRow.b1_pyeong,
+      "2층이상_평": rentDbRow.f2_pyeong,
+      source: rentDbRow.source,
+    };
+  } else {
+    const rentFallback = RENT_DATA[guName];
+    if (rentFallback) {
+      rentInfo = {
         gu: guName,
-        "1층_평": rentData.f1,
-        "지하_평": rentData.b1,
-        "2층이상_평": rentData.f2,
-        source: "한국부동산원 2025 Q3",
-      }
-    : {};
+        "1층_평": rentFallback.f1,
+        "지하_평": rentFallback.b1,
+        "2층이상_평": rentFallback.f2,
+        source: "한국부동산원 2025 Q3 (폴백)",
+      };
+    }
+  }
 
   /* ── Step 5: Opportunities ── */
   // vitality_score: 0-100 based on foot traffic + sales
