@@ -35,9 +35,9 @@ interface SeoulRentRow {
 
 interface SeoulSaleRow {
   CGG_CD?: string;
-  DEAL_YR?: string;
+  RCPT_YR?: string;    // 실제 API 필드명
   BLDG_USG?: string;
-  BLDG_AREA?: number | string;
+  ARCH_AREA?: number | string;  // 건축 면적 (m²)
   THING_AMT?: number | string;  // 거래금액 (만원)
 }
 
@@ -111,22 +111,23 @@ async function updateSaleStats(rows: SeoulSaleRow[]) {
   let updated = 0;
   const year = new Date().getFullYear();
   const acceptedYears = new Set([String(year), String(year - 1)]);  // 올해 + 작년 포함
-  const validUsages = new Set(["오피스텔", "상가", "업무용", "근린생활시설"]);
+  // tbLnOpendataRtmsV는 주거용 실거래. 상업성이 가장 높은 오피스텔만 사용.
+  const validUsages = new Set(["오피스텔"]);
 
   for (const [guName, guCode] of Object.entries(GU_CODE)) {
     const guPrefix = guCode.slice(0, 5);
     const filtered = rows.filter((r) => {
       return (r.CGG_CD ?? "").toString().slice(0, 5) === guPrefix
-        && acceptedYears.has(String(r.DEAL_YR ?? ""))
+        && acceptedYears.has(String(r.RCPT_YR ?? ""))
         && validUsages.has(r.BLDG_USG ?? "")
-        && num(r.BLDG_AREA) > 0
+        && num(r.ARCH_AREA) > 0
         && num(r.THING_AMT) > 0;
     });
 
     if (filtered.length === 0) continue;
 
     const prices = filtered.map((r) => num(r.THING_AMT));
-    const pricesPerM2 = filtered.map((r) => num(r.THING_AMT) / num(r.BLDG_AREA)).filter((v) => v > 0 && isFinite(v));
+    const pricesPerM2 = filtered.map((r) => num(r.THING_AMT) / num(r.ARCH_AREA)).filter((v) => v > 0 && isFinite(v));
 
     const avgPrice = Math.round(prices.reduce((s, v) => s + v, 0) / prices.length);
     const avgPerM2 = pricesPerM2.length > 0
