@@ -28,16 +28,62 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
   const [traffic, setTraffic] = useState<FootTrafficData | null>(null);
   const [rental, setRental] = useState<RentalData | null>(null);
   const [openClose, setOpenClose] = useState<OpenCloseData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [dayType, setDayType] = useState<"weekday" | "weekend">("weekday");
 
   useEffect(() => {
-    getAreaOverview(areaCode).then(setOverview);
-    getFootTraffic(areaCode).then(setTraffic);
-    getRentalData(areaCode).then(setRental);
-    getOpenCloseData(areaCode).then(setOpenClose);
+    let cancelled = false;
+    setLoading(true);
+    setOverview(null);
+    setTraffic(null);
+    setRental(null);
+    setOpenClose(null);
+    Promise.all([
+      getAreaOverview(areaCode),
+      getFootTraffic(areaCode),
+      getRentalData(areaCode),
+      getOpenCloseData(areaCode),
+    ]).then(([ov, tf, rn, oc]) => {
+      if (cancelled) return;
+      setOverview(ov);
+      setTraffic(tf);
+      setRental(rn);
+      setOpenClose(oc);
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
   }, [areaCode]);
 
-  if (!overview) return null;
+  if (loading) {
+    return (
+      <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-[400px] flex-col bg-white shadow-xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
+          <h2 className="text-lg font-semibold text-gray-900">상권 분석</h2>
+          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+            <X size={18} className="text-gray-400" />
+          </button>
+        </div>
+        <div className="flex flex-1 items-center justify-center text-sm text-muted">불러오는 중…</div>
+      </div>
+    );
+  }
+
+  if (!overview) {
+    return (
+      <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-[400px] flex-col bg-white shadow-xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
+          <h2 className="text-lg font-semibold text-gray-900">상권 분석</h2>
+          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+            <X size={18} className="text-gray-400" />
+          </button>
+        </div>
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
+          <p className="text-sm font-medium text-gray-700">데이터를 불러오지 못했습니다</p>
+          <p className="text-xs text-muted">해당 상권의 공개 데이터가 없거나 일시적 오류일 수 있어요.</p>
+        </div>
+      </div>
+    );
+  }
 
   const peakHour = traffic
     ? traffic.hourly.reduce((a, b) => (b.value > a.value ? b : a))

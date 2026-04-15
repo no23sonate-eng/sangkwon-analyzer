@@ -46,40 +46,21 @@ export interface TrendDataPoint {
   폐업: number;
 }
 
-export async function getTrendData(period: Period = "6m"): Promise<TrendDataPoint[]> {
-  // TODO: Replace with actual API call
-  if (period === "3m") {
-    return [
-      { month: "2026.01", 개업: 1520, 폐업: 870 },
-      { month: "2026.02", 개업: 1450, 폐업: 980 },
-      { month: "2026.03", 개업: 1620, 폐업: 910 },
-    ];
+async function fetchTrend(period: Period, area = "서울 전체") {
+  try {
+    const res = await fetch(
+      `/api/dashboard/trend?area=${encodeURIComponent(area)}&period=${period}`,
+    );
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
   }
-  if (period === "1y") {
-    return [
-      { month: "2025.04", 개업: 1180, 폐업: 950 },
-      { month: "2025.05", 개업: 1290, 폐업: 880 },
-      { month: "2025.06", 개업: 1350, 폐업: 860 },
-      { month: "2025.07", 개업: 1150, 폐업: 1020 },
-      { month: "2025.08", 개업: 1080, 폐업: 1080 },
-      { month: "2025.09", 개업: 1200, 폐업: 960 },
-      { month: "2025.10", 개업: 1240, 폐업: 890 },
-      { month: "2025.11", 개업: 1380, 폐업: 920 },
-      { month: "2025.12", 개업: 1100, 폐업: 1050 },
-      { month: "2026.01", 개업: 1520, 폐업: 870 },
-      { month: "2026.02", 개업: 1450, 폐업: 980 },
-      { month: "2026.03", 개업: 1620, 폐업: 910 },
-    ];
-  }
-  // 6m
-  return [
-    { month: "2025.10", 개업: 1240, 폐업: 890 },
-    { month: "2025.11", 개업: 1380, 폐업: 920 },
-    { month: "2025.12", 개업: 1100, 폐업: 1050 },
-    { month: "2026.01", 개업: 1520, 폐업: 870 },
-    { month: "2026.02", 개업: 1450, 폐업: 980 },
-    { month: "2026.03", 개업: 1620, 폐업: 910 },
-  ];
+}
+
+export async function getTrendData(period: Period = "6m", area = "서울 전체"): Promise<TrendDataPoint[]> {
+  const data = await fetchTrend(period, area);
+  return data?.["개폐업_분기별"] ?? [];
 }
 
 /* ── TOP 5 상권 ── */
@@ -147,34 +128,9 @@ export interface IndustryRow {
   폐업: number;
 }
 
-export async function getIndustryStats(period: Period = "6m"): Promise<IndustryRow[]> {
-  // TODO: Replace with actual API call
-  if (period === "3m") {
-    return [
-      { name: "카페", 개업: 210, 폐업: 160 },
-      { name: "음식점", 개업: 340, 폐업: 270 },
-      { name: "소매", 개업: 175, 폐업: 145 },
-      { name: "서비스업", 개업: 145, 폐업: 98 },
-      { name: "주점", 개업: 85, 폐업: 110 },
-    ];
-  }
-  if (period === "1y") {
-    return [
-      { name: "카페", 개업: 840, 폐업: 620 },
-      { name: "음식점", 개업: 1360, 폐업: 1040 },
-      { name: "소매", 개업: 700, 폐업: 560 },
-      { name: "서비스업", 개업: 580, 폐업: 380 },
-      { name: "주점", 개업: 360, 폐업: 420 },
-    ];
-  }
-  // 6m
-  return [
-    { name: "카페", 개업: 420, 폐업: 310 },
-    { name: "음식점", 개업: 680, 폐업: 520 },
-    { name: "소매", 개업: 350, 폐업: 280 },
-    { name: "서비스업", 개업: 290, 폐업: 190 },
-    { name: "주점", 개업: 180, 폐업: 210 },
-  ];
+export async function getIndustryStats(period: Period = "6m", area = "서울 전체"): Promise<IndustryRow[]> {
+  const data = await fetchTrend(period, area);
+  return data?.["개폐업_업종별"] ?? [];
 }
 
 /* ── 요일별 유동인구 (기간별 다른 데이터) ── */
@@ -184,40 +140,9 @@ export interface FootTrafficDay {
   value: number;
 }
 
-export async function getWeeklyFootTraffic(period: Period = "6m"): Promise<FootTrafficDay[]> {
-  // TODO: Replace with actual API call
-  if (period === "3m") {
-    return [
-      { day: "월", value: 78200 },
-      { day: "화", value: 75800 },
-      { day: "수", value: 80100 },
-      { day: "목", value: 77500 },
-      { day: "금", value: 89400 },
-      { day: "토", value: 108600 },
-      { day: "일", value: 100200 },
-    ];
-  }
-  if (period === "1y") {
-    return [
-      { day: "월", value: 86800 },
-      { day: "화", value: 83400 },
-      { day: "수", value: 88900 },
-      { day: "목", value: 85600 },
-      { day: "금", value: 98200 },
-      { day: "토", value: 118700 },
-      { day: "일", value: 109300 },
-    ];
-  }
-  // 6m
-  return [
-    { day: "월", value: 82400 },
-    { day: "화", value: 79100 },
-    { day: "수", value: 84300 },
-    { day: "목", value: 81200 },
-    { day: "금", value: 93800 },
-    { day: "토", value: 112400 },
-    { day: "일", value: 104700 },
-  ];
+export async function getWeeklyFootTraffic(period: Period = "6m", area = "서울 전체"): Promise<FootTrafficDay[]> {
+  const data = await fetchTrend(period, area);
+  return data?.["요일별유동인구"] ?? [];
 }
 
 /* ── 최근 분석 기록 ── */
