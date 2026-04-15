@@ -147,24 +147,86 @@ async function updateSaleStats(rows: SeoulSaleRow[]) {
 }
 
 async function updateDashboardStats() {
-  const { data } = await supabase
+  // 최신 분기 찾기
+  const { data: latestQ } = await supabase
     .from("stores")
-    .select("store_count, open_count, close_count");
+    .select("quarter_cd")
+    .order("quarter_cd", { ascending: false })
+    .limit(1);
 
-  if (!data) return 0;
+  const latestQuarter = latestQ?.[0]?.quarter_cd;
+  if (!latestQuarter) return 0;
 
-  const totalStores = data.reduce((s, r) => s + (r.store_count ?? 0), 0);
-  const totalOpen = data.reduce((s, r) => s + (r.open_count ?? 0), 0);
-  const totalClose = data.reduce((s, r) => s + (r.close_count ?? 0), 0);
+  // 최신 분기 전체 합산 (페이지네이션으로 모든 행 조회)
+  let totalStores = 0;
+  let totalOpen = 0;
+  let totalClose = 0;
+  const pageSize = 1000;
+  let from = 0;
+  while (true) {
+    const { data, error } = await supabase
+      .from("stores")
+      .select("store_count, open_count, close_count")
+      .eq("quarter_cd", latestQuarter)
+      .range(from, from + pageSize - 1);
+    if (error || !data || data.length === 0) break;
+    for (const r of data) {
+      totalStores += r.store_count ?? 0;
+      totalOpen += r.open_count ?? 0;
+      totalClose += r.close_count ?? 0;
+    }
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+
+  // 이전 분기와 비교 (증감율)
+  const prevQuarter = getPreviousQuarter(latestQuarter);
+  let openChange = 0;
+  let closeChange = 0;
+  if (prevQuarter) {
+    let prevOpen = 0;
+    let prevClose = 0;
+    let pFrom = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from("stores")
+        .select("open_count, close_count")
+        .eq("quarter_cd", prevQuarter)
+        .range(pFrom, pFrom + pageSize - 1);
+      if (error || !data || data.length === 0) break;
+      for (const r of data) {
+        prevOpen += r.open_count ?? 0;
+        prevClose += r.close_count ?? 0;
+      }
+      if (data.length < pageSize) break;
+      pFrom += pageSize;
+    }
+    if (prevOpen > 0) openChange = Math.round(((totalOpen - prevOpen) / prevOpen) * 1000) / 10;
+    if (prevClose > 0) closeChange = Math.round(((totalClose - prevClose) / prevClose) * 1000) / 10;
+  }
 
   const now = new Date().toISOString();
   await supabase.from("dashboard_stats").upsert([
-    { metric_key: "total_stores", value: totalStores, label: "총 상가 데이터", updated_at: now },
-    { metric_key: "monthly_open", value: totalOpen, label: "이번 분기 신규 개업", updated_at: now },
-    { metric_key: "monthly_close", value: totalClose, label: "이번 분기 폐업", updated_at: now },
+    { metric_key: "total_stores", value: totalStores, label: "총 상가", change_pct: 0, updated_at: now },
+    { metric_key: "monthly_open", value: totalOpen, label: `${formatQuarter(latestQuarter)} 신규 개업`, change_pct: openChange, updated_at: now },
+    { metric_key: "monthly_close", value: totalClose, label: `${formatQuarter(latestQuarter)} 폐업`, change_pct: closeChange, updated_at: now },
   ], { onConflict: "metric_key" });
 
   return 3;
+}
+
+function getPreviousQuarter(q: string): string | null {
+  // "20254" → "20253", "20251" → "20244"
+  if (q.length !== 5) return null;
+  const year = parseInt(q.slice(0, 4), 10);
+  const quarter = parseInt(q.slice(4), 10);
+  if (quarter === 1) return `${year - 1}4`;
+  return `${year}${quarter - 1}`;
+}
+
+function formatQuarter(q: string): string {
+  if (q.length !== 5) return q;
+  return `${q.slice(0, 4)} Q${q.slice(4)}`;
 }
 
 export async function GET(request: Request) {
