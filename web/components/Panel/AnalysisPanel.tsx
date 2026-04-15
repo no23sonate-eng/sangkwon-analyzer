@@ -287,21 +287,28 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
 
           {/* ━━ 섹션 4: 임대 시장 ━━ */}
           {rental && (
-            <Section title="임대 시장">
+            <Section
+              title="임대 시장"
+              right={<span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-600">추정치</span>}
+            >
               <div className="mb-4 grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-gray-50 p-3">
                   <p className="text-[11px] text-muted">3.3㎡당 월 임대료</p>
                   <p className="text-[20px] font-bold text-gray-900">{rental.avgRentPerM2}<span className="text-[13px] font-medium">만원</span></p>
-                  <p className={`text-[11px] font-semibold ${rental.rentChangeQoQ >= 0 ? "text-emerald-500" : "text-red-400"}`}>
-                    전분기 {rental.rentChangeQoQ >= 0 ? "+" : ""}{rental.rentChangeQoQ}%
-                  </p>
+                  {rental.rentChangeQoQ !== 0 && (
+                    <p className={`text-[11px] font-semibold ${rental.rentChangeQoQ > 0 ? "text-emerald-500" : "text-red-400"}`}>
+                      전분기 {rental.rentChangeQoQ > 0 ? "+" : ""}{rental.rentChangeQoQ}%
+                    </p>
+                  )}
                 </div>
                 <div className="rounded-xl bg-gray-50 p-3">
-                  <p className="text-[11px] text-muted">공실률</p>
+                  <p className="text-[11px] text-muted">공실률 추정</p>
                   <p className="text-[20px] font-bold text-gray-900">{rental.vacancyRate}%</p>
-                  <p className={`text-[11px] font-semibold ${rental.vacancyChange <= 0 ? "text-emerald-500" : "text-red-400"}`}>
-                    {rental.vacancyChange}%
-                  </p>
+                  {rental.vacancyChange !== 0 && (
+                    <p className={`text-[11px] font-semibold ${rental.vacancyChange < 0 ? "text-emerald-500" : "text-red-400"}`}>
+                      {rental.vacancyChange > 0 ? "+" : ""}{rental.vacancyChange}%
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -368,6 +375,10 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
             </Section>
           )}
 
+          <p className="px-1 pt-2 text-[10px] leading-relaxed text-muted">
+            출처: 서울 열린데이터광장(상권분석·유동인구), 한국부동산원, 공개 부동산 정보.
+            임대료·공실률·트렌드는 추정치이며 실제 시장과 차이가 있을 수 있습니다.
+          </p>
           <div className="h-4" />
         </div>
       </div>

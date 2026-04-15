@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function GET(_: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+export const revalidate = 3600;
+
+export async function GET(req: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+  const limited = rateLimit(req, "area-open-close", 120, 60_000);
+  if (limited) return limited;
   const { trdar_cd } = await params;
 
   const { data } = await supabase

@@ -64,27 +64,42 @@ export default function DashboardPage() {
       .catch(() => {});
   }, []);
 
+  const [fetchError, setFetchError] = useState(false);
+
   // 상권 변경 시 KPI + 트렌드 API 호출
   useEffect(() => {
     const q = `area=${encodeURIComponent(selectedArea)}`;
-    fetch(`${BASE_URL}/api/dashboard/kpi?${q}`).then((r) => r.json()).then(setKpi).catch(() => {});
-    fetch(`${BASE_URL}/api/dashboard/trend?${q}&period=6m`)
-      .then((r) => r.json())
-      .then((data) => {
-        setSalesByIndustry(data["매출_업종별"] ?? []);
+    setFetchError(false);
+    Promise.all([
+      fetch(`${BASE_URL}/api/dashboard/kpi?${q}`).then((r) => (r.ok ? r.json() : null)),
+      fetch(`${BASE_URL}/api/dashboard/trend?${q}&period=6m`).then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([kpiData, trendData]) => {
+        if (kpiData) setKpi(kpiData);
+        if (trendData) setSalesByIndustry(trendData["매출_업종별"] ?? []);
+        if (!kpiData || !trendData) setFetchError(true);
       })
-      .catch(() => {});
+      .catch(() => setFetchError(true));
   }, [selectedArea]);
 
   return (
     <div className="h-full overflow-y-auto p-8">
       <div className="space-y-6 animate-fade-in">
+        {fetchError && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-[13px] text-amber-800">
+            일부 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+          </div>
+        )}
         {/* ── 상단 헤더 ── */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">서울 상권 대시보드</h1>
             <p className="mt-1 text-sm text-muted">
-              2026년 4월 기준 · 최종 업데이트: 2026.03.31
+              {(() => {
+                const label = kpi?.monthly_open?.label ?? "";
+                const m = label.match(/\d{4}\s*Q[1-4]/);
+                return m ? `${m[0]} 기준 · 서울시 열린데이터` : "서울시 열린데이터 기반";
+              })()}
             </p>
           </div>
           <div className="flex h-11 w-80 items-center gap-2 rounded-full border border-gray-100 bg-white px-4 shadow-sm">
@@ -268,6 +283,16 @@ export default function DashboardPage() {
 
         {/* ── 업종별 점포수 · 주요 상권 바로가기 ── */}
         <TwoColumnCards selectedArea={selectedArea} />
+
+        <div className="mt-8 border-t border-gray-100 pt-4 text-[11px] leading-relaxed text-muted">
+          <p>
+            데이터 출처: 서울 열린데이터광장(서울시 상권분석서비스·실거래가), 한국부동산원 상업용부동산 임대동향조사,
+            공개 부동산 시세정보. 모든 지표는 참고용 추정치이며 실제 시장 상황과 차이가 있을 수 있습니다.
+          </p>
+          <p className="mt-1">
+            본 서비스는 정보 제공 목적이며, 투자·매매·계약의 근거로 사용할 수 없습니다.
+          </p>
+        </div>
 
       </div>
     </div>

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
+
+export const revalidate = 3600;
 
 const CATEGORY_COLORS: Record<string, string> = {
   "음식점": "#F97316",
@@ -32,7 +35,9 @@ function deriveCategory(svcNm: string): string {
   return "기타";
 }
 
-export async function GET(_: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+  const limited = rateLimit(req, "area-overview", 120, 60_000);
+  if (limited) return limited;
   const { trdar_cd } = await params;
 
   const [areaRes, storesRes] = await Promise.all([

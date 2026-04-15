@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabase-server";
+import { rateLimit } from "@/lib/rate-limit";
+
+export const revalidate = 3600;
 
 const GU_RENT_FALLBACK: Record<string, { f1: number; b1: number; f2: number }> = {
   "강남구": { f1: 53.3, b1: 30.9, f2: 32.0 },
@@ -85,7 +89,9 @@ function formatAmount(deposit: number, rent: number): string {
   return `보 ${d.toLocaleString()} / 월 ${r.toLocaleString()}`;
 }
 
-export async function GET(_: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+  const limited = rateLimit(req, "area-rental", 60, 60_000);
+  if (limited) return limited;
   const { trdar_cd } = await params;
 
   const { data: area } = await supabase
@@ -128,8 +134,8 @@ export async function GET(_: Request, { params }: { params: Promise<{ trdar_cd: 
     });
   }
 
-  // 최근 실거래: naver_estimated_deals 해당 구 기준 최근 5건
-  const { data: deals } = await supabase
+  // 최근 실거래: naver_estimated_deals 해당 구 기준 최근 5건 (서버 전용 키 필요)
+  const { data: deals } = await supabaseServer
     .from("naver_estimated_deals")
     .select("disappeared_date, estimated_rent, estimated_deposit, area_m2, floor, dong")
     .eq("gu", area.gu)

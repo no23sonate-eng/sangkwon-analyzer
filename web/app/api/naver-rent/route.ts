@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
+export const revalidate = 3600;
+
+// 네이버 데이터 — 이용약관 리스크로 인해 서버 전용 키로만 접근
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
 );
 
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "naver-rent", 30, 60_000);
+  if (limited) return limited;
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json({ error: "service unavailable" }, { status: 503 });
+  }
   const { searchParams } = new URL(request.url);
   const gu = searchParams.get("gu") ?? "";
   const dong = searchParams.get("dong") ?? "";

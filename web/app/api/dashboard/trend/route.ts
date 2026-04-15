@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
-const AREA_KEYWORDS: Record<string, string[]> = {
-  "강남역": ["강남역", "강남"],
-  "도산공원": ["도산공원", "압구정", "신사동 가로수길", "가로수길"],
-  "한남동": ["한남", "이태원"],
-  "성수동": ["성수"],
-  "홍대역": ["홍대", "서교", "동교"],
-  "명동": ["명동"],
+export const revalidate = 1800;
+
+// 상권별 키워드 + 구(gu) 필터로 오탐 방지 (예: "강남역"이 동작구 "강남시장"과 매칭되는 것 차단)
+const AREA_DEF: Record<string, { keywords: string[]; gu?: string[] }> = {
+  "강남역": { keywords: ["강남역", "강남대로"], gu: ["강남구", "서초구"] },
+  "도산공원": { keywords: ["도산공원", "압구정", "신사동 가로수길", "가로수길"], gu: ["강남구"] },
+  "한남동": { keywords: ["한남", "이태원"], gu: ["용산구"] },
+  "성수동": { keywords: ["성수"], gu: ["성동구"] },
+  "홍대역": { keywords: ["홍대", "서교", "동교"], gu: ["마포구"] },
+  "명동": { keywords: ["명동"], gu: ["중구"] },
 };
 
 const PERIOD_QUARTERS: Record<string, number> = { "3m": 1, "6m": 2, "1y": 4 };
@@ -32,10 +36,12 @@ function deriveCategory(svcNm: string): string {
 
 async function getTrdarCds(area: string): Promise<string[] | null> {
   if (area === "서울 전체") return null;
-  const keywords = AREA_KEYWORDS[area] ?? [area];
+  const def = AREA_DEF[area] ?? { keywords: [area] };
   const allCodes = new Set<string>();
-  for (const kw of keywords) {
-    const { data } = await supabase.from("areas").select("trdar_cd").ilike("trdar_nm", `%${kw}%`);
+  for (const kw of def.keywords) {
+    let q = supabase.from("areas").select("trdar_cd, gu").ilike("trdar_nm", `%${kw}%`);
+    if (def.gu) q = q.in("gu", def.gu);
+    const { data } = await q;
     if (data) for (const r of data) allCodes.add(r.trdar_cd);
   }
   return allCodes.size > 0 ? Array.from(allCodes) : null;
@@ -46,6 +52,8 @@ function formatQuarter(q: string): string {
 }
 
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "dashboard-trend", 120, 60_000);
+  if (limited) return limited;
   const { searchParams } = new URL(request.url);
   const area = searchParams.get("area") ?? "서울 전체";
   const period = searchParams.get("period") ?? "6m";

@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
+
+export const revalidate = 1800;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
 );
 
-const AREA_KEYWORDS: Record<string, string[]> = {
-  "강남역": ["강남역", "강남"],
-  "도산공원": ["도산공원", "압구정", "신사동 가로수길", "가로수길"],
-  "한남동": ["한남", "이태원"],
-  "성수동": ["성수"],
-  "홍대역": ["홍대", "서교", "동교"],
-  "명동": ["명동"],
+const AREA_DEF: Record<string, { keywords: string[]; gu?: string[] }> = {
+  "강남역": { keywords: ["강남역", "강남대로"], gu: ["강남구", "서초구"] },
+  "도산공원": { keywords: ["도산공원", "압구정", "신사동 가로수길", "가로수길"], gu: ["강남구"] },
+  "한남동": { keywords: ["한남", "이태원"], gu: ["용산구"] },
+  "성수동": { keywords: ["성수"], gu: ["성동구"] },
+  "홍대역": { keywords: ["홍대", "서교", "동교"], gu: ["마포구"] },
+  "명동": { keywords: ["명동"], gu: ["중구"] },
 };
 
 function formatQuarter(q: string): string {
@@ -30,10 +33,12 @@ function prevQuarter(q: string): string | null {
 
 async function getTrdarCds(area: string): Promise<string[] | null> {
   if (!area || area === "서울 전체") return null;
-  const keywords = AREA_KEYWORDS[area] ?? [area];
+  const def = AREA_DEF[area] ?? { keywords: [area] };
   const all = new Set<string>();
-  for (const kw of keywords) {
-    const { data } = await supabase.from("areas").select("trdar_cd").ilike("trdar_nm", `%${kw}%`);
+  for (const kw of def.keywords) {
+    let q = supabase.from("areas").select("trdar_cd, gu").ilike("trdar_nm", `%${kw}%`);
+    if (def.gu) q = q.in("gu", def.gu);
+    const { data } = await q;
     if (data) for (const r of data) all.add(r.trdar_cd);
   }
   return all.size > 0 ? Array.from(all) : null;
@@ -83,6 +88,8 @@ async function computeAreaKpi(trdarCds: string[]) {
 }
 
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "dashboard-kpi", 120, 60_000);
+  if (limited) return limited;
   const { searchParams } = new URL(request.url);
   const area = searchParams.get("area") ?? "서울 전체";
   const trdarCds = await getTrdarCds(area);

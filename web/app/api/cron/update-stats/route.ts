@@ -230,9 +230,12 @@ function formatQuarter(q: string): string {
 }
 
 export async function GET(request: Request) {
-  // Vercel Cron은 Authorization 헤더로 인증
+  // Vercel Cron은 Authorization 헤더로 인증. 시크릿 미설정 시 호출 전체 차단(안전 디폴트).
+  if (!CRON_SECRET) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
+  }
   const authHeader = request.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
