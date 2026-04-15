@@ -58,17 +58,17 @@ export default function DashboardPage() {
   useEffect(() => {
     getDashboardStats().then(setStats);
     getTopAreas().then(setTopAreas);
-    fetch(`${BASE_URL}/api/dashboard/kpi`).then((r) => r.json()).then(setKpi).catch(() => {});
     fetch(`${BASE_URL}/api/dashboard/area-groups`)
       .then((r) => r.json())
       .then(setAreaGroups)
       .catch(() => {});
   }, []);
 
-  // 상권 변경 시 트렌드 API 호출
+  // 상권 변경 시 KPI + 트렌드 API 호출
   useEffect(() => {
-    const url = `${BASE_URL}/api/dashboard/trend?area=${encodeURIComponent(selectedArea)}&period=6m`;
-    fetch(url)
+    const q = `area=${encodeURIComponent(selectedArea)}`;
+    fetch(`${BASE_URL}/api/dashboard/kpi?${q}`).then((r) => r.json()).then(setKpi).catch(() => {});
+    fetch(`${BASE_URL}/api/dashboard/trend?${q}&period=6m`)
       .then((r) => r.json())
       .then((data) => {
         setSalesByIndustry(data["매출_업종별"] ?? []);
