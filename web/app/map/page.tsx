@@ -12,7 +12,7 @@ import DataPanel from "@/components/Panel/DataPanel";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
 import { findDistrictByQuery, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
-import { getDistrictPolygonGeoJSON } from "@/lib/district-polygons";
+// district-polygons.ts (하드코딩)는 더 이상 사용하지 않음 — /api/districts/polygons에서 실제 SHP 기반 폴리곤 로드
 
 const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
   ssr: false,
@@ -193,6 +193,8 @@ export default function MapPage() {
   // ── 상권 zone 데이터 ──
   const [activeDistrictId, setActiveDistrictId] = useState<string | null>(null);
   const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [zonePolygonGeoJSON, setZonePolygonGeoJSON] = useState<any>(null);
   const [zoneCompare, setZoneCompare] = useState<{
     district: { name: string; color: string };
     quarter: string | null;
@@ -208,6 +210,10 @@ export default function MapPage() {
     fetch(`/api/districts/compare?id=${districtId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setZoneCompare(data); })
+      .catch(() => {});
+    fetch(`/api/districts/polygons?id=${districtId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.features) setZonePolygonGeoJSON(data); })
       .catch(() => {});
   }, []);
 
@@ -240,10 +246,10 @@ export default function MapPage() {
       return;
     }
 
-    // zone 아닌 검색은 zone 패널 닫기
     setActiveDistrictId(null);
     setDistrictZones(null);
     setZoneCompare(null);
+    setZonePolygonGeoJSON(null);
 
     // 1. 하드코딩 매칭 (즉시)
     const match = SEARCH_KEYWORDS[q];
@@ -287,7 +293,7 @@ export default function MapPage() {
       {/* 풀스크린 지도 */}
       <MapContainer
         districtZones={districtZones}
-        zonePolygonGeoJSON={activeDistrictId ? getDistrictPolygonGeoJSON(activeDistrictId, districtZones?.district?.color ?? "#6366F1") : null}
+        zonePolygonGeoJSON={zonePolygonGeoJSON}
       />
 
       {/* ── 상단 검색바 (플로팅) ── */}
@@ -360,7 +366,7 @@ export default function MapPage() {
               <p className="mt-0.5 text-[12px] text-muted">{districtZones.areas.length}개 세부 상권</p>
             </div>
             <button
-              onClick={() => { setActiveDistrictId(null); setDistrictZones(null); setZoneCompare(null); }}
+              onClick={() => { setActiveDistrictId(null); setDistrictZones(null); setZoneCompare(null); setZonePolygonGeoJSON(null); }}
               className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100"
             >
               <X size={18} className="text-gray-400" />
