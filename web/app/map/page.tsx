@@ -189,26 +189,24 @@ export default function MapPage() {
   });
   const [layerMenuOpen, setLayerMenuOpen] = useState(false);
 
-  // ── 상권 zone 데이터 ──
+  // ── 상권 zone 데이터 (store 미사용, 직접 관리) ──
   const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
   const [zoneCompare, setZoneCompare] = useState<{
     district: { name: string; color: string };
     quarter: string | null;
     zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
   } | null>(null);
-  const activeDistrictId = useAnalysisStore((s) => s.activeDistrictId);
 
-  useEffect(() => {
-    if (!activeDistrictId) { setDistrictZones(null); setZoneCompare(null); return; }
-    fetch(`/api/districts/zones?id=${activeDistrictId}`)
+  const loadDistrictZones = useCallback((districtId: string) => {
+    fetch(`/api/districts/zones?id=${districtId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data?.areas) setDistrictZones(data); })
       .catch(() => {});
-    fetch(`/api/districts/compare?id=${activeDistrictId}`)
+    fetch(`/api/districts/compare?id=${districtId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setZoneCompare(data); })
       .catch(() => {});
-  }, [activeDistrictId]);
+  }, []);
 
   const heatmapOn = useAnalysisStore((s) => s.heatmapOn);
   const setHeatmapOn = useAnalysisStore((s) => s.setHeatmapOn);
@@ -228,27 +226,29 @@ export default function MapPage() {
     const district = findDistrictByQuery(q);
     if (district) {
       const store = useAnalysisStore.getState();
-      store.setActiveDistrictId(district.id);
       store.setViewState({
         ...store.viewState,
         latitude: district.center[0],
         longitude: district.center[1],
         zoom: 15,
       });
+      loadDistrictZones(district.id);
       triggerAnalysis(district.center[0], district.center[1]);
       return;
     }
 
+    // zone 아닌 검색은 zone 패널 닫기
+    setDistrictZones(null);
+    setZoneCompare(null);
+
     // 1. 하드코딩 매칭 (즉시)
     const match = SEARCH_KEYWORDS[q];
     if (match) {
-      useAnalysisStore.getState().setActiveDistrictId(null);
       triggerAnalysis(match.lat, match.lng);
       return;
     }
 
-    // 2. 지오코딩 + 상권 검색 병렬 실행 → 먼저 성공한 쪽 사용
-    useAnalysisStore.getState().setActiveDistrictId(null);
+    // 2. 지오코딩 + 상권 검색 병렬 실행
     const [geoResult, trdarResult] = await Promise.allSettled([
       geocode(q).then((r) => (r?.lat && r?.lng ? r : null)),
       searchTrdar(q).then((results) => {
@@ -263,7 +263,7 @@ export default function MapPage() {
     if (found) {
       triggerAnalysis(found.lat, found.lng);
     }
-  }, []);
+  }, [loadDistrictZones]);
 
   const handleSearch = useCallback(async () => {
     const q = searchQuery.trim();

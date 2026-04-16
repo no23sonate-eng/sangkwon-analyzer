@@ -328,7 +328,13 @@ export default function MapContainer({ districtZones }: MapProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius]);
 
-  // selectedTrdar 변경 시 flyTo 제거 — triggerAnalysis에서 setViewState로 이미 이동하므로 이중 이동 방지
+  // 지도 클릭 시 해당 위치로 확대
+  useEffect(() => {
+    if (clickedLat != null && clickedLng != null && mapRef.current) {
+      mapRef.current.flyTo({ center: [clickedLng, clickedLat], zoom: Math.max(viewState.zoom, 15), duration: 800 });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clickedLat, clickedLng]);
 
 
   // ── 클러스터 클릭 줌인 ──
