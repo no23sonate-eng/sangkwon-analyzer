@@ -11,6 +11,7 @@ import {
 import DataPanel from "@/components/Panel/DataPanel";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
+import { findDistrictByQuery } from "@/lib/district-zones";
 
 const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
   ssr: false,
@@ -139,14 +140,24 @@ function AutoAnalysisTrigger() {
           store.setViewState({ ...store.viewState, latitude: match.lat, longitude: match.lng, zoom });
           triggerAnalysis(match.lat, match.lng);
         }
-      }).catch(console.error);
+      }).catch(() => {});
       return;
     }
 
     // ?search=강남역 검색어 → API로 검색
     const search = searchParams.get("search");
     if (search) {
-      // 하드코딩 매칭 먼저
+      // 주요 상권 zone 매칭
+      const dist = findDistrictByQuery(search);
+      if (dist) {
+        const s = useAnalysisStore.getState();
+        s.setActiveDistrictId(dist.id);
+        s.setViewState({ ...s.viewState, latitude: dist.center[0], longitude: dist.center[1], zoom: 15 });
+        triggerAnalysis(dist.center[0], dist.center[1]);
+        return;
+      }
+
+      // 하드코딩 매칭
       const match = SEARCH_KEYWORDS[search];
       if (match) {
         triggerAnalysis(match.lat, match.lng);
@@ -157,7 +168,7 @@ function AutoAnalysisTrigger() {
           if (first && first.lat && first.lng) {
             triggerAnalysis(first.lat, first.lng);
           }
-        }).catch(console.error);
+        }).catch(() => {});
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,9 +192,26 @@ export default function MapPage() {
     const q = searchQuery.trim();
     if (!q) return;
 
+    // 0. 주요 상권 zone 매칭 → zone 활성화 + 지도 이동
+    const district = findDistrictByQuery(q);
+    if (district) {
+      const store = useAnalysisStore.getState();
+      store.setActiveDistrictId(district.id);
+      store.setViewState({
+        ...store.viewState,
+        latitude: district.center[0],
+        longitude: district.center[1],
+        zoom: 15,
+      });
+      triggerAnalysis(district.center[0], district.center[1]);
+      setSearchQuery("");
+      return;
+    }
+
     // 1. 하드코딩 매칭
     const match = SEARCH_KEYWORDS[q];
     if (match) {
+      useAnalysisStore.getState().setActiveDistrictId(null);
       triggerAnalysis(match.lat, match.lng);
       setSearchQuery("");
       return;

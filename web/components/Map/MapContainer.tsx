@@ -17,6 +17,7 @@ import {
   getTrafficHeatmap, getSalesHeatmap,
   getOpenHeatmap, getCloseHeatmap,
 } from "@/lib/heatmap-data";
+import { DISTRICTS, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
 
 // ── Vworld 한국 정부 지도 ──
 const MAP_STYLE = {
@@ -78,6 +79,51 @@ export default function MapContainer() {
   const showDistrictBounds = useAnalysisStore((s) => s.showDistrictBounds);
   const hoveredTrdar = useAnalysisStore((s) => s.hoveredTrdar);
   const setHoveredTrdar = useAnalysisStore((s) => s.setHoveredTrdar);
+  const activeDistrictId = useAnalysisStore((s) => s.activeDistrictId);
+
+  // ── 주요상권 zone 데이터 ──
+  const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
+
+  useEffect(() => {
+    if (!activeDistrictId) { setDistrictZones(null); return; }
+    fetch(`/api/districts/zones?id=${activeDistrictId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setDistrictZones(data);
+      })
+      .catch(() => {});
+  }, [activeDistrictId]);
+
+  // zone별 GeoJSON — 각 trdar_cd를 ~120m 원으로 표현, zone별 다른 opacity
+  const zoneGeoJSON = useMemo(() => {
+    if (!districtZones) return null;
+    const features = districtZones.areas.map((a) => {
+      const zoneInfo = ZONE_COLORS[a.zone];
+      const r = a.zone === "main" ? 130 : a.zone === "side" ? 110 : 90;
+      const coords: [number, number][] = [];
+      for (let i = 0; i <= 32; i++) {
+        const angle = (2 * Math.PI * i) / 32;
+        coords.push([
+          a.lng + (r / (111320 * Math.cos((a.lat * Math.PI) / 180))) * Math.sin(angle),
+          a.lat + (r / 111320) * Math.cos(angle),
+        ]);
+      }
+      return {
+        type: "Feature" as const,
+        properties: {
+          trdar_cd: a.trdar_cd,
+          trdar_nm: a.trdar_nm,
+          zone: a.zone,
+          zoneLabel: zoneInfo.label,
+          fillOpacity: zoneInfo.fill,
+          strokeOpacity: zoneInfo.stroke,
+          color: districtZones.district.color,
+        },
+        geometry: { type: "Polygon" as const, coordinates: [coords] },
+      };
+    });
+    return { type: "FeatureCollection" as const, features };
+  }, [districtZones]);
 
   // ── 반경 원 GeoJSON ──
   const circleGeoJSON = useMemo(() => {
@@ -509,7 +555,43 @@ export default function MapContainer() {
         </Source>
       )}
 
-      {/* 상권 경계 폴리곤 제거됨 */}
+      {/* ── 주요 상권 zone 폴리곤 ── */}
+      {zoneGeoJSON && (
+        <Source id="district-zones" type="geojson" data={zoneGeoJSON}>
+          <Layer
+            id="zone-fill"
+            type="fill"
+            paint={{
+              "fill-color": ["get", "color"],
+              "fill-opacity": ["get", "fillOpacity"],
+            }}
+          />
+          <Layer
+            id="zone-stroke"
+            type="line"
+            paint={{
+              "line-color": ["get", "color"],
+              "line-width": 2,
+              "line-opacity": ["get", "strokeOpacity"],
+            }}
+          />
+          <Layer
+            id="zone-label"
+            type="symbol"
+            layout={{
+              "text-field": ["get", "trdar_nm"],
+              "text-size": 11,
+              "text-font": ["Open Sans Bold"],
+              "text-allow-overlap": false,
+            }}
+            paint={{
+              "text-color": ["get", "color"],
+              "text-halo-color": "#FFFFFF",
+              "text-halo-width": 1.5,
+            }}
+          />
+        </Source>
+      )}
 
       {/* ── 점포 마커 (클러스터링) ── */}
       {showStoreMarkers && storeGeoJSON && (
@@ -619,6 +701,39 @@ export default function MapContainer() {
 
       {/* 상권 마커 제거됨 */}
 
+
+      {/* ── 상권 zone 범례 ── */}
+      {districtZones && (
+        <div className="absolute left-4 top-4 z-20 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur-sm">
+          <div className="mb-2 flex items-center justify-between gap-4">
+            <p className="text-[13px] font-semibold text-gray-900">{districtZones.district.name} 상권</p>
+            <button
+              onClick={() => useAnalysisStore.getState().setActiveDistrictId(null)}
+              className="text-[11px] text-muted hover:text-gray-700"
+            >
+              닫기 ✕
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            {(["main", "side", "rear"] as const).map((z) => (
+              <div key={z} className="flex items-center gap-1.5">
+                <div
+                  className="h-3 w-3 rounded-sm border"
+                  style={{
+                    background: districtZones.district.color,
+                    opacity: ZONE_COLORS[z].fill * 2.5,
+                    borderColor: districtZones.district.color,
+                  }}
+                />
+                <span className="text-[10px] text-gray-600">{ZONE_COLORS[z].label}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-1.5 text-[10px] text-muted">
+            {districtZones.areas.length}개 상권 · 메인 {districtZones.areas.filter((a) => a.zone === "main").length} / 이면 {districtZones.areas.filter((a) => a.zone === "side").length} / 배후 {districtZones.areas.filter((a) => a.zone === "rear").length}
+          </p>
+        </div>
+      )}
 
       {/* ── 히트맵 범례 + 안내 ── */}
       {heatmapOn && (

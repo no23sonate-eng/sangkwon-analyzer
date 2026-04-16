@@ -84,6 +84,10 @@ interface AnalysisState {
   showDistrictBounds: boolean;
   setShowDistrictBounds: (v: boolean) => void;
 
+  /* ---- District zones ---- */
+  activeDistrictId: string | null;
+  setActiveDistrictId: (id: string | null) => void;
+
   /* ---- Reset ---- */
   reset: () => void;
 }
@@ -154,6 +158,9 @@ export const useAnalysisStore = create<AnalysisState>((set) => ({
   setShowStoreMarkers: (v) => set({ showStoreMarkers: v }),
   showDistrictBounds: true,
   setShowDistrictBounds: (v) => set({ showDistrictBounds: v }),
+
+  activeDistrictId: null,
+  setActiveDistrictId: (id) => set({ activeDistrictId: id }),
 
   reset: () =>
     set({
