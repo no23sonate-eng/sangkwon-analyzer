@@ -12,6 +12,7 @@ import DataPanel from "@/components/Panel/DataPanel";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
 import { findDistrictByQuery, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
+import { getDistrictPolygonGeoJSON } from "@/lib/district-polygons";
 
 const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
   ssr: false,
@@ -189,7 +190,8 @@ export default function MapPage() {
   });
   const [layerMenuOpen, setLayerMenuOpen] = useState(false);
 
-  // ── 상권 zone 데이터 (store 미사용, 직접 관리) ──
+  // ── 상권 zone 데이터 ──
+  const [activeDistrictId, setActiveDistrictId] = useState<string | null>(null);
   const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
   const [zoneCompare, setZoneCompare] = useState<{
     district: { name: string; color: string };
@@ -198,6 +200,7 @@ export default function MapPage() {
   } | null>(null);
 
   const loadDistrictZones = useCallback((districtId: string) => {
+    setActiveDistrictId(districtId);
     fetch(`/api/districts/zones?id=${districtId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data?.areas) setDistrictZones(data); })
@@ -238,6 +241,7 @@ export default function MapPage() {
     }
 
     // zone 아닌 검색은 zone 패널 닫기
+    setActiveDistrictId(null);
     setDistrictZones(null);
     setZoneCompare(null);
 
@@ -281,7 +285,10 @@ export default function MapPage() {
       </Suspense>
 
       {/* 풀스크린 지도 */}
-      <MapContainer districtZones={districtZones} />
+      <MapContainer
+        districtZones={districtZones}
+        zonePolygonGeoJSON={activeDistrictId ? getDistrictPolygonGeoJSON(activeDistrictId, districtZones?.district?.color ?? "#6366F1") : null}
+      />
 
       {/* ── 상단 검색바 (플로팅) ── */}
       <div className="absolute left-1/2 top-4 z-20 w-full max-w-xl -translate-x-1/2 px-4">
@@ -353,7 +360,7 @@ export default function MapPage() {
               <p className="mt-0.5 text-[12px] text-muted">{districtZones.areas.length}개 세부 상권</p>
             </div>
             <button
-              onClick={() => useAnalysisStore.getState().setActiveDistrictId(null)}
+              onClick={() => { setActiveDistrictId(null); setDistrictZones(null); setZoneCompare(null); }}
               className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100"
             >
               <X size={18} className="text-gray-400" />

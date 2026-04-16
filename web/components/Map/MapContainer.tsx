@@ -54,9 +54,11 @@ function makeCircle(lat: number, lng: number, radiusM: number, n = 64) {
 
 interface MapProps {
   districtZones?: { district: DistrictDef; areas: ZonedArea[] } | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  zonePolygonGeoJSON?: any;
 }
 
-export default function MapContainer({ districtZones }: MapProps) {
+export default function MapContainer({ districtZones, zonePolygonGeoJSON }: MapProps) {
   const mapRef = useRef<MapRef>(null);
 
   const viewState = useAnalysisStore((s) => s.viewState);
@@ -622,35 +624,37 @@ export default function MapContainer({ districtZones }: MapProps) {
         </Marker>
       )}
 
-      {/* ── 주요 상권 zone — 3색 히트맵 스타일 ── */}
-      {districtZones && districtZones.areas.map((a) => {
-        const isMain = a.zone === "main";
-        const isSide = a.zone === "side";
-        const zoneLabel = isMain ? "대로변" : isSide ? "이면" : "배후";
-        // 3색 체계: 빨강(대로변) → 노랑(이면) → 파랑(배후)
-        const zoneColor = isMain ? "#EF4444" : isSide ? "#F59E0B" : "#3B82F6";
-        const bgOpacity = isMain ? 0.45 : isSide ? 0.3 : 0.15;
-        const size = isMain ? 130 : isSide ? 100 : 70;
+      {/* ── 주요 상권 zone 폴리곤 (실제 도로 경계) ── */}
+      {zonePolygonGeoJSON && (
+        <Source id="zone-polygons" type="geojson" data={zonePolygonGeoJSON}>
+          <Layer
+            id="zone-fill"
+            type="fill"
+            paint={{
+              "fill-color": ["get", "fillColor"],
+              "fill-opacity": ["get", "fillOpacity"],
+            }}
+          />
+          <Layer
+            id="zone-outline"
+            type="line"
+            paint={{
+              "line-color": ["get", "strokeColor"],
+              "line-width": ["get", "strokeWidth"],
+              "line-opacity": ["get", "strokeOpacity"],
+            }}
+          />
+        </Source>
+      )}
+      {/* zone 라벨 (대로변/이면만) */}
+      {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => {
+        const zoneColor = a.zone === "main" ? "#EF4444" : "#F59E0B";
+        const zoneLabel = a.zone === "main" ? "대로변" : "이면";
         return (
-          <Marker key={`zone-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="center">
-            <div className="relative flex flex-col items-center">
-              <div
-                className="rounded-full"
-                style={{
-                  width: size,
-                  height: size,
-                  background: `radial-gradient(circle, ${zoneColor}${isMain ? "90" : isSide ? "60" : "30"} 0%, ${zoneColor}00 70%)`,
-                  opacity: bgOpacity + 0.3,
-                  border: `2px solid ${zoneColor}${isMain ? "CC" : isSide ? "88" : "44"}`,
-                }}
-              />
-              <div
-                className="absolute -bottom-5 whitespace-nowrap rounded-md px-2 py-0.5 text-center shadow-sm"
-                style={{ background: "rgba(255,255,255,0.95)", border: `1.5px solid ${zoneColor}60` }}
-              >
-                <div className="text-[10px] font-bold" style={{ color: zoneColor }}>{a.trdar_nm}</div>
-                <div className="text-[9px] font-bold" style={{ color: zoneColor }}>{zoneLabel}</div>
-              </div>
+          <Marker key={`zlbl-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="center">
+            <div className="whitespace-nowrap rounded-md px-1.5 py-0.5 text-center shadow-sm" style={{ background: "rgba(255,255,255,0.92)", border: `1.5px solid ${zoneColor}60` }}>
+              <div className="text-[9px] font-bold" style={{ color: zoneColor }}>{a.trdar_nm}</div>
+              <div className="text-[8px] font-semibold" style={{ color: zoneColor }}>{zoneLabel}</div>
             </div>
           </Marker>
         );
