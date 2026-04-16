@@ -315,14 +315,14 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, onDist
 
   const handleMapClick = useCallback(
     async (e: MapMouseEvent) => {
-      // 그리기 모드에서는 클릭 무시 (mousedown/up 으로 처리)
       if (drawMode !== "none") return;
       const { lng, lat } = e.lngLat;
       setClicked(lat, lng);
+      setViewState({ ...useAnalysisStore.getState().viewState, latitude: lat, longitude: lng, zoom: Math.max(useAnalysisStore.getState().viewState.zoom, 15) });
       setPanelOpen(false);
       await loadAnalysis(lat, lng, radius);
     },
-    [drawMode, setClicked, setPanelOpen, loadAnalysis, radius],
+    [drawMode, setClicked, setViewState, setPanelOpen, loadAnalysis, radius],
   );
 
   useEffect(() => {
@@ -331,13 +331,8 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, onDist
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius]);
 
-  // 지도 클릭 시 해당 위치로 확대
-  useEffect(() => {
-    if (clickedLat != null && clickedLng != null && mapRef.current) {
-      mapRef.current.flyTo({ center: [clickedLng, clickedLat], zoom: Math.max(viewState.zoom, 15), duration: 800 });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clickedLat, clickedLng]);
+  // clickedLat/Lng 변경 시 flyTo 제거 — triggerAnalysis의 setViewState로 이미 이동됨
+  // 지도 클릭은 handleMapClick → setClicked + loadAnalysis에서 처리
 
 
   // ── 클러스터 클릭 줌인 ──
