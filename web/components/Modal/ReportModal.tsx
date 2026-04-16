@@ -80,8 +80,7 @@ function ProReportContent({ onClose, areaName }: { onClose: () => void; areaName
       const blob = await pdf(doc).toBlob();
       setPdfBlob(blob);
       setStatus("done");
-    } catch (err) {
-      console.error("PDF 생성 실패:", err);
+    } catch {
       alert("PDF 생성 중 오류가 발생했습니다.");
       setStatus("idle");
     }

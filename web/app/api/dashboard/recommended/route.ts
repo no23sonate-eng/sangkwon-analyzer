@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const limited = rateLimit(req, "dashboard-recommended", 120, 60_000);
+  if (limited) return limited;
+
   // 매출 상위 상권 조회
   const { data: salesData } = await supabase
     .from("sales")

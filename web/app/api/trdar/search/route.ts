@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "trdar-search", 120, 60_000);
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const keyword = searchParams.get("keyword") ?? "";
   if (!keyword) return NextResponse.json([]);

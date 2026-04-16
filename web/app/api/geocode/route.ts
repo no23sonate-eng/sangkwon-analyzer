@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { rateLimit } from "@/lib/rate-limit";
 
 /**
  * Geocode a query string to coordinates.
@@ -9,6 +10,9 @@ import { NextResponse } from 'next/server';
  * 4) Nominatim (해외 or 최후 폴백)
  */
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "geocode", 60, 60_000);
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('address');
 

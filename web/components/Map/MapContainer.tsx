@@ -207,8 +207,8 @@ export default function MapContainer() {
           setAnalysisData(null);
           setStoreCountData(null);
         }
-      } catch (err) {
-        console.error(err);
+      } catch {
+        // fetch 실패 무시 — UI에서 로딩 해제만 처리
       } finally {
         setLoading(false);
       }

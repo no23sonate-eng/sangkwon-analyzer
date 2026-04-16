@@ -93,8 +93,8 @@ async function triggerAnalysis(lat: number, lng: number) {
       store.setAnalysisData(analysis);
       store.setStoreCountData(stores);
     }
-  } catch (err) {
-    console.error(err);
+  } catch {
+    // 검색 분석 실패
   } finally {
     store.setLoading(false);
   }
@@ -208,8 +208,8 @@ export default function MapPage() {
       if (first && first.lat && first.lng) {
         triggerAnalysis(first.lat, first.lng);
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // 상권 검색 실패
     }
     setSearchQuery("");
   }, [searchQuery]);

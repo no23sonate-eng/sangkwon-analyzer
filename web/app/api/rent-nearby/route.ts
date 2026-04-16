@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -112,6 +113,9 @@ function calcStats(cases: RentRow[], maxDistance: number, targetPyeong: number) 
 }
 
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "rent-nearby", 60, 60_000);
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const lat = parseFloat(searchParams.get("lat") ?? "");
   const lng = parseFloat(searchParams.get("lng") ?? "");

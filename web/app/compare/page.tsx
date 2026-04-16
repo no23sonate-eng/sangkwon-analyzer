@@ -268,7 +268,7 @@ export default function ComparePage() {
   return (
     <div className="relative flex h-full overflow-hidden">
       {/* ── 좌측 패널 ── */}
-      <div className="relative z-10 flex h-full w-[400px] shrink-0 flex-col border-r border-gray-200 bg-white">
+      <div className="relative z-10 flex h-full w-full sm:w-[400px] shrink-0 flex-col border-r border-gray-200 bg-white">
         {/* 헤더 */}
         <div className="border-b border-gray-100 px-5 py-4">
           <div className="flex items-center justify-between">

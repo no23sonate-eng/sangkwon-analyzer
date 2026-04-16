@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
 const STORAGE_KEY = "user_signup";
-// 본인용 우회 키 — URL에 ?admin=cgwoo2026 붙이면 회원가입 스킵
-const ADMIN_BYPASS = "cgwoo2026";
+const ADMIN_BYPASS = process.env.NEXT_PUBLIC_ADMIN_BYPASS ?? "";
 
 export interface UserInfo {
   email: string;
@@ -89,8 +88,8 @@ export default function SignupModal() {
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
         approved: true,
       });
-    } catch (err) {
-      console.error("user insert failed", err);
+    } catch {
+      // DB insert 실패해도 로컬 등록은 진행
     }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userInfo));

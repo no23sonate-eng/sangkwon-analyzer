@@ -56,7 +56,7 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
 
   if (loading) {
     return (
-      <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-[400px] flex-col bg-white shadow-xl">
+      <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-full sm:w-[400px] flex-col bg-white shadow-xl">
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
           <h2 className="text-lg font-semibold text-gray-900">상권 분석</h2>
           <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
@@ -70,7 +70,7 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
 
   if (!overview) {
     return (
-      <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-[400px] flex-col bg-white shadow-xl">
+      <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-full sm:w-[400px] flex-col bg-white shadow-xl">
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
           <h2 className="text-lg font-semibold text-gray-900">상권 분석</h2>
           <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
@@ -93,7 +93,7 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
     : null;
 
   return (
-    <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-[400px] flex-col bg-white shadow-xl">
+    <div className="animate-slide-in absolute left-0 top-0 z-30 flex h-full w-full sm:w-[400px] flex-col bg-white shadow-xl">
       {/* ── 헤더 (고정) ── */}
       <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
         <div>

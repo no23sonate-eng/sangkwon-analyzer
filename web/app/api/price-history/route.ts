@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
@@ -7,6 +8,9 @@ const supabase = createClient(
 );
 
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "price-history", 60, 60_000);
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const gu = searchParams.get("gu") ?? "";
 

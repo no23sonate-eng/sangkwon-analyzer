@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: Request, { params }: { params: Promise<{ trdar_cd: string }> }) {
+  const limited = rateLimit(request, "analyze", 30, 60_000);
+  if (limited) return limited;
+
   const { trdar_cd } = await params;
   const { searchParams } = new URL(request.url);
   const lat = parseFloat(searchParams.get("lat") ?? "0");

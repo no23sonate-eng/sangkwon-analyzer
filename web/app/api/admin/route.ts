@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "cgwoo2026";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
 
 function getServiceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
@@ -11,6 +12,12 @@ function getServiceClient() {
 }
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "admin", 10, 60_000);
+  if (limited) return limited;
+
+  if (!ADMIN_PASSWORD) {
+    return NextResponse.json({ error: "ADMIN_PASSWORD not configured" }, { status: 503 });
+  }
   const key = req.nextUrl.searchParams.get("key");
   if (key !== ADMIN_PASSWORD) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });

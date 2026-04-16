@@ -44,8 +44,8 @@ export default function DataPanel() {
       ]);
       setAnalysisData(analysis);
       if (stores) setStoreCountData(stores);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // 분석 데이터 로드 실패 — 로딩만 해제
     } finally {
       setLoading(false);
     }
@@ -53,7 +53,7 @@ export default function DataPanel() {
 
   return (
     <div
-      className="animate-slide-in absolute top-0 left-0 z-30 flex h-full w-[400px] flex-col shadow-2xl"
+      className="animate-slide-in absolute top-0 left-0 z-30 flex h-full w-full sm:w-[400px] flex-col shadow-2xl"
       style={{ background: palette.background }}
     >
       {/* Header */}

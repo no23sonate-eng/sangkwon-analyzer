@@ -130,7 +130,6 @@ function RentVerification({ guName }: { guName: string }) {
       fetch(`/api/rent-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null),
       fetch(`/api/sale-live/${gu}`).then((r) => r.ok ? r.json() : null).catch(() => null),
     ]).then(([a, b, c]) => {
-      console.log("[교차검증] fetch 결과:", { rentApi: a, rentLive: b, saleLive: c });
       setRentApiData(a);
       setRentLiveData(b);
       setSaleLiveData(c);
@@ -158,7 +157,6 @@ function RentVerification({ guName }: { guName: string }) {
       selectedPyeong * 3.3, // 평 → m²
       inputFloor,
     );
-    console.log("[교차검증] estimateRent 결과:", { methods: result.method_details.length, confidence: result.confidence, floors: result.floors });
     return result;
   }, [guName, rentApiData, rentLiveData, saleLiveData, selectedPyeong, inputFloor]);
 

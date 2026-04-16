@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
@@ -35,7 +36,10 @@ const FALLBACK: Record<string, { f1: number; b1: number; f2: number }> = {
   "중랑구": { f1: 21.2, b1: 12.3, f2: 12.7 },
 };
 
-export async function GET(_: Request, { params }: { params: Promise<{ gu_name: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ gu_name: string }> }) {
+  const limited = rateLimit(req, "rent-gu", 120, 60_000);
+  if (limited) return limited;
+
   const { gu_name } = await params;
 
   // DB에서 조회

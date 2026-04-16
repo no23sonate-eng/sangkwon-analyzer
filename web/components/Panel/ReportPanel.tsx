@@ -33,8 +33,8 @@ export default function ReportPanel() {
         area_name: analysisData.trdar_names?.[0] ?? "",
         question: question.trim(),
       });
-    } catch (err) {
-      console.error("inquiry insert failed", err);
+    } catch {
+      // DB insert 실패해도 UI 플로우 진행
     }
     setSubmitted(true);
     setTimeout(() => {

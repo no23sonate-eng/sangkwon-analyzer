@@ -5,8 +5,21 @@ import FloatingConsultButton from "@/components/FloatingConsultButton";
 import SignupModal from "@/components/Modal/SignupModal";
 
 export const metadata: Metadata = {
-  title: "Land Analysis | 상권 분석",
-  description: "지도 기반 서울 상권 분석 - 업종, 매출, 유동인구, 기회분석",
+  title: "Land Analysis | 서울 상권 분석",
+  description: "지도 기반 서울 상권 분석 — 업종 분포, 매출 트렌드, 유동인구, 임대 시세, 기회 분석을 한눈에",
+  keywords: "상권분석, 서울 상권, 유동인구, 임대료, 창업, 부동산, 매출 분석",
+  openGraph: {
+    title: "Land Analysis | 서울 상권 분석",
+    description: "서울 상권의 업종·매출·유동인구·임대 시세를 지도 기반으로 분석합니다.",
+    type: "website",
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Land Analysis | 서울 상권 분석",
+    description: "서울 상권의 업종·매출·유동인구·임대 시세를 지도 기반으로 분석합니다.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

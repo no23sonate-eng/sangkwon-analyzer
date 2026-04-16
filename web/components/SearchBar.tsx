@@ -141,7 +141,6 @@ export default function SearchBar() {
 
       setError("검색 결과가 없습니다. 도로명 주소나 행정동으로 다시 시도해주세요.");
     } catch (err) {
-      console.error(err);
       setError("검색 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);

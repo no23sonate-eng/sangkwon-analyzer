@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
 /* ── Haversine distance (meters) ── */
 function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -87,6 +88,9 @@ function latestQuarterRows(rows: Row[]): Row[] {
 
 /* ── Main GET handler ── */
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "analyze-area", 30, 60_000);
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const lat = parseFloat(searchParams.get("lat") ?? "0");
   const lng = parseFloat(searchParams.get("lng") ?? "0");

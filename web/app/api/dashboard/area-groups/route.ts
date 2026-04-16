@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 /* key: area-groups dashboard label (서울 전체 = no filter) */
 const AREA_GROUPS = [
@@ -11,6 +12,9 @@ const AREA_GROUPS = [
   { key: "명동", label: "명동" },
 ];
 
-export async function GET() {
+export async function GET(req: Request) {
+  const limited = rateLimit(req, "dashboard-area-groups", 120, 60_000);
+  if (limited) return limited;
+
   return NextResponse.json(AREA_GROUPS);
 }
