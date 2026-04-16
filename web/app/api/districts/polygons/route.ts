@@ -42,7 +42,7 @@ export async function GET(req: Request) {
 
   const geojson = await loadGeoJSON();
 
-  // 해당 상권 폴리곤 필터 (축 거리 bufferM 이내)
+  // 해당 상권 폴리곤 필터 (축 거리 bufferM 이내 + 다른 상권에 더 가까운 건 제외)
   const features = geojson.features
     .filter((f) => {
       const props = f.properties as Record<string, string>;
@@ -50,7 +50,16 @@ export async function GET(req: Request) {
       const geom = f.geometry as GeoJSON.Polygon;
       if (!geom.coordinates?.[0]) return false;
       const [cLat, cLng] = centroid(geom.coordinates[0]);
-      return distToAxisM(cLat, cLng, district.axis) <= district.bufferM;
+      const myDist = distToAxisM(cLat, cLng, district.axis);
+      if (myDist > district.bufferM) return false;
+      // 다른 상권 축에 더 가까우면 제외 (겹침 방지)
+      for (const other of DISTRICTS) {
+        if (other.id === district.id) continue;
+        if (!other.gu.some((g) => district.gu.includes(g) || props.gu === g)) continue;
+        const otherDist = distToAxisM(cLat, cLng, other.axis);
+        if (otherDist < myDist && otherDist <= other.bufferM) return false;
+      }
+      return true;
     })
     .map((f) => {
       const geom = f.geometry as GeoJSON.Polygon;
