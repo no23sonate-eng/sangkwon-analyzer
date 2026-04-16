@@ -105,10 +105,9 @@ export default function MapContainer() {
       .catch(() => {});
   }, [activeDistrictId]);
 
-  // zone별 GeoJSON — 각 trdar_cd를 ~120m 원으로 표현, zone별 다른 opacity
-  const zoneGeoJSON = useMemo(() => {
-    if (!districtZones) return null;
-    // zone별로 그룹화 → convex hull로 경계 폴리곤 생성
+  // zone별 폴리곤 + 라벨 (별도 GeoJSON)
+  const { zonePolygons, zoneLabels } = useMemo(() => {
+    if (!districtZones) return { zonePolygons: null, zoneLabels: null };
     const byZone = new Map<string, ZonedArea[]>();
     for (const a of districtZones.areas) {
       const list = byZone.get(a.zone) ?? [];
@@ -116,13 +115,13 @@ export default function MapContainer() {
       byZone.set(a.zone, list);
     }
 
-    const features: GeoJSON.Feature[] = [];
+    const polyFeatures: GeoJSON.Feature[] = [];
+    const labelFeatures: GeoJSON.Feature[] = [];
+
     for (const [zone, areas] of byZone) {
       if (areas.length === 0) continue;
-
-      // 각 상권 포인트의 주변 8개 점으로 확장해서 hull 입력 (단일 점도 영역으로)
-      const points: [number, number][] = [];
       const padM = zone === "main" ? 150 : zone === "side" ? 120 : 100;
+      const points: [number, number][] = [];
       for (const a of areas) {
         for (let i = 0; i < 8; i++) {
           const angle = (2 * Math.PI * i) / 8;
@@ -132,37 +131,26 @@ export default function MapContainer() {
           ]);
         }
       }
-
       let hull = convexHull(points);
       hull = bufferPolygon(hull, 50);
-      hull.push(hull[0]); // close ring
-
-      features.push({
+      hull.push(hull[0]);
+      polyFeatures.push({
         type: "Feature",
-        properties: {
-          zone,
-          zoneLabel: ZONE_COLORS[zone as keyof typeof ZONE_COLORS]?.label ?? zone,
-          color: districtZones.district.color,
-          count: areas.length,
-        },
+        properties: { zone, color: districtZones.district.color },
         geometry: { type: "Polygon", coordinates: [hull] },
       });
-
-      // 각 상권에 라벨 포인트도 추가
       for (const a of areas) {
-        features.push({
+        labelFeatures.push({
           type: "Feature",
-          properties: {
-            trdar_nm: a.trdar_nm,
-            zone: a.zone,
-            color: districtZones.district.color,
-            isLabel: true,
-          },
+          properties: { trdar_nm: a.trdar_nm, zone: a.zone, color: districtZones.district.color },
           geometry: { type: "Point", coordinates: [a.lng, a.lat] },
         });
       }
     }
-    return { type: "FeatureCollection" as const, features };
+    return {
+      zonePolygons: { type: "FeatureCollection" as const, features: polyFeatures },
+      zoneLabels: { type: "FeatureCollection" as const, features: labelFeatures },
+    };
   }, [districtZones]);
 
   // ── 반경 원 GeoJSON ──
@@ -596,12 +584,11 @@ export default function MapContainer() {
       )}
 
       {/* ── 주요 상권 zone 폴리곤 ── */}
-      {zoneGeoJSON && (
-        <Source id="district-zones" type="geojson" data={zoneGeoJSON}>
+      {zonePolygons && (
+        <Source id="zone-polygons" type="geojson" data={zonePolygons}>
           <Layer
             id="zone-fill"
             type="fill"
-            filter={["!=", ["get", "isLabel"], true]}
             paint={{
               "fill-color": ["get", "color"],
               "fill-opacity": [
@@ -616,7 +603,6 @@ export default function MapContainer() {
           <Layer
             id="zone-stroke"
             type="line"
-            filter={["!=", ["get", "isLabel"], true]}
             paint={{
               "line-color": ["get", "color"],
               "line-width": [
@@ -635,10 +621,13 @@ export default function MapContainer() {
               ],
             }}
           />
+        </Source>
+      )}
+      {zoneLabels && (
+        <Source id="zone-labels" type="geojson" data={zoneLabels}>
           <Layer
             id="zone-label"
             type="symbol"
-            filter={["==", ["get", "isLabel"], true]}
             layout={{
               "text-field": ["get", "trdar_nm"],
               "text-size": 12,
