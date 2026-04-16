@@ -122,7 +122,7 @@ export default function MapContainer() {
 
       // 각 상권 포인트의 주변 8개 점으로 확장해서 hull 입력 (단일 점도 영역으로)
       const points: [number, number][] = [];
-      const padM = zone === "main" ? 120 : zone === "side" ? 100 : 80;
+      const padM = zone === "main" ? 150 : zone === "side" ? 120 : 100;
       for (const a of areas) {
         for (let i = 0; i < 8; i++) {
           const angle = (2 * Math.PI * i) / 8;
@@ -134,7 +134,7 @@ export default function MapContainer() {
       }
 
       let hull = convexHull(points);
-      hull = bufferPolygon(hull, 30);
+      hull = bufferPolygon(hull, 50);
       hull.push(hull[0]); // close ring
 
       features.push({
@@ -606,10 +606,10 @@ export default function MapContainer() {
               "fill-color": ["get", "color"],
               "fill-opacity": [
                 "match", ["get", "zone"],
-                "main", 0.3,
-                "side", 0.18,
-                "rear", 0.09,
-                0.1,
+                "main", 0.55,
+                "side", 0.35,
+                "rear", 0.2,
+                0.2,
               ],
             }}
           />
@@ -621,17 +621,17 @@ export default function MapContainer() {
               "line-color": ["get", "color"],
               "line-width": [
                 "match", ["get", "zone"],
-                "main", 2.5,
-                "side", 1.5,
-                "rear", 1,
-                1,
+                "main", 3,
+                "side", 2,
+                "rear", 1.5,
+                1.5,
               ],
               "line-opacity": [
                 "match", ["get", "zone"],
-                "main", 0.9,
-                "side", 0.5,
-                "rear", 0.25,
-                0.3,
+                "main", 1,
+                "side", 0.7,
+                "rear", 0.45,
+                0.4,
               ],
             }}
           />
@@ -641,14 +641,15 @@ export default function MapContainer() {
             filter={["==", ["get", "isLabel"], true]}
             layout={{
               "text-field": ["get", "trdar_nm"],
-              "text-size": 11,
+              "text-size": 12,
               "text-font": ["Open Sans Bold"],
               "text-allow-overlap": false,
+              "text-offset": [0, 0.8],
             }}
             paint={{
               "text-color": ["get", "color"],
               "text-halo-color": "#FFFFFF",
-              "text-halo-width": 1.5,
+              "text-halo-width": 2,
             }}
           />
         </Source>
