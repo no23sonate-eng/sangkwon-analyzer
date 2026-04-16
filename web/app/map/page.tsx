@@ -182,15 +182,30 @@ export default function MapPage() {
   const panelOpen = useAnalysisStore((s) => s.panelOpen);
   const selectedTrdar = useAnalysisStore((s) => s.selectedTrdar);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("search_history") ?? "[]"); } catch { return []; }
+  });
   const [layerMenuOpen, setLayerMenuOpen] = useState(false);
   const heatmapOn = useAnalysisStore((s) => s.heatmapOn);
   const setHeatmapOn = useAnalysisStore((s) => s.setHeatmapOn);
   const heatmapType = useAnalysisStore((s) => s.heatmapType);
   const setHeatmapType = useAnalysisStore((s) => s.setHeatmapType);
 
+  const addToHistory = useCallback((q: string) => {
+    setSearchHistory((prev) => {
+      const next = [q, ...prev.filter((h) => h !== q)].slice(0, 10);
+      try { localStorage.setItem("search_history", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+
   const handleSearch = useCallback(async () => {
     const q = searchQuery.trim();
     if (!q) return;
+    addToHistory(q);
+    setSearchFocused(false);
 
     // 0. 주요 상권 zone 매칭 → zone 활성화 + 지도 이동
     const district = findDistrictByQuery(q);
@@ -240,7 +255,7 @@ export default function MapPage() {
       // 상권 검색 실패
     }
     setSearchQuery("");
-  }, [searchQuery]);
+  }, [searchQuery, addToHistory]);
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -253,22 +268,74 @@ export default function MapPage() {
 
       {/* ── 상단 검색바 (플로팅) ── */}
       <div className="absolute left-1/2 top-4 z-20 w-full max-w-xl -translate-x-1/2 px-4">
-        <div className="flex h-12 items-center gap-2 rounded-full border border-white/60 bg-white/90 px-5 shadow-lg backdrop-blur-md">
-          <Search size={18} className="shrink-0 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="주소, 지역명, 건물명으로 검색"
-            className="flex-1 bg-transparent text-[14px] text-gray-800 outline-none placeholder:text-gray-400"
-          />
-          <button
-            onClick={handleSearch}
-            className="shrink-0 rounded-full bg-primary-600 px-5 py-1.5 text-[13px] font-semibold text-white transition-all hover:bg-primary-700 active:scale-95"
-          >
-            검색
-          </button>
+        <div className="relative">
+          <div className="flex h-12 items-center gap-2 rounded-full border border-white/60 bg-white/90 px-5 shadow-lg backdrop-blur-md">
+            <Search size={18} className="shrink-0 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              placeholder="주소, 지역명, 건물명으로 검색"
+              className="flex-1 bg-transparent text-[14px] text-gray-800 outline-none placeholder:text-gray-400"
+            />
+            <button
+              onClick={handleSearch}
+              className="shrink-0 rounded-full bg-primary-600 px-5 py-1.5 text-[13px] font-semibold text-white transition-all hover:bg-primary-700 active:scale-95"
+            >
+              검색
+            </button>
+          </div>
+          {searchFocused && searchHistory.length > 0 && !searchQuery && (
+            <div className="absolute left-0 right-0 top-14 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl">
+              <div className="flex items-center justify-between px-4 py-2">
+                <span className="text-[12px] font-medium text-gray-500">최근 검색</span>
+                <button
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setSearchHistory([]);
+                    try { localStorage.removeItem("search_history"); } catch {}
+                  }}
+                  className="text-[11px] text-muted hover:text-gray-600"
+                >
+                  전체 삭제
+                </button>
+              </div>
+              {searchHistory.map((h) => (
+                <button
+                  key={h}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setSearchQuery(h);
+                    setSearchFocused(false);
+                    setTimeout(() => {
+                      const store = useAnalysisStore.getState();
+                      addToHistory(h);
+                      const district = findDistrictByQuery(h);
+                      if (district) {
+                        store.setActiveDistrictId(district.id);
+                        store.setViewState({ ...store.viewState, latitude: district.center[0], longitude: district.center[1], zoom: 15 });
+                        triggerAnalysis(district.center[0], district.center[1]);
+                      } else {
+                        const match = SEARCH_KEYWORDS[h];
+                        if (match) {
+                          store.setActiveDistrictId(null);
+                          triggerAnalysis(match.lat, match.lng);
+                        }
+                      }
+                      setSearchQuery("");
+                    }, 0);
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[13px] text-gray-700 transition-colors hover:bg-gray-50"
+                >
+                  <Search size={14} className="shrink-0 text-gray-300" />
+                  {h}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

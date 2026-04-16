@@ -399,15 +399,7 @@ export default function MapContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius]);
 
-  useEffect(() => {
-    if (selectedTrdar && mapRef.current) {
-      const lat = selectedTrdar.lat ?? clickedLat;
-      const lng = selectedTrdar.lng ?? clickedLng;
-      if (lat != null && lng != null) {
-        mapRef.current.flyTo({ center: [lng, lat], zoom: 15, duration: 800 });
-      }
-    }
-  }, [selectedTrdar, clickedLat, clickedLng]);
+  // selectedTrdar 변경 시 flyTo 제거 — triggerAnalysis에서 setViewState로 이미 이동하므로 이중 이동 방지
 
 
   // ── 클러스터 클릭 줌인 ──
