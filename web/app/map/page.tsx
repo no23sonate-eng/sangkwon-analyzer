@@ -11,7 +11,7 @@ import {
 import DataPanel from "@/components/Panel/DataPanel";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
-import { findDistrictByQuery, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
+import { DISTRICTS, findDistrictByQuery, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
 // district-polygons.ts (하드코딩)는 더 이상 사용하지 않음 — /api/districts/polygons에서 실제 SHP 기반 폴리곤 로드
 
 const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
@@ -294,6 +294,15 @@ export default function MapPage() {
       <MapContainer
         districtZones={districtZones}
         zonePolygonGeoJSON={zonePolygonGeoJSON}
+        onDistrictClick={(id) => {
+          const d = DISTRICTS.find((dd) => dd.id === id);
+          if (d) {
+            const store = useAnalysisStore.getState();
+            store.setViewState({ ...store.viewState, latitude: d.center[0], longitude: d.center[1], zoom: 15 });
+            loadDistrictZones(id);
+            triggerAnalysis(d.center[0], d.center[1]);
+          }
+        }}
       />
 
       {/* ── 상단 검색바 (플로팅) ── */}

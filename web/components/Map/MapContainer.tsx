@@ -17,7 +17,7 @@ import {
   getTrafficHeatmap, getSalesHeatmap,
   getOpenHeatmap, getCloseHeatmap,
 } from "@/lib/heatmap-data";
-import type { DistrictDef, ZonedArea } from "@/lib/district-zones";
+import { DISTRICTS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
 
 // ── Vworld 한국 정부 지도 ──
 const MAP_STYLE = {
@@ -56,9 +56,10 @@ interface MapProps {
   districtZones?: { district: DistrictDef; areas: ZonedArea[] } | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zonePolygonGeoJSON?: any;
+  onDistrictClick?: (districtId: string) => void;
 }
 
-export default function MapContainer({ districtZones, zonePolygonGeoJSON }: MapProps) {
+export default function MapContainer({ districtZones, zonePolygonGeoJSON, onDistrictClick }: MapProps) {
   const mapRef = useRef<MapRef>(null);
 
   const viewState = useAnalysisStore((s) => s.viewState);
@@ -709,6 +710,23 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON }: MapP
         );
       })}
 
+
+      {/* ── 주요 상권 라벨 (항상 표시) ── */}
+      {DISTRICTS.map((d) => (
+        <Marker key={`dist-${d.id}`} latitude={d.center[0]} longitude={d.center[1]} anchor="center">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDistrictClick?.(d.id);
+            }}
+            className="group flex items-center gap-1 rounded-full px-2.5 py-1 shadow-md transition-all hover:scale-105 hover:shadow-lg"
+            style={{ background: "rgba(255,255,255,0.92)", border: `2px solid ${d.color}` }}
+          >
+            <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
+            <span className="text-[11px] font-bold text-gray-800">{d.name}</span>
+          </button>
+        </Marker>
+      ))}
 
       {/* ── 히트맵 범례 + 안내 ── */}
       {heatmapOn && (
