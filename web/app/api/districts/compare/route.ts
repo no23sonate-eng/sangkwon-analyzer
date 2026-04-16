@@ -63,11 +63,12 @@ export async function GET(req: Request) {
   const zoneMap = new Map(zoned.map((z) => [z.trdar_cd, z.zone]));
   const guName = zoned[0]?.gu ?? "";
 
-  // 병렬 조회: stores, foot_traffic, gu_rent_stats
-  const [storesRes, ftRes, rentRes] = await Promise.all([
+  // 병렬 조회: stores, foot_traffic, gu_rent_stats, gu_sale_stats
+  const [storesRes, ftRes, rentRes, saleRes] = await Promise.all([
     supabase.from("stores").select("trdar_cd, quarter_cd, store_count, open_count, close_count").in("trdar_cd", codes),
     supabase.from("foot_traffic").select("trdar_cd, quarter_cd, total_ft").in("trdar_cd", codes),
     supabase.from("gu_rent_stats").select("f1_pyeong, f2_pyeong, b1_pyeong").eq("gu", guName).maybeSingle(),
+    supabase.from("gu_sale_stats").select("m2_price, avg_price").eq("gu", guName).maybeSingle(),
   ]);
 
   // 최신 분기만
@@ -107,16 +108,20 @@ export async function GET(req: Request) {
 
   const rentData = rentRes.data;
   const avgRent = rentData ? Math.round(((rentData.f1_pyeong ?? 0) + (rentData.f2_pyeong ?? 0)) / 2 * 10) / 10 : 0;
+  const saleData = saleRes.data;
+  const avgSaleM2 = saleData?.m2_price ?? 0;
 
   const ZONE_LABELS = { main: "메인 상권", side: "이면 상권", rear: "배후 상권" };
   const RENT_FACTOR = { main: 1.0, side: 0.55, rear: 0.3 };
+  const SALE_FACTOR = { main: 1.15, side: 0.75, rear: 0.5 };
 
-  const zones: ZoneStats[] = (["main", "side", "rear"] as const).map((z) => ({
+  const zones = (["main", "side", "rear"] as const).map((z) => ({
     zone: z,
     label: ZONE_LABELS[z],
     areaCount: zoneAgg[z].count,
     totalStores: zoneAgg[z].stores,
     avgRentPyeong: Math.round(avgRent * RENT_FACTOR[z] * 10) / 10,
+    avgSaleM2: Math.round(avgSaleM2 * SALE_FACTOR[z]),
     dailyFootTraffic: zoneAgg[z].ft,
     openCount: zoneAgg[z].open,
     closeCount: zoneAgg[z].close,

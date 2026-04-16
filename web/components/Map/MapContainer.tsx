@@ -622,43 +622,42 @@ export default function MapContainer({ districtZones }: MapProps) {
         </Marker>
       )}
 
-      {/* ── 주요 상권 zone 마커 ── */}
+      {/* ── 주요 상권 zone 영역 + 라벨 ── */}
       {districtZones && districtZones.areas.map((a) => {
         const isMain = a.zone === "main";
         const isSide = a.zone === "side";
-        const size = isMain ? 30 : isSide ? 22 : 16;
-        const opacity = isMain ? 0.6 : isSide ? 0.35 : 0.18;
+        const zoneLabel = isMain ? "메인" : isSide ? "이면" : "배후";
+        const areaSize = isMain ? 120 : isSide ? 90 : 65;
+        const opacity = isMain ? 0.45 : isSide ? 0.25 : 0.12;
+        const borderW = isMain ? 3 : isSide ? 2 : 1;
+        const color = districtZones.district.color;
         return (
           <Marker key={`zone-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="center">
-            <div
-              className="rounded-full"
-              style={{
-                width: size,
-                height: size,
-                background: districtZones.district.color,
-                opacity,
-                border: `${isMain ? 3 : isSide ? 2 : 1}px solid ${districtZones.district.color}`,
-                boxShadow: isMain ? `0 0 14px ${districtZones.district.color}60` : undefined,
-              }}
-              title={`${a.trdar_nm} (${isMain ? "메인" : isSide ? "이면" : "배후"})`}
-            />
+            <div className="relative flex flex-col items-center">
+              {/* 영역 표시 */}
+              <div
+                className="rounded-full"
+                style={{
+                  width: areaSize,
+                  height: areaSize,
+                  background: color,
+                  opacity,
+                  border: `${borderW}px solid ${color}`,
+                  boxShadow: isMain ? `0 0 20px ${color}50` : undefined,
+                }}
+              />
+              {/* 라벨 */}
+              <div
+                className="absolute -bottom-5 whitespace-nowrap rounded-md px-2 py-0.5 text-center shadow-sm"
+                style={{ background: "rgba(255,255,255,0.95)", border: `1.5px solid ${color}50` }}
+              >
+                <div className="text-[10px] font-bold" style={{ color }}>{a.trdar_nm}</div>
+                <div className="text-[9px] font-semibold" style={{ color: `${color}99` }}>{zoneLabel}</div>
+              </div>
+            </div>
           </Marker>
         );
       })}
-      {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => (
-        <Marker key={`zlbl-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="top">
-          <div
-            className="mt-4 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-bold shadow-sm"
-            style={{
-              color: districtZones.district.color,
-              background: "rgba(255,255,255,0.92)",
-              border: `1px solid ${districtZones.district.color}40`,
-            }}
-          >
-            {a.trdar_nm}
-          </div>
-        </Marker>
-      ))}
 
 
       {/* ── 히트맵 범례 + 안내 ── */}

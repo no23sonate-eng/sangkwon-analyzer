@@ -194,7 +194,7 @@ export default function MapPage() {
   const [zoneCompare, setZoneCompare] = useState<{
     district: { name: string; color: string };
     quarter: string | null;
-    zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
+    zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; avgSaleM2: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
   } | null>(null);
 
   const loadDistrictZones = useCallback((districtId: string) => {
@@ -382,6 +382,7 @@ export default function MapPage() {
                       <div className="grid grid-cols-2 gap-2 text-[11px]">
                         <div><span className="text-muted">점포 </span><span className="font-semibold text-gray-800">{z.totalStores.toLocaleString()}</span></div>
                         <div><span className="text-muted">임대료 </span><span className="font-semibold text-gray-800">{z.avgRentPyeong}만/평</span></div>
+                        <div><span className="text-muted">매매가 </span><span className="font-semibold text-gray-800">{z.avgSaleM2 ? `${z.avgSaleM2.toLocaleString()}만/㎡` : "—"}</span></div>
                         <div><span className="text-muted">유동인구 </span><span className="font-semibold text-gray-800">{z.dailyFootTraffic.toLocaleString()}명/일</span></div>
                         <div><span className="text-muted">개업/폐업 </span><span className="font-semibold text-emerald-600">{z.openCount}</span><span className="text-muted">/</span><span className="font-semibold text-red-400">{z.closeCount}</span></div>
                       </div>
