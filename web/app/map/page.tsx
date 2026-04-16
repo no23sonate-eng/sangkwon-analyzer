@@ -11,7 +11,7 @@ import {
 import DataPanel from "@/components/Panel/DataPanel";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
-import { findDistrictByQuery } from "@/lib/district-zones";
+import { findDistrictByQuery, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
 
 const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
   ssr: false,
@@ -188,6 +188,28 @@ export default function MapPage() {
     try { return JSON.parse(localStorage.getItem("search_history") ?? "[]"); } catch { return []; }
   });
   const [layerMenuOpen, setLayerMenuOpen] = useState(false);
+
+  // ── 상권 zone 데이터 ──
+  const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
+  const [zoneCompare, setZoneCompare] = useState<{
+    district: { name: string; color: string };
+    quarter: string | null;
+    zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
+  } | null>(null);
+  const activeDistrictId = useAnalysisStore((s) => s.activeDistrictId);
+
+  useEffect(() => {
+    if (!activeDistrictId) { setDistrictZones(null); setZoneCompare(null); return; }
+    fetch(`/api/districts/zones?id=${activeDistrictId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.areas) setDistrictZones(data); })
+      .catch(() => {});
+    fetch(`/api/districts/compare?id=${activeDistrictId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setZoneCompare(data); })
+      .catch(() => {});
+  }, [activeDistrictId]);
+
   const heatmapOn = useAnalysisStore((s) => s.heatmapOn);
   const setHeatmapOn = useAnalysisStore((s) => s.setHeatmapOn);
   const heatmapType = useAnalysisStore((s) => s.heatmapType);
@@ -259,7 +281,7 @@ export default function MapPage() {
       </Suspense>
 
       {/* 풀스크린 지도 */}
-      <MapContainer />
+      <MapContainer districtZones={districtZones} />
 
       {/* ── 상단 검색바 (플로팅) ── */}
       <div className="absolute left-1/2 top-4 z-20 w-full max-w-xl -translate-x-1/2 px-4">
@@ -321,6 +343,77 @@ export default function MapPage() {
 
       {/* ── 좌측 분석 패널 ── */}
       {panelOpen && <DataPanel />}
+
+      {/* ── 우측 상권 zone 패널 ── */}
+      {districtZones && (
+        <div className="absolute right-0 top-0 z-30 flex h-full w-full sm:w-[360px] flex-col bg-white shadow-xl animate-slide-in">
+          <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">{districtZones.district.name} 상권</h2>
+              <p className="mt-0.5 text-[12px] text-muted">{districtZones.areas.length}개 세부 상권</p>
+            </div>
+            <button
+              onClick={() => useAnalysisStore.getState().setActiveDistrictId(null)}
+              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100"
+            >
+              <X size={18} className="text-gray-400" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+            {/* zone 범례 */}
+            <div className="flex items-center gap-3">
+              {(["main", "side", "rear"] as const).map((z) => (
+                <div key={z} className="flex items-center gap-1.5">
+                  <div className="h-3 w-3 rounded-full" style={{ background: districtZones.district.color, opacity: z === "main" ? 0.7 : z === "side" ? 0.4 : 0.2 }} />
+                  <span className="text-[11px] text-gray-600">{ZONE_COLORS[z].label}</span>
+                  <span className="text-[11px] font-semibold text-gray-800">{districtZones.areas.filter((a) => a.zone === z).length}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* zone별 비교 */}
+            {zoneCompare && (
+              <div className="rounded-xl border border-gray-100 p-4">
+                <p className="mb-3 text-[13px] font-semibold text-gray-900">Zone별 비교 {zoneCompare.quarter && <span className="text-[11px] font-normal text-muted">({zoneCompare.quarter})</span>}</p>
+                <div className="space-y-3">
+                  {zoneCompare.zones.filter((z) => z.areaCount > 0 || z.dailyFootTraffic > 0).map((z) => (
+                    <div key={z.zone} className="rounded-lg bg-gray-50 p-3">
+                      <p className="mb-1.5 text-[12px] font-semibold" style={{ color: districtZones.district.color }}>{z.label}</p>
+                      <div className="grid grid-cols-2 gap-2 text-[11px]">
+                        <div><span className="text-muted">점포 </span><span className="font-semibold text-gray-800">{z.totalStores.toLocaleString()}</span></div>
+                        <div><span className="text-muted">임대료 </span><span className="font-semibold text-gray-800">{z.avgRentPyeong}만/평</span></div>
+                        <div><span className="text-muted">유동인구 </span><span className="font-semibold text-gray-800">{z.dailyFootTraffic.toLocaleString()}명/일</span></div>
+                        <div><span className="text-muted">개업/폐업 </span><span className="font-semibold text-emerald-600">{z.openCount}</span><span className="text-muted">/</span><span className="font-semibold text-red-400">{z.closeCount}</span></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 세부 상권 목록 */}
+            <div>
+              <p className="mb-2 text-[13px] font-semibold text-gray-900">세부 상권</p>
+              <div className="space-y-1.5">
+                {districtZones.areas.map((a) => (
+                  <button
+                    key={a.trdar_cd}
+                    onClick={() => triggerAnalysis(a.lat, a.lng)}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-gray-50"
+                  >
+                    <div
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ background: districtZones.district.color, opacity: a.zone === "main" ? 0.7 : a.zone === "side" ? 0.4 : 0.2 }}
+                    />
+                    <span className="flex-1 text-[12px] text-gray-700">{a.trdar_nm}</span>
+                    <span className="text-[10px] text-muted">{a.zone === "main" ? "메인" : a.zone === "side" ? "이면" : "배후"} · {a.distFromCenter}m</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── 우측 하단 컨트롤 ── */}
       <div className="absolute bottom-6 right-4 z-10 flex flex-col gap-2">

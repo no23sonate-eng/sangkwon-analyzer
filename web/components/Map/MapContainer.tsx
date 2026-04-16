@@ -17,7 +17,7 @@ import {
   getTrafficHeatmap, getSalesHeatmap,
   getOpenHeatmap, getCloseHeatmap,
 } from "@/lib/heatmap-data";
-import { ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
+import type { DistrictDef, ZonedArea } from "@/lib/district-zones";
 
 // ── Vworld 한국 정부 지도 ──
 const MAP_STYLE = {
@@ -52,7 +52,11 @@ function makeCircle(lat: number, lng: number, radiusM: number, n = 64) {
   };
 }
 
-export default function MapContainer() {
+interface MapProps {
+  districtZones?: { district: DistrictDef; areas: ZonedArea[] } | null;
+}
+
+export default function MapContainer({ districtZones }: MapProps) {
   const mapRef = useRef<MapRef>(null);
 
   const viewState = useAnalysisStore((s) => s.viewState);
@@ -81,34 +85,6 @@ export default function MapContainer() {
   const setHoveredTrdar = useAnalysisStore((s) => s.setHoveredTrdar);
   const activeDistrictId = useAnalysisStore((s) => s.activeDistrictId);
 
-  // ── 주요상권 zone 데이터 ──
-  const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
-  const [zoneCompare, setZoneCompare] = useState<{
-    district: { name: string; color: string };
-    quarter: string | null;
-    zones: Array<{
-      zone: string; label: string; areaCount: number;
-      totalStores: number; avgRentPyeong: number;
-      dailyFootTraffic: number; openCount: number; closeCount: number;
-    }>;
-  } | null>(null);
-
-  useEffect(() => {
-    if (!activeDistrictId) { setDistrictZones(null); setZoneCompare(null); return; }
-    const id = activeDistrictId;
-    fetch(`/api/districts/zones?id=${id}`)
-      .then((r) => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then((data) => {
-        if (data && data.areas) {
-          setDistrictZones(data);
-        }
-      })
-      .catch(() => {});
-    fetch(`/api/districts/compare?id=${id}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setZoneCompare(data); })
-      .catch(() => {});
-  }, [activeDistrictId]);
 
 
   // ── 반경 원 GeoJSON ──
@@ -533,42 +509,6 @@ export default function MapContainer() {
         </Source>
       )}
 
-      {/* ── 주요 상권 zone (Marker 기반) ── */}
-      {districtZones && districtZones.areas.map((a) => {
-        const opacity = a.zone === "main" ? 0.5 : a.zone === "side" ? 0.3 : 0.15;
-        const border = a.zone === "main" ? 3 : a.zone === "side" ? 2 : 1;
-        const size = a.zone === "main" ? 28 : a.zone === "side" ? 22 : 16;
-        return (
-          <Marker key={a.trdar_cd} latitude={a.lat} longitude={a.lng} anchor="center">
-            <div
-              className="rounded-full"
-              style={{
-                width: size,
-                height: size,
-                background: districtZones.district.color,
-                opacity,
-                border: `${border}px solid ${districtZones.district.color}`,
-                boxShadow: a.zone === "main" ? `0 0 12px ${districtZones.district.color}80` : undefined,
-              }}
-              title={`${a.trdar_nm} (${a.zone === "main" ? "메인" : a.zone === "side" ? "이면" : "배후"})`}
-            />
-          </Marker>
-        );
-      })}
-      {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => (
-        <Marker key={`label-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="top">
-          <div
-            className="mt-4 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-bold"
-            style={{
-              color: districtZones.district.color,
-              background: "rgba(255,255,255,0.9)",
-              border: `1px solid ${districtZones.district.color}40`,
-            }}
-          >
-            {a.trdar_nm}
-          </div>
-        </Marker>
-      ))}
 
       {/* ── 점포 마커 (클러스터링) ── */}
       {showStoreMarkers && storeGeoJSON && (
@@ -676,58 +616,44 @@ export default function MapContainer() {
         </Marker>
       )}
 
-      {/* 상권 마커 제거됨 */}
-
-
-      {/* ── 상권 zone 범례 ── */}
-      {districtZones && (
-        <div className="absolute left-4 top-4 z-20 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur-sm">
-          <div className="mb-2 flex items-center justify-between gap-4">
-            <p className="text-[13px] font-semibold text-gray-900">{districtZones.district.name} 상권</p>
-            <button
-              onClick={() => useAnalysisStore.getState().setActiveDistrictId(null)}
-              className="text-[11px] text-muted hover:text-gray-700"
-            >
-              닫기 ✕
-            </button>
+      {/* ── 주요 상권 zone 마커 ── */}
+      {districtZones && districtZones.areas.map((a) => {
+        const isMain = a.zone === "main";
+        const isSide = a.zone === "side";
+        const size = isMain ? 30 : isSide ? 22 : 16;
+        const opacity = isMain ? 0.6 : isSide ? 0.35 : 0.18;
+        return (
+          <Marker key={`zone-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="center">
+            <div
+              className="rounded-full"
+              style={{
+                width: size,
+                height: size,
+                background: districtZones.district.color,
+                opacity,
+                border: `${isMain ? 3 : isSide ? 2 : 1}px solid ${districtZones.district.color}`,
+                boxShadow: isMain ? `0 0 14px ${districtZones.district.color}60` : undefined,
+              }}
+              title={`${a.trdar_nm} (${isMain ? "메인" : isSide ? "이면" : "배후"})`}
+            />
+          </Marker>
+        );
+      })}
+      {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => (
+        <Marker key={`zlbl-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="top">
+          <div
+            className="mt-4 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-bold shadow-sm"
+            style={{
+              color: districtZones.district.color,
+              background: "rgba(255,255,255,0.92)",
+              border: `1px solid ${districtZones.district.color}40`,
+            }}
+          >
+            {a.trdar_nm}
           </div>
-          <div className="flex items-center gap-3">
-            {(["main", "side", "rear"] as const).map((z) => (
-              <div key={z} className="flex items-center gap-1.5">
-                <div
-                  className="h-3 w-3 rounded-sm border"
-                  style={{
-                    background: districtZones.district.color,
-                    opacity: ZONE_COLORS[z].fill * 2.5,
-                    borderColor: districtZones.district.color,
-                  }}
-                />
-                <span className="text-[10px] text-gray-600">{ZONE_COLORS[z].label}</span>
-              </div>
-            ))}
-          </div>
-          <p className="mt-1.5 text-[10px] text-muted">
-            {districtZones.areas.length}개 상권 · 메인 {districtZones.areas.filter((a) => a.zone === "main").length} / 이면 {districtZones.areas.filter((a) => a.zone === "side").length} / 배후 {districtZones.areas.filter((a) => a.zone === "rear").length}
-          </p>
-          {zoneCompare && (
-            <div className="mt-3 border-t border-gray-100 pt-3">
-              <p className="mb-2 text-[10px] font-semibold text-gray-600">
-                Zone별 비교 {zoneCompare.quarter && <span className="font-normal text-muted">({zoneCompare.quarter})</span>}
-              </p>
-              <div className="space-y-1.5">
-                {zoneCompare.zones.filter((z) => z.areaCount > 0).map((z) => (
-                  <div key={z.zone} className="flex items-center gap-2 text-[10px]">
-                    <span className="w-14 font-medium text-gray-700">{z.label}</span>
-                    <span className="text-muted">{z.totalStores.toLocaleString()}점포</span>
-                    <span className="text-muted">{z.avgRentPyeong}만/평</span>
-                    <span className="text-muted">{z.dailyFootTraffic.toLocaleString()}명/일</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+        </Marker>
+      ))}
+
 
       {/* ── 히트맵 범례 + 안내 ── */}
       {heatmapOn && (

@@ -53,7 +53,7 @@ export default function DataPanel() {
 
   return (
     <div
-      className="animate-slide-in absolute top-0 right-0 z-30 flex h-full w-full sm:w-[400px] flex-col shadow-2xl"
+      className="animate-slide-in absolute top-0 left-0 z-30 flex h-full w-full sm:w-[400px] flex-col shadow-2xl"
       style={{ background: palette.background }}
     >
       {/* Header */}
