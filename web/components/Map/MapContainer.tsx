@@ -627,6 +627,18 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON }: MapP
       {/* ── 주요 상권 zone 폴리곤 (실제 도로 경계) ── */}
       {zonePolygonGeoJSON && (
         <Source id="zone-polygons" type="geojson" data={zonePolygonGeoJSON}>
+          {/* 바깥 glow — 경계를 흐릿하게 */}
+          <Layer
+            id="zone-glow"
+            type="line"
+            paint={{
+              "line-color": ["get", "fillColor"],
+              "line-width": 12,
+              "line-opacity": 0.15,
+              "line-blur": 8,
+            }}
+          />
+          {/* 메인 fill */}
           <Layer
             id="zone-fill"
             type="fill"
@@ -635,6 +647,7 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON }: MapP
               "fill-opacity": ["get", "fillOpacity"],
             }}
           />
+          {/* 경계선 — 얇고 부드럽게 */}
           <Layer
             id="zone-outline"
             type="line"
@@ -642,11 +655,47 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON }: MapP
               "line-color": ["get", "strokeColor"],
               "line-width": ["get", "strokeWidth"],
               "line-opacity": ["get", "strokeOpacity"],
+              "line-blur": 1,
             }}
           />
         </Source>
       )}
-      {/* zone 라벨 (대로변/이면만) */}
+      {/* zone 히트맵 오버레이 — 중심부일수록 진하게 */}
+      {districtZones && (() => {
+        const heatFeatures = districtZones.areas.map((a) => ({
+          type: "Feature" as const,
+          properties: { weight: a.zone === "main" ? 1.0 : a.zone === "side" ? 0.5 : 0.2 },
+          geometry: { type: "Point" as const, coordinates: [a.lng, a.lat] },
+        }));
+        const heatGeoJSON = { type: "FeatureCollection" as const, features: heatFeatures };
+        return (
+          <Source id="zone-heat" type="geojson" data={heatGeoJSON}>
+            <Layer
+              id="zone-heatmap"
+              type="heatmap"
+              paint={{
+                "heatmap-weight": ["get", "weight"],
+                "heatmap-intensity": 1.5,
+                "heatmap-radius": [
+                  "interpolate", ["linear"], ["zoom"],
+                  12, 30, 14, 60, 16, 100,
+                ],
+                "heatmap-opacity": 0.35,
+                "heatmap-color": [
+                  "interpolate", ["linear"], ["heatmap-density"],
+                  0, "rgba(34,197,94,0)",
+                  0.2, "rgba(34,197,94,0.3)",
+                  0.4, "rgba(250,204,21,0.5)",
+                  0.6, "rgba(245,158,11,0.6)",
+                  0.8, "rgba(239,68,68,0.7)",
+                  1, "rgba(220,38,38,0.8)",
+                ],
+              }}
+            />
+          </Source>
+        );
+      })()}
+      {/* zone 라벨 */}
       {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => {
         const zoneColor = a.zone === "main" ? "#EF4444" : "#F59E0B";
         const zoneLabel = a.zone === "main" ? "대로변" : "이면";
