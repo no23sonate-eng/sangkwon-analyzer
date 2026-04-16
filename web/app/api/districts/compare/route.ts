@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { rateLimit } from "@/lib/rate-limit";
-import { DISTRICTS, classifyZone } from "@/lib/district-zones";
+import { DISTRICTS } from "@/lib/district-zones";
 
 export const revalidate = 3600;
-
-function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371000;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
 
 interface ZoneStats {
   zone: string;
@@ -37,31 +27,18 @@ export async function GET(req: Request) {
   const district = DISTRICTS.find((d) => d.id === id);
   if (!district) return NextResponse.json({ error: "not found" }, { status: 404 });
 
-  const [cLat, cLng] = district.center;
-  const deg = (district.radiusM / 111000) * 1.3;
-
-  let q = supabase
-    .from("areas")
-    .select("trdar_cd, lat, lng, gu")
-    .gte("lat", cLat - deg).lte("lat", cLat + deg)
-    .gte("lng", cLng - deg).lte("lng", cLng + deg);
-  if (district.gu.length > 0) q = q.in("gu", district.gu);
-  const { data: areaRows } = await q.limit(200);
-
-  const zoned = (areaRows ?? [])
-    .map((r) => ({
-      trdar_cd: r.trdar_cd,
-      gu: r.gu,
-      dist: haversineM(cLat, cLng, r.lat, r.lng),
-    }))
-    .filter((r) => r.dist <= district.radiusM)
-    .map((r) => ({ ...r, zone: classifyZone(r.dist, district.radiusM) }));
+  // zones API와 동일 로직으로 상권 목록 + zone 분류 가져오기
+  const zonesApiUrl = new URL(`/api/districts/zones?id=${id}`, req.url);
+  const zonesRes = await fetch(zonesApiUrl);
+  if (!zonesRes.ok) return NextResponse.json({ zones: [] });
+  const zonesData = await zonesRes.json();
+  const zoned: Array<{ trdar_cd: string; zone: string }> = zonesData.areas ?? [];
 
   const codes = zoned.map((z) => z.trdar_cd);
   if (codes.length === 0) return NextResponse.json({ zones: [] });
 
-  const zoneMap = new Map(zoned.map((z) => [z.trdar_cd, z.zone]));
-  const guName = zoned[0]?.gu ?? "";
+  const zoneMap = new Map(zoned.map((z: { trdar_cd: string; zone: string }) => [z.trdar_cd, z.zone]));
+  const guName = district.gu[0] ?? "";
 
   // 병렬 조회: stores, foot_traffic, gu_rent_stats, gu_sale_stats
   const [storesRes, ftRes, rentRes, saleRes] = await Promise.all([
@@ -83,11 +60,14 @@ export async function GET(req: Request) {
     rear: { stores: 0, open: 0, close: 0, ft: 0, count: 0 },
   };
 
-  const countedAreas = { main: new Set<string>(), side: new Set<string>(), rear: new Set<string>() };
+  type ZoneKey = "main" | "side" | "rear";
+  const isZoneKey = (v: string): v is ZoneKey => v === "main" || v === "side" || v === "rear";
+
+  const countedAreas: Record<ZoneKey, Set<string>> = { main: new Set(), side: new Set(), rear: new Set() };
   for (const r of storeRows) {
     if (r.quarter_cd !== latestQ) continue;
     const z = zoneMap.get(r.trdar_cd);
-    if (!z) continue;
+    if (!z || !isZoneKey(z)) continue;
     zoneAgg[z].stores += r.store_count ?? 0;
     zoneAgg[z].open += r.open_count ?? 0;
     zoneAgg[z].close += r.close_count ?? 0;
@@ -102,7 +82,7 @@ export async function GET(req: Request) {
   for (const r of ftRows) {
     if (r.quarter_cd !== latestFtQ) continue;
     const z = zoneMap.get(r.trdar_cd);
-    if (!z) continue;
+    if (!z || !isZoneKey(z)) continue;
     zoneAgg[z].ft += Math.round((r.total_ft ?? 0) / 90);
   }
 

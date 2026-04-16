@@ -622,37 +622,34 @@ export default function MapContainer({ districtZones }: MapProps) {
         </Marker>
       )}
 
-      {/* ── 주요 상권 zone 영역 + 라벨 ── */}
+      {/* ── 주요 상권 zone — 3색 히트맵 스타일 ── */}
       {districtZones && districtZones.areas.map((a) => {
         const isMain = a.zone === "main";
         const isSide = a.zone === "side";
-        const zoneLabel = isMain ? "메인" : isSide ? "이면" : "배후";
-        const areaSize = isMain ? 120 : isSide ? 90 : 65;
-        const opacity = isMain ? 0.45 : isSide ? 0.25 : 0.12;
-        const borderW = isMain ? 3 : isSide ? 2 : 1;
-        const color = districtZones.district.color;
+        const zoneLabel = isMain ? "대로변" : isSide ? "이면" : "배후";
+        // 3색 체계: 빨강(대로변) → 노랑(이면) → 파랑(배후)
+        const zoneColor = isMain ? "#EF4444" : isSide ? "#F59E0B" : "#3B82F6";
+        const bgOpacity = isMain ? 0.45 : isSide ? 0.3 : 0.15;
+        const size = isMain ? 130 : isSide ? 100 : 70;
         return (
           <Marker key={`zone-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="center">
             <div className="relative flex flex-col items-center">
-              {/* 영역 표시 */}
               <div
                 className="rounded-full"
                 style={{
-                  width: areaSize,
-                  height: areaSize,
-                  background: color,
-                  opacity,
-                  border: `${borderW}px solid ${color}`,
-                  boxShadow: isMain ? `0 0 20px ${color}50` : undefined,
+                  width: size,
+                  height: size,
+                  background: `radial-gradient(circle, ${zoneColor}${isMain ? "90" : isSide ? "60" : "30"} 0%, ${zoneColor}00 70%)`,
+                  opacity: bgOpacity + 0.3,
+                  border: `2px solid ${zoneColor}${isMain ? "CC" : isSide ? "88" : "44"}`,
                 }}
               />
-              {/* 라벨 */}
               <div
                 className="absolute -bottom-5 whitespace-nowrap rounded-md px-2 py-0.5 text-center shadow-sm"
-                style={{ background: "rgba(255,255,255,0.95)", border: `1.5px solid ${color}50` }}
+                style={{ background: "rgba(255,255,255,0.95)", border: `1.5px solid ${zoneColor}60` }}
               >
-                <div className="text-[10px] font-bold" style={{ color }}>{a.trdar_nm}</div>
-                <div className="text-[9px] font-semibold" style={{ color: `${color}99` }}>{zoneLabel}</div>
+                <div className="text-[10px] font-bold" style={{ color: zoneColor }}>{a.trdar_nm}</div>
+                <div className="text-[9px] font-bold" style={{ color: zoneColor }}>{zoneLabel}</div>
               </div>
             </div>
           </Marker>

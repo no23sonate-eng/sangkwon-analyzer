@@ -11,6 +11,8 @@ export interface DistrictDef {
   gu: string[];
   keywords: string[];
   color: string;
+  axis: [number, number][]; // 도로축 좌표 [lat, lng][]
+  bufferM: number; // 축에서 이 거리까지 상권 포함
 }
 
 export interface ZonedArea {
@@ -27,6 +29,8 @@ export interface DistrictZoneData {
   areas: ZonedArea[];
 }
 
+// axis: 도로축 좌표 [lat, lng][] — 이 라인을 따라 상권이 형성됨
+// bufferM: 축에서 이 거리까지 상권으로 포함
 export const DISTRICTS: DistrictDef[] = [
   {
     id: "gangnam",
@@ -36,6 +40,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["강남구", "서초구"],
     keywords: ["강남역", "강남대로"],
     color: "#6366F1",
+    axis: [[37.5045, 127.0249], [37.4976, 127.0278], [37.4910, 127.0310]], // 신논현→강남역→역삼
+    bufferM: 400,
   },
   {
     id: "hongdae",
@@ -45,6 +51,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["마포구"],
     keywords: ["홍대", "서교동", "동교"],
     color: "#EC4899",
+    axis: [[37.5571, 126.9259], [37.5538, 126.9213], [37.5500, 126.9220]], // 홍대입구역→걷고싶은거리→상수방면
+    bufferM: 450,
   },
   {
     id: "seongsu",
@@ -54,6 +62,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["성동구"],
     keywords: ["성수"],
     color: "#10B981",
+    axis: [[37.5447, 127.0440], [37.5447, 127.0567], [37.5430, 127.0650]], // 서울숲→성수역→카페거리
+    bufferM: 400,
   },
   {
     id: "hannam",
@@ -63,6 +73,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["용산구"],
     keywords: ["한남"],
     color: "#F59E0B",
+    axis: [[37.5350, 127.0020], [37.5330, 127.0076], [37.5310, 127.0130]], // 한남오거리→한남동
+    bufferM: 350,
   },
   {
     id: "yeonnam",
@@ -72,6 +84,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["마포구"],
     keywords: ["연남", "연트럴"],
     color: "#8B5CF6",
+    axis: [[37.5571, 126.9235], [37.5620, 126.9230], [37.5650, 126.9225]], // 홍대입구역→연트럴파크→연남동 안쪽
+    bufferM: 350,
   },
   {
     id: "garosu",
@@ -81,6 +95,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["강남구"],
     keywords: ["가로수길", "신사동"],
     color: "#14B8A6",
+    axis: [[37.5235, 127.0230], [37.5190, 127.0220]], // 신사역→가로수길 남단
+    bufferM: 300,
   },
   {
     id: "dosan",
@@ -90,6 +106,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["강남구"],
     keywords: ["도산공원", "압구정"],
     color: "#F97316",
+    axis: [[37.5270, 127.0289], [37.5230, 127.0350], [37.5215, 127.0400]], // 압구정로데오→도산공원→청담
+    bufferM: 400,
   },
   {
     id: "myeongdong",
@@ -99,6 +117,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["중구"],
     keywords: ["명동"],
     color: "#EF4444",
+    axis: [[37.5610, 126.9860], [37.5628, 126.9837], [37.5640, 126.9810]], // 명동역→명동거리→을지로입구
+    bufferM: 350,
   },
   {
     id: "konkuk",
@@ -108,6 +128,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["광진구"],
     keywords: ["건대", "건국대"],
     color: "#0EA5E9",
+    axis: [[37.5404, 127.0693], [37.5420, 127.0660], [37.5380, 127.0720]], // 건대입구역→먹자골목
+    bufferM: 350,
   },
   {
     id: "hapjeong",
@@ -117,6 +139,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["마포구"],
     keywords: ["합정"],
     color: "#84CC16",
+    axis: [[37.5499, 126.9145], [37.5490, 126.9100]], // 합정역→망원동방면
+    bufferM: 350,
   },
   {
     id: "euljiro",
@@ -126,6 +150,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["중구", "종로구"],
     keywords: ["을지로", "익선동"],
     color: "#A855F7",
+    axis: [[37.5660, 126.9820], [37.5665, 126.9918], [37.5670, 127.0010]], // 을지로입구→을지로3가→을지로4가
+    bufferM: 350,
   },
   {
     id: "ikseon",
@@ -135,6 +161,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["종로구"],
     keywords: ["익선"],
     color: "#D946EF",
+    axis: [[37.5735, 126.9880], [37.5745, 126.9870]], // 익선동 골목
+    bufferM: 250,
   },
   {
     id: "jamsil",
@@ -144,6 +172,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["송파구"],
     keywords: ["잠실"],
     color: "#06B6D4",
+    axis: [[37.5133, 127.1001], [37.5100, 127.1050]], // 잠실역→잠실새내
+    bufferM: 450,
   },
   {
     id: "yeouido",
@@ -153,6 +183,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["영등포구"],
     keywords: ["여의도"],
     color: "#0D9488",
+    axis: [[37.5255, 126.9245], [37.5218, 126.9245], [37.5185, 126.9260]], // 여의도역→IFC→여의나루
+    bufferM: 400,
   },
   {
     id: "sinchon",
@@ -162,6 +194,8 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["서대문구", "마포구"],
     keywords: ["신촌"],
     color: "#E11D48",
+    axis: [[37.5554, 126.9368], [37.5570, 126.9340]], // 신촌역→연세대방면
+    bufferM: 350,
   },
 ];
 
@@ -171,11 +205,37 @@ export const ZONE_COLORS = {
   rear: { fill: 0.08, stroke: 0.3, label: "배후 상권" },
 } as const;
 
-export function classifyZone(distFromCenter: number, radiusM: number): "main" | "side" | "rear" {
-  const ratio = distFromCenter / radiusM;
-  if (ratio < 0.4) return "main";
-  if (ratio < 0.75) return "side";
-  return "rear";
+/** 점에서 선분까지 최단거리 (미터) */
+export function distToSegmentM(
+  pLat: number, pLng: number,
+  aLat: number, aLng: number,
+  bLat: number, bLng: number,
+): number {
+  const R = 6371000;
+  const toRad = (d: number) => d * Math.PI / 180;
+  // 평면 근사 (서울 스케일에서 충분)
+  const cosLat = Math.cos(toRad((aLat + bLat) / 2));
+  const px = (pLng - aLng) * cosLat;
+  const py = pLat - aLat;
+  const dx = (bLng - aLng) * cosLat;
+  const dy = bLat - aLat;
+  const len2 = dx * dx + dy * dy;
+  let t = len2 > 0 ? ((px * dx + py * dy) / len2) : 0;
+  t = Math.max(0, Math.min(1, t));
+  const projX = (aLng + (bLng - aLng) * t) * cosLat;
+  const projY = aLat + (bLat - aLat) * t;
+  const distDeg = Math.sqrt((px - (projX - aLng * cosLat)) ** 2 + (py - (projY - aLat)) ** 2);
+  return distDeg * (Math.PI / 180) * R;
+}
+
+/** 점에서 도로축(폴리라인)까지 최단거리 */
+export function distToAxisM(lat: number, lng: number, axis: [number, number][]): number {
+  let minDist = Infinity;
+  for (let i = 0; i < axis.length - 1; i++) {
+    const d = distToSegmentM(lat, lng, axis[i][0], axis[i][1], axis[i + 1][0], axis[i + 1][1]);
+    if (d < minDist) minDist = d;
+  }
+  return minDist;
 }
 
 export function findDistrictByQuery(query: string): DistrictDef | null {

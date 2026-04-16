@@ -1,45 +1,42 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { rateLimit } from "@/lib/rate-limit";
-import { DISTRICTS, type ZonedArea, type DistrictDef } from "@/lib/district-zones";
+import { DISTRICTS, distToAxisM, type ZonedArea, type DistrictDef } from "@/lib/district-zones";
 
 export const revalidate = 3600;
 
-function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371000;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
 /**
- * 복합 점수 기반 zone 분류
- * - 유동인구(40%) + 매출(30%) + 점포밀도(30%)
- * - 상위 30% = 메인, 중간 40% = 이면, 하위 30% = 배후
+ * 축 거리(40%) + 유동인구(30%) + 매출(30%) 복합 점수
+ * 축에 가까우면서 유동인구·매출이 높은 곳 = 메인
  */
-function classifyByScore(
-  areas: Array<{ trdar_cd: string; ftScore: number; salesScore: number; storeScore: number }>
+function classifyByCompositeScore(
+  areas: Array<{ trdar_cd: string; axisDist: number; ft: number; sales: number }>,
+  bufferM: number,
 ): Map<string, "main" | "side" | "rear"> {
   const result = new Map<string, "main" | "side" | "rear">();
   if (areas.length === 0) return result;
 
-  const scores = areas.map((a) => ({
-    trdar_cd: a.trdar_cd,
-    score: a.ftScore * 0.4 + a.salesScore * 0.3 + a.storeScore * 0.3,
-  }));
-  scores.sort((a, b) => b.score - a.score);
+  const maxFt = Math.max(...areas.map((a) => a.ft), 1);
+  const maxSales = Math.max(...areas.map((a) => a.sales), 1);
 
-  const n = scores.length;
+  const scored = areas.map((a) => {
+    // 축 거리 점수: 가까울수록 1, bufferM 거리에서 0
+    const axisScore = Math.max(0, 1 - a.axisDist / bufferM);
+    const ftScore = a.ft / maxFt;
+    const salesScore = a.sales / maxSales;
+    return {
+      trdar_cd: a.trdar_cd,
+      score: axisScore * 0.4 + ftScore * 0.3 + salesScore * 0.3,
+    };
+  });
+  scored.sort((a, b) => b.score - a.score);
+
+  const n = scored.length;
   const mainCut = Math.max(1, Math.ceil(n * 0.3));
   const sideCut = Math.max(mainCut + 1, Math.ceil(n * 0.7));
 
   for (let i = 0; i < n; i++) {
-    result.set(scores[i].trdar_cd, i < mainCut ? "main" : i < sideCut ? "side" : "rear");
+    result.set(scored[i].trdar_cd, i < mainCut ? "main" : i < sideCut ? "side" : "rear");
   }
   return result;
 }
@@ -59,57 +56,53 @@ async function getZonesForDistrict(d: DistrictDef): Promise<ZonedArea[]> {
   const { data: areaRows } = await q.limit(200);
   if (!areaRows || areaRows.length === 0) return [];
 
+  // 도로축 기반 필터: bufferM 이내만 포함
   const nearby = areaRows
-    .map((r) => ({ ...r, dist: haversineM(cLat, cLng, r.lat, r.lng) }))
-    .filter((r) => r.dist <= d.radiusM);
+    .map((r) => ({
+      ...r,
+      axisDist: distToAxisM(r.lat, r.lng, d.axis),
+    }))
+    .filter((r) => r.axisDist <= d.bufferM);
 
   if (nearby.length === 0) return [];
   const codes = nearby.map((r) => r.trdar_cd);
 
-  // 유동인구 + 매출 + 점포수 병렬 조회
-  const [ftRes, salesRes, storesRes] = await Promise.all([
+  // 유동인구 + 매출 병렬 조회 (최신 분기)
+  const [ftRes, salesRes] = await Promise.all([
     supabase.from("foot_traffic").select("trdar_cd, quarter_cd, total_ft").in("trdar_cd", codes),
     supabase.from("sales").select("trdar_cd, quarter_cd, monthly_sales").in("trdar_cd", codes),
-    supabase.from("stores").select("trdar_cd, quarter_cd, store_count").in("trdar_cd", codes),
   ]);
 
-  // 최신 분기 기준 집계
-  const aggregate = (rows: Array<Record<string, unknown>>, field: string) => {
-    const quarters = Array.from(new Set((rows ?? []).map((r) => String(r.quarter_cd ?? "")))).sort();
-    const latest = quarters[quarters.length - 1];
-    const byArea = new Map<string, number>();
-    for (const r of rows ?? []) {
-      if (String(r.quarter_cd) !== latest) continue;
-      const cd = String(r.trdar_cd);
-      byArea.set(cd, (byArea.get(cd) ?? 0) + (Number(r[field]) || 0));
+  const latestQ = (rows: Array<Record<string, unknown>>) => {
+    const qs = Array.from(new Set((rows ?? []).map((r) => String(r.quarter_cd ?? "")))).sort();
+    return qs[qs.length - 1] ?? "";
+  };
+
+  const ftLatest = latestQ(ftRes.data ?? []);
+  const salesLatest = latestQ(salesRes.data ?? []);
+
+  const ftByArea = new Map<string, number>();
+  for (const r of ftRes.data ?? []) {
+    if (String(r.quarter_cd) === ftLatest) {
+      ftByArea.set(r.trdar_cd, (ftByArea.get(r.trdar_cd) ?? 0) + (r.total_ft ?? 0));
     }
-    return byArea;
-  };
+  }
 
-  const ftByArea = aggregate(ftRes.data ?? [], "total_ft");
-  const salesByArea = aggregate(salesRes.data ?? [], "monthly_sales");
-  const storesByArea = aggregate(storesRes.data ?? [], "store_count");
-
-  // 정규화 (0~1)
-  const normalize = (map: Map<string, number>) => {
-    const max = Math.max(...Array.from(map.values()), 1);
-    const norm = new Map<string, number>();
-    for (const cd of codes) norm.set(cd, (map.get(cd) ?? 0) / max);
-    return norm;
-  };
-
-  const ftNorm = normalize(ftByArea);
-  const salesNorm = normalize(salesByArea);
-  const storesNorm = normalize(storesByArea);
+  const salesByArea = new Map<string, number>();
+  for (const r of salesRes.data ?? []) {
+    if (String(r.quarter_cd) === salesLatest) {
+      salesByArea.set(r.trdar_cd, (salesByArea.get(r.trdar_cd) ?? 0) + (r.monthly_sales ?? 0));
+    }
+  }
 
   const scored = codes.map((cd) => ({
     trdar_cd: cd,
-    ftScore: ftNorm.get(cd) ?? 0,
-    salesScore: salesNorm.get(cd) ?? 0,
-    storeScore: storesNorm.get(cd) ?? 0,
+    axisDist: nearby.find((r) => r.trdar_cd === cd)!.axisDist,
+    ft: ftByArea.get(cd) ?? 0,
+    sales: salesByArea.get(cd) ?? 0,
   }));
 
-  const zoneMap = classifyByScore(scored);
+  const zoneMap = classifyByCompositeScore(scored, d.bufferM);
 
   return nearby
     .map((r) => ({
@@ -118,7 +111,7 @@ async function getZonesForDistrict(d: DistrictDef): Promise<ZonedArea[]> {
       lat: r.lat,
       lng: r.lng,
       zone: zoneMap.get(r.trdar_cd) ?? "rear",
-      distFromCenter: Math.round(r.dist),
+      distFromCenter: Math.round(r.axisDist),
     }))
     .sort((a, b) => {
       const order = { main: 0, side: 1, rear: 2 };
