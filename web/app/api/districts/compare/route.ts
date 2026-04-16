@@ -1,9 +1,24 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabase-server";
 import { rateLimit } from "@/lib/rate-limit";
 import { DISTRICTS } from "@/lib/district-zones";
 
 export const revalidate = 3600;
+
+// DB에 임대료 데이터가 없을 때 사용하는 폴백 (만원/평)
+const RENT_FALLBACK: Record<string, { f1: number; f2: number; b1: number }> = {
+  "강남구": { f1: 53.3, f2: 32.0, b1: 30.9 },
+  "서초구": { f1: 42.5, f2: 25.5, b1: 24.7 },
+  "마포구": { f1: 33.8, f2: 20.3, b1: 19.6 },
+  "용산구": { f1: 38.5, f2: 23.1, b1: 22.3 },
+  "종로구": { f1: 36.2, f2: 21.7, b1: 21.0 },
+  "중구":   { f1: 44.8, f2: 26.9, b1: 26.0 },
+  "성동구": { f1: 30.5, f2: 18.3, b1: 17.7 },
+  "송파구": { f1: 35.1, f2: 21.1, b1: 20.4 },
+  "영등포구": { f1: 32.7, f2: 19.6, b1: 19.0 },
+  "광진구": { f1: 28.9, f2: 17.3, b1: 16.8 },
+};
 
 interface ZoneStats {
   zone: string;
@@ -44,8 +59,8 @@ export async function GET(req: Request) {
   const [storesRes, ftRes, rentRes, saleRes] = await Promise.all([
     supabase.from("stores").select("trdar_cd, quarter_cd, store_count, open_count, close_count").in("trdar_cd", codes),
     supabase.from("foot_traffic").select("trdar_cd, quarter_cd, total_ft").in("trdar_cd", codes),
-    supabase.from("gu_rent_stats").select("f1_pyeong, f2_pyeong, b1_pyeong").eq("gu", guName).maybeSingle(),
-    supabase.from("gu_sale_stats").select("m2_price, avg_price").eq("gu", guName).maybeSingle(),
+    supabaseServer.from("gu_rent_stats").select("f1_pyeong, f2_pyeong, b1_pyeong").eq("gu", guName).maybeSingle(),
+    supabaseServer.from("gu_sale_stats").select("m2_price, avg_price").eq("gu", guName).maybeSingle(),
   ]);
 
   // 최신 분기만
@@ -87,7 +102,10 @@ export async function GET(req: Request) {
   }
 
   const rentData = rentRes.data;
-  const avgRent = rentData ? Math.round(((rentData.f1_pyeong ?? 0) + (rentData.f2_pyeong ?? 0)) / 2 * 10) / 10 : 0;
+  const fb = RENT_FALLBACK[guName];
+  const f1 = (rentData?.f1_pyeong ?? 0) > 0 ? rentData!.f1_pyeong : (fb?.f1 ?? 0);
+  const f2 = (rentData?.f2_pyeong ?? 0) > 0 ? rentData!.f2_pyeong : (fb?.f2 ?? 0);
+  const avgRent = Math.round(((f1 ?? 0) + (f2 ?? 0)) / 2 * 10) / 10;
   const saleData = saleRes.data;
   const avgSaleM2 = saleData?.m2_price ?? 0;
 
