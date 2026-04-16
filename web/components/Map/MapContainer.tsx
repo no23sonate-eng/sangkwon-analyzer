@@ -95,11 +95,16 @@ export default function MapContainer() {
 
   useEffect(() => {
     if (!activeDistrictId) { setDistrictZones(null); setZoneCompare(null); return; }
-    fetch(`/api/districts/zones?id=${activeDistrictId}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setDistrictZones(data); })
+    const id = activeDistrictId;
+    fetch(`/api/districts/zones?id=${id}`)
+      .then((r) => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
+      .then((data) => {
+        if (data && data.areas) {
+          setDistrictZones(data);
+        }
+      })
       .catch(() => {});
-    fetch(`/api/districts/compare?id=${activeDistrictId}`)
+    fetch(`/api/districts/compare?id=${id}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setZoneCompare(data); })
       .catch(() => {});
