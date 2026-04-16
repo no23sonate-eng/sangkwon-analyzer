@@ -243,6 +243,17 @@ export const DISTRICTS: DistrictDef[] = [
     bufferM: 450,
   },
   {
+    id: "seoulsup",
+    name: "서울숲",
+    center: [37.5472, 127.0411],
+    radiusM: 500,
+    gu: ["성동구"],
+    keywords: ["서울숲"],
+    color: "#34D399",
+    axis: [[37.5490, 127.0390], [37.5460, 127.0430]], // 서울숲카페거리 축
+    bufferM: 400,
+  },
+  {
     id: "cheongdam",
     name: "청담동",
     center: [37.5248, 127.0477],
