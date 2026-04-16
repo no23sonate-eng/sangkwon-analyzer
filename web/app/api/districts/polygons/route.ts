@@ -99,8 +99,8 @@ export async function GET(req: Request) {
   // zone 분류 + 절대 활성도 기반 opacity
   features.sort((a, b) => a.axisDist - b.axisDist);
   const n = features.length;
-  const mainCut = Math.max(1, Math.ceil(n * 0.3));
-  const sideCut = Math.max(mainCut + 1, Math.ceil(n * 0.7));
+  const mainCut = Math.max(1, Math.ceil(n * 0.25));
+  const sideCut = Math.max(mainCut + 1, Math.ceil(n * 0.65));
 
   const coloredFeatures = features.map((item, i) => {
     const zone: "main" | "side" | "rear" = i < mainCut ? "main" : i < sideCut ? "side" : "rear";
