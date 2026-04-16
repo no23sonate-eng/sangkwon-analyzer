@@ -69,12 +69,12 @@ export const DISTRICTS: DistrictDef[] = [
     id: "hannam",
     name: "한남동",
     center: [37.5330, 127.0076],
-    radiusM: 700,
+    radiusM: 800,
     gu: ["용산구"],
     keywords: ["한남"],
     color: "#F59E0B",
-    axis: [[37.5350, 127.0020], [37.5330, 127.0076], [37.5310, 127.0130]], // 한남오거리→한남동
-    bufferM: 350,
+    axis: [[37.5374, 127.0022], [37.5330, 127.0076], [37.5310, 127.0130]], // 한강진역→한남오거리→한남동
+    bufferM: 500,
   },
   {
     id: "yeonnam",
@@ -229,6 +229,17 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#059669",
     axis: [[37.5556, 126.9100], [37.5540, 126.9060]],
     bufferM: 350,
+  },
+  {
+    id: "itaewon",
+    name: "이태원",
+    center: [37.5349, 126.9948],
+    radiusM: 700,
+    gu: ["용산구"],
+    keywords: ["이태원"],
+    color: "#DC2626",
+    axis: [[37.5368, 126.9930], [37.5349, 126.9948], [37.5320, 126.9944]], // 이태원역→이태원거리→엔틱거리
+    bufferM: 450,
   },
   {
     id: "cheongdam",
