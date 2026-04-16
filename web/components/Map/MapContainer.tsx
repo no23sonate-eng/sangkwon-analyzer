@@ -17,7 +17,7 @@ import {
   getTrafficHeatmap, getSalesHeatmap,
   getOpenHeatmap, getCloseHeatmap,
 } from "@/lib/heatmap-data";
-import { DISTRICTS, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
+import { DISTRICTS, ZONE_COLORS, convexHull, bufferPolygon, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
 
 // ── Vworld 한국 정부 지도 ──
 const MAP_STYLE = {
@@ -83,45 +83,85 @@ export default function MapContainer() {
 
   // ── 주요상권 zone 데이터 ──
   const [districtZones, setDistrictZones] = useState<{ district: DistrictDef; areas: ZonedArea[] } | null>(null);
+  const [zoneCompare, setZoneCompare] = useState<{
+    district: { name: string; color: string };
+    quarter: string | null;
+    zones: Array<{
+      zone: string; label: string; areaCount: number;
+      totalStores: number; avgRentPyeong: number;
+      dailyFootTraffic: number; openCount: number; closeCount: number;
+    }>;
+  } | null>(null);
 
   useEffect(() => {
-    if (!activeDistrictId) { setDistrictZones(null); return; }
+    if (!activeDistrictId) { setDistrictZones(null); setZoneCompare(null); return; }
     fetch(`/api/districts/zones?id=${activeDistrictId}`)
       .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data) setDistrictZones(data);
-      })
+      .then((data) => { if (data) setDistrictZones(data); })
+      .catch(() => {});
+    fetch(`/api/districts/compare?id=${activeDistrictId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setZoneCompare(data); })
       .catch(() => {});
   }, [activeDistrictId]);
 
   // zone별 GeoJSON — 각 trdar_cd를 ~120m 원으로 표현, zone별 다른 opacity
   const zoneGeoJSON = useMemo(() => {
     if (!districtZones) return null;
-    const features = districtZones.areas.map((a) => {
-      const zoneInfo = ZONE_COLORS[a.zone];
-      const r = a.zone === "main" ? 130 : a.zone === "side" ? 110 : 90;
-      const coords: [number, number][] = [];
-      for (let i = 0; i <= 32; i++) {
-        const angle = (2 * Math.PI * i) / 32;
-        coords.push([
-          a.lng + (r / (111320 * Math.cos((a.lat * Math.PI) / 180))) * Math.sin(angle),
-          a.lat + (r / 111320) * Math.cos(angle),
-        ]);
+    // zone별로 그룹화 → convex hull로 경계 폴리곤 생성
+    const byZone = new Map<string, ZonedArea[]>();
+    for (const a of districtZones.areas) {
+      const list = byZone.get(a.zone) ?? [];
+      list.push(a);
+      byZone.set(a.zone, list);
+    }
+
+    const features: GeoJSON.Feature[] = [];
+    for (const [zone, areas] of byZone) {
+      if (areas.length === 0) continue;
+
+      // 각 상권 포인트의 주변 8개 점으로 확장해서 hull 입력 (단일 점도 영역으로)
+      const points: [number, number][] = [];
+      const padM = zone === "main" ? 120 : zone === "side" ? 100 : 80;
+      for (const a of areas) {
+        for (let i = 0; i < 8; i++) {
+          const angle = (2 * Math.PI * i) / 8;
+          points.push([
+            a.lng + (padM / (111320 * Math.cos((a.lat * Math.PI) / 180))) * Math.sin(angle),
+            a.lat + (padM / 111320) * Math.cos(angle),
+          ]);
+        }
       }
-      return {
-        type: "Feature" as const,
+
+      let hull = convexHull(points);
+      hull = bufferPolygon(hull, 30);
+      hull.push(hull[0]); // close ring
+
+      features.push({
+        type: "Feature",
         properties: {
-          trdar_cd: a.trdar_cd,
-          trdar_nm: a.trdar_nm,
-          zone: a.zone,
-          zoneLabel: zoneInfo.label,
-          fillOpacity: zoneInfo.fill,
-          strokeOpacity: zoneInfo.stroke,
+          zone,
+          zoneLabel: ZONE_COLORS[zone as keyof typeof ZONE_COLORS]?.label ?? zone,
           color: districtZones.district.color,
+          count: areas.length,
         },
-        geometry: { type: "Polygon" as const, coordinates: [coords] },
-      };
-    });
+        geometry: { type: "Polygon", coordinates: [hull] },
+      });
+
+      // 각 상권에 라벨 포인트도 추가
+      for (const a of areas) {
+        features.push({
+          type: "Feature",
+          properties: {
+            trdar_nm: a.trdar_nm,
+            zone: a.zone,
+            color: districtZones.district.color,
+            isLabel: true,
+          },
+          geometry: { type: "Point", coordinates: [a.lng, a.lat] },
+        });
+      }
+    }
     return { type: "FeatureCollection" as const, features };
   }, [districtZones]);
 
@@ -561,23 +601,44 @@ export default function MapContainer() {
           <Layer
             id="zone-fill"
             type="fill"
+            filter={["!=", ["get", "isLabel"], true]}
             paint={{
               "fill-color": ["get", "color"],
-              "fill-opacity": ["get", "fillOpacity"],
+              "fill-opacity": [
+                "match", ["get", "zone"],
+                "main", 0.3,
+                "side", 0.18,
+                "rear", 0.09,
+                0.1,
+              ],
             }}
           />
           <Layer
             id="zone-stroke"
             type="line"
+            filter={["!=", ["get", "isLabel"], true]}
             paint={{
               "line-color": ["get", "color"],
-              "line-width": 2,
-              "line-opacity": ["get", "strokeOpacity"],
+              "line-width": [
+                "match", ["get", "zone"],
+                "main", 2.5,
+                "side", 1.5,
+                "rear", 1,
+                1,
+              ],
+              "line-opacity": [
+                "match", ["get", "zone"],
+                "main", 0.9,
+                "side", 0.5,
+                "rear", 0.25,
+                0.3,
+              ],
             }}
           />
           <Layer
             id="zone-label"
             type="symbol"
+            filter={["==", ["get", "isLabel"], true]}
             layout={{
               "text-field": ["get", "trdar_nm"],
               "text-size": 11,
@@ -732,6 +793,23 @@ export default function MapContainer() {
           <p className="mt-1.5 text-[10px] text-muted">
             {districtZones.areas.length}개 상권 · 메인 {districtZones.areas.filter((a) => a.zone === "main").length} / 이면 {districtZones.areas.filter((a) => a.zone === "side").length} / 배후 {districtZones.areas.filter((a) => a.zone === "rear").length}
           </p>
+          {zoneCompare && (
+            <div className="mt-3 border-t border-gray-100 pt-3">
+              <p className="mb-2 text-[10px] font-semibold text-gray-600">
+                Zone별 비교 {zoneCompare.quarter && <span className="font-normal text-muted">({zoneCompare.quarter})</span>}
+              </p>
+              <div className="space-y-1.5">
+                {zoneCompare.zones.filter((z) => z.areaCount > 0).map((z) => (
+                  <div key={z.zone} className="flex items-center gap-2 text-[10px]">
+                    <span className="w-14 font-medium text-gray-700">{z.label}</span>
+                    <span className="text-muted">{z.totalStores.toLocaleString()}점포</span>
+                    <span className="text-muted">{z.avgRentPyeong}만/평</span>
+                    <span className="text-muted">{z.dailyFootTraffic.toLocaleString()}명/일</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

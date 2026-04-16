@@ -100,6 +100,69 @@ export const DISTRICTS: DistrictDef[] = [
     keywords: ["명동"],
     color: "#EF4444",
   },
+  {
+    id: "konkuk",
+    name: "건대입구",
+    center: [37.5404, 127.0693],
+    radiusM: 700,
+    gu: ["광진구"],
+    keywords: ["건대", "건국대"],
+    color: "#0EA5E9",
+  },
+  {
+    id: "hapjeong",
+    name: "합정",
+    center: [37.5499, 126.9145],
+    radiusM: 600,
+    gu: ["마포구"],
+    keywords: ["합정"],
+    color: "#84CC16",
+  },
+  {
+    id: "euljiro",
+    name: "을지로",
+    center: [37.5665, 126.9918],
+    radiusM: 700,
+    gu: ["중구", "종로구"],
+    keywords: ["을지로", "익선동"],
+    color: "#A855F7",
+  },
+  {
+    id: "ikseon",
+    name: "익선동",
+    center: [37.5735, 126.9880],
+    radiusM: 400,
+    gu: ["종로구"],
+    keywords: ["익선"],
+    color: "#D946EF",
+  },
+  {
+    id: "jamsil",
+    name: "잠실",
+    center: [37.5133, 127.1001],
+    radiusM: 900,
+    gu: ["송파구"],
+    keywords: ["잠실"],
+    color: "#06B6D4",
+  },
+  {
+    id: "yeouido",
+    name: "여의도",
+    center: [37.5218, 126.9245],
+    radiusM: 800,
+    gu: ["영등포구"],
+    keywords: ["여의도"],
+    color: "#0D9488",
+  },
+  {
+    id: "sinchon",
+    name: "신촌",
+    center: [37.5554, 126.9368],
+    radiusM: 600,
+    gu: ["서대문구", "마포구"],
+    keywords: ["신촌"],
+    color: "#E11D48",
+  },
 ];
 
 export const ZONE_COLORS = {
@@ -120,4 +183,46 @@ export function findDistrictByQuery(query: string): DistrictDef | null {
   return DISTRICTS.find((d) =>
     d.name === q || d.keywords.some((kw) => q.includes(kw) || kw.includes(q))
   ) ?? null;
+}
+
+/* ── Convex Hull (Graham scan) — zone 경계 폴리곤 생성 ── */
+function cross(o: [number, number], a: [number, number], b: [number, number]) {
+  return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+}
+
+export function convexHull(points: [number, number][]): [number, number][] {
+  if (points.length < 3) return points;
+  const sorted = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const lower: [number, number][] = [];
+  for (const p of sorted) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0)
+      lower.pop();
+    lower.push(p);
+  }
+  const upper: [number, number][] = [];
+  for (const p of sorted.reverse()) {
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0)
+      upper.pop();
+    upper.push(p);
+  }
+  lower.pop();
+  upper.pop();
+  return [...lower, ...upper];
+}
+
+/** 폴리곤을 부드럽게 확장 (버퍼) — padM 미터만큼 */
+export function bufferPolygon(coords: [number, number][], padM: number): [number, number][] {
+  if (coords.length < 3) return coords;
+  const cx = coords.reduce((s, c) => s + c[0], 0) / coords.length;
+  const cy = coords.reduce((s, c) => s + c[1], 0) / coords.length;
+  const padLng = padM / (111320 * Math.cos((cy * Math.PI) / 180));
+  const padLat = padM / 111320;
+  return coords.map(([lng, lat]) => {
+    const dx = lng - cx;
+    const dy = lat - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist === 0) return [lng, lat] as [number, number];
+    const scale = (dist + Math.sqrt(padLng * padLng + padLat * padLat)) / dist;
+    return [cx + dx * scale, cy + dy * scale] as [number, number];
+  });
 }
