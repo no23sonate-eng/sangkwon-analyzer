@@ -201,13 +201,8 @@ export default function MapPage() {
     });
   }, []);
 
-  const handleSearch = useCallback(async () => {
-    const q = searchQuery.trim();
-    if (!q) return;
-    addToHistory(q);
-    setSearchFocused(false);
-
-    // 0. 주요 상권 zone 매칭 → zone 활성화 + 지도 이동
+  const executeSearch = useCallback(async (q: string) => {
+    // 0. 주요 상권 zone 매칭 (즉시)
     const district = findDistrictByQuery(q);
     if (district) {
       const store = useAnalysisStore.getState();
@@ -219,43 +214,43 @@ export default function MapPage() {
         zoom: 15,
       });
       triggerAnalysis(district.center[0], district.center[1]);
-      setSearchQuery("");
       return;
     }
 
-    // 1. 하드코딩 매칭
+    // 1. 하드코딩 매칭 (즉시)
     const match = SEARCH_KEYWORDS[q];
     if (match) {
       useAnalysisStore.getState().setActiveDistrictId(null);
       triggerAnalysis(match.lat, match.lng);
-      setSearchQuery("");
       return;
     }
 
-    // 2. 지오코딩 (주소 → 좌표)
-    try {
-      const geo = await geocode(q);
-      if (geo?.lat && geo?.lng) {
-        triggerAnalysis(geo.lat, geo.lng);
-        setSearchQuery("");
-        return;
-      }
-    } catch {
-      // 지오코딩 실패 → 상권 검색으로
-    }
+    // 2. 지오코딩 + 상권 검색 병렬 실행 → 먼저 성공한 쪽 사용
+    useAnalysisStore.getState().setActiveDistrictId(null);
+    const [geoResult, trdarResult] = await Promise.allSettled([
+      geocode(q).then((r) => (r?.lat && r?.lng ? r : null)),
+      searchTrdar(q).then((results) => {
+        const first = results.find((r) => r.lat && r.lng);
+        return first?.lat && first?.lng ? { lat: first.lat, lng: first.lng } : null;
+      }),
+    ]);
 
-    // 3. 상권명 검색
-    try {
-      const results = await searchTrdar(q);
-      const first = results.find((r) => r.lat && r.lng);
-      if (first && first.lat && first.lng) {
-        triggerAnalysis(first.lat, first.lng);
-      }
-    } catch {
-      // 상권 검색 실패
+    const geo = geoResult.status === "fulfilled" ? geoResult.value : null;
+    const trdar = trdarResult.status === "fulfilled" ? trdarResult.value : null;
+    const found = geo ?? trdar;
+    if (found) {
+      triggerAnalysis(found.lat, found.lng);
     }
+  }, []);
+
+  const handleSearch = useCallback(async () => {
+    const q = searchQuery.trim();
+    if (!q) return;
+    addToHistory(q);
+    setSearchFocused(false);
     setSearchQuery("");
-  }, [searchQuery, addToHistory]);
+    await executeSearch(q);
+  }, [searchQuery, addToHistory, executeSearch]);
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -308,25 +303,10 @@ export default function MapPage() {
                   key={h}
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    setSearchQuery(h);
                     setSearchFocused(false);
-                    setTimeout(() => {
-                      const store = useAnalysisStore.getState();
-                      addToHistory(h);
-                      const district = findDistrictByQuery(h);
-                      if (district) {
-                        store.setActiveDistrictId(district.id);
-                        store.setViewState({ ...store.viewState, latitude: district.center[0], longitude: district.center[1], zoom: 15 });
-                        triggerAnalysis(district.center[0], district.center[1]);
-                      } else {
-                        const match = SEARCH_KEYWORDS[h];
-                        if (match) {
-                          store.setActiveDistrictId(null);
-                          triggerAnalysis(match.lat, match.lng);
-                        }
-                      }
-                      setSearchQuery("");
-                    }, 0);
+                    addToHistory(h);
+                    setSearchQuery("");
+                    executeSearch(h);
                   }}
                   className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[13px] text-gray-700 transition-colors hover:bg-gray-50"
                 >
