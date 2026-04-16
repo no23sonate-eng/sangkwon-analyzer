@@ -17,7 +17,7 @@ import {
   getTrafficHeatmap, getSalesHeatmap,
   getOpenHeatmap, getCloseHeatmap,
 } from "@/lib/heatmap-data";
-import { DISTRICTS, ZONE_COLORS, convexHull, bufferPolygon, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
+import { ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
 
 // ── Vworld 한국 정부 지도 ──
 const MAP_STYLE = {
@@ -110,53 +110,6 @@ export default function MapContainer() {
       .catch(() => {});
   }, [activeDistrictId]);
 
-  // zone별 폴리곤 + 라벨 (별도 GeoJSON)
-  const { zonePolygons, zoneLabels } = useMemo(() => {
-    if (!districtZones) return { zonePolygons: null, zoneLabels: null };
-    const byZone = new Map<string, ZonedArea[]>();
-    for (const a of districtZones.areas) {
-      const list = byZone.get(a.zone) ?? [];
-      list.push(a);
-      byZone.set(a.zone, list);
-    }
-
-    const polyFeatures: GeoJSON.Feature[] = [];
-    const labelFeatures: GeoJSON.Feature[] = [];
-
-    for (const [zone, areas] of byZone) {
-      if (areas.length === 0) continue;
-      const padM = zone === "main" ? 150 : zone === "side" ? 120 : 100;
-      const points: [number, number][] = [];
-      for (const a of areas) {
-        for (let i = 0; i < 8; i++) {
-          const angle = (2 * Math.PI * i) / 8;
-          points.push([
-            a.lng + (padM / (111320 * Math.cos((a.lat * Math.PI) / 180))) * Math.sin(angle),
-            a.lat + (padM / 111320) * Math.cos(angle),
-          ]);
-        }
-      }
-      let hull = convexHull(points);
-      hull = bufferPolygon(hull, 50);
-      hull.push(hull[0]);
-      polyFeatures.push({
-        type: "Feature",
-        properties: { zone, color: districtZones.district.color },
-        geometry: { type: "Polygon", coordinates: [hull] },
-      });
-      for (const a of areas) {
-        labelFeatures.push({
-          type: "Feature",
-          properties: { trdar_nm: a.trdar_nm, zone: a.zone, color: districtZones.district.color },
-          geometry: { type: "Point", coordinates: [a.lng, a.lat] },
-        });
-      }
-    }
-    return {
-      zonePolygons: { type: "FeatureCollection" as const, features: polyFeatures },
-      zoneLabels: { type: "FeatureCollection" as const, features: labelFeatures },
-    };
-  }, [districtZones]);
 
   // ── 반경 원 GeoJSON ──
   const circleGeoJSON = useMemo(() => {
@@ -580,66 +533,42 @@ export default function MapContainer() {
         </Source>
       )}
 
-      {/* ── 주요 상권 zone 폴리곤 ── */}
-      {zonePolygons && (
-        <Source id="zone-polygons" type="geojson" data={zonePolygons}>
-          <Layer
-            id="zone-fill"
-            type="fill"
-            paint={{
-              "fill-color": ["get", "color"],
-              "fill-opacity": [
-                "match", ["get", "zone"],
-                "main", 0.55,
-                "side", 0.35,
-                "rear", 0.2,
-                0.2,
-              ],
+      {/* ── 주요 상권 zone (Marker 기반) ── */}
+      {districtZones && districtZones.areas.map((a) => {
+        const opacity = a.zone === "main" ? 0.5 : a.zone === "side" ? 0.3 : 0.15;
+        const border = a.zone === "main" ? 3 : a.zone === "side" ? 2 : 1;
+        const size = a.zone === "main" ? 28 : a.zone === "side" ? 22 : 16;
+        return (
+          <Marker key={a.trdar_cd} latitude={a.lat} longitude={a.lng} anchor="center">
+            <div
+              className="rounded-full"
+              style={{
+                width: size,
+                height: size,
+                background: districtZones.district.color,
+                opacity,
+                border: `${border}px solid ${districtZones.district.color}`,
+                boxShadow: a.zone === "main" ? `0 0 12px ${districtZones.district.color}80` : undefined,
+              }}
+              title={`${a.trdar_nm} (${a.zone === "main" ? "메인" : a.zone === "side" ? "이면" : "배후"})`}
+            />
+          </Marker>
+        );
+      })}
+      {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => (
+        <Marker key={`label-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="top">
+          <div
+            className="mt-4 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-bold"
+            style={{
+              color: districtZones.district.color,
+              background: "rgba(255,255,255,0.9)",
+              border: `1px solid ${districtZones.district.color}40`,
             }}
-          />
-          <Layer
-            id="zone-stroke"
-            type="line"
-            paint={{
-              "line-color": ["get", "color"],
-              "line-width": [
-                "match", ["get", "zone"],
-                "main", 3,
-                "side", 2,
-                "rear", 1.5,
-                1.5,
-              ],
-              "line-opacity": [
-                "match", ["get", "zone"],
-                "main", 1,
-                "side", 0.7,
-                "rear", 0.45,
-                0.4,
-              ],
-            }}
-          />
-        </Source>
-      )}
-      {zoneLabels && (
-        <Source id="zone-labels" type="geojson" data={zoneLabels}>
-          <Layer
-            id="zone-label"
-            type="symbol"
-            layout={{
-              "text-field": ["get", "trdar_nm"],
-              "text-size": 12,
-              "text-font": ["Open Sans Bold"],
-              "text-allow-overlap": false,
-              "text-offset": [0, 0.8],
-            }}
-            paint={{
-              "text-color": ["get", "color"],
-              "text-halo-color": "#FFFFFF",
-              "text-halo-width": 2,
-            }}
-          />
-        </Source>
-      )}
+          >
+            {a.trdar_nm}
+          </div>
+        </Marker>
+      ))}
 
       {/* ── 점포 마커 (클러스터링) ── */}
       {showStoreMarkers && storeGeoJSON && (
