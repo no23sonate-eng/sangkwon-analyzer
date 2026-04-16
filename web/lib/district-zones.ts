@@ -13,6 +13,8 @@ export interface DistrictDef {
   color: string;
   axis: [number, number][]; // 도로축 좌표 [lat, lng][]
   bufferM: number; // 축에서 이 거리까지 상권 포함
+  mainCodes?: string[]; // 메인 도로 접면 trdar_cd 직접 지정
+  sideCodes?: string[]; // 이면 trdar_cd 직접 지정 (나머지는 배후)
 }
 
 export interface ZonedArea {
@@ -62,9 +64,12 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["성동구"],
     keywords: ["성수", "서울숲"],
     color: "#10B981",
-    // 연무장길: 서울숲입구 → 성수역(37.5452,127.0561) → 경수초 방면
     axis: [[37.5455, 127.0465], [37.5452, 127.0561], [37.5410, 127.0640]],
     bufferM: 600,
+    // 연무장길 접면
+    mainCodes: ["3120052", "3120050", "3110131", "3110136"], // 성수역, 서울숲역, 성수동카페거리, 경수초
+    // 한 블록 뒤
+    sideCodes: ["3130071", "3120051", "3130070", "3110137", "3130073"], // 성수역골목형, 뚝섬역, 뚝섬역상점가, 성수초, 뚝도시장
   },
   {
     id: "hannam",

@@ -102,7 +102,14 @@ async function getZonesForDistrict(d: DistrictDef): Promise<ZonedArea[]> {
     sales: salesByArea.get(cd) ?? 0,
   }));
 
-  const zoneMap = classifyByCompositeScore(scored, d.bufferM);
+  // mainCodes/sideCodes 직접 지정 우선
+  const mainSet = new Set(d.mainCodes ?? []);
+  const sideSet = new Set(d.sideCodes ?? []);
+  const hasManual = mainSet.size > 0 || sideSet.size > 0;
+
+  const zoneMap = hasManual
+    ? new Map(codes.map((cd) => [cd, mainSet.has(cd) ? "main" as const : sideSet.has(cd) ? "side" as const : "rear" as const]))
+    : classifyByCompositeScore(scored, d.bufferM);
 
   return nearby
     .map((r) => ({

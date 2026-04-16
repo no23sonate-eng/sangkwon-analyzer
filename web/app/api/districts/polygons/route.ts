@@ -96,15 +96,24 @@ export async function GET(req: Request) {
       salesByArea.set(r.trdar_cd, (salesByArea.get(r.trdar_cd) ?? 0) + (r.monthly_sales ?? 0));
   }
 
-  // zone 분류 + 절대 활성도 기반 opacity
+  // zone 분류: mainCodes/sideCodes 직접 지정 우선, 없으면 축 거리 자동
   features.sort((a, b) => a.axisDist - b.axisDist);
   const n = features.length;
-  // 메인 20%, 이면 40%, 배후 40%
-  const mainCut = Math.max(1, Math.ceil(n * 0.2));
-  const sideCut = Math.max(mainCut + 1, Math.ceil(n * 0.6));
+  const mainSet = new Set(district.mainCodes ?? []);
+  const sideSet = new Set(district.sideCodes ?? []);
+  const hasManual = mainSet.size > 0 || sideSet.size > 0;
+
+  // 자동 분류 기준 (수동 지정 없는 상권용)
+  const mainCut = Math.max(1, Math.ceil(n * 0.25));
+  const sideCut = Math.max(mainCut + 1, Math.ceil(n * 0.65));
 
   const coloredFeatures = features.map((item, i) => {
-    const zone: "main" | "side" | "rear" = i < mainCut ? "main" : i < sideCut ? "side" : "rear";
+    let zone: "main" | "side" | "rear";
+    if (hasManual) {
+      zone = mainSet.has(item.trdar_cd) ? "main" : sideSet.has(item.trdar_cd) ? "side" : "rear";
+    } else {
+      zone = i < mainCut ? "main" : i < sideCut ? "side" : "rear";
+    }
     const ft = ftByArea.get(item.trdar_cd) ?? 0;
     const sales = salesByArea.get(item.trdar_cd) ?? 0;
 
