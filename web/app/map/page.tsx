@@ -237,35 +237,49 @@ export default function MapPage() {
   }, []);
 
   const executeSearch = useCallback(async (q: string) => {
-    // 0. 주요 상권 zone 매칭 (즉시)
+    const store = useAnalysisStore.getState();
+
+    // 1. 주요 상권 매칭 (즉시, 지도 이동 한 번만)
     const district = findDistrictByQuery(q);
     if (district) {
-      const store = useAnalysisStore.getState();
-      store.setViewState({
-        ...store.viewState,
-        latitude: district.center[0],
-        longitude: district.center[1],
-        zoom: 15,
-      });
+      store.setViewState({ ...store.viewState, latitude: district.center[0], longitude: district.center[1], zoom: 15 });
       store.setClicked(null as unknown as number, null as unknown as number);
       store.setPanelOpen(false);
       loadDistrictZones(district.id);
       return;
     }
 
+    // 상권 아닌 검색 → zone 패널 닫기
     setActiveDistrictId(null);
     setDistrictZones(null);
     setZoneCompare(null);
     setZonePolygonGeoJSON(null);
+    setRoadAnalysis(null);
 
-    // 1. 하드코딩 매칭 (즉시)
+    // 2. 하드코딩 좌표 매칭
     const match = SEARCH_KEYWORDS[q];
     if (match) {
-      triggerAnalysis(match.lat, match.lng);
+      store.setClicked(match.lat, match.lng);
+      store.setViewState({ ...store.viewState, latitude: match.lat, longitude: match.lng, zoom: 15 });
+      store.setLoading(true);
+      try {
+        const list = await findNearbyTrdar(match.lat, match.lng, Math.max(store.radius, 500));
+        store.setNearbyList(list);
+        if (list.length > 0) {
+          store.setSelectedTrdar(list[0]);
+          store.setPanelOpen(true);
+          const [analysis, stores] = await Promise.all([
+            analyzeArea(match.lat, match.lng, store.radius),
+            getStoreCount(list[0].trdar_cd),
+          ]);
+          store.setAnalysisData(analysis);
+          store.setStoreCountData(stores);
+        }
+      } catch {} finally { store.setLoading(false); }
       return;
     }
 
-    // 2. 지오코딩 + 상권 검색 병렬 실행
+    // 3. geocode + searchTrdar 병렬
     const [geoResult, trdarResult] = await Promise.allSettled([
       geocode(q).then((r) => (r?.lat && r?.lng ? r : null)),
       searchTrdar(q).then((results) => {
@@ -274,11 +288,27 @@ export default function MapPage() {
       }),
     ]);
 
-    const geo = geoResult.status === "fulfilled" ? geoResult.value : null;
-    const trdar = trdarResult.status === "fulfilled" ? trdarResult.value : null;
-    const found = geo ?? trdar;
+    const found = (geoResult.status === "fulfilled" ? geoResult.value : null)
+      ?? (trdarResult.status === "fulfilled" ? trdarResult.value : null);
+
     if (found) {
-      triggerAnalysis(found.lat, found.lng);
+      store.setClicked(found.lat, found.lng);
+      store.setViewState({ ...store.viewState, latitude: found.lat, longitude: found.lng, zoom: 15 });
+      store.setLoading(true);
+      try {
+        const list = await findNearbyTrdar(found.lat, found.lng, Math.max(store.radius, 500));
+        store.setNearbyList(list);
+        if (list.length > 0) {
+          store.setSelectedTrdar(list[0]);
+          store.setPanelOpen(true);
+          const [analysis, stores] = await Promise.all([
+            analyzeArea(found.lat, found.lng, store.radius),
+            getStoreCount(list[0].trdar_cd),
+          ]);
+          store.setAnalysisData(analysis);
+          store.setStoreCountData(stores);
+        }
+      } catch {} finally { store.setLoading(false); }
     }
   }, [loadDistrictZones]);
 
