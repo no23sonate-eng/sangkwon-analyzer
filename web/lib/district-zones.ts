@@ -45,6 +45,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#6366F1",
     axis: [[37.5045, 127.0249], [37.4976, 127.0278], [37.4910, 127.0310]],
     bufferM: 550,
+    mainRoads: ["강남대로"],
   },
   {
     id: "hongdae",
@@ -56,6 +57,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#EC4899",
     axis: [[37.5571, 126.9259], [37.5538, 126.9213], [37.5500, 126.9220]],
     bufferM: 600,
+    mainRoads: ["어울마당로"],
   },
   {
     id: "seongsu",
@@ -81,6 +83,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#F59E0B",
     axis: [[37.5374, 127.0022], [37.5330, 127.0076], [37.5310, 127.0130]], // 한강진역→한남오거리→한남동
     bufferM: 500,
+    mainRoads: ["한남대로"],
   },
   {
     id: "yeonnam",
@@ -92,6 +95,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#8B5CF6",
     axis: [[37.5571, 126.9235], [37.5620, 126.9230], [37.5650, 126.9225]], // 홍대입구역→연트럴파크→연남동 안쪽
     bufferM: 350,
+    mainRoads: ["동교로"],
   },
   {
     id: "garosu",
@@ -103,6 +107,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#14B8A6",
     axis: [[37.5235, 127.0230], [37.5190, 127.0220]], // 신사역→가로수길 남단
     bufferM: 300,
+    mainRoads: ["압구정로"],
   },
   {
     id: "dosan",
@@ -114,6 +119,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#F97316",
     axis: [[37.5270, 127.0289], [37.5230, 127.0350], [37.5215, 127.0400]], // 압구정로데오→도산공원→청담
     bufferM: 400,
+    mainRoads: ["도산대로"],
   },
   {
     id: "myeongdong",
@@ -125,6 +131,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#EF4444",
     axis: [[37.5610, 126.9860], [37.5628, 126.9837], [37.5640, 126.9810]], // 명동역→명동거리→을지로입구
     bufferM: 350,
+    mainRoads: ["명동길"],
   },
   {
     id: "konkuk",
@@ -136,6 +143,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#0EA5E9",
     axis: [[37.5404, 127.0693], [37.5420, 127.0660], [37.5380, 127.0720]], // 건대입구역→먹자골목
     bufferM: 350,
+    mainRoads: ["동일로"],
   },
   {
     id: "hapjeong",
@@ -147,6 +155,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#84CC16",
     axis: [[37.5499, 126.9145], [37.5490, 126.9100]], // 합정역→망원동방면
     bufferM: 350,
+    mainRoads: ["양화로"],
   },
   {
     id: "euljiro",
@@ -158,6 +167,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#A855F7",
     axis: [[37.5660, 126.9820], [37.5665, 126.9918], [37.5670, 127.0010]], // 을지로입구→을지로3가→을지로4가
     bufferM: 350,
+    mainRoads: ["을지로"],
   },
   {
     id: "ikseon",
@@ -169,6 +179,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#D946EF",
     axis: [[37.5735, 126.9880], [37.5745, 126.9870]], // 익선동 골목
     bufferM: 250,
+    mainRoads: ["돈화문로"],
   },
   {
     id: "jamsil",
@@ -180,6 +191,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#06B6D4",
     axis: [[37.5133, 127.1001], [37.5100, 127.1050]], // 잠실역→잠실새내
     bufferM: 450,
+    mainRoads: ["올림픽로"],
   },
   {
     id: "yeouido",
@@ -191,6 +203,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#0D9488",
     axis: [[37.5255, 126.9245], [37.5218, 126.9245], [37.5185, 126.9260]], // 여의도역→IFC→여의나루
     bufferM: 400,
+    mainRoads: ["여의대로"],
   },
   {
     id: "sinchon",
@@ -202,6 +215,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#E11D48",
     axis: [[37.5554, 126.9368], [37.5570, 126.9340]],
     bufferM: 350,
+    mainRoads: ["신촌로"],
   },
   {
     id: "apgujeong",
@@ -213,6 +227,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#BE185D",
     axis: [[37.5270, 127.0289], [37.5260, 127.0380], [37.5250, 127.0450]], // 압구정역→로데오→청담
     bufferM: 400,
+    mainRoads: ["압구정로"],
   },
   {
     id: "samcheong",
@@ -224,6 +239,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#7C3AED",
     axis: [[37.5790, 126.9825], [37.5830, 126.9810]],
     bufferM: 300,
+    mainRoads: ["삼청로"],
   },
   {
     id: "mangwon",
@@ -235,6 +251,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#059669",
     axis: [[37.5556, 126.9100], [37.5540, 126.9060]],
     bufferM: 350,
+    mainRoads: ["망원로"],
   },
   {
     id: "itaewon",
@@ -246,6 +263,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#DC2626",
     axis: [[37.5368, 126.9930], [37.5349, 126.9948], [37.5320, 126.9944]], // 이태원역→이태원거리→엔틱거리
     bufferM: 450,
+    mainRoads: ["이태원로"],
   },
   {
     id: "cheongdam",
@@ -257,6 +275,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#9333EA",
     axis: [[37.5248, 127.0477], [37.5210, 127.0540]], // 청담사거리→청담역
     bufferM: 400,
+    mainRoads: ["도산대로"],
   },
 ];
 

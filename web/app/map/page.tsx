@@ -200,6 +200,8 @@ export default function MapPage() {
     quarter: string | null;
     zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; avgSaleM2: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
   } | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [roadAnalysis, setRoadAnalysis] = useState<any>(null);
 
   const loadDistrictZones = useCallback((districtId: string) => {
     setActiveDistrictId(districtId);
@@ -214,6 +216,10 @@ export default function MapPage() {
     fetch(`/api/districts/polygons?id=${districtId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data?.features) setZonePolygonGeoJSON(data); })
+      .catch(() => {});
+    fetch(`/api/districts/road-analysis?id=${districtId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setRoadAnalysis(data); })
       .catch(() => {});
   }, []);
 
@@ -294,6 +300,7 @@ export default function MapPage() {
       <MapContainer
         districtZones={districtZones}
         zonePolygonGeoJSON={zonePolygonGeoJSON}
+        roadAnalysis={roadAnalysis}
         onDistrictClick={(id) => {
           const d = DISTRICTS.find((dd) => dd.id === id);
           if (d) {
@@ -375,7 +382,7 @@ export default function MapPage() {
               <p className="mt-0.5 text-[12px] text-muted">{districtZones.areas.length}개 세부 상권</p>
             </div>
             <button
-              onClick={() => { setActiveDistrictId(null); setDistrictZones(null); setZoneCompare(null); setZonePolygonGeoJSON(null); }}
+              onClick={() => { setActiveDistrictId(null); setDistrictZones(null); setZoneCompare(null); setZonePolygonGeoJSON(null); setRoadAnalysis(null); }}
               className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100"
             >
               <X size={18} className="text-gray-400" />
@@ -410,6 +417,34 @@ export default function MapPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* 도로별 점포 분석 (소상공인 데이터) */}
+            {roadAnalysis && (
+              <div className="rounded-xl border border-gray-100 p-4">
+                <p className="mb-1 text-[13px] font-semibold text-gray-900">도로별 점포 현황</p>
+                <p className="mb-3 text-[10px] text-muted">소상공인시장진흥공단 · 반경 {roadAnalysis.radius}m · 총 {roadAnalysis.totalStores?.toLocaleString()}개</p>
+                <div className="mb-3 flex gap-3 text-[10px]">
+                  <span>🔴 메인 {roadAnalysis.summary?.mainStores?.toLocaleString()}</span>
+                  <span>🟡 이면 {roadAnalysis.summary?.sideStores?.toLocaleString()}</span>
+                  <span>🟢 배후 {roadAnalysis.summary?.rearStores?.toLocaleString()}</span>
+                </div>
+                <div className="space-y-1">
+                  {roadAnalysis.roads?.slice(0, 12).map((r: { name: string; storeCount: number; zone: string }) => {
+                    const color = r.zone === "main" ? "#EF4444" : r.zone === "side" ? "#F59E0B" : "#22C55E";
+                    const maxCount = roadAnalysis.roads[0]?.storeCount ?? 1;
+                    return (
+                      <div key={r.name} className="flex items-center gap-2">
+                        <span className="w-20 truncate text-[10px] text-gray-600" title={r.name}>{r.name}</span>
+                        <div className="flex-1 h-3 rounded-full bg-gray-100 overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${(r.storeCount / maxCount) * 100}%`, background: color }} />
+                        </div>
+                        <span className="w-10 text-right text-[10px] font-semibold text-gray-700">{r.storeCount}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

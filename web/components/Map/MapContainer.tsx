@@ -56,10 +56,12 @@ interface MapProps {
   districtZones?: { district: DistrictDef; areas: ZonedArea[] } | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zonePolygonGeoJSON?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  roadAnalysis?: any;
   onDistrictClick?: (districtId: string) => void;
 }
 
-export default function MapContainer({ districtZones, zonePolygonGeoJSON, onDistrictClick }: MapProps) {
+export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAnalysis, onDistrictClick }: MapProps) {
   const mapRef = useRef<MapRef>(null);
 
   const viewState = useAnalysisStore((s) => s.viewState);
@@ -691,6 +693,39 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, onDist
           </Source>
         );
       })()}
+      {/* ── 도로별 점포 점 (소상공인 데이터) ── */}
+      {roadAnalysis?.roads && (() => {
+        const storePoints: GeoJSON.Feature[] = [];
+        for (const road of roadAnalysis.roads.slice(0, 15)) {
+          const color = road.zone === "main" ? "#EF4444" : road.zone === "side" ? "#F59E0B" : "#22C55E";
+          for (const s of road.sampleStores ?? []) {
+            if (s.lat && s.lng) {
+              storePoints.push({
+                type: "Feature",
+                properties: { color, name: s.name, road: road.name, zone: road.zone },
+                geometry: { type: "Point", coordinates: [s.lng, s.lat] },
+              });
+            }
+          }
+        }
+        if (storePoints.length === 0) return null;
+        return (
+          <Source id="road-stores" type="geojson" data={{ type: "FeatureCollection", features: storePoints }}>
+            <Layer
+              id="road-store-dots"
+              type="circle"
+              paint={{
+                "circle-radius": 4,
+                "circle-color": ["get", "color"],
+                "circle-opacity": 0.8,
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#FFFFFF",
+              }}
+            />
+          </Source>
+        );
+      })()}
+
       {/* zone 라벨 */}
       {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => {
         const zoneColor = a.zone === "main" ? "#EF4444" : "#F59E0B";
