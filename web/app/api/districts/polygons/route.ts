@@ -27,7 +27,7 @@ function centroid(coords: number[][]): [number, number] {
 const ABSOLUTE_MAX_FT = 500000;  // 강남역급 분기 유동인구
 const ABSOLUTE_MAX_SALES = 5_000_000_000; // 50억 분기 매출
 
-const ZONE_COLORS = { main: "#EF4444", side: "#F59E0B", rear: "#22C55E" };
+const ZONE_COLORS = { main: "#EF4444", side: "#F59E0B", rear: "#3B82F6" };
 
 export async function GET(req: Request) {
   const limited = rateLimit(req, "districts-polygons", 30, 60_000);

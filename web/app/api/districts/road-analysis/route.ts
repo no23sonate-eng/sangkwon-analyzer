@@ -101,7 +101,8 @@ export async function GET(req: Request) {
   const mainRoadKeywords = district.mainRoads ?? [];
   const totalStores = stores.length;
 
-  const isMainRoad = (name: string) => mainRoadKeywords.some((kw) => name.startsWith(kw) || name.includes(kw));
+  // 정확히 메인 도로명만 (강남대로84길 같은 골목은 제외)
+  const isMainRoad = (name: string) => mainRoadKeywords.some((kw) => name === kw);
 
   let cumNonMain = 0;
   const nonMainTotal = roads.filter((r) => !isMainRoad(r.name)).reduce((s, r) => s + r.storeCount, 0);

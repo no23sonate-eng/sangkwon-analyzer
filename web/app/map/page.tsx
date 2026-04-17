@@ -400,23 +400,32 @@ export default function MapPage() {
               ))}
             </div>
 
-            {/* zone별 비교 */}
-            {zoneCompare && (
+            {/* zone별 비교 — 도로 기반 + 서울시 데이터 병행 */}
+            {roadAnalysis && (
               <div className="rounded-xl border border-gray-100 p-4">
-                <p className="mb-3 text-[13px] font-semibold text-gray-900">Zone별 비교 {zoneCompare.quarter && <span className="text-[11px] font-normal text-muted">({zoneCompare.quarter})</span>}</p>
+                <p className="mb-3 text-[13px] font-semibold text-gray-900">Zone별 비교 <span className="text-[11px] font-normal text-muted">(소상공인 데이터)</span></p>
                 <div className="space-y-3">
-                  {zoneCompare.zones.filter((z) => z.areaCount > 0 || z.dailyFootTraffic > 0).map((z) => (
-                    <div key={z.zone} className="rounded-lg bg-gray-50 p-3">
-                      <p className="mb-1.5 text-[12px] font-semibold" style={{ color: districtZones.district.color }}>{z.label}</p>
-                      <div className="grid grid-cols-2 gap-2 text-[11px]">
-                        <div><span className="text-muted">점포 </span><span className="font-semibold text-gray-800">{z.totalStores.toLocaleString()}</span></div>
-                        <div><span className="text-muted">임대료 </span><span className="font-semibold text-gray-800">{z.avgRentPyeong}만/평</span></div>
-                        <div><span className="text-muted">매매가 </span><span className="font-semibold text-gray-800">{z.avgSaleM2 ? `${z.avgSaleM2.toLocaleString()}만/㎡` : "—"}</span></div>
-                        <div><span className="text-muted">유동인구 </span><span className="font-semibold text-gray-800">{z.dailyFootTraffic.toLocaleString()}명/일</span></div>
-                        <div><span className="text-muted">개업/폐업 </span><span className="font-semibold text-emerald-600">{z.openCount}</span><span className="text-muted">/</span><span className="font-semibold text-red-400">{z.closeCount}</span></div>
+                  {[
+                    { zone: "main", label: "메인 상권", color: "#EF4444", stores: roadAnalysis.summary?.mainStores ?? 0, roads: roadAnalysis.summary?.mainRoads ?? [] },
+                    { zone: "side", label: "이면 상권", color: "#F59E0B", stores: roadAnalysis.summary?.sideStores ?? 0 },
+                    { zone: "rear", label: "배후 상권", color: "#3B82F6", stores: roadAnalysis.summary?.rearStores ?? 0 },
+                  ].map((z) => {
+                    const compare = zoneCompare?.zones?.find((c) => c.zone === z.zone);
+                    return (
+                      <div key={z.zone} className="rounded-lg bg-gray-50 p-3">
+                        <p className="mb-1.5 text-[12px] font-semibold" style={{ color: z.color }}>{z.label}</p>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div><span className="text-muted">점포 </span><span className="font-semibold text-gray-800">{z.stores.toLocaleString()}</span></div>
+                          <div><span className="text-muted">임대료 </span><span className="font-semibold text-gray-800">{compare?.avgRentPyeong ?? "—"}만/평</span></div>
+                          <div><span className="text-muted">매매가 </span><span className="font-semibold text-gray-800">{compare?.avgSaleM2 ? `${compare.avgSaleM2.toLocaleString()}만/㎡` : "—"}</span></div>
+                          <div><span className="text-muted">유동인구 </span><span className="font-semibold text-gray-800">{compare?.dailyFootTraffic?.toLocaleString() ?? "—"}명/일</span></div>
+                        </div>
+                        {"roads" in z && z.roads?.length > 0 && (
+                          <p className="mt-1 text-[10px] text-muted">메인 도로: {z.roads.join(", ")}</p>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -433,7 +442,7 @@ export default function MapPage() {
                 </div>
                 <div className="space-y-1">
                   {roadAnalysis.roads?.slice(0, 12).map((r: { name: string; storeCount: number; zone: string }) => {
-                    const color = r.zone === "main" ? "#EF4444" : r.zone === "side" ? "#F59E0B" : "#22C55E";
+                    const color = r.zone === "main" ? "#EF4444" : r.zone === "side" ? "#F59E0B" : "#3B82F6";
                     const maxCount = roadAnalysis.roads[0]?.storeCount ?? 1;
                     return (
                       <div key={r.name} className="flex items-center gap-2">

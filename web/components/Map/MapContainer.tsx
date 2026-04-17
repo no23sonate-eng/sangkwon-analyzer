@@ -681,8 +681,8 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
                 "heatmap-opacity": 0.35,
                 "heatmap-color": [
                   "interpolate", ["linear"], ["heatmap-density"],
-                  0, "rgba(34,197,94,0)",
-                  0.2, "rgba(34,197,94,0.3)",
+                  0, "rgba(59,130,246,0)",
+                  0.2, "rgba(59,130,246,0.3)",
                   0.4, "rgba(250,204,21,0.5)",
                   0.6, "rgba(245,158,11,0.6)",
                   0.8, "rgba(239,68,68,0.7)",
@@ -697,7 +697,7 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
       {roadAnalysis?.roads && (() => {
         const storePoints: GeoJSON.Feature[] = [];
         for (const road of roadAnalysis.roads.slice(0, 15)) {
-          const color = road.zone === "main" ? "#EF4444" : road.zone === "side" ? "#F59E0B" : "#22C55E";
+          const color = road.zone === "main" ? "#EF4444" : road.zone === "side" ? "#F59E0B" : "#3B82F6";
           for (const s of road.sampleStores ?? []) {
             if (s.lat && s.lng) {
               storePoints.push({
