@@ -15,6 +15,7 @@ export interface DistrictDef {
   bufferM: number; // 축에서 이 거리까지 상권 포함
   mainCodes?: string[]; // 메인 도로 접면 trdar_cd 직접 지정
   sideCodes?: string[]; // 이면 trdar_cd 직접 지정 (나머지는 배후)
+  mainRoads?: string[]; // 메인 도로명 (소상공인 API rdnm 기준)
 }
 
 export interface ZonedArea {
@@ -66,10 +67,9 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#10B981",
     axis: [[37.5455, 127.0465], [37.5452, 127.0561], [37.5410, 127.0640]],
     bufferM: 600,
-    // 연무장길 직접 접면만 메인
-    mainCodes: ["3120052"], // 성수역 (연무장길 중심)
-    // 연무장길 한 블록 뒤 + 카페거리
-    sideCodes: ["3110131", "3120050", "3130071", "3120051", "3130070", "3110136"], // 성수동카페거리, 서울숲역, 성수역골목형, 뚝섬역, 뚝섬역상점가, 경수초
+    mainCodes: ["3120052"],
+    sideCodes: ["3110131", "3120050", "3130071", "3120051", "3130070", "3110136"],
+    mainRoads: ["연무장길"], // 연무장길 + 연무장N길 계열이 메인
   },
   {
     id: "hannam",
