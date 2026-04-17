@@ -57,7 +57,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#EC4899",
     axis: [[37.5571, 126.9259], [37.5538, 126.9213], [37.5500, 126.9220]],
     bufferM: 600,
-    mainRoads: ["어울마당로"],
+    mainRoads: ["양화로"], // 홍대역 앞 양화로가 메인
   },
   {
     id: "seongsu",
@@ -76,14 +76,14 @@ export const DISTRICTS: DistrictDef[] = [
   {
     id: "hannam",
     name: "한남동",
-    center: [37.5330, 127.0076],
+    center: [37.5355, 127.0000],
     radiusM: 800,
     gu: ["용산구"],
-    keywords: ["한남"],
+    keywords: ["한남", "꼼데길"],
     color: "#F59E0B",
-    axis: [[37.5374, 127.0022], [37.5330, 127.0076], [37.5310, 127.0130]], // 한강진역→한남오거리→한남동
+    axis: [[37.5374, 126.9970], [37.5349, 126.9948], [37.5330, 127.0076]], // 한강진역→이태원로→한남동
     bufferM: 500,
-    mainRoads: ["한남대로"],
+    mainRoads: ["이태원로"], // 한강진역~이태원역 꼼데길이 메인
   },
   {
     id: "yeonnam",
@@ -93,9 +93,9 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["마포구"],
     keywords: ["연남", "연트럴"],
     color: "#8B5CF6",
-    axis: [[37.5571, 126.9235], [37.5620, 126.9230], [37.5650, 126.9225]], // 홍대입구역→연트럴파크→연남동 안쪽
+    axis: [[37.5571, 126.9235], [37.5620, 126.9230], [37.5650, 126.9225]],
     bufferM: 350,
-    mainRoads: ["동교로"],
+    mainRoads: ["연남로"], // 연트럴파크 옆 연남로
   },
   {
     id: "garosu",
@@ -105,9 +105,9 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["강남구"],
     keywords: ["가로수길", "신사동"],
     color: "#14B8A6",
-    axis: [[37.5235, 127.0230], [37.5190, 127.0220]], // 신사역→가로수길 남단
+    axis: [[37.5235, 127.0230], [37.5190, 127.0220]],
     bufferM: 300,
-    mainRoads: ["압구정로"],
+    mainRoads: ["강남대로160길"], // 가로수길 도로명
   },
   {
     id: "dosan",
@@ -117,9 +117,9 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["강남구"],
     keywords: ["도산공원", "압구정"],
     color: "#F97316",
-    axis: [[37.5270, 127.0289], [37.5230, 127.0350], [37.5215, 127.0400]], // 압구정로데오→도산공원→청담
+    axis: [[37.5270, 127.0289], [37.5230, 127.0350], [37.5215, 127.0400]],
     bufferM: 400,
-    mainRoads: ["도산대로"],
+    mainRoads: ["압구정로46길"], // 도산공원 인근 압구정로46길이 메인
   },
   {
     id: "myeongdong",
@@ -129,9 +129,9 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["중구"],
     keywords: ["명동"],
     color: "#EF4444",
-    axis: [[37.5610, 126.9860], [37.5628, 126.9837], [37.5640, 126.9810]], // 명동역→명동거리→을지로입구
+    axis: [[37.5610, 126.9860], [37.5628, 126.9837], [37.5640, 126.9810]],
     bufferM: 350,
-    mainRoads: ["명동길"],
+    mainRoads: ["명동8길"], // 명동8길부터 인근이 메인
   },
   {
     id: "konkuk",
@@ -143,7 +143,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#0EA5E9",
     axis: [[37.5404, 127.0693], [37.5420, 127.0660], [37.5380, 127.0720]], // 건대입구역→먹자골목
     bufferM: 350,
-    mainRoads: ["동일로"],
+    mainRoads: ["능동로"], // 건대입구역 먹자골목
   },
   {
     id: "hapjeong",
@@ -179,7 +179,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#D946EF",
     axis: [[37.5735, 126.9880], [37.5745, 126.9870]], // 익선동 골목
     bufferM: 250,
-    mainRoads: ["돈화문로"],
+    mainRoads: ["수표로28길"], // 익선동 골목
   },
   {
     id: "jamsil",
@@ -203,7 +203,7 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#0D9488",
     axis: [[37.5255, 126.9245], [37.5218, 126.9245], [37.5185, 126.9260]], // 여의도역→IFC→여의나루
     bufferM: 400,
-    mainRoads: ["여의대로"],
+    mainRoads: ["여의나루로"], // 여의도 IFC몰~더현대 메인
   },
   {
     id: "sinchon",
@@ -251,7 +251,19 @@ export const DISTRICTS: DistrictDef[] = [
     color: "#059669",
     axis: [[37.5556, 126.9100], [37.5540, 126.9060]],
     bufferM: 350,
-    mainRoads: ["망원로"],
+    mainRoads: ["포은로"], // 망원시장~망원역 메인
+  },
+  {
+    id: "yongridangil",
+    name: "용리단길",
+    center: [37.5283, 126.9647],
+    radiusM: 500,
+    gu: ["용산구"],
+    keywords: ["용리단길", "용산"],
+    color: "#F472B6",
+    axis: [[37.5290, 126.9640], [37.5275, 126.9655]],
+    bufferM: 350,
+    mainRoads: ["한강대로44길"], // 용리단길 메인
   },
   {
     id: "itaewon",
@@ -273,9 +285,9 @@ export const DISTRICTS: DistrictDef[] = [
     gu: ["강남구"],
     keywords: ["청담", "명품거리"],
     color: "#9333EA",
-    axis: [[37.5248, 127.0477], [37.5210, 127.0540]], // 청담사거리→청담역
+    axis: [[37.5248, 127.0477], [37.5210, 127.0540]],
     bufferM: 400,
-    mainRoads: ["도산대로"],
+    mainRoads: ["선릉로"], // 청담 명품거리
   },
 ];
 
