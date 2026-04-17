@@ -325,11 +325,11 @@ export function getDistrictPolygons(districtId: string): ZonePolygon[] | null {
   return POLYGONS[districtId] ?? null;
 }
 
-// 빨강(대로변) → 노랑(이면) → 초록(배후) 히트맵
+// 빨강(메인) → 노랑(이면) → 파랑(배후)
 const ZONE_STYLE = {
   main: { color: "#EF4444", opacity: 0.45, strokeWidth: 2.5, strokeOpacity: 0.85 },
   side: { color: "#F59E0B", opacity: 0.30, strokeWidth: 1.5, strokeOpacity: 0.6 },
-  rear: { color: "#22C55E", opacity: 0.20, strokeWidth: 1, strokeOpacity: 0.4 },
+  rear: { color: "#3B82F6", opacity: 0.20, strokeWidth: 1, strokeOpacity: 0.4 },
 };
 
 export function getDistrictPolygonGeoJSON(districtId: string, _color: string) {

@@ -247,8 +247,9 @@ export default function MapPage() {
         longitude: district.center[1],
         zoom: 15,
       });
+      store.setClicked(null as unknown as number, null as unknown as number);
+      store.setPanelOpen(false);
       loadDistrictZones(district.id);
-      triggerAnalysis(district.center[0], district.center[1]);
       return;
     }
 
@@ -305,9 +306,11 @@ export default function MapPage() {
           const d = DISTRICTS.find((dd) => dd.id === id);
           if (d) {
             const store = useAnalysisStore.getState();
+            // 지도 이동만 + zone 로드 (원형 포인트 없이)
             store.setViewState({ ...store.viewState, latitude: d.center[0], longitude: d.center[1], zoom: 15 });
+            store.setClicked(null as unknown as number, null as unknown as number); // 원형 포인트 제거
+            store.setPanelOpen(false); // 왼쪽 분석 패널 닫기
             loadDistrictZones(id);
-            triggerAnalysis(d.center[0], d.center[1]);
           }
         }}
       />
@@ -393,7 +396,7 @@ export default function MapPage() {
             <div className="flex items-center gap-3">
               {(["main", "side", "rear"] as const).map((z) => (
                 <div key={z} className="flex items-center gap-1.5">
-                  <div className="h-3 w-3 rounded-full" style={{ background: districtZones.district.color, opacity: z === "main" ? 0.7 : z === "side" ? 0.4 : 0.2 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ background: ZONE_COLORS[z].color }} />
                   <span className="text-[11px] text-gray-600">{ZONE_COLORS[z].label}</span>
                   <span className="text-[11px] font-semibold text-gray-800">{districtZones.areas.filter((a) => a.zone === z).length}</span>
                 </div>

@@ -682,10 +682,10 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
                 "heatmap-color": [
                   "interpolate", ["linear"], ["heatmap-density"],
                   0, "rgba(59,130,246,0)",
-                  0.2, "rgba(59,130,246,0.3)",
-                  0.4, "rgba(250,204,21,0.5)",
-                  0.6, "rgba(245,158,11,0.6)",
-                  0.8, "rgba(239,68,68,0.7)",
+                  0.15, "rgba(59,130,246,0.25)",
+                  0.35, "rgba(245,158,11,0.4)",
+                  0.55, "rgba(245,158,11,0.55)",
+                  0.75, "rgba(239,68,68,0.65)",
                   1, "rgba(220,38,38,0.8)",
                 ],
               }}
@@ -728,8 +728,8 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
 
       {/* zone 라벨 */}
       {districtZones && districtZones.areas.filter((a) => a.zone !== "rear").map((a) => {
-        const zoneColor = a.zone === "main" ? "#EF4444" : "#F59E0B";
-        const zoneLabel = a.zone === "main" ? "대로변" : "이면";
+        const zoneColor = a.zone === "main" ? "#EF4444" : a.zone === "side" ? "#F59E0B" : "#3B82F6";
+        const zoneLabel = a.zone === "main" ? "메인" : "이면";
         return (
           <Marker key={`zlbl-${a.trdar_cd}`} latitude={a.lat} longitude={a.lng} anchor="center">
             <div className="whitespace-nowrap rounded-md px-1.5 py-0.5 text-center shadow-sm" style={{ background: "rgba(255,255,255,0.92)", border: `1.5px solid ${zoneColor}60` }}>

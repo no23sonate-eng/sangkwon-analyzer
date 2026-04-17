@@ -279,10 +279,11 @@ export const DISTRICTS: DistrictDef[] = [
   },
 ];
 
+// 전체 앱 통일 색상 — 메인(빨강) / 이면(노랑) / 배후(파랑)
 export const ZONE_COLORS = {
-  main: { fill: 0.25, stroke: 0.8, label: "메인 상권" },
-  side: { fill: 0.15, stroke: 0.5, label: "이면 상권" },
-  rear: { fill: 0.08, stroke: 0.3, label: "배후 상권" },
+  main: { color: "#EF4444", fill: 0.25, stroke: 0.8, label: "메인 상권" },
+  side: { color: "#F59E0B", fill: 0.15, stroke: 0.5, label: "이면 상권" },
+  rear: { color: "#3B82F6", fill: 0.08, stroke: 0.3, label: "배후 상권" },
 } as const;
 
 /** 점에서 선분까지 최단거리 (미터) */
