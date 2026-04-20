@@ -98,13 +98,26 @@ export async function GET(req: Request) {
     zoneAgg[z].ft += Math.round((r.total_ft ?? 0) / 90);
   }
 
-  const rentData = rentRes.data;
-  let avgRent = rentData ? Math.round(((rentData.f1_pyeong ?? 0) + (rentData.f2_pyeong ?? 0)) / 2 * 10) / 10 : 0;
-  if (avgRent === 0) avgRent = RENT_FALLBACK[guName] ?? 20;
+  // 실제 임대료: rents 테이블에서 해당 상권 근처 데이터
+  const rentDeg = 0.005; // ~500m
+  const { data: rentRows } = await supabaseServer
+    .from("rents")
+    .select("rent_pyeong, floor")
+    .gte("lat", cLat - rentDeg).lte("lat", cLat + rentDeg)
+    .gte("lng", cLng - rentDeg).lte("lng", cLng + rentDeg)
+    .eq("target_pyeong", 10)
+    .gt("rent_pyeong", 0)
+    .limit(200);
+
+  const rentValues = (rentRows ?? []).filter((r) => r.floor === "1" || r.floor === "1층").map((r) => r.rent_pyeong);
+  let avgRent = rentValues.length > 0
+    ? Math.round(rentValues.reduce((s, v) => s + v, 0) / rentValues.length * 10) / 10
+    : RENT_FALLBACK[guName] ?? 20;
+
   const avgSaleM2 = saleRes.data?.m2_price ?? 0;
 
   const ZONE_LABELS = { main: "메인 상권", side: "이면 상권", rear: "배후 상권" };
-  const RENT_FACTOR = { main: 1.0, side: 0.55, rear: 0.3 };
+  const RENT_FACTOR = { main: 1.0, side: 0.7, rear: 0.45 };
   const SALE_FACTOR = { main: 1.15, side: 0.75, rear: 0.5 };
 
   const zones = (["main", "side", "rear"] as const).map((z) => ({
