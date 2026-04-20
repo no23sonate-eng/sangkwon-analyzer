@@ -18,7 +18,22 @@ export interface UserInfo {
 
 export function isUserRegistered(): boolean {
   if (typeof window === "undefined") return true;
-  return !!localStorage.getItem(STORAGE_KEY);
+  const data = localStorage.getItem(STORAGE_KEY);
+  if (!data) return false;
+  try {
+    const info = JSON.parse(data);
+    return info.approved === true;
+  } catch { return false; }
+}
+
+export function isUserPending(): boolean {
+  if (typeof window === "undefined") return false;
+  const data = localStorage.getItem(STORAGE_KEY);
+  if (!data) return false;
+  try {
+    const info = JSON.parse(data);
+    return info.approved === false;
+  } catch { return false; }
 }
 
 export function getUserInfo(): UserInfo | null {
@@ -40,26 +55,41 @@ export default function SignupModal() {
     ageGroup: "",
   });
 
+  const [pending, setPending] = useState(false);
+
   useEffect(() => {
-    // 관리자 페이지이거나 admin 파라미터 있으면 우회
     if (typeof window !== "undefined") {
       if (window.location.pathname === "/admin") return;
       const params = new URLSearchParams(window.location.search);
-      if (params.get("admin") === ADMIN_BYPASS) {
+      if (params.get("admin") === ADMIN_BYPASS && ADMIN_BYPASS) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          email: "admin@local",
-          name: "관리자",
-          job: "admin",
-          age: "",
-          gender: "",
-          ageGroup: "",
-          registeredAt: new Date().toISOString(),
+          email: "admin@local", name: "관리자", job: "admin",
+          age: "", gender: "", ageGroup: "",
+          registeredAt: new Date().toISOString(), approved: true,
         }));
         return;
       }
     }
 
-    // 가입 안 했으면 폼 표시
+    if (isUserPending()) {
+      // 승인 대기 중 → DB에서 승인 여부 확인
+      const stored = getUserInfo();
+      if (stored?.email) {
+        supabase.from("users").select("approved").eq("email", stored.email).maybeSingle()
+          .then(({ data }) => {
+            if (data?.approved) {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...stored, approved: true }));
+              setOpen(false);
+              setPending(false);
+            } else {
+              setPending(true);
+              setOpen(true);
+            }
+          });
+      }
+      return;
+    }
+
     if (!isUserRegistered()) {
       setOpen(true);
     }
@@ -77,7 +107,7 @@ export default function SignupModal() {
       registeredAt: new Date().toISOString(),
     };
 
-    // Supabase에 저장 (가입 즉시 승인)
+    // Supabase에 저장 (승인 대기)
     try {
       await supabase.from("users").insert({
         email: form.email,
@@ -86,15 +116,15 @@ export default function SignupModal() {
         gender: form.gender,
         age_group: form.ageGroup,
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
-        approved: true,
+        approved: false,
       });
     } catch {
       // DB insert 실패해도 로컬 등록은 진행
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(userInfo));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...userInfo, approved: false }));
     setSubmitting(false);
-    setOpen(false);
+    setPending(true);
   };
 
   if (!open) return null;
@@ -102,6 +132,24 @@ export default function SignupModal() {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-fade-in">
+        {pending ? (
+          <div className="text-center py-4">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100">
+              <span className="text-2xl">⏳</span>
+            </div>
+            <h2 className="text-[18px] font-bold text-gray-900">승인 대기 중</h2>
+            <p className="mt-2 text-[13px] text-gray-500 leading-relaxed">
+              가입 신청이 완료되었습니다.<br />
+              관리자 승인 후 서비스를 이용할 수 있습니다.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-5 rounded-xl bg-gray-100 px-6 py-2.5 text-[13px] font-semibold text-gray-700 hover:bg-gray-200"
+            >
+              승인 확인하기
+            </button>
+          </div>
+        ) : (
           <>
             <div className="mb-5 text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-600 text-[20px] font-extrabold text-white">B</div>
@@ -204,6 +252,7 @@ export default function SignupModal() {
               입력하신 정보는 서비스 개선 목적으로만 사용됩니다
             </p>
           </>
+        )}
       </div>
     </div>
   );
