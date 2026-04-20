@@ -203,24 +203,24 @@ export default function MapPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [roadAnalysis, setRoadAnalysis] = useState<any>(null);
 
+  const [zoneLoading, setZoneLoading] = useState(false);
+
   const loadDistrictZones = useCallback((districtId: string) => {
     setActiveDistrictId(districtId);
-    fetch(`/api/districts/zones?id=${districtId}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.areas) setDistrictZones(data); })
-      .catch(() => {});
-    fetch(`/api/districts/compare?id=${districtId}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setZoneCompare(data); })
-      .catch(() => {});
-    fetch(`/api/districts/polygons?id=${districtId}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.features) setZonePolygonGeoJSON(data); })
-      .catch(() => {});
-    fetch(`/api/districts/road-analysis?id=${districtId}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setRoadAnalysis(data); })
-      .catch(() => {});
+    setZoneLoading(true);
+    // 4개 API 병렬 호출
+    Promise.all([
+      fetch(`/api/districts/zones?id=${districtId}`).then((r) => r.ok ? r.json() : null),
+      fetch(`/api/districts/compare?id=${districtId}`).then((r) => r.ok ? r.json() : null),
+      fetch(`/api/districts/polygons?id=${districtId}`).then((r) => r.ok ? r.json() : null),
+      fetch(`/api/districts/road-analysis?id=${districtId}`).then((r) => r.ok ? r.json() : null),
+    ]).then(([zones, compare, polygons, roads]) => {
+      if (zones?.areas) setDistrictZones(zones);
+      if (compare) setZoneCompare(compare);
+      if (polygons?.features) setZonePolygonGeoJSON(polygons);
+      if (roads) setRoadAnalysis(roads);
+      setZoneLoading(false);
+    }).catch(() => setZoneLoading(false));
   }, []);
 
   const heatmapOn = useAnalysisStore((s) => s.heatmapOn);
@@ -407,12 +407,16 @@ export default function MapPage() {
       {panelOpen && <DataPanel />}
 
       {/* ── 우측 상권 zone 패널 ── */}
-      {districtZones && (
+      {(districtZones || zoneLoading) && (
         <div className="absolute right-0 top-0 z-30 flex h-full w-full sm:w-[360px] flex-col bg-white shadow-xl animate-slide-in">
           <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">{districtZones.district.name} 상권</h2>
-              <p className="mt-0.5 text-[12px] text-muted">{districtZones.areas.length}개 세부 상권</p>
+              <h2 className="text-lg font-semibold text-gray-900">
+                {districtZones ? `${districtZones.district.name} 상권` : "상권 분석 중..."}
+              </h2>
+              <p className="mt-0.5 text-[12px] text-muted">
+                {districtZones ? `${districtZones.areas.length}개 세부 상권` : "데이터를 불러오고 있습니다"}
+              </p>
             </div>
             <button
               onClick={() => { setActiveDistrictId(null); setDistrictZones(null); setZoneCompare(null); setZonePolygonGeoJSON(null); setRoadAnalysis(null); }}
@@ -422,7 +426,17 @@ export default function MapPage() {
             </button>
           </div>
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+            {zoneLoading && !districtZones && (
+              <div className="space-y-4 animate-pulse">
+                <div className="flex gap-3">{[1,2,3].map((i) => <div key={i} className="h-4 w-20 rounded bg-gray-200" />)}</div>
+                <div className="rounded-xl border border-gray-100 p-4 space-y-3">
+                  {[1,2,3].map((i) => <div key={i} className="h-20 rounded-lg bg-gray-100" />)}
+                </div>
+                <div className="space-y-2">{[1,2,3,4].map((i) => <div key={i} className="h-8 rounded bg-gray-100" />)}</div>
+              </div>
+            )}
             {/* zone 범례 */}
+            {districtZones && (
             <div className="flex items-center gap-3">
               {(["main", "side", "rear"] as const).map((z) => (
                 <div key={z} className="flex items-center gap-1.5">
@@ -432,6 +446,7 @@ export default function MapPage() {
                 </div>
               ))}
             </div>
+            )}
 
             {/* zone별 비교 — 도로 기반 + 서울시 데이터 병행 */}
             {roadAnalysis && (
@@ -492,6 +507,7 @@ export default function MapPage() {
             )}
 
             {/* 세부 상권 목록 */}
+            {districtZones && (
             <div>
               <p className="mb-2 text-[13px] font-semibold text-gray-900">세부 상권</p>
               <div className="space-y-1.5">
@@ -503,7 +519,7 @@ export default function MapPage() {
                   >
                     <div
                       className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ background: districtZones.district.color, opacity: a.zone === "main" ? 0.7 : a.zone === "side" ? 0.4 : 0.2 }}
+                      style={{ background: ZONE_COLORS[a.zone]?.color, opacity: a.zone === "main" ? 0.7 : a.zone === "side" ? 0.4 : 0.2 }}
                     />
                     <span className="flex-1 text-[12px] text-gray-700">{a.trdar_nm}</span>
                     <span className="text-[10px] text-muted">{a.zone === "main" ? "메인" : a.zone === "side" ? "이면" : "배후"} · {a.distFromCenter}m</span>
@@ -511,6 +527,7 @@ export default function MapPage() {
                 ))}
               </div>
             </div>
+            )}
           </div>
         </div>
       )}
