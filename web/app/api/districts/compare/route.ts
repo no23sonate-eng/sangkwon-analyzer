@@ -122,6 +122,7 @@ export async function GET(req: Request) {
   };
   const lawdCd = GU_LAWD[guName] ?? "";
   let avgSalePyeong = 0;
+  let avgLandPyeong = 0;
   if (lawdCd) {
     try {
       const now = new Date();
@@ -131,28 +132,35 @@ export async function GET(req: Request) {
         return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
       });
       const saleKey = process.env.DATA_GO_KR_API_KEY ?? "";
-      const allPyeongs: number[] = [];
+      const buildingPyeongs: number[] = []; // 건물면적 기준 (상가 평당)
+      const landPyeongs: number[] = []; // 대지면적 기준 (토지 평당)
       for (const ym of months) {
         const url = `https://apis.data.go.kr/1613000/RTMSDataSvcNrgTrade/getRTMSDataSvcNrgTrade?serviceKey=${saleKey}&LAWD_CD=${lawdCd}&DEAL_YMD=${ym}&numOfRows=100`;
         const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" }, next: { revalidate: 86400 } });
         const xml = await res.text();
-        // 간단 XML 파싱
         const items = xml.split("<item>").slice(1);
         for (const item of items) {
           const getTag = (tag: string) => { const m = item.match(new RegExp(`<${tag}>(.*?)</${tag}>`)); return m?.[1]?.trim() ?? ""; };
           const use = getTag("buildingUse");
           if (!use.includes("근린생활") && !use.includes("판매")) continue;
           const amt = parseInt(getTag("dealAmount").replace(/,/g, "")) || 0;
-          const area = parseFloat(getTag("buildingAr")) || 0;
-          if (amt > 0 && area > 5) {
-            allPyeongs.push(Math.round(amt / area * 3.3));
+          const bArea = parseFloat(getTag("buildingAr")) || 0;
+          const lArea = parseFloat(getTag("plottageAr")) || 0;
+          if (amt > 0 && bArea > 5) {
+            buildingPyeongs.push(Math.round(amt / bArea * 3.3));
+          }
+          if (amt > 0 && lArea > 5) {
+            landPyeongs.push(Math.round(amt / lArea * 3.3));
           }
         }
       }
-      if (allPyeongs.length > 0) {
-        allPyeongs.sort((a, b) => a - b);
-        // 중앙값 사용 (이상치 제거)
-        avgSalePyeong = allPyeongs[Math.floor(allPyeongs.length / 2)];
+      if (buildingPyeongs.length > 0) {
+        buildingPyeongs.sort((a, b) => a - b);
+        avgSalePyeong = buildingPyeongs[Math.floor(buildingPyeongs.length / 2)];
+      }
+      if (landPyeongs.length > 0) {
+        landPyeongs.sort((a, b) => a - b);
+        avgLandPyeong = landPyeongs[Math.floor(landPyeongs.length / 2)];
       }
     } catch {}
   }
@@ -168,6 +176,7 @@ export async function GET(req: Request) {
     totalStores: zoneAgg[z].stores,
     avgRentPyeong: Math.round(avgRent * RENT_FACTOR[z] * 10) / 10,
     avgSalePyeong: Math.round(avgSalePyeong * SALE_FACTOR[z]),
+    avgLandPyeong: Math.round(avgLandPyeong * SALE_FACTOR[z]),
     dailyFootTraffic: zoneAgg[z].ft,
     openCount: zoneAgg[z].open,
     closeCount: zoneAgg[z].close,

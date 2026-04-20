@@ -198,7 +198,7 @@ export default function MapPage() {
   const [zoneCompare, setZoneCompare] = useState<{
     district: { name: string; color: string };
     quarter: string | null;
-    zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; avgSalePyeong: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
+    zones: Array<{ zone: string; label: string; areaCount: number; totalStores: number; avgRentPyeong: number; avgSalePyeong: number; avgLandPyeong: number; dailyFootTraffic: number; openCount: number; closeCount: number }>;
   } | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [roadAnalysis, setRoadAnalysis] = useState<any>(null);
@@ -465,7 +465,8 @@ export default function MapPage() {
                         <div className="grid grid-cols-2 gap-2 text-[11px]">
                           <div><span className="text-muted">점포 </span><span className="font-semibold text-gray-800">{z.stores.toLocaleString()}</span></div>
                           <div><span className="text-muted">임대료 </span><span className="font-semibold text-gray-800">{compare?.avgRentPyeong ?? "—"}만/평</span></div>
-                          <div><span className="text-muted">매매가 </span><span className="font-semibold text-gray-800">{compare?.avgSalePyeong ? `${compare.avgSalePyeong.toLocaleString()}만/평` : "—"}</span></div>
+                          <div><span className="text-muted">상가 </span><span className="font-semibold text-gray-800">{compare?.avgSalePyeong ? `${compare.avgSalePyeong.toLocaleString()}만/평` : "—"}</span></div>
+                          <div><span className="text-muted">토지 </span><span className="font-semibold text-gray-800">{compare?.avgLandPyeong ? `${compare.avgLandPyeong.toLocaleString()}만/평` : "—"}</span></div>
                           <div><span className="text-muted">유동인구 </span><span className="font-semibold text-gray-800">{compare?.dailyFootTraffic?.toLocaleString() ?? "—"}명/일</span></div>
                         </div>
                         {"roads" in z && z.roads?.length > 0 && (
