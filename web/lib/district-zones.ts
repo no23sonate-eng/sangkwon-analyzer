@@ -333,8 +333,13 @@ export function distToAxisM(lat: number, lng: number, axis: [number, number][]):
 
 export function findDistrictByQuery(query: string): DistrictDef | null {
   const q = query.trim();
+  // 주소 형태면 상권 매칭 스킵 (숫자 포함, 공백+6자 이상, "구"로 끝남)
+  if (/\d/.test(q)) return null;
+  if (/[구시]$/.test(q)) return null;
+  if (q.includes(" ") && q.length > 6) return null;
+  // 정확히 상권명 또는 키워드 매칭
   return DISTRICTS.find((d) =>
-    d.name === q || d.keywords.some((kw) => q.includes(kw) || kw.includes(q))
+    d.name === q || d.keywords.some((kw) => q === kw || kw === q || (q.length <= 4 && (kw.includes(q) || q.includes(kw))))
   ) ?? null;
 }
 
