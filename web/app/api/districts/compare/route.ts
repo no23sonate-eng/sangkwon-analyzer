@@ -4,7 +4,7 @@ import { supabaseServer } from "@/lib/supabase-server";
 import { rateLimit } from "@/lib/rate-limit";
 import { DISTRICTS, distToAxisM } from "@/lib/district-zones";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 const RENT_FALLBACK: Record<string, number> = {
   "강남구": 42.9, "서초구": 33.6, "마포구": 26.7, "용산구": 30.4, "종로구": 28.6,
@@ -32,13 +32,15 @@ export async function GET(req: Request) {
   if (district.gu.length > 0) q = q.in("gu", district.gu);
   const { data: areaRows } = await q.limit(200);
 
-  const nearby = (areaRows ?? [])
-    .map((r) => ({ ...r, axisDist: distToAxisM(r.lat, r.lng, district.axis) }))
-    .filter((r) => r.axisDist <= district.bufferM);
-
-  type ZoneKey = "main" | "side" | "rear";
+  const excludeSet = new Set(district.excludeCodes ?? []);
   const mainSet = new Set(district.mainCodes ?? []);
   const sideSet = new Set(district.sideCodes ?? []);
+  const nearby = (areaRows ?? [])
+    .filter((r) => !excludeSet.has(r.trdar_cd))
+    .map((r) => ({ ...r, axisDist: distToAxisM(r.lat, r.lng, district.axis) }))
+    .filter((r) => mainSet.has(r.trdar_cd) || sideSet.has(r.trdar_cd) || r.axisDist <= district.bufferM);
+
+  type ZoneKey = "main" | "side" | "rear";
   const hasManual = mainSet.size > 0 || sideSet.size > 0;
   const zoneMap = new Map<string, ZoneKey>();
 

@@ -5,7 +5,7 @@ import { DISTRICTS, distToAxisM } from "@/lib/district-zones";
 import { readFile } from "fs/promises";
 import { join } from "path";
 
-export const revalidate = 86400;
+export const revalidate = 60;
 
 let cachedGeoJSON: GeoJSON.FeatureCollection | null = null;
 
@@ -42,14 +42,21 @@ export async function GET(req: Request) {
 
   const geojson = await loadGeoJSON();
 
-  // 해당 상권 폴리곤 필터 (축 거리 bufferM 이내 + 다른 상권에 더 가까운 건 제외)
+  const excludeSet = new Set(district.excludeCodes ?? []);
+  const mainSetRaw = new Set(district.mainCodes ?? []);
+  const sideSetRaw = new Set(district.sideCodes ?? []);
+
+  // 해당 상권 폴리곤 필터 (축 거리 bufferM 이내 + 다른 상권에 더 가까운 건 제외 + excludeCodes 제외)
   const features = geojson.features
     .filter((f) => {
       const props = f.properties as Record<string, string>;
       if (!district.gu.includes(props.gu)) return false;
+      if (excludeSet.has(props.TRDAR_CD)) return false;
       const geom = f.geometry as GeoJSON.Polygon;
       if (!geom.coordinates?.[0]) return false;
       const [cLat, cLng] = centroid(geom.coordinates[0]);
+      // mainCodes/sideCodes 수동 지정된 코드는 bufferM 체크 무시하고 포함
+      if (mainSetRaw.has(props.TRDAR_CD) || sideSetRaw.has(props.TRDAR_CD)) return true;
       const myDist = distToAxisM(cLat, cLng, district.axis);
       if (myDist > district.bufferM) return false;
       // 다른 상권 축에 더 가까우면 제외 (겹침 방지)

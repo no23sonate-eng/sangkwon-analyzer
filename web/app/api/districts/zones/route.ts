@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { rateLimit } from "@/lib/rate-limit";
 import { DISTRICTS, distToAxisM, type ZonedArea, type DistrictDef } from "@/lib/district-zones";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 /**
  * 축 거리(40%) + 유동인구(30%) + 매출(30%) 복합 점수
@@ -56,13 +56,18 @@ async function getZonesForDistrict(d: DistrictDef): Promise<ZonedArea[]> {
   const { data: areaRows } = await q.limit(200);
   if (!areaRows || areaRows.length === 0) return [];
 
-  // 도로축 기반 필터: bufferM 이내만 포함
+  const excludeSet = new Set(d.excludeCodes ?? []);
+  const mainSetRaw = new Set(d.mainCodes ?? []);
+  const sideSetRaw = new Set(d.sideCodes ?? []);
+
+  // 필터: excludeCodes 제외 + (mainCodes/sideCodes 수동 지정) || (bufferM 이내)
   const nearby = areaRows
+    .filter((r) => !excludeSet.has(r.trdar_cd))
     .map((r) => ({
       ...r,
       axisDist: distToAxisM(r.lat, r.lng, d.axis),
     }))
-    .filter((r) => r.axisDist <= d.bufferM);
+    .filter((r) => mainSetRaw.has(r.trdar_cd) || sideSetRaw.has(r.trdar_cd) || r.axisDist <= d.bufferM);
 
   if (nearby.length === 0) return [];
   const codes = nearby.map((r) => r.trdar_cd);
