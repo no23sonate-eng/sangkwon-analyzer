@@ -12,7 +12,7 @@ function getServiceClient() {
 }
 
 export async function GET(req: NextRequest) {
-  const limited = rateLimit(req, "admin", 10, 60_000);
+  const limited = rateLimit(req, "admin-get", 120, 60_000);
   if (limited) return limited;
 
   if (!ADMIN_PASSWORD) {
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const limited = rateLimit(req, "admin", 30, 60_000);
+  const limited = rateLimit(req, "admin-post", 120, 60_000);
   if (limited) return limited;
 
   if (!ADMIN_PASSWORD) {

@@ -36,6 +36,7 @@ function AdminContent() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"users" | "inquiries">("users");
   const [expandedInquiry, setExpandedInquiry] = useState<number | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authKey) return;
@@ -47,15 +48,16 @@ function AdminContent() {
           const data = await res.json();
           setUsers(data.users ?? []);
           setInquiries(data.inquiries ?? []);
+          setErrorMsg(null);
+        } else if (res.status === 401) {
+          setErrorMsg("잘못된 비밀번호입니다. URL의 ?key= 값을 확인하세요.");
+        } else if (res.status === 429) {
+          setErrorMsg("요청이 너무 많습니다. 1분 뒤 다시 시도하세요.");
         } else {
-          // API rejected the key — don't show admin content
-          setLoading(false);
-          return;
+          setErrorMsg(`서버 오류 (${res.status}). 잠시 후 다시 시도하세요.`);
         }
       } catch {
-        // Network error — don't show admin content
-        setLoading(false);
-        return;
+        setErrorMsg("네트워크 오류. 연결을 확인하세요.");
       }
       setLoading(false);
     })();
@@ -122,10 +124,15 @@ function AdminContent() {
   };
 
   if (!isAuth) {
+    if (loading) {
+      return (
+        <div className="flex h-full items-center justify-center text-muted">로딩 중...</div>
+      );
+    }
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <p className="text-[14px] text-gray-500">접근 권한이 없습니다.</p>
+          <p className="text-[14px] text-gray-500">{errorMsg ?? "접근 권한이 없습니다."}</p>
           <p className="mt-2 text-[11px] text-gray-400">URL 끝에 ?key=비밀번호를 추가하세요</p>
         </div>
       </div>
