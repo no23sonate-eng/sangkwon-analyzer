@@ -34,3 +34,48 @@ export async function GET(req: NextRequest) {
     inquiries: i.data ?? [],
   });
 }
+
+export async function POST(req: NextRequest) {
+  const limited = rateLimit(req, "admin", 30, 60_000);
+  if (limited) return limited;
+
+  if (!ADMIN_PASSWORD) {
+    return NextResponse.json({ error: "ADMIN_PASSWORD not configured" }, { status: 503 });
+  }
+  const key = req.nextUrl.searchParams.get("key");
+  if (key !== ADMIN_PASSWORD) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "invalid json" }, { status: 400 });
+  }
+  const { action, userId, userIds, approved } = (body ?? {}) as {
+    action?: string;
+    userId?: number;
+    userIds?: number[];
+    approved?: boolean;
+  };
+
+  if (action !== "approve" || typeof approved !== "boolean") {
+    return NextResponse.json({ error: "invalid payload" }, { status: 400 });
+  }
+
+  const sb = getServiceClient();
+  let q = sb.from("users").update({ approved });
+  if (Array.isArray(userIds) && userIds.length > 0) {
+    q = q.in("id", userIds);
+  } else if (typeof userId === "number") {
+    q = q.eq("id", userId);
+  } else {
+    return NextResponse.json({ error: "missing userId(s)" }, { status: 400 });
+  }
+  const { error } = await q;
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json({ ok: true });
+}

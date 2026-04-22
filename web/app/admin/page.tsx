@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { supabase } from "@/lib/supabase";
 import { Users, MessageSquare, Download, CheckCircle, XCircle, UserCheck, ChevronDown, ChevronUp } from "lucide-react";
 
 interface UserRow {
@@ -63,18 +62,40 @@ function AdminContent() {
   }, [authKey]);
 
   const toggleApproval = async (userId: number, approved: boolean) => {
-    await supabase.from("users").update({ approved }).eq("id", userId);
+    const prevUsers = users;
     setUsers((prev) =>
       prev.map((u) => (u.id === userId ? { ...u, approved } : u))
     );
+    try {
+      const res = await fetch(`/api/admin?key=${encodeURIComponent(authKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "approve", userId, approved }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+    } catch (err) {
+      setUsers(prevUsers);
+      alert(`변경 실패: ${err instanceof Error ? err.message : String(err)}`);
+    }
   };
 
   const approveAll = async () => {
     const pending = users.filter((u) => !u.approved);
     if (pending.length === 0) return;
     const ids = pending.map((u) => u.id);
-    await supabase.from("users").update({ approved: true }).in("id", ids);
+    const prevUsers = users;
     setUsers((prev) => prev.map((u) => ({ ...u, approved: true })));
+    try {
+      const res = await fetch(`/api/admin?key=${encodeURIComponent(authKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "approve", userIds: ids, approved: true }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+    } catch (err) {
+      setUsers(prevUsers);
+      alert(`전체 승인 실패: ${err instanceof Error ? err.message : String(err)}`);
+    }
   };
 
   const exportCSV = (data: Record<string, unknown>[], filename: string) => {
