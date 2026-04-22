@@ -8,6 +8,8 @@ import TimeSlotBar from "@/components/Charts/TimeSlotBar";
 import HorizontalBar from "@/components/Charts/HorizontalBar";
 import DonutChart from "@/components/Charts/DonutChart";
 import { getDistrictIncome, DISTRICT_INCOME, SEOUL_AVG_INCOME } from "@/lib/district-income";
+import { estimateHouseholdSpending, estimateAreaRevenue, AREA_LABEL } from "@/lib/consumption-estimator";
+import { useIsAdmin } from "@/lib/use-admin";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine,
@@ -17,7 +19,9 @@ export default function FootTrafficPanel() {
   const analysisData = useAnalysisStore((s) => s.analysisData);
   const ft = analysisData?.ft_summary;
   const pop = analysisData?.pop_summary;
+  const sales = analysisData?.sales_summary;
   const clickedGu = useAnalysisStore((s) => s.clickedGu);
+  const isAdmin = useIsAdmin();
 
   if (!ft) {
     return <p className="py-12 text-center text-sm" style={{ color: palette.textSecondary }}>유동인구 데이터가 없습니다.</p>;
@@ -35,15 +39,29 @@ export default function FootTrafficPanel() {
   const popAgeData = Object.entries(pop?.by_age ?? {}).map(([name, value]) => ({ name, value }));
   const popGenderData = Object.entries(pop?.by_gender ?? {}).map(([name, value]) => ({ name, value }));
 
-  // 상권 유형 판별: 유동인구 대비 배후인구 비율이 높으면 주거형, 낮으면 유입형
+  // 상권 유형 판별: 유동인구 대비 배후인구 비율 기반
   const ftPopRatio = dailyFt > 0 ? popTotal / dailyFt : 0;
   const areaType = ftPopRatio > 0.5 ? "주거·직장 밀집형" : ftPopRatio > 0.2 ? "혼합형" : "유입형 (관광·상업)";
 
-  // 소비여력
+  // 소비여력 — 소득분위 기반 정교한 추정
   const incomeData = clickedGu ? getDistrictIncome(clickedGu) : null;
-  const monthlySpend = incomeData ? Math.round(incomeData.income * 0.35) : 0; // 소비성향 35%
-  const dailySpend = monthlySpend > 0 ? Math.round((monthlySpend * 10000) / 30) : 0;
-  const estimatedDailyRevenue = dailyFt > 0 && dailySpend > 0 ? Math.round(dailyFt * dailySpend * 0.05 / 10000) : 0; // 5% 소비전환율
+  const spending = incomeData
+    ? estimateHouseholdSpending(incomeData.income, incomeData.rank)
+    : null;
+  const monthlySpend = spending?.monthlyConsumption ?? 0;
+  const dailySpendPerPerson = spending?.dailyPerPerson ?? 0;
+  const dailySpendPerHouse = spending?.dailyPerHousehold ?? 0;
+
+  // 일 추정 상권매출 — 실측 우선, 없으면 유동×전환율
+  const revenue = dailyFt > 0
+    ? estimateAreaRevenue({
+        actualMonthlyRevenue: sales?.total_sales,
+        dailyFootTraffic: dailyFt,
+        dailySpendPerPerson,
+        ftPopRatio,
+      })
+    : null;
+  const estimatedDailyRevenue = revenue?.dailyRevenueMan ?? 0;
 
   // 소비여력 비교 차트 데이터 (현재 구 + 인접 구 비교)
   const incomeChartData = Object.entries(DISTRICT_INCOME)
@@ -188,7 +206,7 @@ export default function FootTrafficPanel() {
               <div className="rounded-xl bg-blue-50 p-3 text-center">
                 <p className="text-[10px] text-blue-600 font-medium">월 추정 소비지출</p>
                 <p className="text-[22px] font-black text-gray-900">{monthlySpend}<span className="text-[12px] font-medium text-muted">만원</span></p>
-                <p className="text-[10px] text-muted">소비성향 35% 적용</p>
+                <p className="text-[10px] text-muted">가처분·소비성향 적용</p>
               </div>
             </div>
 
@@ -207,15 +225,41 @@ export default function FootTrafficPanel() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-[11px] text-gray-600">1인당 일 소비액</span>
-                  <span className="text-[12px] font-bold text-gray-900">{dailySpend.toLocaleString()}원</span>
+                  <span className="text-[12px] font-bold text-gray-900">{dailySpendPerPerson.toLocaleString()}원</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-[11px] text-gray-600">일 추정 상권 매출</span>
-                  <span className="text-[12px] font-bold text-primary-600">{estimatedDailyRevenue.toLocaleString()}만원</span>
+                  <span className="text-[12px] font-bold text-primary-600">
+                    {estimatedDailyRevenue.toLocaleString()}만원
+                    {revenue?.method === "actual" && <span className="ml-1 text-[9px] text-emerald-600">실측</span>}
+                  </span>
                 </div>
-                <p className="text-[9px] text-muted pt-1 border-t border-gray-50">
-                  * 유동인구 {dailyFt.toLocaleString()}명 × 일 소비액 {dailySpend.toLocaleString()}원 × 소비전환율 5%
-                </p>
+
+                {/* ── 산정 로직 (admin 전용) ── */}
+                {isAdmin && spending && revenue && (
+                  <div className="mt-2 pt-2 border-t border-gray-100 space-y-1.5">
+                    <p className="text-[10px] font-bold text-indigo-600">🔒 산정 로직 (admin)</p>
+                    <div className="rounded-md bg-indigo-50/50 p-2 space-y-1 text-[10px] text-gray-700">
+                      <p><b>[소비지출]</b> 분위: {spending.quintile.label}</p>
+                      <p>· 가처분소득 = {incomeData.income}만 × {(spending.quintile.disposableRate*100).toFixed(0)}% = {spending.disposableIncome}만</p>
+                      <p>· 소비지출 = {spending.disposableIncome}만 × 평균소비성향 {(spending.quintile.propensityToConsume*100).toFixed(0)}% = {spending.monthlyConsumption}만</p>
+                      <p>· 가구당 일소비 = {spending.monthlyConsumption}만 ÷ 30일 = {dailySpendPerHouse.toLocaleString()}원</p>
+                      <p>· 1인당 일소비 = ÷ 평균가구원수 {spending.quintile.avgHouseholdSize}명 = {dailySpendPerPerson.toLocaleString()}원</p>
+                    </div>
+                    <div className="rounded-md bg-indigo-50/50 p-2 space-y-1 text-[10px] text-gray-700">
+                      <p><b>[상권매출]</b> 방식: {revenue.method === "actual" ? "실측(sales 테이블)" : "추정(유동×전환율)"}</p>
+                      {revenue.method === "actual" ? (
+                        <p>· 월매출 {((revenue.actualMonthlyRevenue ?? 0)/1e8).toFixed(1)}억 ÷ 30일 = 일 {(revenue.dailyRevenue/1e8).toFixed(2)}억</p>
+                      ) : (
+                        <>
+                          <p>· 상권유형 판정: 유동/배후비 {ftPopRatio.toFixed(2)} → <b>{AREA_LABEL[revenue.areaType!]}</b></p>
+                          <p>· 전환율: {(revenue.conversionRate!*100).toFixed(0)}% (주거3% / 혼합6% / 유입12%)</p>
+                          <p>· 추정 = 일유동 {dailyFt.toLocaleString()}명 × 인당 {dailySpendPerPerson.toLocaleString()}원 × {(revenue.conversionRate!*100).toFixed(0)}% = {(revenue.dailyRevenue/1e8).toFixed(2)}억</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

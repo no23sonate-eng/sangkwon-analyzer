@@ -7,6 +7,7 @@ import { formatCount } from "@/lib/formatters";
 import { estimateRent, type RentEstimate } from "@/lib/rent-estimator";
 import BrandSynergy from "@/components/Pro/BrandSynergy";
 import GrowthPrediction from "@/components/Pro/GrowthPrediction";
+import { useIsAdmin } from "@/lib/use-admin";
 import type { OpportunityItem } from "@/lib/types";
 
 const BASE_URL = "";
@@ -99,6 +100,7 @@ const RENT_RATIO_BY_CATEGORY: Record<string, number> = {
 };
 
 function RentVerification({ guName }: { guName: string }) {
+  const isAdmin = useIsAdmin();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [rentNearby, setRentNearby] = useState<any>(null);
   const [inputRent, setInputRent] = useState("");
@@ -323,29 +325,34 @@ function RentVerification({ guName }: { guName: string }) {
       {crossValidation && crossValidation.method_details.length > 0 && (
         <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50/50 p-3">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[11px] font-bold text-gray-700">📊 교차검증 (신뢰도: {crossValidation.confidence})</p>
-            <span className="text-[9px] text-muted">{crossValidation.sources.length}개 소스 종합</span>
+            <p className="text-[11px] font-bold text-gray-700">
+              📊 추정 시세 {isAdmin && <span className="text-[9px] text-indigo-500">(교차검증 · 신뢰도 {crossValidation.confidence})</span>}
+            </p>
+            {isAdmin && <span className="text-[9px] text-muted">{crossValidation.sources.length}개 소스 종합</span>}
           </div>
-          <div className="space-y-1.5">
-            {crossValidation.method_details.map((m, i) => {
-              const maxVal = Math.max(...crossValidation.method_details.map((d) => d.value));
-              const barW = maxVal > 0 ? Math.round((m.value / maxVal) * 100) : 0;
-              const colors = ["#F59E0B", "#6366F1", "#10B981"];
-              return (
-                <div key={i}>
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-gray-600">{m.method}</span>
-                    <span className="font-bold text-gray-800">{m.value}만/평</span>
+          {/* 산정 소스 나열은 admin 전용 */}
+          {isAdmin && (
+            <div className="space-y-1.5">
+              {crossValidation.method_details.map((m, i) => {
+                const maxVal = Math.max(...crossValidation.method_details.map((d) => d.value));
+                const barW = maxVal > 0 ? Math.round((m.value / maxVal) * 100) : 0;
+                const colors = ["#F59E0B", "#6366F1", "#10B981"];
+                return (
+                  <div key={i}>
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-gray-600">{m.method}</span>
+                      <span className="font-bold text-gray-800">{m.value}만/평</span>
+                    </div>
+                    <div className="mt-0.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+                      <div className="h-full rounded-full transition-all" style={{ width: `${barW}%`, background: colors[i % 3] }} />
+                    </div>
                   </div>
-                  <div className="mt-0.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
-                    <div className="h-full rounded-full transition-all" style={{ width: `${barW}%`, background: colors[i % 3] }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
           <div className="mt-2 flex items-center justify-between border-t border-indigo-200 pt-2">
-            <span className="text-[10px] font-semibold text-gray-700">가중평균 추정 시세</span>
+            <span className="text-[10px] font-semibold text-gray-700">{isAdmin ? "가중평균 추정 시세" : "추정 시세"}</span>
             <span className="text-[13px] font-black text-primary-600">
               {crossValidation.floors.find((f) => f.floor === inputFloor)?.rent_per_pyeong ?? 0}만/평
             </span>
@@ -392,6 +399,7 @@ const LAND_DISCOUNT: Record<number, number> = {
 };
 
 function LandPriceVerification({ guName }: { guName: string }) {
+  const isAdmin = useIsAdmin();
   const [selectedPyeong, setSelectedPyeong] = useState(100);
   const [inputPrice, setInputPrice] = useState("");
   const [verified, setVerified] = useState<null | { status: string; message: string; color: string; ratio: number }>(null);
@@ -507,8 +515,8 @@ function LandPriceVerification({ guName }: { guName: string }) {
           {rentData && rentData.avg_pyeong > 0 && (
             <div className="rounded-xl border border-gray-100 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-bold text-gray-500">수익환원 교차검증</span>
-                <span className="text-[9px] text-muted">임대수입 기반 적정가</span>
+                <span className="text-[10px] font-bold text-gray-500">적정 매매가 검증</span>
+                {isAdmin && <span className="text-[9px] text-muted">임대수입 기반 수익환원 (4.5~5.5%)</span>}
               </div>
               {(() => {
                 // 적정 매매가 = 연간 임대수입 / 적정 수익률(4.5%)
@@ -524,7 +532,7 @@ function LandPriceVerification({ guName }: { guName: string }) {
                         <p className="text-[20px] font-black text-gray-900">
                           {(fairPriceAvg / 10000).toFixed(1)}<span className="text-[12px] font-medium text-muted">억원</span>
                         </p>
-                        <p className="text-[9px] text-muted">수익률 4.5~5.5% 기준 · {(fairPrice5_5 / 10000).toFixed(1)}~{(fairPrice4_5 / 10000).toFixed(1)}억 범위</p>
+                        <p className="text-[9px] text-muted">{(fairPrice5_5 / 10000).toFixed(1)}~{(fairPrice4_5 / 10000).toFixed(1)}억 범위{isAdmin && " · 수익률 4.5~5.5% 기준"}</p>
                       </div>
                       {inputPriceNum > 0 && (
                         <div className="text-right">
@@ -562,7 +570,7 @@ function LandPriceVerification({ guName }: { guName: string }) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-medium text-emerald-600">시세 기준 예상 수익률</p>
-                  <p className="text-[9px] text-muted">1층 평당 월세 {rentPerPyeongMonth}만 × 12개월 ÷ 토지 시세</p>
+                  {isAdmin && <p className="text-[9px] text-muted">1층 평당 월세 {rentPerPyeongMonth}만 × 12개월 ÷ 토지 시세</p>}
                 </div>
                 <p className={`text-[22px] font-black ${marketYield >= 5 ? "text-emerald-600" : marketYield >= 3 ? "text-amber-600" : "text-red-500"}`}>
                   {marketYield.toFixed(1)}<span className="text-[12px]">%</span>
@@ -576,7 +584,7 @@ function LandPriceVerification({ guName }: { guName: string }) {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-[10px] font-medium text-blue-600">입력가 기준 예상 수익률</p>
-                    <p className="text-[9px] text-muted">연간 임대수입 {(annualRentPerPyeong * selectedPyeong).toLocaleString()}만 ÷ 매매가</p>
+                    {isAdmin && <p className="text-[9px] text-muted">연간 임대수입 {(annualRentPerPyeong * selectedPyeong).toLocaleString()}만 ÷ 매매가</p>}
                   </div>
                   <p className={`text-[22px] font-black ${inputYield >= 5 ? "text-emerald-600" : inputYield >= 3 ? "text-amber-600" : "text-red-500"}`}>
                     {inputYield.toFixed(1)}<span className="text-[12px]">%</span>
