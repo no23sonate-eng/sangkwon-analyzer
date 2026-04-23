@@ -315,10 +315,14 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawMode, drawing, drawStart, drawRadius, calcDist, loadAnalysis]);
 
+  // ── 클릭 피드백(리플/포커스) ──
+  const [clickFx, setClickFx] = useState<{ lat: number; lng: number; id: number } | null>(null);
+
   const handleMapClick = useCallback(
     async (e: MapMouseEvent) => {
       if (drawMode !== "none") return;
       const { lng, lat } = e.lngLat;
+      setClickFx({ lat, lng, id: Date.now() });
       setClicked(lat, lng);
       setViewState({ ...useAnalysisStore.getState().viewState, latitude: lat, longitude: lng, zoom: Math.max(useAnalysisStore.getState().viewState.zoom, 15) });
       setPanelOpen(false);
@@ -612,10 +616,39 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
         </Marker>
       )}
 
+      {/* ── 클릭 리플 + 포커스 박스 (탁 찍히는 느낌) ── */}
+      {clickFx && (
+        <Marker
+          key={`fx-focus-${clickFx.id}`}
+          latitude={clickFx.lat}
+          longitude={clickFx.lng}
+          anchor="center"
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="click-focus" />
+        </Marker>
+      )}
+      {clickFx && (
+        <Marker
+          key={`fx-ripple-${clickFx.id}`}
+          latitude={clickFx.lat}
+          longitude={clickFx.lng}
+          anchor="center"
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="click-ripple" />
+        </Marker>
+      )}
+
       {/* ── 중심점 ── */}
       {clickedLat != null && clickedLng != null && (
-        <Marker latitude={clickedLat} longitude={clickedLng} anchor="center">
-          <div className="relative flex items-center justify-center">
+        <Marker
+          key={`center-${clickedLat.toFixed(6)}-${clickedLng.toFixed(6)}`}
+          latitude={clickedLat}
+          longitude={clickedLng}
+          anchor="center"
+        >
+          <div className="relative flex items-center justify-center animate-marker-pop">
             <div className="absolute h-8 w-8 animate-ping rounded-full" style={{ background: palette.orange, opacity: 0.2 }} />
             <div className="relative z-10 rounded-full border-[2.5px] border-white" style={{ width: 14, height: 14, background: palette.orange, boxShadow: "0 0 10px rgba(248,138,74,0.5)" }} />
           </div>
