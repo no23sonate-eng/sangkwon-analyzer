@@ -47,7 +47,7 @@ function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): num
 
 type RentComputeResult = { value: number; source: string };
 
-async function computeNearbyRent(lat: number, lng: number, gu: string): Promise<RentComputeResult> {
+async function computeNearbyRent(lat: number, lng: number, gu: string, dong?: string): Promise<RentComputeResult> {
   const TARGET_PYEONG = 10;
   const MAX_RADIUS = 1500;
   const deg = (MAX_RADIUS / 111000) * 1.2;
@@ -76,42 +76,52 @@ async function computeNearbyRent(lat: number, lng: number, gu: string): Promise<
     };
   }
 
-  // 2차: 네이버 추정실거래
+  // 2차: 네이버 추정실거래 — dong 우선, 없으면 gu
   if (gu) {
-    const { data: deals } = await supabase
-      .from("naver_estimated_deals")
-      .select("rent_per_pyeong, floor, disappeared_date")
-      .eq("gu", gu)
-      .eq("floor", "1")
-      .gt("rent_per_pyeong", 0)
-      .order("disappeared_date", { ascending: false })
-      .limit(80);
-    const validDeals = (deals ?? []).filter((d) => (d.rent_per_pyeong ?? 0) > 0);
-    if (validDeals.length >= MIN) {
-      const avg = validDeals.reduce((s, d) => s + d.rent_per_pyeong, 0) / validDeals.length;
-      return {
-        value: Math.round(avg * 10) / 10,
-        source: `네이버 추정실거래 ${validDeals.length}건 · ${gu}`,
-      };
+    for (const scope of ["dong", "gu"] as const) {
+      if (scope === "dong" && !dong) continue;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("naver_estimated_deals")
+        .select("rent_per_pyeong, floor, disappeared_date")
+        .eq("gu", gu)
+        .eq("floor", "1")
+        .gt("rent_per_pyeong", 0);
+      if (scope === "dong" && dong) q = q.eq("dong", dong);
+      const { data: deals } = await q.order("disappeared_date", { ascending: false }).limit(100);
+      const validDeals = ((deals ?? []) as { rent_per_pyeong: number }[]).filter((d) => (d.rent_per_pyeong ?? 0) > 0);
+      if (validDeals.length >= MIN) {
+        const avg = validDeals.reduce((s, d) => s + d.rent_per_pyeong, 0) / validDeals.length;
+        return {
+          value: Math.round(avg * 10) / 10,
+          source: `네이버 추정실거래 ${validDeals.length}건 · ${scope === "dong" ? dong : gu}`,
+        };
+      }
     }
 
-    // 3차: 네이버 호가
-    const { data: listings } = await supabase
-      .from("naver_listings")
-      .select("monthly_rent, area_m2, floor, crawl_date")
-      .eq("gu", gu)
-      .eq("floor", "1")
-      .gt("monthly_rent", 0)
-      .gt("area_m2", 0)
-      .order("crawl_date", { ascending: false })
-      .limit(80);
-    const validListings = (listings ?? []).filter((l) => l.monthly_rent > 0 && l.area_m2 > 0);
-    if (validListings.length >= MIN) {
-      const avg = validListings.reduce((s, l) => s + l.monthly_rent / (l.area_m2 / 3.3), 0) / validListings.length;
-      return {
-        value: Math.round(avg * 10) / 10,
-        source: `네이버 호가 ${validListings.length}건 · ${gu}`,
-      };
+    // 3차: 네이버 호가 — dong 우선, 없으면 gu
+    for (const scope of ["dong", "gu"] as const) {
+      if (scope === "dong" && !dong) continue;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("naver_listings")
+        .select("monthly_rent, area_m2, floor, crawl_date")
+        .eq("gu", gu)
+        .eq("floor", "1")
+        .gt("monthly_rent", 0)
+        .gt("area_m2", 0);
+      if (scope === "dong" && dong) q = q.eq("dong", dong);
+      const { data: listings } = await q.order("crawl_date", { ascending: false }).limit(100);
+      const validListings = ((listings ?? []) as { monthly_rent: number; area_m2: number }[]).filter(
+        (l) => l.monthly_rent > 0 && l.area_m2 > 0
+      );
+      if (validListings.length >= MIN) {
+        const avg = validListings.reduce((s, l) => s + l.monthly_rent / (l.area_m2 / 3.3), 0) / validListings.length;
+        return {
+          value: Math.round(avg * 10) / 10,
+          source: `네이버 호가 ${validListings.length}건 · ${scope === "dong" ? dong : gu}`,
+        };
+      }
     }
   }
 
@@ -160,7 +170,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ trdar_cd
     return NextResponse.json({ error: "no area" }, { status: 404 });
   }
 
-  const { value: avgRentPerM2, source: rentSource } = await computeNearbyRent(area.lat, area.lng, area.gu);
+  const { value: avgRentPerM2, source: rentSource } = await computeNearbyRent(area.lat, area.lng, area.gu, area.dong);
 
   // 공실률 추정: 해당 상권 최신 분기 폐업률 평균 × 보정계수
   const { data: storeRows } = await supabase

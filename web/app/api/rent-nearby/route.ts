@@ -196,6 +196,23 @@ export async function GET(request: Request) {
 
   // DB에 사례가 없으면 네이버(추정실거래→호가) → 구 평균(DB→하드코딩) 순으로 fallback
   if (filtered.length === 0 && gu) {
+    // 이 위치에 가까운 상권들의 행정동 목록 — 네이버 필터에 사용해 gu 전체 희석 방지
+    const dongDeg = (1000 / 111000) * 1.2; // 1km 반경
+    const { data: nearbyAreas } = await supabase
+      .from("areas")
+      .select("dong, lat, lng")
+      .eq("gu", gu)
+      .gte("lat", lat - dongDeg).lte("lat", lat + dongDeg)
+      .gte("lng", lng - dongDeg).lte("lng", lng + dongDeg)
+      .limit(50);
+    const nearbyDongs = Array.from(
+      new Set(
+        (nearbyAreas ?? [])
+          .map((a) => a.dong as string)
+          .filter((d): d is string => !!d)
+      )
+    );
+
     const classifyFloor2 = (f: string | null | undefined): "1층" | "2층" | "지하" | null => {
       if (f == null) return null;
       const s = String(f).trim();
@@ -218,66 +235,80 @@ export async function GET(request: Request) {
 
     const MIN_NAVER = 3;
 
-    // 1차: 네이버 추정실거래 (사라진 매물)
-    const { data: naverDeals } = await supabase
-      .from("naver_estimated_deals")
-      .select("rent_per_pyeong, floor, disappeared_date")
-      .eq("gu", gu)
-      .gt("rent_per_pyeong", 0)
-      .order("disappeared_date", { ascending: false })
-      .limit(150);
-    const deals = (naverDeals as { rent_per_pyeong: number; floor: string }[] | null) ?? [];
-    const d1 = deals.filter((d) => classifyFloor2(d.floor) === "1층");
-    const d2 = deals.filter((d) => classifyFloor2(d.floor) === "2층");
-    const dB = deals.filter((d) => classifyFloor2(d.floor) === "지하");
-    const avgDeal = (arr: { rent_per_pyeong: number }[]) =>
-      arr.length === 0 ? 0 : arr.reduce((s, d) => s + d.rent_per_pyeong, 0) / arr.length;
+    // 1차: 네이버 추정실거래 (사라진 매물) — dong 우선 → gu 폴백
+    for (const scope of ["dong", "gu"] as const) {
+      if (scope === "dong" && nearbyDongs.length === 0) continue;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("naver_estimated_deals")
+        .select("rent_per_pyeong, floor, disappeared_date")
+        .eq("gu", gu)
+        .gt("rent_per_pyeong", 0);
+      if (scope === "dong") q = q.in("dong", nearbyDongs);
+      const { data } = await q.order("disappeared_date", { ascending: false }).limit(150);
+      const deals = (data as { rent_per_pyeong: number; floor: string }[] | null) ?? [];
+      const d1 = deals.filter((d) => classifyFloor2(d.floor) === "1층");
+      const d2 = deals.filter((d) => classifyFloor2(d.floor) === "2층");
+      const dB = deals.filter((d) => classifyFloor2(d.floor) === "지하");
+      const avgDeal = (arr: { rent_per_pyeong: number }[]) =>
+        arr.length === 0 ? 0 : arr.reduce((s, d) => s + d.rent_per_pyeong, 0) / arr.length;
 
-    if (d1.length >= MIN_NAVER) {
-      return NextResponse.json({
-        total_cases: d1.length,
-        radius: actualRadius,
-        fallback: true,
-        fallback_source: `네이버 추정실거래 ${d1.length}건 · ${gu}`,
-        stats: {
-          "1층": makeNaverStats(avgDeal(d1), d1.length),
-          "2층": d2.length > 0 ? makeNaverStats(avgDeal(d2), d2.length) : makeNaverStats(0, 0),
-          "지하": dB.length > 0 ? makeNaverStats(avgDeal(dB), dB.length) : makeNaverStats(0, 0),
-        },
-        sample_cases: [],
-      });
+      if (d1.length >= MIN_NAVER) {
+        const scopeLabel = scope === "dong"
+          ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}`
+          : gu;
+        return NextResponse.json({
+          total_cases: d1.length,
+          radius: actualRadius,
+          fallback: true,
+          fallback_source: `네이버 추정실거래 ${d1.length}건 · ${scopeLabel}`,
+          stats: {
+            "1층": makeNaverStats(avgDeal(d1), d1.length),
+            "2층": d2.length > 0 ? makeNaverStats(avgDeal(d2), d2.length) : makeNaverStats(0, 0),
+            "지하": dB.length > 0 ? makeNaverStats(avgDeal(dB), dB.length) : makeNaverStats(0, 0),
+          },
+          sample_cases: [],
+        });
+      }
     }
 
-    // 2차: 네이버 호가
-    const { data: naverList } = await supabase
-      .from("naver_listings")
-      .select("monthly_rent, area_m2, floor, crawl_date")
-      .eq("gu", gu)
-      .gt("monthly_rent", 0)
-      .gt("area_m2", 0)
-      .order("crawl_date", { ascending: false })
-      .limit(150);
-    const listings = (naverList as { monthly_rent: number; area_m2: number; floor: string }[] | null) ?? [];
-    const perPyeong = (l: { monthly_rent: number; area_m2: number }) => l.monthly_rent / (l.area_m2 / 3.3);
-    const l1 = listings.filter((l) => classifyFloor2(l.floor) === "1층");
-    const l2 = listings.filter((l) => classifyFloor2(l.floor) === "2층");
-    const lB = listings.filter((l) => classifyFloor2(l.floor) === "지하");
-    const avgList = (arr: { monthly_rent: number; area_m2: number }[]) =>
-      arr.length === 0 ? 0 : arr.reduce((s, l) => s + perPyeong(l), 0) / arr.length;
+    // 2차: 네이버 호가 — dong 우선 → gu 폴백
+    for (const scope of ["dong", "gu"] as const) {
+      if (scope === "dong" && nearbyDongs.length === 0) continue;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("naver_listings")
+        .select("monthly_rent, area_m2, floor, crawl_date")
+        .eq("gu", gu)
+        .gt("monthly_rent", 0)
+        .gt("area_m2", 0);
+      if (scope === "dong") q = q.in("dong", nearbyDongs);
+      const { data } = await q.order("crawl_date", { ascending: false }).limit(150);
+      const listings = (data as { monthly_rent: number; area_m2: number; floor: string }[] | null) ?? [];
+      const perPyeong = (l: { monthly_rent: number; area_m2: number }) => l.monthly_rent / (l.area_m2 / 3.3);
+      const l1 = listings.filter((l) => classifyFloor2(l.floor) === "1층");
+      const l2 = listings.filter((l) => classifyFloor2(l.floor) === "2층");
+      const lB = listings.filter((l) => classifyFloor2(l.floor) === "지하");
+      const avgList = (arr: { monthly_rent: number; area_m2: number }[]) =>
+        arr.length === 0 ? 0 : arr.reduce((s, l) => s + perPyeong(l), 0) / arr.length;
 
-    if (l1.length >= MIN_NAVER) {
-      return NextResponse.json({
-        total_cases: l1.length,
-        radius: actualRadius,
-        fallback: true,
-        fallback_source: `네이버 호가 ${l1.length}건 · ${gu}`,
-        stats: {
-          "1층": makeNaverStats(avgList(l1), l1.length),
-          "2층": l2.length > 0 ? makeNaverStats(avgList(l2), l2.length) : makeNaverStats(0, 0),
-          "지하": lB.length > 0 ? makeNaverStats(avgList(lB), lB.length) : makeNaverStats(0, 0),
-        },
-        sample_cases: [],
-      });
+      if (l1.length >= MIN_NAVER) {
+        const scopeLabel = scope === "dong"
+          ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}`
+          : gu;
+        return NextResponse.json({
+          total_cases: l1.length,
+          radius: actualRadius,
+          fallback: true,
+          fallback_source: `네이버 호가 ${l1.length}건 · ${scopeLabel}`,
+          stats: {
+            "1층": makeNaverStats(avgList(l1), l1.length),
+            "2층": l2.length > 0 ? makeNaverStats(avgList(l2), l2.length) : makeNaverStats(0, 0),
+            "지하": lB.length > 0 ? makeNaverStats(avgList(lB), lB.length) : makeNaverStats(0, 0),
+          },
+          sample_cases: [],
+        });
+      }
     }
 
     // 3차: 구 평균 (DB)

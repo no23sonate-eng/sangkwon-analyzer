@@ -143,6 +143,8 @@ export async function GET(request: Request) {
   const weights = nearby.map((r) => 1.0 - 0.7 * (r.distance / actualRadius));
   const totalWeight = weights.reduce((s, w) => s + w, 0) || 1;
   const guName = nearby[0].gu ?? "";
+  // 주변 상권에 속한 행정동 목록 — 네이버 시세를 이 범위로 좁혀 프라임/배후 희석을 방지
+  const nearbyDongs = Array.from(new Set(nearby.map((r) => r.dong).filter((d): d is string => !!d)));
 
   /* ── Step 2: Fetch data in parallel (limit 확장 — 상권×분기×업종 조합이 많을 수 있음) ──
      임대료 계층: 국토부 실거래(rents) → 네이버 추정실거래/호가는 gu 단위 → 구 평균 폴백 */
@@ -472,59 +474,81 @@ export async function GET(request: Request) {
     };
   }
 
-  // 2차: 네이버 추정실거래 (사라진 매물) — gu 단위
+  // 2차: 네이버 추정실거래 — dong 우선 → gu 폴백
   if (Object.keys(rentInfo).length === 0 && guName) {
-    const { data: naverDeals } = await supabase
-      .from("naver_estimated_deals")
-      .select("rent_per_pyeong, floor, disappeared_date")
-      .eq("gu", guName)
-      .gt("rent_per_pyeong", 0)
-      .order("disappeared_date", { ascending: false })
-      .limit(120);
-    const deals = (naverDeals as { rent_per_pyeong: number; floor: string }[] | null) ?? [];
-    const d1 = deals.filter((d) => classifyFloor(d.floor) === "1층");
-    const d2 = deals.filter((d) => classifyFloor(d.floor) === "2층이상");
-    const dB = deals.filter((d) => classifyFloor(d.floor) === "지하");
-    const avg = (arr: { rent_per_pyeong: number }[]) =>
-      arr.length === 0 ? 0 : Math.round((arr.reduce((s, d) => s + d.rent_per_pyeong, 0) / arr.length) * 10) / 10;
-    if (d1.length >= MIN_CASES) {
-      rentInfo = {
-        gu: guName,
-        "1층_평": avg(d1),
-        "2층이상_평": avg(d2),
-        "지하_평": avg(dB),
-        source: `네이버 추정실거래 ${d1.length}건 · ${guName}`,
-        cases: { "1층": d1.length, "2층이상": d2.length, "지하": dB.length },
-      };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const queryDeals = async (scope: "dong" | "gu"): Promise<any[]> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("naver_estimated_deals")
+        .select("rent_per_pyeong, floor, disappeared_date")
+        .eq("gu", guName)
+        .gt("rent_per_pyeong", 0);
+      if (scope === "dong" && nearbyDongs.length > 0) q = q.in("dong", nearbyDongs);
+      const { data } = await q.order("disappeared_date", { ascending: false }).limit(150);
+      return (data as { rent_per_pyeong: number; floor: string }[] | null) ?? [];
+    };
+
+    for (const scope of ["dong", "gu"] as const) {
+      if (scope === "dong" && nearbyDongs.length === 0) continue;
+      const deals = await queryDeals(scope);
+      const d1 = deals.filter((d) => classifyFloor(d.floor) === "1층");
+      const d2 = deals.filter((d) => classifyFloor(d.floor) === "2층이상");
+      const dB = deals.filter((d) => classifyFloor(d.floor) === "지하");
+      const avg = (arr: { rent_per_pyeong: number }[]) =>
+        arr.length === 0 ? 0 : Math.round((arr.reduce((s, d) => s + d.rent_per_pyeong, 0) / arr.length) * 10) / 10;
+      if (d1.length >= MIN_CASES) {
+        const scopeLabel = scope === "dong" ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}` : guName;
+        rentInfo = {
+          gu: guName,
+          "1층_평": avg(d1),
+          "2층이상_평": avg(d2),
+          "지하_평": avg(dB),
+          source: `네이버 추정실거래 ${d1.length}건 · ${scopeLabel}`,
+          cases: { "1층": d1.length, "2층이상": d2.length, "지하": dB.length },
+        };
+        break;
+      }
     }
   }
 
-  // 3차: 네이버 호가 (현재 매물)
+  // 3차: 네이버 호가 — dong 우선 → gu 폴백
   if (Object.keys(rentInfo).length === 0 && guName) {
-    const { data: listings } = await supabase
-      .from("naver_listings")
-      .select("monthly_rent, area_m2, floor, crawl_date")
-      .eq("gu", guName)
-      .gt("monthly_rent", 0)
-      .gt("area_m2", 0)
-      .order("crawl_date", { ascending: false })
-      .limit(120);
-    const ls = (listings as { monthly_rent: number; area_m2: number; floor: string }[] | null) ?? [];
-    const perPyeong = (l: { monthly_rent: number; area_m2: number }) => l.monthly_rent / (l.area_m2 / 3.3);
-    const l1 = ls.filter((l) => classifyFloor(l.floor) === "1층");
-    const l2 = ls.filter((l) => classifyFloor(l.floor) === "2층이상");
-    const lB = ls.filter((l) => classifyFloor(l.floor) === "지하");
-    const avg = (arr: { monthly_rent: number; area_m2: number }[]) =>
-      arr.length === 0 ? 0 : Math.round((arr.reduce((s, l) => s + perPyeong(l), 0) / arr.length) * 10) / 10;
-    if (l1.length >= MIN_CASES) {
-      rentInfo = {
-        gu: guName,
-        "1층_평": avg(l1),
-        "2층이상_평": avg(l2),
-        "지하_평": avg(lB),
-        source: `네이버 호가 ${l1.length}건 · ${guName}`,
-        cases: { "1층": l1.length, "2층이상": l2.length, "지하": lB.length },
-      };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const queryListings = async (scope: "dong" | "gu"): Promise<any[]> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let q: any = supabase
+        .from("naver_listings")
+        .select("monthly_rent, area_m2, floor, crawl_date")
+        .eq("gu", guName)
+        .gt("monthly_rent", 0)
+        .gt("area_m2", 0);
+      if (scope === "dong" && nearbyDongs.length > 0) q = q.in("dong", nearbyDongs);
+      const { data } = await q.order("crawl_date", { ascending: false }).limit(150);
+      return (data as { monthly_rent: number; area_m2: number; floor: string }[] | null) ?? [];
+    };
+
+    for (const scope of ["dong", "gu"] as const) {
+      if (scope === "dong" && nearbyDongs.length === 0) continue;
+      const ls = await queryListings(scope);
+      const perPyeong = (l: { monthly_rent: number; area_m2: number }) => l.monthly_rent / (l.area_m2 / 3.3);
+      const l1 = ls.filter((l) => classifyFloor(l.floor) === "1층");
+      const l2 = ls.filter((l) => classifyFloor(l.floor) === "2층이상");
+      const lB = ls.filter((l) => classifyFloor(l.floor) === "지하");
+      const avg = (arr: { monthly_rent: number; area_m2: number }[]) =>
+        arr.length === 0 ? 0 : Math.round((arr.reduce((s, l) => s + perPyeong(l), 0) / arr.length) * 10) / 10;
+      if (l1.length >= MIN_CASES) {
+        const scopeLabel = scope === "dong" ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}` : guName;
+        rentInfo = {
+          gu: guName,
+          "1층_평": avg(l1),
+          "2층이상_평": avg(l2),
+          "지하_평": avg(lB),
+          source: `네이버 호가 ${l1.length}건 · ${scopeLabel}`,
+          cases: { "1층": l1.length, "2층이상": l2.length, "지하": lB.length },
+        };
+        break;
+      }
     }
   }
 
