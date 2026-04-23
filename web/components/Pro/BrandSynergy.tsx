@@ -65,7 +65,10 @@ interface GroupData {
   key: string;
   label: string;
   icon: string;
-  storeCount: number;
+  storeCount: number;      // 상권당 가중평균 (스코어/비율 계산용)
+  displayStores: number;   // 반경 내 총 점포 수 근사 (UI 표시용)
+  displayOpen: number;     // 반경 내 총 개업 (UI 표시용)
+  displayClose: number;    // 반경 내 총 폐업 (UI 표시용)
   supplyRatio: number;
   demandScore: number;
   gapScore: number;
@@ -83,12 +86,15 @@ interface GroupData {
 export default function BrandSynergy() {
   const analysisData = useAnalysisStore((s) => s.analysisData);
   const storeCountData = useAnalysisStore((s) => s.storeCountData);
+  const radius = useAnalysisStore((s) => s.radius);
   const ft = analysisData?.ft_summary;
   const store = analysisData?.store_summary;
   const sales = analysisData?.sales_summary;
   const rent = analysisData?.rent_info as Record<string, unknown> | undefined;
   const scSummary = storeCountData?.summary ?? analysisData?.sc_summary;
   const pop = analysisData?.pop_summary;
+  // 반경 내 포함된 상권 수 — 점포수 스케일링에 사용 (가중평균 → 반경 내 총합 근사)
+  const trdarCount = Math.max(1, analysisData?.trdar_count ?? 1);
 
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -174,6 +180,10 @@ export default function BrandSynergy() {
         label: group.label,
         icon: group.icon,
         storeCount,
+        // 반경 내 상권수로 스케일 → "반경 내 총량" 근사. 비율·스코어는 storeCount(가중평균)를 사용하므로 영향 없음.
+        displayStores: Math.round(storeCount * trdarCount),
+        displayOpen: Math.round(openCount * trdarCount),
+        displayClose: Math.round(closeCount * trdarCount),
         supplyRatio: 0,
         demandScore: salesPerPerson, // 임시: 원시값, 아래서 정규화
         gapScore: 0,
@@ -240,7 +250,7 @@ export default function BrandSynergy() {
     }
 
     return valid.sort((a, b) => b.gapScore - a.gapScore);
-  }, [store, ft, sales, scSummary, rent, pop]);
+  }, [store, ft, sales, scSummary, rent, pop, trdarCount]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
   if (groups.length === 0) {
@@ -285,7 +295,7 @@ export default function BrandSynergy() {
       const oc = selectedGroup.openCount + selectedGroup.closeCount;
       return oc > 0 ? Math.round((selectedGroup.openCount / oc) * 100) : 50;
     })(),
-      desc: `개업${selectedGroup.openCount} 폐업${selectedGroup.closeCount}` },
+      desc: `개업${selectedGroup.displayOpen} 폐업${selectedGroup.displayClose}` },
     // 임대 적정: 업종별 적정비율로 산출한 적정월세 vs 실제월세
     { axis: "임대 적정", value: (() => {
       const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
@@ -340,7 +350,7 @@ export default function BrandSynergy() {
                 <span className="block text-[16px]">{g.icon}</span>
                 <span className="block text-[10px] font-semibold leading-tight mt-0.5">{g.label}</span>
                 <span className={`block text-[9px] mt-0.5 ${isSelected ? "text-white/70" : "text-muted"}`}>
-                  {g.storeCount}개
+                  {g.displayStores}개
                 </span>
               </button>
             );
@@ -348,33 +358,29 @@ export default function BrandSynergy() {
         </div>
       </div>
 
-      {/* 미선택: 수요-공급 갭 요약 */}
+      {/* 미선택: 추천 점수 요약 */}
       {!selected && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium text-muted">1인당 소비액 대비 점포밀도 기준</p>
-          {groups.map((g) => (
-            <div key={g.key} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
-              <span className="text-[14px]">{g.icon}</span>
-              <span className="flex-1 text-[11px] font-semibold text-gray-800">{g.label}</span>
-              <span className="text-[9px] text-muted">{g.storeCount}개 · 공급 {g.supplyRatio}%</span>
-              <div className="flex items-center gap-2">
+          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 6개 축(수요·공급·매출·개폐업·임대·진입) 종합 점수</p>
+          {groups.map((g) => {
+            const tone = g.gapScore >= 55 ? "emerald" : g.gapScore >= 40 ? "amber" : "red";
+            const color = tone === "emerald" ? "#10B981" : tone === "amber" ? "#F59E0B" : "#EF4444";
+            const verdict = g.gapScore >= 55 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀";
+            return (
+              <div key={g.key} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
+                <span className="text-[14px]">{g.icon}</span>
+                <span className="flex-1 text-[11px] font-semibold text-gray-800">{g.label}</span>
+                <span className="text-[9px] text-muted w-12 text-right">{g.displayStores}개</span>
                 <div className="h-1.5 w-14 rounded-full bg-gray-200">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${g.gapScore}%`,
-                      background: g.gapScore >= 55 ? "#10B981" : g.gapScore >= 40 ? "#F59E0B" : "#EF4444",
-                    }}
-                  />
+                  <div className="h-full rounded-full" style={{ width: `${g.gapScore}%`, background: color }} />
                 </div>
-                <span className={`text-[10px] font-bold w-10 text-right ${
-                  g.gapScore >= 55 ? "text-emerald-600" : g.gapScore >= 40 ? "text-amber-600" : "text-red-500"
-                }`}>
-                  {g.gapScore >= 55 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀"}
+                <span className={`text-[11px] font-bold w-14 text-right`} style={{ color }}>
+                  {g.gapScore}<span className="text-[9px] font-medium"> 점</span>
+                  <span className="ml-1 text-[9px] font-medium" style={{ color }}>{verdict}</span>
                 </span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -468,8 +474,8 @@ export default function BrandSynergy() {
 
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-lg bg-gray-50 p-2.5 text-center">
-              <p className="text-[9px] text-muted">점포 수</p>
-              <p className="text-[15px] font-bold text-gray-900">{selectedGroup.storeCount}<span className="text-[10px] text-muted">개</span></p>
+              <p className="text-[9px] text-muted">점포 수 <span className="text-[8px]">(반경 {radius}m)</span></p>
+              <p className="text-[15px] font-bold text-gray-900">{selectedGroup.displayStores}<span className="text-[10px] text-muted">개</span></p>
             </div>
             <div className="rounded-lg bg-gray-50 p-2.5 text-center">
               <p className="text-[9px] text-muted">점포당 매출</p>
@@ -481,9 +487,9 @@ export default function BrandSynergy() {
             <div className="rounded-lg bg-gray-50 p-2.5 text-center">
               <p className="text-[9px] text-muted">개업/폐업</p>
               <p className="text-[15px] font-bold text-gray-900">
-                <span className="text-emerald-600">{selectedGroup.openCount}</span>
+                <span className="text-emerald-600">{selectedGroup.displayOpen}</span>
                 <span className="text-muted">/</span>
-                <span className="text-red-500">{selectedGroup.closeCount}</span>
+                <span className="text-red-500">{selectedGroup.displayClose}</span>
               </p>
             </div>
           </div>
