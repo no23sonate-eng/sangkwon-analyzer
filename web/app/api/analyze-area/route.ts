@@ -144,12 +144,23 @@ export async function GET(request: Request) {
   const totalWeight = weights.reduce((s, w) => s + w, 0) || 1;
   const guName = nearby[0].gu ?? "";
 
-  /* ── Step 2: Fetch data in parallel (limit 확장 — 상권×분기×업종 조합이 많을 수 있음) ── */
-  const [salesRes, ftRes, popRes, storesRes] = await Promise.all([
+  /* ── Step 2: Fetch data in parallel (limit 확장 — 상권×분기×업종 조합이 많을 수 있음) ──
+     임대료 계층: 국토부 실거래(rents) → 네이버 추정실거래/호가는 gu 단위 → 구 평균 폴백 */
+  const RENT_RADIUS_M = Math.max(radius, 800); // 실거래 희소성 고려, 최소 800m
+  const rentDeg = (RENT_RADIUS_M / 111000) * 1.2;
+  const [salesRes, ftRes, popRes, storesRes, rentsRes] = await Promise.all([
     supabase.from("sales").select("*").in("trdar_cd", codes).limit(50000),
     supabase.from("foot_traffic").select("*").in("trdar_cd", codes).limit(50000),
     supabase.from("population").select("*").in("trdar_cd", codes).limit(50000),
     supabase.from("stores").select("*").in("trdar_cd", codes).limit(50000),
+    supabase
+      .from("rents")
+      .select("lat, lng, floor, rent_pyeong")
+      .eq("target_pyeong", 10)
+      .gt("rent_pyeong", 0)
+      .gte("lat", lat - rentDeg).lte("lat", lat + rentDeg)
+      .gte("lng", lng - rentDeg).lte("lng", lng + rentDeg)
+      .limit(5000),
   ]);
 
   const salesAll = latestQuarterRows(salesRes.data ?? []);
@@ -415,32 +426,135 @@ export async function GET(request: Request) {
     by_subcategory: bySubcategory,
   };
 
-  /* ── Step 4: Rent info (DB → 폴백) ── */
+  /* ── Step 4: Rent info — 실시간 계층 (실측 → 네이버 추정실거래 → 네이버 호가 → 구 평균) ── */
   let rentInfo: Record<string, unknown> = {};
-  const { data: rentDbRow } = await supabase
-    .from("gu_rent_stats")
-    .select("f1_pyeong, f2_pyeong, b1_pyeong, source")
-    .eq("gu", guName)
-    .single();
 
-  if (rentDbRow && rentDbRow.f1_pyeong > 0) {
+  const classifyFloor = (floor: string | null | undefined): "1층" | "2층이상" | "지하" | null => {
+    if (floor == null) return null;
+    const f = String(floor).trim();
+    if (f === "지하" || f === "B1" || f === "반지하") return "지하";
+    if (f === "1" || f === "1층") return "1층";
+    if (f === "") return null;
+    return "2층이상";
+  };
+
+  type RentRow = { lat: number; lng: number; floor: string; rent_pyeong: number };
+  const rentsRaw = (rentsRes.data as RentRow[] | null) ?? [];
+  const rentsNearby = rentsRaw
+    .map((r) => ({
+      rent_pyeong: r.rent_pyeong,
+      floorClass: classifyFloor(r.floor),
+      distance: haversineM(lat, lng, r.lat, r.lng),
+    }))
+    .filter((r) => r.floorClass && r.distance <= RENT_RADIUS_M);
+
+  const weightedAvg = (arr: { rent_pyeong: number; distance: number }[]) => {
+    if (arr.length === 0) return 0;
+    const ws = arr.map((r) => Math.max(0.3, 1 - r.distance / (RENT_RADIUS_M * 1.5)));
+    const tw = ws.reduce((s, w) => s + w, 0);
+    const v = arr.reduce((s, r, i) => s + r.rent_pyeong * ws[i], 0) / tw;
+    return Math.round(v * 10) / 10;
+  };
+
+  const r1 = rentsNearby.filter((r) => r.floorClass === "1층");
+  const r2 = rentsNearby.filter((r) => r.floorClass === "2층이상");
+  const rB = rentsNearby.filter((r) => r.floorClass === "지하");
+  const MIN_CASES = 3;
+
+  if (r1.length >= MIN_CASES) {
     rentInfo = {
       gu: guName,
-      "1층_평": rentDbRow.f1_pyeong,
-      "지하_평": rentDbRow.b1_pyeong,
-      "2층이상_평": rentDbRow.f2_pyeong,
-      source: rentDbRow.source,
+      "1층_평": weightedAvg(r1),
+      "2층이상_평": r2.length > 0 ? weightedAvg(r2) : 0,
+      "지하_평": rB.length > 0 ? weightedAvg(rB) : 0,
+      source: `국토부 실거래 ${r1.length}건 · 반경 ${RENT_RADIUS_M}m 가중평균`,
+      cases: { "1층": r1.length, "2층이상": r2.length, "지하": rB.length },
     };
-  } else {
-    const rentFallback = RENT_DATA[guName];
-    if (rentFallback) {
+  }
+
+  // 2차: 네이버 추정실거래 (사라진 매물) — gu 단위
+  if (Object.keys(rentInfo).length === 0 && guName) {
+    const { data: naverDeals } = await supabase
+      .from("naver_estimated_deals")
+      .select("rent_per_pyeong, floor, disappeared_date")
+      .eq("gu", guName)
+      .gt("rent_per_pyeong", 0)
+      .order("disappeared_date", { ascending: false })
+      .limit(120);
+    const deals = (naverDeals as { rent_per_pyeong: number; floor: string }[] | null) ?? [];
+    const d1 = deals.filter((d) => classifyFloor(d.floor) === "1층");
+    const d2 = deals.filter((d) => classifyFloor(d.floor) === "2층이상");
+    const dB = deals.filter((d) => classifyFloor(d.floor) === "지하");
+    const avg = (arr: { rent_per_pyeong: number }[]) =>
+      arr.length === 0 ? 0 : Math.round((arr.reduce((s, d) => s + d.rent_per_pyeong, 0) / arr.length) * 10) / 10;
+    if (d1.length >= MIN_CASES) {
       rentInfo = {
         gu: guName,
-        "1층_평": rentFallback.f1,
-        "지하_평": rentFallback.b1,
-        "2층이상_평": rentFallback.f2,
-        source: "한국부동산원 2025 Q3 (폴백)",
+        "1층_평": avg(d1),
+        "2층이상_평": avg(d2),
+        "지하_평": avg(dB),
+        source: `네이버 추정실거래 ${d1.length}건 · ${guName}`,
+        cases: { "1층": d1.length, "2층이상": d2.length, "지하": dB.length },
       };
+    }
+  }
+
+  // 3차: 네이버 호가 (현재 매물)
+  if (Object.keys(rentInfo).length === 0 && guName) {
+    const { data: listings } = await supabase
+      .from("naver_listings")
+      .select("monthly_rent, area_m2, floor, crawl_date")
+      .eq("gu", guName)
+      .gt("monthly_rent", 0)
+      .gt("area_m2", 0)
+      .order("crawl_date", { ascending: false })
+      .limit(120);
+    const ls = (listings as { monthly_rent: number; area_m2: number; floor: string }[] | null) ?? [];
+    const perPyeong = (l: { monthly_rent: number; area_m2: number }) => l.monthly_rent / (l.area_m2 / 3.3);
+    const l1 = ls.filter((l) => classifyFloor(l.floor) === "1층");
+    const l2 = ls.filter((l) => classifyFloor(l.floor) === "2층이상");
+    const lB = ls.filter((l) => classifyFloor(l.floor) === "지하");
+    const avg = (arr: { monthly_rent: number; area_m2: number }[]) =>
+      arr.length === 0 ? 0 : Math.round((arr.reduce((s, l) => s + perPyeong(l), 0) / arr.length) * 10) / 10;
+    if (l1.length >= MIN_CASES) {
+      rentInfo = {
+        gu: guName,
+        "1층_평": avg(l1),
+        "2층이상_평": avg(l2),
+        "지하_평": avg(lB),
+        source: `네이버 호가 ${l1.length}건 · ${guName}`,
+        cases: { "1층": l1.length, "2층이상": l2.length, "지하": lB.length },
+      };
+    }
+  }
+
+  // 4차: 구 평균 (DB → 하드코딩)
+  if (Object.keys(rentInfo).length === 0) {
+    const { data: rentDbRow } = await supabase
+      .from("gu_rent_stats")
+      .select("f1_pyeong, f2_pyeong, b1_pyeong, source")
+      .eq("gu", guName)
+      .single();
+
+    if (rentDbRow && rentDbRow.f1_pyeong > 0) {
+      rentInfo = {
+        gu: guName,
+        "1층_평": rentDbRow.f1_pyeong,
+        "지하_평": rentDbRow.b1_pyeong,
+        "2층이상_평": rentDbRow.f2_pyeong,
+        source: rentDbRow.source ?? `${guName} 구 평균`,
+      };
+    } else {
+      const rentFallback = RENT_DATA[guName];
+      if (rentFallback) {
+        rentInfo = {
+          gu: guName,
+          "1층_평": rentFallback.f1,
+          "지하_평": rentFallback.b1,
+          "2층이상_평": rentFallback.f2,
+          source: "한국부동산원 2025 Q3 (폴백)",
+        };
+      }
     }
   }
 
