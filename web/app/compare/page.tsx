@@ -266,7 +266,13 @@ export default function ComparePage() {
   });
 
   return (
-    <div className="relative flex h-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden">
+      {/* ── 아래 UI는 비활성화 + 블러. 그 위에 To be continued 오버레이 ── */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none flex h-full select-none"
+        style={{ filter: "blur(6px)", WebkitFilter: "blur(6px)" }}
+      >
       {/* ── 좌측 패널 ── */}
       <div className="relative z-10 flex h-full w-full sm:w-[400px] shrink-0 flex-col border-r border-gray-200 bg-white">
         {/* 헤더 */}
@@ -361,84 +367,62 @@ export default function ComparePage() {
                 format={(v) => `${(v / 10000).toFixed(1)}만`}
                 colors={LOCATION_COLORS}
               />
-              {/* ── 뒷부분: 준비 중 (블러 + To be continued) ── */}
-              <div className="relative mt-2">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none select-none space-y-1"
-                  style={{ filter: "blur(5px)", WebkitFilter: "blur(5px)" }}
-                >
-                  <CompareBar
-                    label="개업 수"
-                    values={locations.map((l) => l?.openCount ?? null)}
-                    format={(v) => `${v}개`}
-                    colors={LOCATION_COLORS}
-                  />
-                  <CompareBar
-                    label="폐업 수"
-                    values={locations.map((l) => l?.closeCount ?? null)}
-                    format={(v) => `${v}개`}
-                    colors={LOCATION_COLORS}
-                  />
-                  <CompareBar
-                    label="1층 임대료"
-                    values={locations.map((l) => l?.rentPerPyeong ?? null)}
-                    format={(v) => (v > 0 ? `${v}만/평` : "-")}
-                    colors={LOCATION_COLORS}
-                  />
-                  <div className="pt-3 mt-2 border-t border-gray-100">
-                    <p className="text-[11px] font-medium text-gray-400 mb-2">업종 / 시간 / 연령</p>
-                    <div className="space-y-2">
-                      {locations.map((loc, i) => {
-                        if (!loc) return null;
-                        return (
-                          <div key={i} className={`rounded-lg p-3 ${LOCATION_COLORS[i].light}`}>
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                              <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ${LOCATION_COLORS[i].bg}`}>
-                                {String.fromCharCode(65 + i)}
-                              </span>
-                              <span className="text-[12px] font-semibold text-gray-700">{loc.areaName}</span>
-                            </div>
-                            <div className="grid grid-cols-3 gap-2 text-[11px]">
-                              <div>
-                                <p className="text-gray-400">주요 업종</p>
-                                <p className="font-medium text-gray-700 mt-0.5">{loc.topIndustry}</p>
-                              </div>
-                              <div>
-                                <p className="text-gray-400">피크 시간</p>
-                                <p className="font-medium text-gray-700 mt-0.5">{loc.peakTime}</p>
-                              </div>
-                              <div>
-                                <p className="text-gray-400">주요 연령</p>
-                                <p className="font-medium text-gray-700 mt-0.5">{loc.dominantAge}</p>
-                              </div>
-                            </div>
-                            <div className="mt-1.5 text-[11px]">
-                              <span className="text-gray-400">순증감 </span>
-                              <span className={`font-semibold ${loc.openCount - loc.closeCount >= 0 ? "text-emerald-600" : "text-red-500"}`}>
-                                {loc.openCount - loc.closeCount >= 0 ? "+" : ""}{loc.openCount - loc.closeCount}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
+              <CompareBar
+                label="개업 수"
+                values={locations.map((l) => l?.openCount ?? null)}
+                format={(v) => `${v}개`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="폐업 수"
+                values={locations.map((l) => l?.closeCount ?? null)}
+                format={(v) => `${v}개`}
+                colors={LOCATION_COLORS}
+              />
+              <CompareBar
+                label="1층 임대료"
+                values={locations.map((l) => l?.rentPerPyeong ?? null)}
+                format={(v) => (v > 0 ? `${v}만/평` : "-")}
+                colors={LOCATION_COLORS}
+              />
 
-                {/* To be continued 오버레이 */}
-                <div className="pointer-events-none absolute inset-0 flex items-start justify-center pt-12">
-                  <div className="rounded-2xl border border-gray-200 bg-white/85 px-5 py-4 text-center shadow-lg backdrop-blur-md">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary-600">
-                      To be continued
-                    </p>
-                    <p className="mt-1.5 text-[13px] font-bold text-gray-800">
-                      개업·폐업·임대료·업종 비교는 준비 중입니다
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-gray-500">
-                      다음 업데이트에서 만나보실 수 있어요
-                    </p>
-                  </div>
+              {/* 텍스트 지표 카드 */}
+              <div className="pt-3 mt-2 border-t border-gray-100">
+                <p className="text-[11px] font-medium text-gray-400 mb-2">업종 / 시간 / 연령</p>
+                <div className="space-y-2">
+                  {locations.map((loc, i) => {
+                    if (!loc) return null;
+                    return (
+                      <div key={i} className={`rounded-lg p-3 ${LOCATION_COLORS[i].light}`}>
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ${LOCATION_COLORS[i].bg}`}>
+                            {String.fromCharCode(65 + i)}
+                          </span>
+                          <span className="text-[12px] font-semibold text-gray-700">{loc.areaName}</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-[11px]">
+                          <div>
+                            <p className="text-gray-400">주요 업종</p>
+                            <p className="font-medium text-gray-700 mt-0.5">{loc.topIndustry}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">피크 시간</p>
+                            <p className="font-medium text-gray-700 mt-0.5">{loc.peakTime}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">주요 연령</p>
+                            <p className="font-medium text-gray-700 mt-0.5">{loc.dominantAge}</p>
+                          </div>
+                        </div>
+                        <div className="mt-1.5 text-[11px]">
+                          <span className="text-gray-400">순증감 </span>
+                          <span className={`font-semibold ${loc.openCount - loc.closeCount >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+                            {loc.openCount - loc.closeCount >= 0 ? "+" : ""}{loc.openCount - loc.closeCount}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -519,6 +503,27 @@ export default function ComparePage() {
             })}
           </div>
         )}
+      </div>
+    </div>
+
+      {/* ── To be continued 오버레이 — 전체 페이지 차단 ── */}
+      <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+        <div className="mx-4 max-w-sm rounded-3xl border border-gray-200 bg-white px-8 py-8 text-center shadow-2xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-600">
+            To be continued
+          </p>
+          <h2 className="mt-3 text-[18px] font-bold text-gray-900">입지 비교 기능 준비 중</h2>
+          <p className="mt-2 text-[13px] leading-relaxed text-gray-500">
+            더 정확한 비교 지표를 담아 곧 공개할 예정입니다.
+            <br />지금은 지도 분석 기능을 이용해 주세요.
+          </p>
+          <button
+            onClick={() => { window.location.href = "/map"; }}
+            className="mt-5 rounded-xl bg-primary-600 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-primary-700"
+          >
+            지도 분석으로 이동
+          </button>
+        </div>
       </div>
     </div>
   );
