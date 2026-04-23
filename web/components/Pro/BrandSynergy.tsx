@@ -389,10 +389,9 @@ export default function BrandSynergy() {
         <>
           <div className="flex items-center gap-3 rounded-xl px-4 py-3"
             style={{ background: totalScore >= 55 ? "#ECFDF5" : totalScore >= 40 ? "#FFF7ED" : "#FEF2F2" }}>
-            <div className="flex h-14 w-14 flex-col items-center justify-center rounded-full"
+            <div className="flex h-12 w-12 items-center justify-center rounded-full"
               style={{ background: totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444" }}>
-              <span className="text-[19px] font-black leading-none text-white">{totalScore}</span>
-              <span className="mt-0.5 text-[8px] font-semibold leading-none text-white/85">/ 100점</span>
+              <span className="text-[18px] font-black text-white">{totalScore}</span>
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[14px] font-bold text-gray-900">
