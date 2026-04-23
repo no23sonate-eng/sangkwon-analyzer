@@ -268,12 +268,39 @@ function RentVerification({ guName }: { guName: string }) {
       )}
       {!rentLoading && rentNearby && rentNearby.total_cases > 0 && (
         <div className="border-t border-gray-100 pt-3">
-          <p className="mb-2 text-[11px] font-semibold text-gray-600">
-            이 위치 시세 · {selectedPyeong}평 기준
-            {rentNearby.fallback
-              ? <span className="ml-1 text-amber-600">({rentNearby.fallback_source})</span>
-              : ` · ${rentNearby.stats?.["1층"]?.count ?? 0}개 상권`}
-          </p>
+          <div className="mb-2 flex items-center gap-1.5 flex-wrap">
+            <p className="text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준</p>
+            {(() => {
+              // 출처 배지: 실측(녹색) / 네이버(인디고) / 구평균(앰버)
+              const src = rentNearby.fallback_source ?? "";
+              let tone = "emerald";
+              let label = `실측 ${rentNearby.stats?.["1층"]?.count ?? 0}건`;
+              if (rentNearby.fallback) {
+                if (src.startsWith("네이버")) {
+                  tone = "indigo";
+                  label = src.startsWith("네이버 추정실거래") ? "네이버 추정실거래" : "네이버 호가";
+                } else {
+                  tone = "amber";
+                  label = "구 평균";
+                }
+              }
+              const palette: Record<string, { bg: string; text: string }> = {
+                emerald: { bg: "#D1FAE5", text: "#047857" },
+                indigo: { bg: "#E0E7FF", text: "#4338CA" },
+                amber: { bg: "#FEF3C7", text: "#B45309" },
+              };
+              const p = palette[tone];
+              return (
+                <span
+                  className="rounded-full px-2 py-0.5 text-[9px] font-semibold"
+                  style={{ background: p.bg, color: p.text }}
+                  title={src || "반경 내 실측 임대사례 기반"}
+                >
+                  {label}
+                </span>
+              );
+            })()}
+          </div>
           <div className="overflow-hidden rounded-lg border border-gray-100">
             <table className="w-full text-[11px]">
               <thead><tr className="bg-gray-50">

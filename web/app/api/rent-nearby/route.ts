@@ -194,8 +194,93 @@ export async function GET(request: Request) {
     stats[key] = calcStats(cases, maxDistance, target_pyeong);
   }
 
-  // DB에 사례가 없으면 gu_rent_stats → 하드코딩 순서로 fallback
+  // DB에 사례가 없으면 네이버(추정실거래→호가) → 구 평균(DB→하드코딩) 순으로 fallback
   if (filtered.length === 0 && gu) {
+    const classifyFloor2 = (f: string | null | undefined): "1층" | "2층" | "지하" | null => {
+      if (f == null) return null;
+      const s = String(f).trim();
+      if (s === "지하" || s === "B1" || s === "반지하") return "지하";
+      if (s === "1" || s === "1층") return "1층";
+      if (s === "") return null;
+      return "2층";
+    };
+
+    const makeNaverStats = (avgPyeong: number, count: number) => ({
+      count: Math.max(1, count),
+      avg_rent: Math.round(avgPyeong * target_pyeong),
+      avg_deposit: Math.round(avgPyeong * target_pyeong * 10),
+      avg_pyeong: Math.round(avgPyeong * 10) / 10,
+      min_rent: Math.round(avgPyeong * target_pyeong * 0.8),
+      max_rent: Math.round(avgPyeong * target_pyeong * 1.2),
+      median_rent: Math.round(avgPyeong * target_pyeong),
+      target_pyeong,
+    });
+
+    const MIN_NAVER = 3;
+
+    // 1차: 네이버 추정실거래 (사라진 매물)
+    const { data: naverDeals } = await supabase
+      .from("naver_estimated_deals")
+      .select("rent_per_pyeong, floor, disappeared_date")
+      .eq("gu", gu)
+      .gt("rent_per_pyeong", 0)
+      .order("disappeared_date", { ascending: false })
+      .limit(150);
+    const deals = (naverDeals as { rent_per_pyeong: number; floor: string }[] | null) ?? [];
+    const d1 = deals.filter((d) => classifyFloor2(d.floor) === "1층");
+    const d2 = deals.filter((d) => classifyFloor2(d.floor) === "2층");
+    const dB = deals.filter((d) => classifyFloor2(d.floor) === "지하");
+    const avgDeal = (arr: { rent_per_pyeong: number }[]) =>
+      arr.length === 0 ? 0 : arr.reduce((s, d) => s + d.rent_per_pyeong, 0) / arr.length;
+
+    if (d1.length >= MIN_NAVER) {
+      return NextResponse.json({
+        total_cases: d1.length,
+        radius: actualRadius,
+        fallback: true,
+        fallback_source: `네이버 추정실거래 ${d1.length}건 · ${gu}`,
+        stats: {
+          "1층": makeNaverStats(avgDeal(d1), d1.length),
+          "2층": d2.length > 0 ? makeNaverStats(avgDeal(d2), d2.length) : makeNaverStats(0, 0),
+          "지하": dB.length > 0 ? makeNaverStats(avgDeal(dB), dB.length) : makeNaverStats(0, 0),
+        },
+        sample_cases: [],
+      });
+    }
+
+    // 2차: 네이버 호가
+    const { data: naverList } = await supabase
+      .from("naver_listings")
+      .select("monthly_rent, area_m2, floor, crawl_date")
+      .eq("gu", gu)
+      .gt("monthly_rent", 0)
+      .gt("area_m2", 0)
+      .order("crawl_date", { ascending: false })
+      .limit(150);
+    const listings = (naverList as { monthly_rent: number; area_m2: number; floor: string }[] | null) ?? [];
+    const perPyeong = (l: { monthly_rent: number; area_m2: number }) => l.monthly_rent / (l.area_m2 / 3.3);
+    const l1 = listings.filter((l) => classifyFloor2(l.floor) === "1층");
+    const l2 = listings.filter((l) => classifyFloor2(l.floor) === "2층");
+    const lB = listings.filter((l) => classifyFloor2(l.floor) === "지하");
+    const avgList = (arr: { monthly_rent: number; area_m2: number }[]) =>
+      arr.length === 0 ? 0 : arr.reduce((s, l) => s + perPyeong(l), 0) / arr.length;
+
+    if (l1.length >= MIN_NAVER) {
+      return NextResponse.json({
+        total_cases: l1.length,
+        radius: actualRadius,
+        fallback: true,
+        fallback_source: `네이버 호가 ${l1.length}건 · ${gu}`,
+        stats: {
+          "1층": makeNaverStats(avgList(l1), l1.length),
+          "2층": l2.length > 0 ? makeNaverStats(avgList(l2), l2.length) : makeNaverStats(0, 0),
+          "지하": lB.length > 0 ? makeNaverStats(avgList(lB), lB.length) : makeNaverStats(0, 0),
+        },
+        sample_cases: [],
+      });
+    }
+
+    // 3차: 구 평균 (DB)
     const makeGuStats = (avgPyeong: number) => ({
       count: 1,
       avg_rent: Math.round(avgPyeong * target_pyeong),
@@ -207,7 +292,6 @@ export async function GET(request: Request) {
       target_pyeong,
     });
 
-    // 1차: DB에서 구 통계 조회
     const { data: guStats } = await supabase
       .from("gu_rent_stats")
       .select("f1_pyeong, f2_pyeong, b1_pyeong, source")
@@ -229,7 +313,7 @@ export async function GET(request: Request) {
       });
     }
 
-    // 2차: 하드코딩 폴백
+    // 4차: 하드코딩 폴백
     const fallback = GU_RENT_FALLBACK[gu];
     if (fallback) {
       return NextResponse.json({
