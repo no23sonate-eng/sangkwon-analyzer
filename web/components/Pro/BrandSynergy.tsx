@@ -318,9 +318,9 @@ export default function BrandSynergy() {
       desc: `프랜차이즈 ${Math.round(selectedGroup.franchiseRatio * 100)}%` },
   ] : null;
 
-  const totalScore = radarData
-    ? Math.round(radarData.reduce((s, d) => s + d.value, 0) / radarData.length)
-    : 0;
+  // 추천 점수 — 리스트의 gapScore와 동일 값(6축 평균). 선택화면 원 안에도 같은 수를 노출.
+  const totalScore = selectedGroup?.gapScore ?? 0;
+  const totalVerdict = totalScore >= 55 ? "기회" : totalScore >= 40 ? "보통" : "과밀";
 
   const strengths = radarData?.filter((d) => d.value >= 65).sort((a, b) => b.value - a.value) ?? [];
   const weaknesses = radarData?.filter((d) => d.value < 45).sort((a, b) => a.value - b.value) ?? [];
@@ -388,13 +388,25 @@ export default function BrandSynergy() {
       {selectedGroup && radarData && (
         <>
           <div className="flex items-center gap-3 rounded-xl px-4 py-3"
-            style={{ background: totalScore >= 60 ? "#ECFDF5" : totalScore >= 45 ? "#FFF7ED" : "#FEF2F2" }}>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full"
-              style={{ background: totalScore >= 60 ? "#10B981" : totalScore >= 45 ? "#F59E0B" : "#EF4444" }}>
-              <span className="text-[18px] font-black text-white">{totalScore}</span>
+            style={{ background: totalScore >= 55 ? "#ECFDF5" : totalScore >= 40 ? "#FFF7ED" : "#FEF2F2" }}>
+            <div className="flex h-14 w-14 flex-col items-center justify-center rounded-full"
+              style={{ background: totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444" }}>
+              <span className="text-[19px] font-black leading-none text-white">{totalScore}</span>
+              <span className="mt-0.5 text-[8px] font-semibold leading-none text-white/85">/ 100점</span>
             </div>
-            <div>
-              <p className="text-[14px] font-bold text-gray-900">{selectedGroup.icon} {selectedGroup.label}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-[14px] font-bold text-gray-900">
+                {selectedGroup.icon} {selectedGroup.label}
+                <span
+                  className="ml-2 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                  style={{
+                    background: totalScore >= 55 ? "#D1FAE5" : totalScore >= 40 ? "#FEF3C7" : "#FEE2E2",
+                    color: totalScore >= 55 ? "#059669" : totalScore >= 40 ? "#B45309" : "#DC2626",
+                  }}
+                >
+                  추천 {totalVerdict}
+                </span>
+              </p>
               <p className="text-[11px] text-muted">
                 {(() => {
                   const g = selectedGroup;
@@ -465,10 +477,10 @@ export default function BrandSynergy() {
               <PolarAngleAxis dataKey="axis" tick={{ fill: "#64748B", fontSize: 11 }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: "#94A3B8", fontSize: 9 }} axisLine={false} />
               <Radar dataKey="value"
-                stroke={totalScore >= 60 ? "#10B981" : totalScore >= 45 ? "#F59E0B" : "#EF4444"}
-                fill={totalScore >= 60 ? "#10B981" : totalScore >= 45 ? "#F59E0B" : "#EF4444"}
+                stroke={totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444"}
+                fill={totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444"}
                 fillOpacity={0.12} strokeWidth={2}
-                dot={{ r: 3, fill: totalScore >= 60 ? "#10B981" : totalScore >= 45 ? "#F59E0B" : "#EF4444", stroke: "#fff", strokeWidth: 2 }} />
+                dot={{ r: 3, fill: totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444", stroke: "#fff", strokeWidth: 2 }} />
             </RadarChart>
           </ResponsiveContainer>
 
