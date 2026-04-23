@@ -28,7 +28,16 @@ const styles = StyleSheet.create({
   th: { fontSize: 9, fontWeight: "bold", color: "#6B7280" },
   td: { fontSize: 9, color: "#374151" },
   footer: { position: "absolute", bottom: 30, left: 40, right: 40, fontSize: 8, color: "#9CA3AF", textAlign: "center", borderTop: "0.5 solid #E5E7EB", paddingTop: 6 },
+  sourceBadge: { fontSize: 8, fontWeight: "bold", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3, marginRight: 6 },
+  sourceRow: { flexDirection: "row", alignItems: "center", marginTop: 6 },
 });
+
+function sourceTier(source: string): { label: string; bg: string; color: string } {
+  if (source.startsWith("국토부 실거래")) return { label: "실측", bg: "#D1FAE5", color: "#047857" };
+  if (source.startsWith("네이버 추정실거래")) return { label: "네이버 추정실거래", bg: "#E0E7FF", color: "#4338CA" };
+  if (source.startsWith("네이버 호가")) return { label: "네이버 호가", bg: "#E0E7FF", color: "#4338CA" };
+  return { label: "구 평균", bg: "#FEF3C7", color: "#B45309" };
+}
 
 interface Props {
   data: AnalysisData;
@@ -187,7 +196,18 @@ export default function ReportPDF({ data, areaName, address, generatedAt }: Prop
               <Text style={styles.td}>지하 평당 월세</Text>
               <Text style={styles.td}>{num(rent["지하_평"] as number)}만원</Text>
             </View>
-            <Text style={[styles.cardLabel, { marginTop: 4 }]}>출처: {rent["source"] as string}</Text>
+            {(() => {
+              const src = (rent["source"] as string) ?? "";
+              const tier = sourceTier(src);
+              return (
+                <View style={styles.sourceRow}>
+                  <Text style={[styles.sourceBadge, { backgroundColor: tier.bg, color: tier.color }]}>
+                    {tier.label}
+                  </Text>
+                  <Text style={styles.cardLabel}>{src}</Text>
+                </View>
+              );
+            })()}
           </View>
         )}
 

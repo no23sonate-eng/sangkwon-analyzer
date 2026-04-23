@@ -286,10 +286,33 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
           )}
 
           {/* ━━ 섹션 4: 임대 시장 ━━ */}
-          {rental && (
+          {rental && (() => {
+            const src = rental.source ?? "";
+            const isRealDeal = src.startsWith("국토부 실거래");
+            const isNaver = src.startsWith("네이버");
+            const tone = isRealDeal ? "emerald" : isNaver ? "indigo" : "amber";
+            const palette: Record<string, { bg: string; text: string }> = {
+              emerald: { bg: "#D1FAE5", text: "#047857" },
+              indigo: { bg: "#E0E7FF", text: "#4338CA" },
+              amber: { bg: "#FEF3C7", text: "#B45309" },
+            };
+            const p = palette[tone];
+            const short = isRealDeal ? "실측"
+              : src.startsWith("네이버 추정실거래") ? "네이버 추정실거래"
+              : src.startsWith("네이버 호가") ? "네이버 호가"
+              : "구 평균";
+            return (
             <Section
               title="임대 시장"
-              right={<span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-600">추정치</span>}
+              right={
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                  style={{ background: p.bg, color: p.text }}
+                  title={src || "데이터 출처 미확인"}
+                >
+                  {short}
+                </span>
+              }
             >
               <div className="mb-4 grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-gray-50 p-3">
@@ -352,7 +375,8 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
                 </table>
               </div>
             </Section>
-          )}
+            );
+          })()}
 
           {/* ━━ 섹션 5: 개폐업 동향 ━━ */}
           {openClose && (

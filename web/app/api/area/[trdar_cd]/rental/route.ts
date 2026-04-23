@@ -45,11 +45,15 @@ function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): num
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-async function computeNearbyRent(lat: number, lng: number, gu: string) {
+type RentComputeResult = { value: number; source: string };
+
+async function computeNearbyRent(lat: number, lng: number, gu: string): Promise<RentComputeResult> {
   const TARGET_PYEONG = 10;
   const MAX_RADIUS = 1500;
   const deg = (MAX_RADIUS / 111000) * 1.2;
+  const MIN = 3;
 
+  // 1차: 실측 (rents)
   const { data } = await supabase
     .from("rents")
     .select("lat, lng, rent_pyeong")
@@ -62,21 +66,73 @@ async function computeNearbyRent(lat: number, lng: number, gu: string) {
     .map((r) => ({ ...r, distance: haversineM(lat, lng, r.lat, r.lng) }))
     .filter((r) => r.distance <= MAX_RADIUS && r.rent_pyeong > 0);
 
-  if (nearby.length >= 3) {
+  if (nearby.length >= MIN) {
     const weights = nearby.map((c) => Math.max(0.3, 1 - c.distance / (MAX_RADIUS * 1.5)));
     const totalW = weights.reduce((s, w) => s + w, 0);
     const avgPyeong = nearby.reduce((s, c, i) => s + c.rent_pyeong * weights[i], 0) / totalW;
-    return Math.round(avgPyeong * 10) / 10;
+    return {
+      value: Math.round(avgPyeong * 10) / 10,
+      source: `국토부 실거래 ${nearby.length}건 · 반경 ${MAX_RADIUS}m 가중평균`,
+    };
   }
 
+  // 2차: 네이버 추정실거래
+  if (gu) {
+    const { data: deals } = await supabase
+      .from("naver_estimated_deals")
+      .select("rent_per_pyeong, floor, disappeared_date")
+      .eq("gu", gu)
+      .eq("floor", "1")
+      .gt("rent_per_pyeong", 0)
+      .order("disappeared_date", { ascending: false })
+      .limit(80);
+    const validDeals = (deals ?? []).filter((d) => (d.rent_per_pyeong ?? 0) > 0);
+    if (validDeals.length >= MIN) {
+      const avg = validDeals.reduce((s, d) => s + d.rent_per_pyeong, 0) / validDeals.length;
+      return {
+        value: Math.round(avg * 10) / 10,
+        source: `네이버 추정실거래 ${validDeals.length}건 · ${gu}`,
+      };
+    }
+
+    // 3차: 네이버 호가
+    const { data: listings } = await supabase
+      .from("naver_listings")
+      .select("monthly_rent, area_m2, floor, crawl_date")
+      .eq("gu", gu)
+      .eq("floor", "1")
+      .gt("monthly_rent", 0)
+      .gt("area_m2", 0)
+      .order("crawl_date", { ascending: false })
+      .limit(80);
+    const validListings = (listings ?? []).filter((l) => l.monthly_rent > 0 && l.area_m2 > 0);
+    if (validListings.length >= MIN) {
+      const avg = validListings.reduce((s, l) => s + l.monthly_rent / (l.area_m2 / 3.3), 0) / validListings.length;
+      return {
+        value: Math.round(avg * 10) / 10,
+        source: `네이버 호가 ${validListings.length}건 · ${gu}`,
+      };
+    }
+  }
+
+  // 4차: 구 평균 DB
   const { data: guStats } = await supabase
     .from("gu_rent_stats")
-    .select("f1_pyeong")
+    .select("f1_pyeong, source")
     .eq("gu", gu)
     .maybeSingle();
-  if (guStats?.f1_pyeong && guStats.f1_pyeong > 0) return guStats.f1_pyeong;
+  if (guStats?.f1_pyeong && guStats.f1_pyeong > 0) {
+    return {
+      value: guStats.f1_pyeong,
+      source: guStats.source ?? `${gu} 구 평균`,
+    };
+  }
 
-  return GU_RENT_FALLBACK[gu]?.f1 ?? 25;
+  // 5차: 하드코딩
+  return {
+    value: GU_RENT_FALLBACK[gu]?.f1 ?? 25,
+    source: "한국부동산원 2025 Q3 (폴백)",
+  };
 }
 
 function formatArea(m2: number): number {
@@ -104,7 +160,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ trdar_cd
     return NextResponse.json({ error: "no area" }, { status: 404 });
   }
 
-  const avgRentPerM2 = await computeNearbyRent(area.lat, area.lng, area.gu);
+  const { value: avgRentPerM2, source: rentSource } = await computeNearbyRent(area.lat, area.lng, area.gu);
 
   // 공실률 추정: 해당 상권 최신 분기 폐업률 평균 × 보정계수
   const { data: storeRows } = await supabase
@@ -153,6 +209,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ trdar_cd
 
   return NextResponse.json({
     avgRentPerM2,
+    source: rentSource,
     rentChangeQoQ: 0, // TODO: 월별 임대료 스냅샷 테이블 생성 후 교체
     vacancyRate,
     vacancyChange: 0, // TODO: 월별 스냅샷으로 전분기 대비 계산

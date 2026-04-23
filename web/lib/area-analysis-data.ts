@@ -39,6 +39,7 @@ export async function getFootTraffic(areaCode: string): Promise<FootTrafficData 
 
 export interface RentalData {
   avgRentPerM2: number;
+  source?: string;
   rentChangeQoQ: number;
   vacancyRate: number;
   vacancyChange: number;
