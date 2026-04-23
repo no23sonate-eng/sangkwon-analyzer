@@ -346,6 +346,9 @@ function RentVerification({ guName }: { guName: string }) {
               </div>
             </div>
           )}
+
+          {/* ── 이 주소 근처 임대 사례 상세 (실측/네이버 거래/호가) ── */}
+          <RentCasesSection rentNearby={rentNearby} />
         </div>
       )}
       {/* ── 교차검증 (3소스 가중평균) ── */}
@@ -684,6 +687,155 @@ function ConsultCTA() {
         className="mt-2 inline-flex items-center gap-1.5 rounded-[var(--radius-button)] bg-gray-900 px-5 py-2 text-[12px] font-semibold text-white hover:bg-gray-800 active:scale-[0.98]">
         무료 상담 신청
       </a>
+    </div>
+  );
+}
+
+/* ── 임대 사례 상세 (실측 실거래·네이버 추정실거래·네이버 호가) ── */
+type RentCase = {
+  date?: string;
+  crawl_date?: string;
+  dong?: string;
+  floor?: string;
+  area_m2?: number;
+  deposit?: number;
+  monthly?: number;
+  rent_per_pyeong?: number;
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function RentCasesSection({ rentNearby }: { rentNearby: any }) {
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<"actual" | "deals" | "listings">("deals");
+
+  const actualCases = (rentNearby?.sample_cases ?? []) as Array<{
+    floor?: string; rent?: number; deposit?: number; rent_pyeong?: number; distance?: number;
+  }>;
+  const deals = (rentNearby?.recent_deals ?? []) as RentCase[];
+  const listings = (rentNearby?.recent_listings ?? []) as RentCase[];
+
+  const hasAny = actualCases.length > 0 || deals.length > 0 || listings.length > 0;
+  if (!hasAny) return null;
+
+  // 기본 탭: 사례가 있는 첫 탭
+  const availableTabs = [
+    { key: "actual" as const, label: "실측 실거래", count: actualCases.length, caption: "국토부 · 반경 내" },
+    { key: "deals" as const, label: "네이버 추정실거래", count: deals.length, caption: "사라진 매물 기반" },
+    { key: "listings" as const, label: "네이버 호가", count: listings.length, caption: "현재 매물" },
+  ].filter((t) => t.count > 0);
+
+  const activeTab = availableTabs.find((t) => t.key === tab) ? tab : availableTabs[0]?.key;
+
+  return (
+    <div className="mt-4 border-t border-gray-100 pt-3">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-left hover:bg-gray-100"
+      >
+        <span className="text-[12px] font-semibold text-gray-700">
+          🏢 이 주소 근처 임대 사례 {actualCases.length + deals.length + listings.length}건
+        </span>
+        <span className="text-[10px] text-muted">{open ? "접기 ▲" : "펼치기 ▼"}</span>
+      </button>
+      {open && (
+        <div className="mt-2">
+          <div className="mb-2 flex gap-1">
+            {availableTabs.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`rounded-md px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                  activeTab === t.key
+                    ? "bg-primary-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {t.label} <span className="opacity-80">({t.count})</span>
+              </button>
+            ))}
+          </div>
+
+          {activeTab === "actual" && (
+            <div className="overflow-hidden rounded-lg border border-gray-100">
+              <table className="w-full text-[10px]">
+                <thead><tr className="bg-gray-50">
+                  <th className="px-2 py-1.5 text-left font-medium text-muted">층</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">거리</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">평당</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">월세</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">보증금</th>
+                </tr></thead>
+                <tbody>
+                  {actualCases.slice(0, 15).map((c, i) => (
+                    <tr key={`a-${i}`} className="border-t border-gray-50">
+                      <td className="px-2 py-1.5 font-medium text-gray-700">{c.floor}</td>
+                      <td className="px-2 py-1.5 text-right text-muted">{c.distance != null ? `${Math.round(c.distance)}m` : "—"}</td>
+                      <td className="px-2 py-1.5 text-right font-bold text-gray-900">{c.rent_pyeong ?? "—"}만</td>
+                      <td className="px-2 py-1.5 text-right text-gray-800">{c.rent?.toLocaleString() ?? "—"}만</td>
+                      <td className="px-2 py-1.5 text-right text-gray-600">{c.deposit?.toLocaleString() ?? "—"}만</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === "deals" && (
+            <div className="overflow-hidden rounded-lg border border-gray-100">
+              <table className="w-full text-[10px]">
+                <thead><tr className="bg-gray-50">
+                  <th className="px-2 py-1.5 text-left font-medium text-muted">거래일</th>
+                  <th className="px-2 py-1.5 text-left font-medium text-muted">동·층</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">면적</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">평당</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">보/월</th>
+                </tr></thead>
+                <tbody>
+                  {deals.slice(0, 15).map((d, i) => (
+                    <tr key={`d-${i}`} className="border-t border-gray-50">
+                      <td className="px-2 py-1.5 text-muted">{(d.date ?? "").replaceAll("-", ".")}</td>
+                      <td className="px-2 py-1.5 text-gray-700">{d.dong}·{d.floor}</td>
+                      <td className="px-2 py-1.5 text-right text-muted">{d.area_m2 ? `${Math.round(d.area_m2)}㎡` : "—"}</td>
+                      <td className="px-2 py-1.5 text-right font-bold text-gray-900">{d.rent_per_pyeong ?? "—"}만</td>
+                      <td className="px-2 py-1.5 text-right text-gray-800">{d.deposit?.toLocaleString() ?? "—"}/{d.monthly?.toLocaleString() ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="px-2 py-1.5 text-[9px] text-muted border-t border-gray-50">
+                * 네이버 부동산에서 사라진 매물을 거래 성사로 추정. 건물명 정보 없음.
+              </p>
+            </div>
+          )}
+
+          {activeTab === "listings" && (
+            <div className="overflow-hidden rounded-lg border border-gray-100">
+              <table className="w-full text-[10px]">
+                <thead><tr className="bg-gray-50">
+                  <th className="px-2 py-1.5 text-left font-medium text-muted">수집일</th>
+                  <th className="px-2 py-1.5 text-left font-medium text-muted">동·층</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">면적</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">평당</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">보/월</th>
+                </tr></thead>
+                <tbody>
+                  {listings.slice(0, 15).map((l, i) => (
+                    <tr key={`l-${i}`} className="border-t border-gray-50">
+                      <td className="px-2 py-1.5 text-muted">{(l.crawl_date ?? "").replaceAll("-", ".")}</td>
+                      <td className="px-2 py-1.5 text-gray-700">{l.dong}·{l.floor}</td>
+                      <td className="px-2 py-1.5 text-right text-muted">{l.area_m2 ? `${Math.round(l.area_m2)}㎡` : "—"}</td>
+                      <td className="px-2 py-1.5 text-right font-bold text-gray-900">{l.rent_per_pyeong ?? "—"}만</td>
+                      <td className="px-2 py-1.5 text-right text-gray-800">{l.deposit?.toLocaleString() ?? "—"}/{l.monthly?.toLocaleString() ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="px-2 py-1.5 text-[9px] text-muted border-t border-gray-50">
+                * 현재 등록된 매물(호가). 실제 거래가와 차이 가능.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

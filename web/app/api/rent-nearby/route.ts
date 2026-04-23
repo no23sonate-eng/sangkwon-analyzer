@@ -194,6 +194,90 @@ export async function GET(request: Request) {
     stats[key] = calcStats(cases, maxDistance, target_pyeong);
   }
 
+  // ── 네이버 실거래/호가 개별 사례 (dong 우선, 없으면 gu) ──
+  let recentDeals: Array<{
+    date: string;
+    dong: string;
+    floor: string;
+    area_m2: number;
+    deposit: number;
+    monthly: number;
+    rent_per_pyeong: number;
+  }> = [];
+  let recentListings: Array<{
+    crawl_date: string;
+    dong: string;
+    floor: string;
+    area_m2: number;
+    deposit: number;
+    monthly: number;
+    rent_per_pyeong: number;
+  }> = [];
+
+  if (gu) {
+    // 이 위치 주변 1km 내 dong 집합
+    const dongDeg = (1000 / 111000) * 1.2;
+    const { data: nearbyAreas } = await supabase
+      .from("areas")
+      .select("dong, lat, lng")
+      .eq("gu", gu)
+      .gte("lat", lat - dongDeg).lte("lat", lat + dongDeg)
+      .gte("lng", lng - dongDeg).lte("lng", lng + dongDeg)
+      .limit(50);
+    const dongsForCases = Array.from(
+      new Set((nearbyAreas ?? []).map((a) => a.dong as string).filter((d): d is string => !!d))
+    );
+
+    // 네이버 추정실거래 — 최신 20건
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let qd: any = supabase
+      .from("naver_estimated_deals")
+      .select("disappeared_date, dong, floor, area_m2, estimated_deposit, estimated_rent, rent_per_pyeong")
+      .eq("gu", gu)
+      .gt("estimated_rent", 0);
+    if (dongsForCases.length > 0) qd = qd.in("dong", dongsForCases);
+    const { data: dealsRaw } = await qd
+      .order("disappeared_date", { ascending: false })
+      .limit(20);
+    recentDeals = ((dealsRaw as Array<{
+      disappeared_date: string; dong: string; floor: string; area_m2: number;
+      estimated_deposit: number; estimated_rent: number; rent_per_pyeong: number;
+    }> | null) ?? []).map((d) => ({
+      date: d.disappeared_date ?? "",
+      dong: d.dong ?? "",
+      floor: d.floor ?? "",
+      area_m2: d.area_m2 ?? 0,
+      deposit: d.estimated_deposit ?? 0,
+      monthly: d.estimated_rent ?? 0,
+      rent_per_pyeong: d.rent_per_pyeong ?? 0,
+    }));
+
+    // 네이버 호가 — 최신 20건
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let ql: any = supabase
+      .from("naver_listings")
+      .select("crawl_date, dong, floor, area_m2, deposit, monthly_rent")
+      .eq("gu", gu)
+      .gt("monthly_rent", 0)
+      .gt("area_m2", 0);
+    if (dongsForCases.length > 0) ql = ql.in("dong", dongsForCases);
+    const { data: listingsRaw } = await ql
+      .order("crawl_date", { ascending: false })
+      .limit(20);
+    recentListings = ((listingsRaw as Array<{
+      crawl_date: string; dong: string; floor: string; area_m2: number;
+      deposit: number; monthly_rent: number;
+    }> | null) ?? []).map((l) => ({
+      crawl_date: l.crawl_date ?? "",
+      dong: l.dong ?? "",
+      floor: l.floor ?? "",
+      area_m2: l.area_m2 ?? 0,
+      deposit: l.deposit ?? 0,
+      monthly: l.monthly_rent ?? 0,
+      rent_per_pyeong: l.area_m2 > 0 ? Math.round((l.monthly_rent / (l.area_m2 / 3.3)) * 10) / 10 : 0,
+    }));
+  }
+
   // DB에 사례가 없으면 네이버(추정실거래→호가) → 구 평균(DB→하드코딩) 순으로 fallback
   if (filtered.length === 0 && gu) {
     // 이 위치에 가까운 상권들의 행정동 목록 — 네이버 필터에 사용해 gu 전체 희석 방지
@@ -268,6 +352,8 @@ export async function GET(request: Request) {
             "지하": dB.length > 0 ? makeNaverStats(avgDeal(dB), dB.length) : makeNaverStats(0, 0),
           },
           sample_cases: [],
+          recent_deals: recentDeals,
+          recent_listings: recentListings,
         });
       }
     }
@@ -307,6 +393,8 @@ export async function GET(request: Request) {
             "지하": lB.length > 0 ? makeNaverStats(avgList(lB), lB.length) : makeNaverStats(0, 0),
           },
           sample_cases: [],
+          recent_deals: recentDeals,
+          recent_listings: recentListings,
         });
       }
     }
@@ -341,6 +429,8 @@ export async function GET(request: Request) {
           "지하": makeGuStats(guStats.b1_pyeong),
         },
         sample_cases: [],
+        recent_deals: recentDeals,
+        recent_listings: recentListings,
       });
     }
 
@@ -358,6 +448,8 @@ export async function GET(request: Request) {
           "지하": makeGuStats(fallback.b1),
         },
         sample_cases: [],
+        recent_deals: recentDeals,
+        recent_listings: recentListings,
       });
     }
   }
@@ -367,5 +459,7 @@ export async function GET(request: Request) {
     radius: actualRadius,
     stats,
     sample_cases: filtered.slice(0, 20),
+    recent_deals: recentDeals,
+    recent_listings: recentListings,
   });
 }
