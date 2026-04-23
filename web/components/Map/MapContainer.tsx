@@ -273,8 +273,8 @@ export default function MapContainer({ districtZones, zonePolygonGeoJSON, roadAn
       const ds = drawStart;
       if (!ds) return;
       const dist = calcDist(ds.lat, ds.lng, e.lngLat.lat, e.lngLat.lng);
-      // 스냅: 150, 300, 500, 1000m
-      const snaps = [150, 300, 500, 1000];
+      // 스냅: 150, 300, 500m
+      const snaps = [150, 300, 500];
       const snapped = snaps.find((s) => Math.abs(dist - s) < 30) ?? Math.round(dist);
       setDrawRadius(snapped);
     };

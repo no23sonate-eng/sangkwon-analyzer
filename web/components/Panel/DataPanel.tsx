@@ -30,7 +30,7 @@ export default function DataPanel() {
 
   const trdarCount = analysisData?.trdar_count ?? 0;
 
-  const RADIUS_OPTIONS = [100, 300, 500, 1000];
+  const RADIUS_OPTIONS = [100, 300, 500];
 
   const handleRadiusChange = async (r: number) => {
     setRadius(r);
