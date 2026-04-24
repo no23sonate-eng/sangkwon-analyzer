@@ -55,7 +55,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ gu_name:
       "1층_평": data.f1_pyeong,
       "지하_평": data.b1_pyeong,
       "2층이상_평": data.f2_pyeong,
-      source: data.source,
+      source: `${gu_name} 권역 평균`,
       updated_at: data.updated_at,
     });
   }
@@ -70,6 +70,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ gu_name:
     "1층_평": d.f1,
     "지하_평": d.b1,
     "2층이상_평": d.f2,
-    source: "한국부동산원 2025 Q3 (폴백)",
+    source: "권역 평균 (폴백)",
   });
 }

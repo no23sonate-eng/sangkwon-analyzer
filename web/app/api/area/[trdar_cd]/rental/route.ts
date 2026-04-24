@@ -72,7 +72,7 @@ async function computeNearbyRent(lat: number, lng: number, gu: string, dong?: st
     const avgPyeong = nearby.reduce((s, c, i) => s + c.rent_pyeong * weights[i], 0) / totalW;
     return {
       value: Math.round(avgPyeong * 10) / 10,
-      source: `국토부 실거래 ${nearby.length}건 · 반경 ${MAX_RADIUS}m 가중평균`,
+      source: `공공 실거래 ${nearby.length}건 · 반경 ${MAX_RADIUS}m 가중평균`,
     };
   }
 
@@ -94,7 +94,7 @@ async function computeNearbyRent(lat: number, lng: number, gu: string, dong?: st
         const avg = validDeals.reduce((s, d) => s + d.rent_per_pyeong, 0) / validDeals.length;
         return {
           value: Math.round(avg * 10) / 10,
-          source: `네이버 추정실거래 ${validDeals.length}건 · ${scope === "dong" ? dong : gu}`,
+          source: `추정 실거래 ${validDeals.length}건 · ${scope === "dong" ? dong : gu}`,
         };
       }
     }
@@ -119,7 +119,7 @@ async function computeNearbyRent(lat: number, lng: number, gu: string, dong?: st
         const avg = validListings.reduce((s, l) => s + l.monthly_rent / (l.area_m2 / 3.3), 0) / validListings.length;
         return {
           value: Math.round(avg * 10) / 10,
-          source: `네이버 호가 ${validListings.length}건 · ${scope === "dong" ? dong : gu}`,
+          source: `현재 호가 ${validListings.length}건 · ${scope === "dong" ? dong : gu}`,
         };
       }
     }
@@ -134,14 +134,14 @@ async function computeNearbyRent(lat: number, lng: number, gu: string, dong?: st
   if (guStats?.f1_pyeong && guStats.f1_pyeong > 0) {
     return {
       value: guStats.f1_pyeong,
-      source: guStats.source ?? `${gu} 구 평균`,
+      source: `${gu} 권역 평균`,
     };
   }
 
   // 5차: 하드코딩
   return {
     value: GU_RENT_FALLBACK[gu]?.f1 ?? 25,
-    source: "한국부동산원 2025 Q3 (폴백)",
+    source: "권역 평균 (폴백)",
   };
 }
 

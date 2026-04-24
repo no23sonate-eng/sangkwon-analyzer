@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
 });
 
 function sourceTier(source: string): { label: string; bg: string; color: string } {
-  if (source.startsWith("국토부 실거래")) return { label: "실측", bg: "#D1FAE5", color: "#047857" };
-  if (source.startsWith("네이버 추정실거래")) return { label: "네이버 추정실거래", bg: "#E0E7FF", color: "#4338CA" };
-  if (source.startsWith("네이버 호가")) return { label: "네이버 호가", bg: "#E0E7FF", color: "#4338CA" };
-  return { label: "구 평균", bg: "#FEF3C7", color: "#B45309" };
+  if (source.startsWith("공공 실거래")) return { label: "공공 DB", bg: "#D1FAE5", color: "#047857" };
+  if (source.startsWith("추정 실거래")) return { label: "추정 실거래", bg: "#E0E7FF", color: "#4338CA" };
+  if (source.startsWith("현재 호가")) return { label: "현재 호가", bg: "#E0E7FF", color: "#4338CA" };
+  return { label: "권역 평균", bg: "#FEF3C7", color: "#B45309" };
 }
 
 interface Props {

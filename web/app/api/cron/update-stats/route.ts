@@ -99,7 +99,7 @@ async function updateRentStats(rows: SeoulRentRow[]) {
       f1_pyeong: f1,
       f2_pyeong: Math.round(f1 * 0.6 * 10) / 10,
       b1_pyeong: Math.round(f1 * 0.58 * 10) / 10,
-      source: `서울 열린데이터 실거래 (${year})`,
+      source: `공공 실거래 DB (${year})`,
       updated_at: new Date().toISOString(),
     }, { onConflict: "gu" });
     updated++;
@@ -138,7 +138,7 @@ async function updateSaleStats(rows: SeoulSaleRow[]) {
       gu: guName,
       m2_price: avgPerM2,
       avg_price: avgPrice,
-      source: `서울 열린데이터 실거래 (${year})`,
+      source: `공공 실거래 DB (${year})`,
       updated_at: new Date().toISOString(),
     }, { onConflict: "gu" });
     updated++;

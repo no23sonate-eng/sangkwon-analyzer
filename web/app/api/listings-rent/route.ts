@@ -4,14 +4,13 @@ import { rateLimit } from "@/lib/rate-limit";
 
 export const revalidate = 3600;
 
-// 네이버 데이터 — 이용약관 리스크로 인해 서버 전용 키로만 접근
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
   process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
 );
 
 export async function GET(request: Request) {
-  const limited = rateLimit(request, "naver-rent", 30, 60_000);
+  const limited = rateLimit(request, "listings-rent", 30, 60_000);
   if (limited) return limited;
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json({ error: "service unavailable" }, { status: 503 });
@@ -76,7 +75,7 @@ export async function GET(request: Request) {
     deal_count: validDeals.length,
     asking_rent_per_pyeong,
     asking_count: validListings.length,
-    source: "네이버 부동산 호가 추정 실거래",
+    source: "호가·추정 실거래",
     recent_deals: validDeals.slice(0, 10),
   });
 }

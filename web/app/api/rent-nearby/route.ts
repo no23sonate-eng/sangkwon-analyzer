@@ -345,7 +345,7 @@ export async function GET(request: Request) {
           total_cases: d1.length,
           radius: actualRadius,
           fallback: true,
-          fallback_source: `네이버 추정실거래 ${d1.length}건 · ${scopeLabel}`,
+          fallback_source: `추정 실거래 ${d1.length}건 · ${scopeLabel}`,
           stats: {
             "1층": makeNaverStats(avgDeal(d1), d1.length),
             "2층": d2.length > 0 ? makeNaverStats(avgDeal(d2), d2.length) : makeNaverStats(0, 0),
@@ -386,7 +386,7 @@ export async function GET(request: Request) {
           total_cases: l1.length,
           radius: actualRadius,
           fallback: true,
-          fallback_source: `네이버 호가 ${l1.length}건 · ${scopeLabel}`,
+          fallback_source: `현재 호가 ${l1.length}건 · ${scopeLabel}`,
           stats: {
             "1층": makeNaverStats(avgList(l1), l1.length),
             "2층": l2.length > 0 ? makeNaverStats(avgList(l2), l2.length) : makeNaverStats(0, 0),
@@ -422,7 +422,7 @@ export async function GET(request: Request) {
         total_cases: 1,
         radius: actualRadius,
         fallback: true,
-        fallback_source: `${gu} 평균 (${guStats.source})`,
+        fallback_source: `${gu} 권역 평균`,
         stats: {
           "1층": makeGuStats(guStats.f1_pyeong),
           "2층": makeGuStats(guStats.f2_pyeong),
@@ -441,7 +441,7 @@ export async function GET(request: Request) {
         total_cases: 1,
         radius: actualRadius,
         fallback: true,
-        fallback_source: `${gu} 평균 (한국부동산원 2025 Q3)`,
+        fallback_source: `${gu} 권역 평균`,
         stats: {
           "1층": makeGuStats(fallback.f1),
           "2층": makeGuStats(fallback.f2),

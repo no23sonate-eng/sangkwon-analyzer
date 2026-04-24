@@ -98,7 +98,7 @@ export default function DashboardPage() {
               {(() => {
                 const label = kpi?.monthly_open?.label ?? "";
                 const m = label.match(/\d{4}\s*Q[1-4]/);
-                return m ? `${m[0]} 기준 · 서울시 열린데이터` : "서울시 열린데이터 기반";
+                return m ? `${m[0]} 기준 · 공공 상권 데이터` : "공공 상권 데이터 기반";
               })()}
             </p>
           </div>
@@ -286,8 +286,8 @@ export default function DashboardPage() {
 
         <div className="mt-8 border-t border-gray-100 pt-4 text-[11px] leading-relaxed text-muted">
           <p>
-            데이터 출처: 서울 열린데이터광장(서울시 상권분석서비스·실거래가), 한국부동산원 상업용부동산 임대동향조사,
-            공개 부동산 시세정보. 모든 지표는 참고용 추정치이며 실제 시장 상황과 차이가 있을 수 있습니다.
+            공공 상권 데이터 및 공개 부동산 시세정보 기반의 자체 추정치입니다.
+            모든 지표는 참고용이며 실제 시장 상황과 차이가 있을 수 있습니다.
           </p>
           <p className="mt-1">
             본 서비스는 정보 제공 목적이며, 투자·매매·계약의 근거로 사용할 수 없습니다.

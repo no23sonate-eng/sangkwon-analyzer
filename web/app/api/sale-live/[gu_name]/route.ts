@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ gu_name:
     return NextResponse.json({
       avg_price_per_m2: data.m2_price,
       avg_price: data.avg_price,
-      source: data.source,
+      source: `${gu_name} 권역 평균`,
       updated_at: data.updated_at,
     });
   }

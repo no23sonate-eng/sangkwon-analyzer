@@ -29,15 +29,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ gu_name:
       .order("disappeared_date", { ascending: false })
       .limit(50);
 
-    let naver_avg_pyeong: number | null = null;
-    let naver_count = 0;
+    let estimate_avg_pyeong: number | null = null;
+    let estimate_count = 0;
     if (naverData && naverData.length > 0) {
       const validDeals = naverData.filter((d) => d.rent_per_pyeong > 0);
       if (validDeals.length > 0) {
-        naver_avg_pyeong = Math.round(
+        estimate_avg_pyeong = Math.round(
           validDeals.reduce((s, d) => s + d.rent_per_pyeong, 0) / validDeals.length * 10
         ) / 10;
-        naver_count = validDeals.length;
+        estimate_count = validDeals.length;
       }
     }
 
@@ -45,12 +45,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ gu_name:
       avg_deposit: data.avg_deposit,
       avg_monthly_rent: data.avg_monthly_rent,
       avg_rent_per_m2: data.avg_rent_per_m2,
-      source: data.source,
+      source: `${gu_name} 권역 평균`,
       updated_at: data.updated_at,
-      ...(naver_avg_pyeong != null && {
-        naver_avg_pyeong,
-        naver_count,
-        naver_source: "네이버 부동산 추정 실거래",
+      ...(estimate_avg_pyeong != null && {
+        estimate_avg_pyeong,
+        estimate_count,
+        estimate_source: "추정 실거래 데이터",
       }),
     });
   }

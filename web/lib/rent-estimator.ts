@@ -116,8 +116,8 @@ export function estimateRent(
   let method2_rent = 0;
   if (rentApi?.["1층_평"]) {
     method2_rent = Math.round(rentApi["1층_평"]); // 만원/평/월
-    methods.push({ method: "부동산원 호가 (1층)", value: method2_rent, weight: 0.2 });
-    sources.push("한국부동산원 호가");
+    methods.push({ method: "권역 호가 (1층)", value: method2_rent, weight: 0.2 });
+    sources.push("권역 호가 DB");
   }
 
   // ── 방법 3: 임대 실거래/폴백 ──

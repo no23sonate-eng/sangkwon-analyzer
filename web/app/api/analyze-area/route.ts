@@ -469,7 +469,7 @@ export async function GET(request: Request) {
       "1층_평": weightedAvg(r1),
       "2층이상_평": r2.length > 0 ? weightedAvg(r2) : 0,
       "지하_평": rB.length > 0 ? weightedAvg(rB) : 0,
-      source: `국토부 실거래 ${r1.length}건 · 반경 ${RENT_RADIUS_M}m 가중평균`,
+      source: `공공 실거래 ${r1.length}건 · 반경 ${RENT_RADIUS_M}m 가중평균`,
       cases: { "1층": r1.length, "2층이상": r2.length, "지하": rB.length },
     };
   }
@@ -504,7 +504,7 @@ export async function GET(request: Request) {
           "1층_평": avg(d1),
           "2층이상_평": avg(d2),
           "지하_평": avg(dB),
-          source: `네이버 추정실거래 ${d1.length}건 · ${scopeLabel}`,
+          source: `추정 실거래 ${d1.length}건 · ${scopeLabel}`,
           cases: { "1층": d1.length, "2층이상": d2.length, "지하": dB.length },
         };
         break;
@@ -544,7 +544,7 @@ export async function GET(request: Request) {
           "1층_평": avg(l1),
           "2층이상_평": avg(l2),
           "지하_평": avg(lB),
-          source: `네이버 호가 ${l1.length}건 · ${scopeLabel}`,
+          source: `현재 호가 ${l1.length}건 · ${scopeLabel}`,
           cases: { "1층": l1.length, "2층이상": l2.length, "지하": lB.length },
         };
         break;
@@ -566,7 +566,7 @@ export async function GET(request: Request) {
         "1층_평": rentDbRow.f1_pyeong,
         "지하_평": rentDbRow.b1_pyeong,
         "2층이상_평": rentDbRow.f2_pyeong,
-        source: rentDbRow.source ?? `${guName} 구 평균`,
+        source: `${guName} 권역 평균`,
       };
     } else {
       const rentFallback = RENT_DATA[guName];
@@ -576,7 +576,7 @@ export async function GET(request: Request) {
           "1층_평": rentFallback.f1,
           "지하_평": rentFallback.b1,
           "2층이상_평": rentFallback.f2,
-          source: "한국부동산원 2025 Q3 (폴백)",
+          source: "권역 평균 (폴백)",
         };
       }
     }

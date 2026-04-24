@@ -288,31 +288,31 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
           {/* ━━ 섹션 4: 임대 시장 ━━ */}
           {rental && (() => {
             const src = rental.source ?? "";
-            const isRealDeal = src.startsWith("국토부 실거래");
-            const isNaver = src.startsWith("네이버");
-            const tone = isRealDeal ? "emerald" : isNaver ? "indigo" : "amber";
+            const isRealDeal = src.startsWith("공공 실거래");
+            const isEstimate = src.startsWith("추정 실거래") || src.startsWith("현재 호가");
+            // 권역 평균 폴백(실측·추정·호가 전부 실패)일 때는 배지 노출하지 않음 — 모든 상권에 같은 구평균만 보이는 것 방지
+            const showBadge = isRealDeal || isEstimate;
+            const tone = isRealDeal ? "emerald" : "indigo";
             const palette: Record<string, { bg: string; text: string }> = {
               emerald: { bg: "#D1FAE5", text: "#047857" },
               indigo: { bg: "#E0E7FF", text: "#4338CA" },
-              amber: { bg: "#FEF3C7", text: "#B45309" },
             };
             const p = palette[tone];
-            const short = isRealDeal ? "실측"
-              : src.startsWith("네이버 추정실거래") ? "네이버 추정실거래"
-              : src.startsWith("네이버 호가") ? "네이버 호가"
-              : "구 평균";
+            const short = isRealDeal ? "공공 DB"
+              : src.startsWith("추정 실거래") ? "추정 실거래"
+              : "현재 호가";
             return (
             <Section
               title="임대 시장"
-              right={
+              right={showBadge ? (
                 <span
                   className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
                   style={{ background: p.bg, color: p.text }}
-                  title={src || "데이터 출처 미확인"}
+                  title={src}
                 >
                   {short}
                 </span>
-              }
+              ) : undefined}
             >
               <div className="mb-4 grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-gray-50 p-3">
@@ -400,8 +400,8 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
           )}
 
           <p className="px-1 pt-2 text-[10px] leading-relaxed text-muted">
-            출처: 서울 열린데이터광장(상권분석·유동인구), 한국부동산원, 공개 부동산 정보.
-            임대료·공실률·트렌드는 추정치이며 실제 시장과 차이가 있을 수 있습니다.
+            공공 상권 데이터 및 공개 부동산 정보 기반의 자체 추정치입니다.
+            임대료·공실률·트렌드는 참고용이며 실제 시장과 차이가 있을 수 있습니다.
           </p>
           <div className="h-4" />
         </div>
