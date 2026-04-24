@@ -23,6 +23,12 @@ const RENT_RATIO: Record<string, number> = {
   "여가/오락": 0.12,   // 10~15% — 면적 넓어 총액 큼
 };
 
+/* 업종별 평균 면적 (평) — 임대료 추정 기준. 업계 관행값 하드코딩. */
+const AVG_PYEONG: Record<string, number> = {
+  "외식": 20, "카페/주류": 15, "소매/유통": 25,
+  "뷰티/건강": 15, "교육": 25, "생활서비스": 10, "여가/오락": 40,
+};
+
 const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[] }> = {
   외식: {
     label: "외식",
@@ -74,6 +80,7 @@ interface GroupData {
   gapScore: number;
   totalSales: number;
   perStoreSales: number;
+  avgTicket: number;       // 객단가 (원/건) — 카테고리 총매출 ÷ 총거래건수
   openCount: number;
   closeCount: number;
   franchise: number;
@@ -112,12 +119,6 @@ export default function BrandSynergy() {
     // 잠재 소비자 = 유동인구 + 거주인구 (거주인구는 반복 소비하므로 가중)
     const potentialConsumers = ftTotal + popTotal;
 
-    // 업종별 평균 면적(평) 추정
-    const AVG_PYEONG: Record<string, number> = {
-      "외식": 20, "카페/주류": 15, "소매/유통": 25,
-      "뷰티/건강": 15, "교육": 25, "생활서비스": 10, "여가/오락": 40,
-    };
-
     let categorizedStores = 0;
     const result: GroupData[] = [];
 
@@ -126,6 +127,7 @@ export default function BrandSynergy() {
 
       let storeCount = 0;
       let totalSalesAmt = 0;
+      let totalCountAmt = 0;
       let totalPerStoreSales = 0;
       let perStoreCount = 0;
       let openCount = 0;
@@ -136,7 +138,10 @@ export default function BrandSynergy() {
         if (subsSet.has(subName)) storeCount += info.count;
       }
       for (const s of byService) {
-        if (subsSet.has(s.업종)) totalSalesAmt += s.매출액;
+        if (subsSet.has(s.업종)) {
+          totalSalesAmt += s.매출액;
+          totalCountAmt += s.건수 ?? 0;
+        }
       }
       for (const p of perStore) {
         if (subsSet.has(p.업종) && p.점포당_매출 > 0) {
@@ -175,6 +180,8 @@ export default function BrandSynergy() {
       // 공급 밀도: 잠재소비자 만명당 점포 수
       const density = potentialConsumers > 0 ? (storeCount / potentialConsumers) * 10000 : 0;
 
+      const avgTicket = totalCountAmt > 0 ? totalSalesAmt / totalCountAmt : 0;
+
       result.push({
         key,
         label: group.label,
@@ -189,6 +196,7 @@ export default function BrandSynergy() {
         gapScore: 0,
         totalSales: totalSalesAmt,
         perStoreSales: avgPerStoreSales,
+        avgTicket,
         openCount,
         closeCount,
         franchise,
@@ -221,11 +229,9 @@ export default function BrandSynergy() {
       const densityRatio = densities[i] / maxDensity;
       const supplySlack = Math.round((1 - densityRatio) * 100);
 
-      // 매출 잠재력
-      const consumersPerStore = r.storeCount > 0 ? potentialConsumers / r.storeCount : 0;
-      const allCPS = valid.filter((g) => g.storeCount > 0).map((g) => potentialConsumers / g.storeCount);
-      const maxCPS = Math.max(...allCPS, 1);
-      const revPotential = Math.round((consumersPerStore / maxCPS) * 100);
+      // 객단가 (카테고리 중 최대값 대비 상대값)
+      const maxTicket = Math.max(...valid.map((g) => g.avgTicket), 1);
+      const ticketScore = r.avgTicket > 0 ? Math.round((r.avgTicket / maxTicket) * 100) : 0;
 
       // 개폐업률
       const oc = r.openCount + r.closeCount;
@@ -245,7 +251,7 @@ export default function BrandSynergy() {
 
       // 기회 점수: 레이더 6축 전체 평균
       r.gapScore = Math.max(0, Math.min(100, Math.round(
-        (r.demandScore + supplySlack + revPotential + openRate + rentFit + entryEase) / 6
+        (r.demandScore + supplySlack + ticketScore + openRate + rentFit + entryEase) / 6
       )));
     }
 
@@ -279,29 +285,26 @@ export default function BrandSynergy() {
       return Math.max(5, Math.round((1 - myD / maxD) * 100));
     })(),
       desc: `만명당 ${(_consumers > 0 ? (selectedGroup.storeCount / _consumers) * 10000 : 0).toFixed(1)}개` },
-    // 매출 잠재력: 잠재소비자 대비 현재 점포당 매출이 얼마나 더 나올 수 있는지
-    // = (잠재소비자 / 점포수) × (1인당소비액 대비) — 소비자 대비 점포가 적고 수요가 높으면 높음
-    { axis: "매출 잠재력", value: (() => {
-      if (selectedGroup.storeCount === 0) return 5;
-      // 점포당 잠재소비자 수 (많을수록 매출 가능성 높음)
-      const consumersPerStore = _consumers / selectedGroup.storeCount;
-      const allCPS = groups.filter((g) => g.storeCount > 0).map((g) => _consumers / g.storeCount);
-      const maxCPS = Math.max(...allCPS, 1);
-      return Math.max(5, Math.min(100, Math.round((consumersPerStore / maxCPS) * 100)));
+    // 객단가: 거래 1건당 평균 결제액 — 카테고리 중 최대값 대비 정규화
+    { axis: "객단가", value: (() => {
+      if (selectedGroup.avgTicket <= 0) return 5;
+      const maxT = Math.max(...groups.filter((g) => g.avgTicket > 0).map((g) => g.avgTicket), 1);
+      return Math.max(5, Math.min(100, Math.round((selectedGroup.avgTicket / maxT) * 100)));
     })(),
-      desc: `점포당 소비자 ${selectedGroup.storeCount > 0 ? Math.round(_consumers / selectedGroup.storeCount).toLocaleString() : "-"}명` },
+      desc: `건당 ${selectedGroup.avgTicket > 0 ? Math.round(selectedGroup.avgTicket).toLocaleString() : "-"}원` },
     // 개폐업률: 해당 카테고리의 개업/(개업+폐업) — 높을수록 건전
     { axis: "개폐업률", value: (() => {
       const oc = selectedGroup.openCount + selectedGroup.closeCount;
       return oc > 0 ? Math.round((selectedGroup.openCount / oc) * 100) : 50;
     })(),
       desc: `개업${selectedGroup.displayOpen} 폐업${selectedGroup.displayClose}` },
-    // 임대 적정: 업종별 적정비율로 산출한 적정월세 vs 실제월세
+    // 임대 적정: 업종별 적정비율로 산출한 적정월세 vs 실제월세 (업종 평균 면적 기준)
     { axis: "임대 적정", value: (() => {
       const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
       const expectedRent = selectedGroup.perStoreSales * ratio; // 적정 월세 (원)
       const rent1f = (rent?.["1층_평"] as number) ?? 0;
-      const actualRent = rent1f > 0 ? rent1f * 30 * 10000 : 0; // 30평 기준 실제 월세 (원)
+      const avgPy = AVG_PYEONG[selectedGroup.key] ?? 20;
+      const actualRent = rent1f > 0 ? rent1f * avgPy * 10000 : 0; // 업종별 평균 면적 기준 실제 월세 (원)
       if (actualRent <= 0 || expectedRent <= 0) return 50;
       // 적정/실제 비율: 1이상이면 여유, 1미만이면 부담
       return Math.max(5, Math.min(100, Math.round((expectedRent / actualRent) * 50)));
@@ -310,8 +313,9 @@ export default function BrandSynergy() {
         const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
         const expectedRent = Math.round(selectedGroup.perStoreSales * ratio / 10000);
         const rent1f = (rent?.["1층_평"] as number) ?? 0;
-        const actualRent = rent1f * 30;
-        return `적정 ${expectedRent}만 vs 시세 ${actualRent}만`;
+        const avgPy = AVG_PYEONG[selectedGroup.key] ?? 20;
+        const actualRent = rent1f * avgPy;
+        return `적정 ${expectedRent}만 vs 시세 ${actualRent}만 (${avgPy}평)`;
       })() },
     // 진입 용이: 프랜차이즈 비율의 역수
     { axis: "진입 용이", value: Math.min(100, Math.max(5, Math.round((1 - selectedGroup.franchiseRatio) * 100))),
@@ -361,7 +365,7 @@ export default function BrandSynergy() {
       {/* 미선택: 추천 점수 요약 */}
       {!selected && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 6개 축(수요·공급·매출·개폐업·임대·진입) 종합 점수</p>
+          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 6개 축(수요·공급여유·객단가·개폐업·임대·진입) 종합 점수</p>
           {groups.map((g) => {
             const tone = g.gapScore >= 55 ? "emerald" : g.gapScore >= 40 ? "amber" : "red";
             const color = tone === "emerald" ? "#10B981" : tone === "amber" ? "#F59E0B" : "#EF4444";

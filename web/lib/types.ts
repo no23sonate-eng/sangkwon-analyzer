@@ -31,8 +31,8 @@ export interface StoreSummary {
 /* ── 매출 ── */
 
 export interface SalesSummary {
-  by_service: Array<{ 업종: string; 매출액: number }>;
-  per_store: Array<{ 업종: string; 점포수: number; 점포당_매출: number }>;
+  by_service: Array<{ 업종: string; 매출액: number; 건수: number }>;
+  per_store: Array<{ 업종: string; 점포수: number; 총매출: number; 점포당_매출: number; 점포당_건수: number }>;
   time_slots: Record<string, number>;
   day_of_week: Record<string, number>;
   total_sales: number;
