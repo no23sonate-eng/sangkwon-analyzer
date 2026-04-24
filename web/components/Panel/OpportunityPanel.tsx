@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAnalysisStore } from "@/store/analysisStore";
 import BrandSynergy from "@/components/Pro/BrandSynergy";
 import GrowthPrediction from "@/components/Pro/GrowthPrediction";
@@ -89,84 +89,19 @@ const RENT_AREA_OPTIONS = [
   { pyeong: 300, label: "그 이상" },
 ];
 
-/* ── 보증금 환산율 ── 연 6% (= 월 0.5%)
-   근거: 주택 법정 상한 연 4.5%(기준금리 2.5%+법정가산율 2.0%)보다 약간 상회.
-   상가는 법정 상한 없음. KOSIS 상가 통계 평균 연 5~7% 구간에 부합. */
-const DEPOSIT_MONTHLY_RATE = 0.005;
-
-/* ── 평수 규모 할인 계수 (10평 기준) ──
-   브레이크포인트 사이는 선형보간. fallback 시세일 때만 적용. */
-const PYEONG_DISCOUNT: Array<[number, number]> = [
-  [10, 1.00],
-  [30, 0.95],
-  [50, 0.90],
-  [100, 0.82],
-  [200, 0.72],
-  [300, 0.60],
-];
-
-function getPyeongDiscount(pyeong: number): number {
-  if (pyeong <= PYEONG_DISCOUNT[0][0]) return PYEONG_DISCOUNT[0][1];
-  if (pyeong >= PYEONG_DISCOUNT[PYEONG_DISCOUNT.length - 1][0]) {
-    return PYEONG_DISCOUNT[PYEONG_DISCOUNT.length - 1][1];
-  }
-  for (let i = 1; i < PYEONG_DISCOUNT.length; i++) {
-    if (pyeong <= PYEONG_DISCOUNT[i][0]) {
-      const [p0, d0] = PYEONG_DISCOUNT[i - 1];
-      const [p1, d1] = PYEONG_DISCOUNT[i];
-      const t = (pyeong - p0) / (p1 - p0);
-      return Math.round((d0 + (d1 - d0) * t) * 100) / 100;
-    }
-  }
-  return 1.0;
-}
-
-/* ── 업종별 적정 임대료 비율 (월세 ÷ 월매출) ── */
-const RENT_RATIO_BY_CATEGORY: Array<{ key: string; max: number }> = [
-  { key: "외식", max: 0.12 },
-  { key: "카페/주류", max: 0.15 },
-  { key: "소매/유통", max: 0.07 },
-  { key: "뷰티/건강", max: 0.10 },
-  { key: "교육", max: 0.10 },
-  { key: "생활서비스", max: 0.06 },
-  { key: "여가/오락", max: 0.12 },
-];
-
-/* svc_nm → 카테고리 매핑 (analyze-area의 deriveCategory와 동일 규칙) */
-function svcToCategory(svc: string): string | null {
-  if (svc.includes("커피") || svc.includes("카페") || svc.includes("주점") || svc.includes("호프")) return "카페/주류";
-  if (svc.includes("음식점") || svc.includes("식당") || svc.includes("분식") || svc.includes("치킨")
-    || svc.includes("패스트푸드") || svc.includes("피자") || svc.includes("햄버거")) return "외식";
-  if (svc.includes("의류") || svc.includes("패션") || svc.includes("신발") || svc.includes("잡화")
-    || svc.includes("슈퍼") || svc.includes("편의점") || svc.includes("마트")) return "소매/유통";
-  if (svc.includes("의원") || svc.includes("약국") || svc.includes("병원")
-    || svc.includes("미용") || svc.includes("헤어") || svc.includes("네일")) return "뷰티/건강";
-  if (svc.includes("학원") || svc.includes("교육")) return "교육";
-  if (svc.includes("부동산") || svc.includes("중개")) return "생활서비스";
-  return null;
-}
-
 function RentVerification({ guName }: { guName: string }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [rentNearby, setRentNearby] = useState<any>(null);
   const [inputRent, setInputRent] = useState("");
-  const [inputDeposit, setInputDeposit] = useState("");
   const [selectedPyeong, setSelectedPyeong] = useState(10);
   const [inputFloor, setInputFloor] = useState("1층");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [expectedSalesOverride, setExpectedSalesOverride] = useState("");
-  const [verified, setVerified] = useState<null | {
-    status: string; message: string; color: string;
-    marketPP: number; effRent: number; discount: number;
-    bizRatio: null | { pct: number; max: number; expectedSales: number; verdict: "ok" | "high" | "over" };
-  }>(null);
+  const [verified, setVerified] = useState<null | { status: string; message: string; color: string; avgPP?: number }>(null);
   const [rentLoading, setRentLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
 
   const clickedLat = useAnalysisStore((s) => s.clickedLat);
   const clickedLng = useAnalysisStore((s) => s.clickedLng);
   const radius = useAnalysisStore((s) => s.radius);
-  const analysisData = useAnalysisStore((s) => s.analysisData);
 
   useEffect(() => {
     if (clickedLat == null || clickedLng == null) return;
@@ -177,36 +112,6 @@ function RentVerification({ guName }: { guName: string }) {
       .then((data) => { setRentNearby(data); setRentLoading(false); })
       .catch(() => setRentLoading(false));
   }, [clickedLat, clickedLng, radius, selectedPyeong, guName]);
-
-  // 선택된 업종의 예상 월매출 (점포당, 만원 단위) — 상권 sales_summary 기반
-  const expectedMonthlySales = useMemo<number>(() => {
-    if (!selectedCategory) return 0;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const perStore: Array<any> = (analysisData as any)?.sales_summary?.per_store ?? [];
-    const matched = perStore.filter((r) => svcToCategory(r["업종"] ?? "") === selectedCategory);
-    if (matched.length === 0) return 0;
-    const totalStores = matched.reduce((s, r) => s + (r["점포수"] ?? 0), 0);
-    const totalSales = matched.reduce((s, r) => s + (r["총매출"] ?? 0), 0);
-    if (totalStores === 0) return 0;
-    const perStoreWon = totalSales / totalStores; // 원
-    return Math.round(perStoreWon / 10000); // 만원
-  }, [selectedCategory, analysisData]);
-
-  const effectiveExpectedSales = expectedSalesOverride
-    ? parseInt(expectedSalesOverride) || 0
-    : expectedMonthlySales;
-
-  // 업종 선택지 — 실제 해당 상권에 사례가 있는 카테고리만 노출
-  const availableCategories = useMemo<string[]>(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const perStore: Array<any> = (analysisData as any)?.sales_summary?.per_store ?? [];
-    const set = new Set<string>();
-    for (const r of perStore) {
-      const cat = svcToCategory(r["업종"] ?? "");
-      if (cat && (r["점포당_매출"] ?? 0) > 0) set.add(cat);
-    }
-    return RENT_RATIO_BY_CATEGORY.map((c) => c.key).filter((k) => set.has(k));
-  }, [analysisData]);
 
   const handleVerify = () => {
     const rent = parseInt(inputRent);
@@ -221,7 +126,6 @@ function RentVerification({ guName }: { guName: string }) {
       if (fs && fs.count > 0) {
         avgPP = fs.avg_pyeong;
       } else {
-        // 해당 층 데이터 없을 때: 다른 층 데이터로 보정 추정
         const FLOOR_FACTOR: Record<string, number> = { "1층": 1.0, "2층": 0.65, "지하": 0.5 };
         const targetFactor = FLOOR_FACTOR[inputFloor] ?? 1.0;
         let fallbackPP = 0;
@@ -233,12 +137,7 @@ function RentVerification({ guName }: { guName: string }) {
           }
         }
         if (fallbackPP <= 0) {
-          setVerified({
-            status: "데이터 부족",
-            message: "주변 임대 사례가 없습니다. 반경을 넓혀 다시 시도해주세요.",
-            color: "#94A3B8",
-            marketPP: 0, effRent: 0, discount: 1, bizRatio: null,
-          });
+          setVerified({ status: "데이터 부족", message: "주변 임대 사례가 없습니다. 반경을 넓혀 다시 시도해주세요.", color: "#94A3B8" });
           setVerifyLoading(false);
           return;
         }
@@ -246,56 +145,16 @@ function RentVerification({ guName }: { guName: string }) {
         estimated = true;
       }
 
-      // ── 평수 규모 할인: fallback 시세일 때만 적용 (실측이면 이미 해당 평수 데이터이므로 중복 적용 금지) ──
-      const discount = rentNearby.fallback ? getPyeongDiscount(selectedPyeong) : 1.0;
-      const marketPP = Math.round(avgPP * discount * 10) / 10;
+      const rentPP = rent / selectedPyeong;
+      const ratio = rentPP / avgPP;
+      const suffix = estimated ? " (다른 층 기준 추정)" : "";
 
-      // ── 실효 월세: 월세 + 보증금 × 월 0.5% ──
-      const deposit = parseInt(inputDeposit) || 0;
-      const effRent = rent + Math.round(deposit * DEPOSIT_MONTHLY_RATE);
-      const effRentPP = effRent / selectedPyeong;
-      const ratio = effRentPP / marketPP;
-
-      // ── 업종 매출 대비 비율 ──
-      let bizRatio: null | { pct: number; max: number; expectedSales: number; verdict: "ok" | "high" | "over" } = null;
-      if (selectedCategory && effectiveExpectedSales > 0) {
-        const catConfig = RENT_RATIO_BY_CATEGORY.find((c) => c.key === selectedCategory);
-        if (catConfig) {
-          const pct = Math.round((effRent / effectiveExpectedSales) * 1000) / 10;
-          const pctDecimal = effRent / effectiveExpectedSales;
-          const verdict: "ok" | "high" | "over" =
-            pctDecimal <= catConfig.max ? "ok"
-            : pctDecimal <= catConfig.max * 1.2 ? "high"
-            : "over";
-          bizRatio = {
-            pct,
-            max: Math.round(catConfig.max * 1000) / 10,
-            expectedSales: effectiveExpectedSales,
-            verdict,
-          };
-        }
-      }
-
-      const floorSuffix = estimated ? " (다른 층 기준 추정)" : "";
-
-      let status: string, color: string, message: string;
-      if (ratio <= 0.85) {
-        status = "저렴"; color = "#10B981";
-        message = `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.${floorSuffix}`;
-      } else if (ratio <= 1.1) {
-        status = "적정"; color = "#6366F1";
-        message = `시세 범위 내 적정 수준입니다.${floorSuffix}`;
-      } else if (ratio <= 1.3) {
-        status = "다소 높음"; color = "#F59E0B";
-        message = `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.${floorSuffix}`;
-      } else {
-        status = "고가"; color = "#EF4444";
-        message = `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.${floorSuffix}`;
-      }
-
-      setVerified({ status, message, color, marketPP, effRent, discount, bizRatio });
+      if (ratio <= 0.85) setVerified({ status: "저렴", message: `시세 대비 ${Math.round((1 - ratio) * 100)}% 저렴합니다.${suffix}`, color: "#10B981", avgPP });
+      else if (ratio <= 1.1) setVerified({ status: "적정", message: `시세 범위 내 적정 수준입니다.${suffix}`, color: "#6366F1", avgPP });
+      else if (ratio <= 1.3) setVerified({ status: "다소 높음", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다.${suffix}`, color: "#F59E0B", avgPP });
+      else setVerified({ status: "고가", message: `시세 대비 ${Math.round((ratio - 1) * 100)}% 높습니다. 재검토를 권장합니다.${suffix}`, color: "#EF4444", avgPP });
       setVerifyLoading(false);
-    }, 1200);
+    }, 2000);
   };
 
   const fs = rentNearby?.stats?.[inputFloor];
@@ -325,127 +184,29 @@ function RentVerification({ guName }: { guName: string }) {
           ))}
         </div>
       </div>
-      <div className="mb-3 grid grid-cols-2 gap-2">
-        <div>
-          <label className="mb-1 block text-[10px] font-medium text-muted">월세 (만원)</label>
+      <div className="mb-3">
+        <label className="mb-1 block text-[10px] font-medium text-muted">확인하고 싶은 월세 (만원)</label>
+        <div className="flex gap-2">
           <input type="number" value={inputRent}
             onChange={(e) => { setInputRent(e.target.value); setVerified(null); }}
             onKeyDown={(e) => e.key === "Enter" && handleVerify()}
             placeholder="예: 300"
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] font-bold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
+            className="flex-1 rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] font-bold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
+          <button onClick={handleVerify} disabled={!inputRent || !rentNearby || verifyLoading}
+            className="rounded-lg bg-primary-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-primary-700 active:scale-95 disabled:opacity-40">
+            {verifyLoading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : "검증"}
+          </button>
         </div>
-        <div>
-          <label className="mb-1 block text-[10px] font-medium text-muted">보증금 (만원)</label>
-          <input type="number" value={inputDeposit}
-            onChange={(e) => { setInputDeposit(e.target.value); setVerified(null); }}
-            onKeyDown={(e) => e.key === "Enter" && handleVerify()}
-            placeholder="예: 3000"
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-[15px] font-bold outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
-        </div>
-      </div>
-      {availableCategories.length > 0 && (
-        <div className="mb-3">
-          <label className="mb-1 block text-[10px] font-medium text-muted">
-            업종 (선택 — 매출 대비 임대료 적정성 2차 판정)
-          </label>
-          <div className="flex flex-wrap gap-1">
-            <button
-              onClick={() => { setSelectedCategory(""); setExpectedSalesOverride(""); setVerified(null); }}
-              className={`rounded-md px-2.5 py-1 text-[10px] font-semibold ${selectedCategory === "" ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-500"}`}
-            >
-              미선택
-            </button>
-            {availableCategories.map((cat) => (
-              <button key={cat}
-                onClick={() => { setSelectedCategory(cat); setExpectedSalesOverride(""); setVerified(null); }}
-                className={`rounded-md px-2.5 py-1 text-[10px] font-semibold ${selectedCategory === cat ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-500"}`}>
-                {cat}
-              </button>
-            ))}
-          </div>
-          {selectedCategory && (
-            <div className="mt-2 flex items-center gap-2">
-              <label className="text-[10px] text-muted shrink-0">예상 월매출(만원)</label>
-              <input type="number"
-                value={expectedSalesOverride || (expectedMonthlySales || "")}
-                onChange={(e) => { setExpectedSalesOverride(e.target.value); setVerified(null); }}
-                placeholder={expectedMonthlySales ? `자동: ${expectedMonthlySales.toLocaleString()}` : "상권 데이터 없음"}
-                className="flex-1 rounded-md border border-gray-200 px-2 py-1 text-[11px] font-medium outline-none focus:border-primary-400" />
-              <span className="text-[9px] text-muted whitespace-nowrap">
-                {expectedMonthlySales > 0 && !expectedSalesOverride ? "상권 평균 자동" : "수동"}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-      <div className="mb-3">
-        <button onClick={handleVerify} disabled={!inputRent || !rentNearby || verifyLoading}
-          className="w-full rounded-lg bg-primary-600 px-5 py-2.5 text-[13px] font-semibold text-white hover:bg-primary-700 active:scale-95 disabled:opacity-40">
-          {verifyLoading ? (
-            <span className="inline-flex items-center gap-2 justify-center">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              검증 중
-            </span>
-          ) : "검증"}
-        </button>
       </div>
       {verified && (
         <div className="mb-3 space-y-2">
-          {/* 1차: 시세 비교 */}
           <div className="rounded-xl p-4" style={{ background: verified.color + "10" }}>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
               <span className="rounded-full px-3 py-1 text-[12px] font-bold text-white" style={{ background: verified.color }}>{verified.status}</span>
-              <span className="text-[11px] text-gray-500">
-                평당 {Math.round(verified.effRent / selectedPyeong)}만 vs 시세 {verified.marketPP}만/평
-              </span>
+              <span className="text-[11px] text-gray-500">평당 {Math.round(parseInt(inputRent) / selectedPyeong)}만 vs 시세 {verified.avgPP ?? fs?.avg_pyeong ?? 0}만/평</span>
             </div>
             <p className="mt-2 text-[13px] font-medium text-gray-800">{verified.message}</p>
-            <div className="mt-2 space-y-0.5 text-[10px] text-gray-500">
-              <p>
-                실효월세 {verified.effRent.toLocaleString()}만원
-                {parseInt(inputDeposit) > 0 && (
-                  <> (월세 {parseInt(inputRent).toLocaleString()} + 보증금 {parseInt(inputDeposit).toLocaleString()} × 월 0.5%)</>
-                )}
-              </p>
-              {verified.discount < 1 && (
-                <p>{selectedPyeong}평 규모할인 ×{verified.discount.toFixed(2)} 적용 (권역 평균 기준)</p>
-              )}
-            </div>
           </div>
-          {/* 2차: 업종 매출 대비 */}
-          {verified.bizRatio && (
-            <div className="rounded-xl border border-gray-100 p-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-bold text-gray-700">
-                  {selectedCategory} 매출 대비 임대료
-                </span>
-                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white ${
-                  verified.bizRatio.verdict === "ok" ? "bg-emerald-500"
-                  : verified.bizRatio.verdict === "high" ? "bg-amber-500"
-                  : "bg-red-500"
-                }`}>
-                  {verified.bizRatio.verdict === "ok" ? "적정"
-                    : verified.bizRatio.verdict === "high" ? "상한 초과"
-                    : "과중"}
-                </span>
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-[20px] font-black text-gray-900">{verified.bizRatio.pct}%</span>
-                <span className="text-[10px] text-muted">(업종 상한 {verified.bizRatio.max}%)</span>
-              </div>
-              {/* 비율 바 */}
-              <div className="mt-2 relative h-2 rounded-full bg-gray-100 overflow-hidden">
-                <div className="absolute inset-y-0 left-0 bg-emerald-400"
-                  style={{ width: `${Math.min(100, (verified.bizRatio.max / Math.max(verified.bizRatio.pct, verified.bizRatio.max * 1.3)) * 100)}%` }} />
-                <div className="absolute top-0 bottom-0 w-0.5 bg-gray-900"
-                  style={{ left: `${Math.min(100, (verified.bizRatio.pct / Math.max(verified.bizRatio.pct, verified.bizRatio.max * 1.3)) * 100)}%` }} />
-              </div>
-              <p className="mt-2 text-[10px] text-muted">
-                예상 월매출 {verified.bizRatio.expectedSales.toLocaleString()}만 기준
-                {!expectedSalesOverride && expectedMonthlySales > 0 && <> · 상권 업종 평균</>}
-              </p>
-            </div>
-          )}
         </div>
       )}
       {rentLoading && (
@@ -454,102 +215,91 @@ function RentVerification({ guName }: { guName: string }) {
           <p className="text-[11px] text-muted">{selectedPyeong}평 시세 분석 중...</p>
         </div>
       )}
-      {!rentLoading && rentNearby && rentNearby.total_cases > 0 && (() => {
-        const src = rentNearby.fallback_source ?? "";
-        // 권역 평균 폴백(실측·추정·호가 전부 실패)은 모든 주소에 동일한 구 평균만 나와 의미 없음 → 테이블/분포/사례 숨김
-        const isAreaAvgFallback = rentNearby.fallback
-          && !src.startsWith("추정 실거래")
-          && !src.startsWith("현재 호가");
-
-        if (isAreaAvgFallback) {
-          return (
-            <div className="border-t border-gray-100 pt-3">
-              <div className="rounded-lg bg-gray-50 px-3 py-3 text-[11px] leading-relaxed text-gray-600">
-                주변 실측 임대 사례가 부족해 상세 시세 테이블을 제공하지 못합니다.
-                {inputRent && " 검증 결과는 권역 기준 참고값입니다."}
-              </div>
-            </div>
-          );
-        }
-
-        return (
-          <div className="border-t border-gray-100 pt-3">
-            <div className="mb-2 flex items-center gap-1.5 flex-wrap">
-              <p className="text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준</p>
-              {(() => {
-                let tone = "emerald";
-                let label = `공공 DB ${rentNearby.stats?.["1층"]?.count ?? 0}건`;
-                if (rentNearby.fallback) {
+      {!rentLoading && rentNearby && rentNearby.total_cases > 0 && (
+        <div className="border-t border-gray-100 pt-3">
+          <div className="mb-2 flex items-center gap-1.5 flex-wrap">
+            <p className="text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준</p>
+            {(() => {
+              // 출처 배지: 실측(녹색) / 추정(인디고) / 권역평균(앰버)
+              const src = rentNearby.fallback_source ?? "";
+              let tone = "emerald";
+              let label = `공공 DB ${rentNearby.stats?.["1층"]?.count ?? 0}건`;
+              if (rentNearby.fallback) {
+                if (src.startsWith("추정 실거래") || src.startsWith("현재 호가")) {
                   tone = "indigo";
                   label = src.startsWith("추정 실거래") ? "추정 실거래" : "현재 호가";
+                } else {
+                  tone = "amber";
+                  label = "권역 평균";
                 }
-                const palette: Record<string, { bg: string; text: string }> = {
-                  emerald: { bg: "#D1FAE5", text: "#047857" },
-                  indigo: { bg: "#E0E7FF", text: "#4338CA" },
-                };
-                const p = palette[tone];
-                return (
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[9px] font-semibold"
-                    style={{ background: p.bg, color: p.text }}
-                    title={src || "반경 내 실측 임대사례 기반"}
-                  >
-                    {label}
-                  </span>
-                );
-              })()}
-            </div>
-            <div className="overflow-hidden rounded-lg border border-gray-100">
-              <table className="w-full text-[11px]">
-                <thead><tr className="bg-gray-50">
-                  <th className="px-3 py-2 text-left font-medium text-muted">층</th>
-                  <th className="px-3 py-2 text-right font-medium text-muted">사례</th>
-                  <th className="px-3 py-2 text-right font-medium text-muted">평당</th>
-                  <th className="px-3 py-2 text-right font-medium text-muted">{selectedPyeong}평 월세</th>
-                  <th className="px-3 py-2 text-right font-medium text-muted">보증금</th>
-                </tr></thead>
-                <tbody>
-                  {["1층", "2층", "지하"].map((floor) => {
-                    const s = rentNearby.stats[floor];
-                    if (!s || s.count === 0) return null;
-                    return (
-                      <tr key={floor} className={`border-t border-gray-50 ${floor === inputFloor ? "bg-primary-50" : ""}`}>
-                        <td className={`px-3 py-2 font-semibold ${floor === inputFloor ? "text-primary-600" : "text-gray-700"}`}>{floor}</td>
-                        <td className="px-3 py-2 text-right text-primary-600 font-semibold">{s.count}</td>
-                        <td className="px-3 py-2 text-right font-bold text-gray-900">{s.avg_pyeong}만</td>
-                        <td className="px-3 py-2 text-right text-gray-800">{s.avg_rent.toLocaleString()}만</td>
-                        <td className="px-3 py-2 text-right text-gray-600">{s.avg_deposit.toLocaleString()}만</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            {fs && fs.count > 0 && (
-              <div className="mt-3">
-                <p className="mb-1 text-[10px] text-muted">{inputFloor} 월세 분포 ({fs.count}건)</p>
-                <div className="relative h-6 rounded-full bg-gray-100">
-                  <div className="absolute top-0 h-full rounded-full bg-primary-100"
-                    style={{ left: `${Math.max(0, (fs.min_rent / fs.max_rent) * 100 - 5)}%`, width: `${Math.min(100, 100 - (fs.min_rent / fs.max_rent) * 100 + 10)}%` }} />
-                  <div className="absolute top-0 h-full w-0.5 bg-primary-600" style={{ left: `${(fs.avg_rent / fs.max_rent) * 100}%` }} />
-                  {inputRent && (
-                    <div className="absolute -top-1 h-8 w-2 rounded-full bg-red-500"
-                      style={{ left: `${Math.min(98, Math.max(2, (parseInt(inputRent) / fs.max_rent) * 100))}%` }} />
-                  )}
-                </div>
-                <div className="mt-1 flex justify-between text-[9px] text-muted">
-                  <span>{fs.min_rent}만</span>
-                  <span className="font-semibold text-primary-600">평균 {fs.avg_rent}만</span>
-                  <span>{fs.max_rent}만</span>
-                </div>
-              </div>
-            )}
-
-            {/* ── 이 주소 근처 임대 사례 상세 (실측/추정 거래/호가) ── */}
-            <RentCasesSection rentNearby={rentNearby} />
+              }
+              const palette: Record<string, { bg: string; text: string }> = {
+                emerald: { bg: "#D1FAE5", text: "#047857" },
+                indigo: { bg: "#E0E7FF", text: "#4338CA" },
+                amber: { bg: "#FEF3C7", text: "#B45309" },
+              };
+              const p = palette[tone];
+              return (
+                <span
+                  className="rounded-full px-2 py-0.5 text-[9px] font-semibold"
+                  style={{ background: p.bg, color: p.text }}
+                  title={src || "반경 내 실측 임대사례 기반"}
+                >
+                  {label}
+                </span>
+              );
+            })()}
           </div>
-        );
-      })()}
+          <div className="overflow-hidden rounded-lg border border-gray-100">
+            <table className="w-full text-[11px]">
+              <thead><tr className="bg-gray-50">
+                <th className="px-3 py-2 text-left font-medium text-muted">층</th>
+                <th className="px-3 py-2 text-right font-medium text-muted">사례</th>
+                <th className="px-3 py-2 text-right font-medium text-muted">평당</th>
+                <th className="px-3 py-2 text-right font-medium text-muted">{selectedPyeong}평 월세</th>
+                <th className="px-3 py-2 text-right font-medium text-muted">보증금</th>
+              </tr></thead>
+              <tbody>
+                {["1층", "2층", "지하"].map((floor) => {
+                  const s = rentNearby.stats[floor];
+                  if (!s || s.count === 0) return null;
+                  return (
+                    <tr key={floor} className={`border-t border-gray-50 ${floor === inputFloor ? "bg-primary-50" : ""}`}>
+                      <td className={`px-3 py-2 font-semibold ${floor === inputFloor ? "text-primary-600" : "text-gray-700"}`}>{floor}</td>
+                      <td className="px-3 py-2 text-right text-primary-600 font-semibold">{s.count}</td>
+                      <td className="px-3 py-2 text-right font-bold text-gray-900">{s.avg_pyeong}만</td>
+                      <td className="px-3 py-2 text-right text-gray-800">{s.avg_rent.toLocaleString()}만</td>
+                      <td className="px-3 py-2 text-right text-gray-600">{s.avg_deposit.toLocaleString()}만</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {fs && fs.count > 0 && (
+            <div className="mt-3">
+              <p className="mb-1 text-[10px] text-muted">{inputFloor} 월세 분포 ({fs.count}건)</p>
+              <div className="relative h-6 rounded-full bg-gray-100">
+                <div className="absolute top-0 h-full rounded-full bg-primary-100"
+                  style={{ left: `${Math.max(0, (fs.min_rent / fs.max_rent) * 100 - 5)}%`, width: `${Math.min(100, 100 - (fs.min_rent / fs.max_rent) * 100 + 10)}%` }} />
+                <div className="absolute top-0 h-full w-0.5 bg-primary-600" style={{ left: `${(fs.avg_rent / fs.max_rent) * 100}%` }} />
+                {inputRent && (
+                  <div className="absolute -top-1 h-8 w-2 rounded-full bg-red-500"
+                    style={{ left: `${Math.min(98, Math.max(2, (parseInt(inputRent) / fs.max_rent) * 100))}%` }} />
+                )}
+              </div>
+              <div className="mt-1 flex justify-between text-[9px] text-muted">
+                <span>{fs.min_rent}만</span>
+                <span className="font-semibold text-primary-600">평균 {fs.avg_rent}만</span>
+                <span>{fs.max_rent}만</span>
+              </div>
+            </div>
+          )}
+
+          {/* ── 이 주소 근처 임대 사례 상세 (실측/추정 거래/호가) ── */}
+          <RentCasesSection rentNearby={rentNearby} />
+        </div>
+      )}
     </div>
   );
 }

@@ -290,29 +290,29 @@ export default function AnalysisPanel({ areaCode, onClose }: Props) {
             const src = rental.source ?? "";
             const isRealDeal = src.startsWith("공공 실거래");
             const isEstimate = src.startsWith("추정 실거래") || src.startsWith("현재 호가");
-            // 권역 평균 폴백(실측·추정·호가 전부 실패)일 때는 배지 노출하지 않음 — 모든 상권에 같은 구평균만 보이는 것 방지
-            const showBadge = isRealDeal || isEstimate;
-            const tone = isRealDeal ? "emerald" : "indigo";
+            const tone = isRealDeal ? "emerald" : isEstimate ? "indigo" : "amber";
             const palette: Record<string, { bg: string; text: string }> = {
               emerald: { bg: "#D1FAE5", text: "#047857" },
               indigo: { bg: "#E0E7FF", text: "#4338CA" },
+              amber: { bg: "#FEF3C7", text: "#B45309" },
             };
             const p = palette[tone];
             const short = isRealDeal ? "공공 DB"
               : src.startsWith("추정 실거래") ? "추정 실거래"
-              : "현재 호가";
+              : src.startsWith("현재 호가") ? "현재 호가"
+              : "권역 평균";
             return (
             <Section
               title="임대 시장"
-              right={showBadge ? (
+              right={
                 <span
                   className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
                   style={{ background: p.bg, color: p.text }}
-                  title={src}
+                  title={src || "데이터 출처 미확인"}
                 >
                   {short}
                 </span>
-              ) : undefined}
+              }
             >
               <div className="mb-4 grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-gray-50 p-3">
