@@ -6,6 +6,29 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useAnalysisStore } from "@/store/analysisStore";
+import seoulBenchmark from "@/lib/data/seoul-benchmark.json";
+
+/* ── 서울 카테고리 벤치마크 ── 분기 단위 정적 집계 (Phase 1)
+   값 50 = 서울 일반(median), 100 = median의 2배, 0 = 사실상 없음. */
+type CatBenchmark = {
+  median_per_store_sales: number; median_ticket: number;
+  median_per_capita_sales: number; median_density: number;
+  avg_open_rate: number; avg_franchise_ratio: number;
+};
+const SEOUL_BENCHMARK = seoulBenchmark.categories as Record<string, CatBenchmark>;
+function bm(key: string): CatBenchmark | null {
+  return SEOUL_BENCHMARK[key] ?? null;
+}
+function relScore(my: number, seoul: number): number {
+  if (!seoul || seoul <= 0) return 50;
+  return Math.max(0, Math.min(100, Math.round((my / seoul) * 50)));
+}
+function relScoreInverse(my: number, seoul: number): number {
+  // 낮을수록 좋음 (밀도/프랜차이즈 비율 등)
+  if (!my || my <= 0) return 100;
+  if (!seoul || seoul <= 0) return 50;
+  return Math.max(0, Math.min(100, Math.round((seoul / my) * 50)));
+}
 
 /* ── 대분류 → 세부 업종 정확 매칭 ──
    실제 서울시 상권 데이터의 업종명과 정확히 일치해야 함.
@@ -207,37 +230,33 @@ export default function BrandSynergy() {
       });
     }
 
-    // ── 2차: 상대 정규화 (카테고리 간 비교) ──
+    // ── 2차: 서울 벤치마크 대비 절대 정규화 (50점 = 서울 median) ──
     const valid = result.filter((r) => r.hasData);
     if (valid.length === 0) return [];
 
     const base = categorizedStores > 0 ? categorizedStores : 1;
 
-    // 수요: 1인당 소비액 → 카테고리 중 최고값 대비 비율 (0~100)
-    const maxDemand = Math.max(...valid.map((r) => r.demandScore), 1);
-    // 공급밀도: 잠재소비자 만명당 점포수 → 최고 대비 비율 (높을수록 과밀)
-    const densities = valid.map((r) => potentialConsumers > 0 ? (r.storeCount / potentialConsumers) * 10000 : 0);
-    const maxDensity = Math.max(...densities, 1);
+    for (const r of valid) {
+      const cb = bm(r.key);
 
-    for (let i = 0; i < valid.length; i++) {
-      const r = valid[i];
-      // 수요: 최고 대비 비율 (0~100)
-      r.demandScore = Math.round((r.demandScore / maxDemand) * 100);
-      // 공급 비율
+      // 수요: 1인당 카테고리 소비액 → 서울 median 대비
+      const myPerCapita = potentialConsumers > 0 ? r.totalSales / potentialConsumers : 0;
+      r.demandScore = cb ? relScore(myPerCapita, cb.median_per_capita_sales) : 50;
       r.supplyRatio = Math.round((r.storeCount / base) * 100);
-      // 공급 여유: 밀도가 낮을수록 높음 (0~100)
-      const densityRatio = densities[i] / maxDensity;
-      const supplySlack = Math.round((1 - densityRatio) * 100);
 
-      // 객단가 (카테고리 중 최대값 대비 상대값)
-      const maxTicket = Math.max(...valid.map((g) => g.avgTicket), 1);
-      const ticketScore = r.avgTicket > 0 ? Math.round((r.avgTicket / maxTicket) * 100) : 0;
+      // 공급 여유: 만명당 점포수 → 서울 median 대비 역수 (낮을수록 좋음)
+      const myDensity = potentialConsumers > 0 ? (r.storeCount / potentialConsumers) * 10000 : 0;
+      const supplySlack = cb ? relScoreInverse(myDensity, cb.median_density) : 50;
 
-      // 개폐업률
+      // 객단가: 내 / 서울 median × 50
+      const ticketScore = cb ? relScore(r.avgTicket, cb.median_ticket) : 50;
+
+      // 개폐업률: 내 / 서울 카테고리 평균 × 50
       const oc = r.openCount + r.closeCount;
-      const openRate = oc > 0 ? Math.round((r.openCount / oc) * 100) : 50;
+      const myOpenRate = oc > 0 ? (r.openCount / oc) * 100 : 50;
+      const openRate = cb ? relScore(myOpenRate, cb.avg_open_rate) : Math.round(myOpenRate);
 
-      // 임대 적정
+      // 임대 적정: 적정/실제 비율 자체가 절대값 — 그대로 유지
       const rentRatio = RENT_RATIO[r.key] ?? 0.10;
       const appropriateRent = r.perStoreSales * rentRatio;
       const avgPy = AVG_PYEONG[r.key] ?? 20;
@@ -246,10 +265,11 @@ export default function BrandSynergy() {
         ? Math.max(5, Math.min(100, Math.round((appropriateRent / actualRentWon) * 50)))
         : 50;
 
-      // 진입 용이
-      const entryEase = Math.round((1 - r.franchiseRatio) * 100);
+      // 진입 용이: 내 프랜차이즈 비율 vs 서울 카테고리 평균 (낮을수록 진입 쉬움)
+      const myFranchisePct = r.franchiseRatio * 100;
+      const entryEase = cb ? relScoreInverse(myFranchisePct, cb.avg_franchise_ratio) : Math.round((1 - r.franchiseRatio) * 100);
 
-      // 기회 점수: 레이더 6축 전체 평균
+      // 기회 점수: 6축 평균 (모두 50=서울 일반 기준)
       r.gapScore = Math.max(0, Math.min(100, Math.round(
         (r.demandScore + supplySlack + ticketScore + openRate + rentFit + entryEase) / 6
       )));
@@ -273,53 +293,85 @@ export default function BrandSynergy() {
   const _ftTotal = ft?.total ?? 1;
   const _popTotal = pop?.total ?? 0;
   const _consumers = _ftTotal + _popTotal;
-  const radarData = selectedGroup ? [
-    // 수요: (유동+거주)인구 1인당 소비액 (카테고리 중 최고 대비 %)
-    { axis: "수요", value: selectedGroup.demandScore,
-      desc: `1인당 ${Math.round(selectedGroup.totalSales / _consumers).toLocaleString()}원` },
-    // 공급 여유: 잠재소비자 만명당 점포수 — 적을수록 여유
-    { axis: "공급 여유", value: (() => {
-      const densities = groups.map((g) => _consumers > 0 ? (g.storeCount / _consumers) * 10000 : 0);
-      const maxD = Math.max(...densities, 1);
+  const _cb = selectedGroup ? bm(selectedGroup.key) : null;
+
+  // "서울 대비 +N%" 라벨 헬퍼
+  const vsSeoul = (my: number, seoul: number) => {
+    if (!seoul || seoul <= 0 || !my || my <= 0) return "";
+    const pct = Math.round(((my - seoul) / seoul) * 100);
+    return pct >= 0 ? `서울 +${pct}%` : `서울 ${pct}%`;
+  };
+
+  const radarData = selectedGroup && _cb ? [
+    // 수요: 1인당 카테고리 소비액 → 서울 median 대비
+    (() => {
+      const myPC = _consumers > 0 ? selectedGroup.totalSales / _consumers : 0;
+      const seoulPC = _cb.median_per_capita_sales;
+      return {
+        axis: "수요",
+        value: relScore(myPC, seoulPC),
+        desc: `1인당 ${Math.round(myPC).toLocaleString()}원 (${vsSeoul(myPC, seoulPC)})`,
+      };
+    })(),
+    // 공급 여유: 만명당 점포수 → 서울 median 대비 역수 (낮을수록 좋음)
+    (() => {
       const myD = _consumers > 0 ? (selectedGroup.storeCount / _consumers) * 10000 : 0;
-      return Math.max(5, Math.round((1 - myD / maxD) * 100));
+      const seoulD = _cb.median_density;
+      return {
+        axis: "공급 여유",
+        value: relScoreInverse(myD, seoulD),
+        desc: `만명당 ${myD.toFixed(1)}개 (서울 median ${seoulD})`,
+      };
     })(),
-      desc: `만명당 ${(_consumers > 0 ? (selectedGroup.storeCount / _consumers) * 10000 : 0).toFixed(1)}개` },
-    // 객단가: 거래 1건당 평균 결제액 — 카테고리 중 최대값 대비 정규화
-    { axis: "객단가", value: (() => {
-      if (selectedGroup.avgTicket <= 0) return 5;
-      const maxT = Math.max(...groups.filter((g) => g.avgTicket > 0).map((g) => g.avgTicket), 1);
-      return Math.max(5, Math.min(100, Math.round((selectedGroup.avgTicket / maxT) * 100)));
+    // 객단가: 내 / 서울 median × 50
+    (() => {
+      const myT = selectedGroup.avgTicket;
+      const seoulT = _cb.median_ticket;
+      return {
+        axis: "객단가",
+        value: relScore(myT, seoulT),
+        desc: `건당 ${myT > 0 ? Math.round(myT).toLocaleString() : "-"}원 (${vsSeoul(myT, seoulT)})`,
+      };
     })(),
-      desc: `건당 ${selectedGroup.avgTicket > 0 ? Math.round(selectedGroup.avgTicket).toLocaleString() : "-"}원` },
-    // 개폐업률: 해당 카테고리의 개업/(개업+폐업) — 높을수록 건전
-    { axis: "개폐업률", value: (() => {
+    // 개폐업률: 내 % / 서울 평균 % × 50
+    (() => {
       const oc = selectedGroup.openCount + selectedGroup.closeCount;
-      return oc > 0 ? Math.round((selectedGroup.openCount / oc) * 100) : 50;
+      const myOR = oc > 0 ? (selectedGroup.openCount / oc) * 100 : 50;
+      const seoulOR = _cb.avg_open_rate;
+      return {
+        axis: "개폐업률",
+        value: relScore(myOR, seoulOR),
+        desc: `${myOR.toFixed(0)}% (서울 ${seoulOR}%) · 개${selectedGroup.displayOpen}/폐${selectedGroup.displayClose}`,
+      };
     })(),
-      desc: `개업${selectedGroup.displayOpen} 폐업${selectedGroup.displayClose}` },
-    // 임대 적정: 업종별 적정비율로 산출한 적정월세 vs 실제월세 (업종 평균 면적 기준)
-    { axis: "임대 적정", value: (() => {
+    // 임대 적정: 업종 적정 / 실제 (절대값)
+    (() => {
       const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
-      const expectedRent = selectedGroup.perStoreSales * ratio; // 적정 월세 (원)
+      const expectedRent = selectedGroup.perStoreSales * ratio;
       const rent1f = (rent?.["1층_평"] as number) ?? 0;
       const avgPy = AVG_PYEONG[selectedGroup.key] ?? 20;
-      const actualRent = rent1f > 0 ? rent1f * avgPy * 10000 : 0; // 업종별 평균 면적 기준 실제 월세 (원)
-      if (actualRent <= 0 || expectedRent <= 0) return 50;
-      // 적정/실제 비율: 1이상이면 여유, 1미만이면 부담
-      return Math.max(5, Math.min(100, Math.round((expectedRent / actualRent) * 50)));
+      const actualRent = rent1f > 0 ? rent1f * avgPy * 10000 : 0;
+      const value = (actualRent > 0 && expectedRent > 0)
+        ? Math.max(5, Math.min(100, Math.round((expectedRent / actualRent) * 50)))
+        : 50;
+      const expectedMan = Math.round(expectedRent / 10000);
+      const actualMan = Math.round(rent1f * avgPy);
+      return {
+        axis: "임대 적정",
+        value,
+        desc: `적정 ${expectedMan}만 vs 시세 ${actualMan}만 (${avgPy}평)`,
+      };
     })(),
-      desc: (() => {
-        const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
-        const expectedRent = Math.round(selectedGroup.perStoreSales * ratio / 10000);
-        const rent1f = (rent?.["1층_평"] as number) ?? 0;
-        const avgPy = AVG_PYEONG[selectedGroup.key] ?? 20;
-        const actualRent = rent1f * avgPy;
-        return `적정 ${expectedRent}만 vs 시세 ${actualRent}만 (${avgPy}평)`;
-      })() },
-    // 진입 용이: 프랜차이즈 비율의 역수
-    { axis: "진입 용이", value: Math.min(100, Math.max(5, Math.round((1 - selectedGroup.franchiseRatio) * 100))),
-      desc: `프랜차이즈 ${Math.round(selectedGroup.franchiseRatio * 100)}%` },
+    // 진입 용이: 내 프랜차이즈 비율 vs 서울 카테고리 평균 (낮을수록 좋음)
+    (() => {
+      const myF = selectedGroup.franchiseRatio * 100;
+      const seoulF = _cb.avg_franchise_ratio;
+      return {
+        axis: "진입 용이",
+        value: relScoreInverse(myF, seoulF),
+        desc: `프랜차이즈 ${myF.toFixed(0)}% (서울 ${seoulF}%)`,
+      };
+    })(),
   ] : null;
 
   // 추천 점수 — 리스트의 gapScore와 동일 값(6축 평균). 선택화면 원 안에도 같은 수를 노출.
@@ -365,7 +417,7 @@ export default function BrandSynergy() {
       {/* 미선택: 추천 점수 요약 */}
       {!selected && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 6개 축(수요·공급여유·객단가·개폐업·임대·진입) 종합 점수</p>
+          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 6축 평균 점수 · 50 = 서울 같은 업종 일반 수준</p>
           {groups.map((g) => {
             const tone = g.gapScore >= 55 ? "emerald" : g.gapScore >= 40 ? "amber" : "red";
             const color = tone === "emerald" ? "#10B981" : tone === "amber" ? "#F59E0B" : "#EF4444";
