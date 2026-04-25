@@ -1,37 +1,123 @@
+/* ── 임대·토지 시세 추이 ──
+   좌표 기반: lat/lng → R-ONE 권역 + 행정구 매핑 → 시계열 반환
+   - 임대 시세: R-ONE 임대동향조사 (권역, 분기→연 평균)  ← API 키 필요
+   - 토지 시세: RTMS 상업업무용 매매 실거래 평균 평당가  ← API 키 필요
+   - 폴백: gu_price_history 자체 추정값 + "임시값" source 표시
+*/
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit } from "@/lib/rate-limit";
+import { nearestRoneRegion, inferGuFromCoord } from "@/lib/rone-lookup";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
 );
 
+const HAS_PUBLIC_DATA_KEY = !!process.env.PUBLIC_DATA_PORTAL_KEY;
+
+interface TrendResponse {
+  gu: string;
+  region?: { code: string; name: string; distanceKm: number };
+  years: string[];
+  rent: number[];   // 1층 평당 월세 (만원)
+  land: number[];   // 토지 상업지역 평당가 (만원)
+  source: {
+    rent: "rone" | "estimate";   // R-ONE 실데이터 / 자체 추정
+    land: "rtms" | "estimate";   // RTMS 실데이터 / 자체 추정
+  };
+  note?: string;
+}
+
 export async function GET(request: Request) {
   const limited = rateLimit(request, "price-history", 60, 60_000);
   if (limited) return limited;
 
   const { searchParams } = new URL(request.url);
-  const gu = searchParams.get("gu") ?? "";
+  const lat = parseFloat(searchParams.get("lat") ?? "");
+  const lng = parseFloat(searchParams.get("lng") ?? "");
+  const guParam = searchParams.get("gu") ?? "";
 
-  if (!gu) {
-    return NextResponse.json({ error: "gu parameter required" }, { status: 400 });
+  // 좌표 우선, 없으면 gu 호환 (legacy)
+  let gu = guParam;
+  let region: { code: string; name: string; distanceKm: number } | undefined;
+
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    const r = nearestRoneRegion(lat, lng);
+    region = { code: r.region.code, name: r.region.name, distanceKm: r.distanceKm };
+    gu = r.region.gu;
+  } else if (!gu) {
+    return NextResponse.json({ error: "lat/lng 또는 gu 파라미터 필요" }, { status: 400 });
   }
 
-  const { data } = await supabase
-    .from("gu_price_history")
-    .select("year, land_price, rent_price")
+  /* ── 1차: R-ONE 임대 시계열 캐시 (rone_rent_yearly 테이블) ── */
+  let rentSource: "rone" | "estimate" = "estimate";
+  let rentSeries: Array<{ year: number; value: number }> = [];
+  if (region) {
+    const { data: roneRows } = await supabase
+      .from("rone_rent_yearly")
+      .select("year, rent_per_pyeong")
+      .eq("region_code", region.code)
+      .order("year", { ascending: true });
+    if (roneRows && roneRows.length >= 5) {
+      rentSeries = roneRows.map((r) => ({ year: r.year, value: r.rent_per_pyeong }));
+      rentSource = "rone";
+    }
+  }
+
+  /* ── 2차: RTMS 토지 시계열 캐시 (rtms_land_yearly 테이블) ── */
+  let landSource: "rtms" | "estimate" = "estimate";
+  let landSeries: Array<{ year: number; value: number }> = [];
+  const { data: rtmsRows } = await supabase
+    .from("rtms_land_yearly")
+    .select("year, avg_land_per_pyeong")
     .eq("gu", gu)
     .order("year", { ascending: true });
-
-  if (data && data.length > 0) {
-    return NextResponse.json({
-      gu,
-      years: data.map((r) => String(r.year)),
-      land: data.map((r) => r.land_price),
-      rent: data.map((r) => r.rent_price),
-    });
+  if (rtmsRows && rtmsRows.length >= 5) {
+    landSeries = rtmsRows.map((r) => ({ year: r.year, value: r.avg_land_per_pyeong }));
+    landSource = "rtms";
   }
 
-  return NextResponse.json({ gu, years: [], land: [], rent: [] });
+  /* ── 폴백: 자체 추정값 (gu_price_history) ── */
+  if (rentSeries.length === 0 || landSeries.length === 0) {
+    const { data } = await supabase
+      .from("gu_price_history")
+      .select("year, land_price, rent_price")
+      .eq("gu", gu)
+      .order("year", { ascending: true });
+    if (data && data.length > 0) {
+      if (rentSeries.length === 0) {
+        rentSeries = data.map((r) => ({ year: r.year, value: r.rent_price }));
+      }
+      if (landSeries.length === 0) {
+        landSeries = data.map((r) => ({ year: r.year, value: r.land_price }));
+      }
+    }
+  }
+
+  /* ── 시계열 정렬·연도 통일 ── */
+  const allYears = Array.from(new Set([
+    ...rentSeries.map((r) => r.year),
+    ...landSeries.map((r) => r.year),
+  ])).sort((a, b) => a - b);
+
+  const rentMap = new Map(rentSeries.map((r) => [r.year, r.value]));
+  const landMap = new Map(landSeries.map((r) => [r.year, r.value]));
+
+  const response: TrendResponse = {
+    gu,
+    region,
+    years: allYears.map(String),
+    rent: allYears.map((y) => rentMap.get(y) ?? 0),
+    land: allYears.map((y) => landMap.get(y) ?? 0),
+    source: { rent: rentSource, land: landSource },
+  };
+
+  if (rentSource === "estimate" || landSource === "estimate") {
+    response.note = HAS_PUBLIC_DATA_KEY
+      ? "공공 API 데이터 동기화 진행 중 — 일부 항목은 임시 추정값입니다."
+      : "공공 API 키 미연결 — 자체 추정값입니다. R-ONE / RTMS 연동 시 실데이터로 갱신됩니다.";
+  }
+
+  return NextResponse.json(response);
 }

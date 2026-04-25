@@ -54,15 +54,31 @@ export default function GrowthPrediction() {
   const clickedGu = useAnalysisStore((s) => s.clickedGu);
   const guName = clickedGu || analysisData?.gu_name || "";
 
-  // DB에서 가격 추이 가져오기 (폴백: 하드코딩 PRICE_HISTORY)
-  const [dbHistory, setDbHistory] = useState<{ years: string[]; land: number[]; rent: number[] } | null>(null);
+  // DB에서 가격 추이 가져오기 (좌표 기반 → R-ONE 권역 매핑)
+  // 폴백 우선순위: R-ONE/RTMS 캐시 → gu_price_history → 하드코딩 PRICE_HISTORY
+  type TrendDb = {
+    years: string[]; land: number[]; rent: number[];
+    region?: { code: string; name: string; distanceKm: number };
+    source: { rent: "rone" | "estimate"; land: "rtms" | "estimate" };
+    note?: string;
+  };
+  const [dbHistory, setDbHistory] = useState<TrendDb | null>(null);
+  const clickedLat = useAnalysisStore((s) => s.clickedLat);
+  const clickedLng = useAnalysisStore((s) => s.clickedLng);
+
   useEffect(() => {
-    if (!guName) return;
-    fetch(`/api/price-history?gu=${encodeURIComponent(guName)}`)
+    let url: string | null = null;
+    if (clickedLat != null && clickedLng != null) {
+      url = `/api/price-history?lat=${clickedLat}&lng=${clickedLng}`;
+    } else if (guName) {
+      url = `/api/price-history?gu=${encodeURIComponent(guName)}`;
+    }
+    if (!url) return;
+    fetch(url)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d && d.years?.length > 0) setDbHistory(d); })
       .catch(() => {});
-  }, [guName]);
+  }, [clickedLat, clickedLng, guName]);
 
   if (!opp) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
 
@@ -150,7 +166,10 @@ export default function GrowthPrediction() {
       {hasHistory && (
         <section>
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[12px] font-bold text-gray-800">임대 시세 추이 (1층 평당/월)</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-[12px] font-bold text-gray-800">임대 시세 추이 (1층 평당/월)</p>
+              <SourceBadge source={dbHistory?.source.rent === "rone" ? "rone" : "estimate"} />
+            </div>
             <div className="flex items-center gap-1">
               <span className={`text-[11px] font-bold ${rentGrowth10y > 0 ? "text-emerald-600" : "text-red-500"}`}>
                 10년 {rentGrowth10y > 0 ? "+" : ""}{rentGrowth10y}%
@@ -176,7 +195,10 @@ export default function GrowthPrediction() {
       {hasHistory && (
         <section>
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[12px] font-bold text-gray-800">토지 시세 추이 (상업지역 평당)</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-[12px] font-bold text-gray-800">토지 시세 추이 (상업지역 평당)</p>
+              <SourceBadge source={dbHistory?.source.land === "rtms" ? "rtms" : "estimate"} />
+            </div>
             <div className="flex items-center gap-1">
               <span className={`text-[11px] font-bold ${landGrowth10y > 0 ? "text-emerald-600" : "text-red-500"}`}>
                 10년 {landGrowth10y > 0 ? "+" : ""}{landGrowth10y}%
@@ -230,6 +252,40 @@ export default function GrowthPrediction() {
             : `활력 점수 ${score}점으로 주의가 필요합니다. 폐업이 개업보다 많아 신중한 접근이 필요합니다.`}
         </p>
       </div>
+
+      {/* 권역·출처 메타 정보 */}
+      {dbHistory && (
+        <div className="border-t border-gray-100 pt-3 text-[10px] leading-relaxed text-muted">
+          {dbHistory.region && (
+            <p>
+              매핑 권역: <span className="font-semibold text-gray-600">{dbHistory.region.name}</span>
+              <span className="ml-1 text-[9px] text-muted">(좌표 거리 {dbHistory.region.distanceKm}km)</span>
+            </p>
+          )}
+          {dbHistory.note && <p className="mt-0.5">{dbHistory.note}</p>}
+          <p className="mt-0.5">
+            출처: 임대 = {dbHistory.source.rent === "rone" ? "한국부동산원 R-ONE 임대동향조사" : "자체 추정"} ·
+            토지 = {dbHistory.source.land === "rtms" ? "국토부 RTMS 상업업무용 매매 실거래" : "자체 추정"}
+          </p>
+        </div>
+      )}
     </div>
+  );
+}
+
+/* ── 출처 배지 ── */
+function SourceBadge({ source }: { source: "rone" | "rtms" | "estimate" }) {
+  if (source === "estimate") {
+    return (
+      <span className="rounded-full px-1.5 py-0.5 text-[9px] font-bold" style={{ background: "#FEF3C7", color: "#B45309" }}>
+        임시값
+      </span>
+    );
+  }
+  const label = source === "rone" ? "R-ONE" : "RTMS";
+  return (
+    <span className="rounded-full px-1.5 py-0.5 text-[9px] font-bold" style={{ background: "#D1FAE5", color: "#047857" }}>
+      {label}
+    </span>
   );
 }
