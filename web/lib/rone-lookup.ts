@@ -1,8 +1,9 @@
 /* ── R-ONE 권역 lookup ──
-   좌표(lat, lng)를 받아 가장 가까운 R-ONE 상업용부동산 임대동향조사 권역을 반환.
-   현재 서울 핵심 권역만 정의되어 있음 — 정밀 매핑은 R-ONE 공식 권역 구획도 기반으로 추후 갱신.
+   좌표(lat, lng)를 받아 R-ONE 임대 데이터가 실제로 있는 권역 중 가장 가까운 권역 반환.
+   데이터 없는 권역(예: 한강진)은 자동으로 skip하여 다음 가까운 권역(이태원)으로 fallback.
 */
 import data from "./data/rone-regions.json";
+import rentData from "./data/rone-rent-yearly.json";
 
 export interface RoneRegion {
   code: string;
@@ -13,6 +14,8 @@ export interface RoneRegion {
 }
 
 const REGIONS: RoneRegion[] = data.regions;
+// R-ONE rent JSON에 데이터 있는 권역만 활성
+const ACTIVE_NAMES = new Set(Object.keys((rentData as { data?: Record<string, unknown> })?.data ?? {}));
 
 function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 6371;
@@ -27,15 +30,19 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
 }
 
 export function nearestRoneRegion(lat: number, lng: number): { region: RoneRegion; distanceKm: number } {
-  let best = REGIONS[0];
+  let best: RoneRegion | null = null;
   let bestDist = Infinity;
   for (const r of REGIONS) {
+    // R-ONE 임대 데이터 없는 권역은 skip (lookup의 본래 목적이 R-ONE 매칭이라)
+    if (!ACTIVE_NAMES.has(r.name)) continue;
     const d = haversineKm({ lat, lng }, r);
     if (d < bestDist) {
       bestDist = d;
       best = r;
     }
   }
+  // 모든 권역이 skip된 극단 케이스 (보통 발생 X) — 첫 권역 fallback
+  if (!best) best = REGIONS[0];
   return { region: best, distanceKm: Math.round(bestDist * 100) / 100 };
 }
 
