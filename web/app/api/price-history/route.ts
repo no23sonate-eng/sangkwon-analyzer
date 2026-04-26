@@ -9,6 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 import { rateLimit } from "@/lib/rate-limit";
 import { nearestRoneRegion } from "@/lib/rone-lookup";
 import rtmsLandData from "@/lib/data/rtms-land-yearly.json";
+import roneRentData from "@/lib/data/rone-rent-yearly.json";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
@@ -19,6 +20,10 @@ const HAS_PUBLIC_DATA_KEY = !!process.env.DATA_GO_KR_API_KEY;
 
 // rtms-land-yearly.json 구조: { _meta, data: { gu: { year: { avg, n } } } }
 const RTMS_LAND = (rtmsLandData as { data?: Record<string, Record<string, { avg: number | null; n: number }>> }).data ?? {};
+
+// rone-rent-yearly.json 구조: { _meta, data: { region: { fullName, baseline, yearly: { year: 평당만 } } } }
+type RoneRegion = { fullName?: string; baseline?: { wrttime: string; rent_per_sqm: number }; yearly: Record<string, number> };
+const RONE_RENT = (roneRentData as { data?: Record<string, RoneRegion> }).data ?? {};
 
 interface TrendResponse {
   gu: string;
@@ -54,18 +59,20 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "lat/lng 또는 gu 파라미터 필요" }, { status: 400 });
   }
 
-  /* ── 1차: R-ONE 임대 시계열 캐시 (rone_rent_yearly 테이블) ── */
+  /* ── 1차: R-ONE 임대 시계열 — rone-rent-yearly.json (정적, R-ONE API 동기화 결과) ── */
   let rentSource: "rone" | "estimate" = "estimate";
   let rentSeries: Array<{ year: number; value: number }> = [];
   if (region) {
-    const { data: roneRows } = await supabase
-      .from("rone_rent_yearly")
-      .select("year, rent_per_pyeong")
-      .eq("region_code", region.code)
-      .order("year", { ascending: true });
-    if (roneRows && roneRows.length >= 5) {
-      rentSeries = roneRows.map((r) => ({ year: r.year, value: r.rent_per_pyeong }));
-      rentSource = "rone";
+    // 권역명(name) 기반 R-ONE 매칭 (예: "압구정", "강남대로", "신사역")
+    const roneEntry = RONE_RENT[region.name];
+    if (roneEntry?.yearly) {
+      const entries = Object.entries(roneEntry.yearly)
+        .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
+        .filter((r) => r.value > 0);
+      if (entries.length >= 3) {
+        rentSeries = entries;
+        rentSource = "rone";
+      }
     }
   }
 
