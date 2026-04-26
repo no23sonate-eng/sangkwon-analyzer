@@ -1,20 +1,24 @@
 /* ── 임대·토지 시세 추이 ──
    좌표 기반: lat/lng → R-ONE 권역 + 행정구 매핑 → 시계열 반환
-   - 임대 시세: R-ONE 임대동향조사 (권역, 분기→연 평균)  ← API 키 필요
-   - 토지 시세: RTMS 상업업무용 매매 실거래 평균 평당가  ← API 키 필요
+   - 임대 시세: R-ONE 임대동향조사 (권역, 분기→연 평균)  ← R-ONE 별도 키 필요
+   - 토지 시세: RTMS 상업업무용 매매 실거래 평균 평당가  ← rtms-land-yearly.json (sync 결과)
    - 폴백: gu_price_history 자체 추정값 + "임시값" source 표시
 */
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit } from "@/lib/rate-limit";
-import { nearestRoneRegion, inferGuFromCoord } from "@/lib/rone-lookup";
+import { nearestRoneRegion } from "@/lib/rone-lookup";
+import rtmsLandData from "@/lib/data/rtms-land-yearly.json";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
 );
 
-const HAS_PUBLIC_DATA_KEY = !!process.env.PUBLIC_DATA_PORTAL_KEY;
+const HAS_PUBLIC_DATA_KEY = !!process.env.DATA_GO_KR_API_KEY;
+
+// rtms-land-yearly.json 구조: { _meta, data: { gu: { year: { avg, n } } } }
+const RTMS_LAND = (rtmsLandData as { data?: Record<string, Record<string, { avg: number | null; n: number }>> }).data ?? {};
 
 interface TrendResponse {
   gu: string;
@@ -65,17 +69,19 @@ export async function GET(request: Request) {
     }
   }
 
-  /* ── 2차: RTMS 토지 시계열 캐시 (rtms_land_yearly 테이블) ── */
+  /* ── 2차: RTMS 토지 시계열 — rtms-land-yearly.json (정적, sync 결과) ── */
   let landSource: "rtms" | "estimate" = "estimate";
   let landSeries: Array<{ year: number; value: number }> = [];
-  const { data: rtmsRows } = await supabase
-    .from("rtms_land_yearly")
-    .select("year, avg_land_per_pyeong")
-    .eq("gu", gu)
-    .order("year", { ascending: true });
-  if (rtmsRows && rtmsRows.length >= 5) {
-    landSeries = rtmsRows.map((r) => ({ year: r.year, value: r.avg_land_per_pyeong }));
-    landSource = "rtms";
+  const rtmsGu = RTMS_LAND[gu];
+  if (rtmsGu) {
+    const entries = Object.entries(rtmsGu)
+      .map(([y, v]) => ({ year: Number(y), value: v?.avg ?? null, n: v?.n ?? 0 }))
+      .filter((r) => r.value != null && r.n >= 3) // 최소 3건 이상 거래된 연도만
+      .map((r) => ({ year: r.year, value: r.value as number }));
+    if (entries.length >= 3) {
+      landSeries = entries;
+      landSource = "rtms";
+    }
   }
 
   /* ── 폴백: 자체 추정값 (gu_price_history) ── */
