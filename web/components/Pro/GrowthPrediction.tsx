@@ -103,16 +103,23 @@ export default function GrowthPrediction() {
   const histRent = dbHistory?.rent ?? (fallbackHistory?.rent ?? []);
   const hasHistory = histYears.length > 0;
 
-  const landChartData = hasHistory ? histYears.map((y, i) => ({ year: y, 토지시세: histLand[i] })) : [];
-  const rentChartData = hasHistory ? histYears.map((y, i) => ({ year: y, 임대시세: histRent[i] })) : [];
+  // 0 값은 데이터 없음으로 간주 — 차트·CAGR 모두 제외
+  const landChartData = hasHistory
+    ? histYears.map((y, i) => ({ year: y, 토지시세: histLand[i] })).filter((d) => d.토지시세 > 0)
+    : [];
+  const rentChartData = hasHistory
+    ? histYears.map((y, i) => ({ year: y, 임대시세: histRent[i] })).filter((d) => d.임대시세 > 0)
+    : [];
 
-  // 상승률 계산
-  const n = histLand.length;
-  const landGrowth10y = n >= 2 ? Math.round(((histLand[n - 1] - histLand[0]) / histLand[0]) * 100) : 0;
-  const rentGrowth10y = n >= 2 ? Math.round(((histRent[n - 1] - histRent[0]) / histRent[0]) * 100) : 0;
-  const yrs = Math.max(n - 1, 1);
-  const landCagr = n >= 2 ? (Math.pow(histLand[n - 1] / histLand[0], 1 / yrs) - 1) * 100 : 0;
-  const rentCagr = n >= 2 ? (Math.pow(histRent[n - 1] / histRent[0], 1 / yrs) - 1) * 100 : 0;
+  // 상승률 계산 — 유효 값(>0)만 사용
+  const validLand = histLand.filter((v) => v > 0);
+  const validRent = histRent.filter((v) => v > 0);
+  const lN = validLand.length;
+  const rN = validRent.length;
+  const landGrowth10y = lN >= 2 ? Math.round(((validLand[lN - 1] - validLand[0]) / validLand[0]) * 100) : 0;
+  const rentGrowth10y = rN >= 2 ? Math.round(((validRent[rN - 1] - validRent[0]) / validRent[0]) * 100) : 0;
+  const landCagr = lN >= 2 ? (Math.pow(validLand[lN - 1] / validLand[0], 1 / Math.max(lN - 1, 1)) - 1) * 100 : 0;
+  const rentCagr = rN >= 2 ? (Math.pow(validRent[rN - 1] / validRent[0], 1 / Math.max(rN - 1, 1)) - 1) * 100 : 0;
 
   const indicators = [
     { label: "개업 vs 폐업", value: `${openCount} / ${closeCount}`, sub: netOpen >= 0 ? `순증 +${netOpen}` : `순감 ${netOpen}`, up: netOpen >= 0, color: netOpen >= 0 ? "emerald" : "red" },
