@@ -10,6 +10,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { nearestRoneRegion } from "@/lib/rone-lookup";
 import rtmsLandData from "@/lib/data/rtms-land-yearly.json";
 import roneRentData from "@/lib/data/rone-rent-yearly.json";
+import roneRentFloor1Data from "@/lib/data/rone-rent-floor1-yearly.json";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
@@ -21,9 +22,13 @@ const HAS_PUBLIC_DATA_KEY = !!process.env.DATA_GO_KR_API_KEY;
 // rtms-land-yearly.json 구조: { _meta, data: { gu: { year: { avg, n } } } }
 const RTMS_LAND = (rtmsLandData as { data?: Record<string, Record<string, { avg: number | null; n: number }>> }).data ?? {};
 
-// rone-rent-yearly.json 구조: { _meta, data: { region: { fullName, baseline, yearly: { year: 평당만 } } } }
+// rone-rent-yearly.json (권역 평균, 2013~) — 시계열 길음
 type RoneRegion = { fullName?: string; baseline?: { wrttime: string; rent_per_sqm: number }; yearly: Record<string, number> };
-const RONE_RENT = (roneRentData as { data?: Record<string, RoneRegion> }).data ?? {};
+const RONE_RENT_AVG = (roneRentData as { data?: Record<string, RoneRegion> }).data ?? {};
+
+// rone-rent-floor1-yearly.json (1층 전용, 2022~) — 시계열 짧지만 1층 정확
+type RoneFloor1 = { fullName?: string; yearly: Record<string, number> };
+const RONE_RENT_FLOOR1 = (roneRentFloor1Data as { data?: Record<string, RoneFloor1> }).data ?? {};
 
 interface TrendResponse {
   gu: string;
@@ -32,8 +37,8 @@ interface TrendResponse {
   rent: number[];   // 1층 평당 월세 (만원)
   land: number[];   // 토지 상업지역 평당가 (만원)
   source: {
-    rent: "rone" | "estimate";   // R-ONE 실데이터 / 자체 추정
-    land: "rtms" | "estimate";   // RTMS 실데이터 / 자체 추정
+    rent: "rone_floor1" | "rone_avg" | "estimate";  // 1층 / 권역평균 / 자체추정
+    land: "rtms" | "estimate";
   };
   note?: string;
 }
@@ -59,19 +64,32 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "lat/lng 또는 gu 파라미터 필요" }, { status: 400 });
   }
 
-  /* ── 1차: R-ONE 임대 시계열 — rone-rent-yearly.json (정적, R-ONE API 동기화 결과) ── */
-  let rentSource: "rone" | "estimate" = "estimate";
+  /* ── 1차: R-ONE 1층 임대료 시계열 (정확한 1층 시세, 2022~) ── */
+  let rentSource: "rone_floor1" | "rone_avg" | "estimate" = "estimate";
   let rentSeries: Array<{ year: number; value: number }> = [];
   if (region) {
-    // 권역명(name) 기반 R-ONE 매칭 (예: "압구정", "강남대로", "신사역")
-    const roneEntry = RONE_RENT[region.name];
-    if (roneEntry?.yearly) {
-      const entries = Object.entries(roneEntry.yearly)
+    // 1순위: 1층 전용 데이터 (2022~)
+    const f1Entry = RONE_RENT_FLOOR1[region.name];
+    if (f1Entry?.yearly) {
+      const entries = Object.entries(f1Entry.yearly)
         .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
         .filter((r) => r.value > 0);
-      if (entries.length >= 3) {
+      if (entries.length >= 2) {
         rentSeries = entries;
-        rentSource = "rone";
+        rentSource = "rone_floor1";
+      }
+    }
+    // 2순위: 권역 평균 (시계열 더 길지만 모든 층 평균이라 1층보다 낮음)
+    if (rentSeries.length === 0) {
+      const avgEntry = RONE_RENT_AVG[region.name];
+      if (avgEntry?.yearly) {
+        const entries = Object.entries(avgEntry.yearly)
+          .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
+          .filter((r) => r.value > 0);
+        if (entries.length >= 3) {
+          rentSeries = entries;
+          rentSource = "rone_avg";
+        }
       }
     }
   }
@@ -126,10 +144,13 @@ export async function GET(request: Request) {
     source: { rent: rentSource, land: landSource },
   };
 
-  if (rentSource === "estimate" || landSource === "estimate") {
-    response.note = HAS_PUBLIC_DATA_KEY
-      ? "공공 API 데이터 동기화 진행 중 — 일부 항목은 임시 추정값입니다."
-      : "공공 API 키 미연결 — 자체 추정값입니다. R-ONE / RTMS 연동 시 실데이터로 갱신됩니다.";
+  const notes: string[] = [];
+  if (rentSource === "rone_floor1") notes.push("임대 = R-ONE 1층 전용 데이터 (2022~)");
+  else if (rentSource === "rone_avg") notes.push("임대 = R-ONE 중대형 상가 권역 평균 (1층 데이터 부족 폴백)");
+  else if (rentSource === "estimate") notes.push("임대 = 자체 추정값");
+  if (notes.length > 0) response.note = notes.join(" · ");
+  if (!HAS_PUBLIC_DATA_KEY && rentSource === "estimate") {
+    response.note = "공공 API 키 미연결 — 자체 추정값입니다.";
   }
 
   return NextResponse.json(response);
