@@ -41,6 +41,53 @@ DONG_TO_GU = {
 }
 
 
+def _load_dong_code_map(sb) -> dict:
+    """dong_lookup → {(gu, dong_name): dong_code} 캐시. prefix 매칭용 동명 리스트도 함께."""
+    rows = sb.table("dong_lookup").select("dong_code, dong_name, gu_name").execute().data or []
+    exact_map = {}
+    by_gu: dict[str, list[tuple[str, str]]] = {}
+    for r in rows:
+        exact_map[(r["gu_name"], r["dong_name"])] = r["dong_code"]
+        by_gu.setdefault(r["gu_name"], []).append((r["dong_name"], r["dong_code"]))
+    return {"exact": exact_map, "by_gu": by_gu}
+
+
+def _normalize_dong(name: str) -> str:
+    """동명 정규화 — 법정동·행정동 매칭용.
+    '논현1동' → '논현', '한남동' → '한남', '성수동1가' → '성수1가', '성수1가1동' → '성수1가1'.
+    """
+    import re
+    n = name.strip()
+    # 끝의 "<숫자?>동" 제거 (논현1동, 한남동)
+    n = re.sub(r"\d*동$", "", n)
+    # 중간 "동" 제거 (성수동1가 → 성수1가)
+    n = n.replace("동", "")
+    return n
+
+
+def _resolve_dong_code(code_map: dict, gu: str, dong_name: str) -> str | None:
+    """동명 → dong_code. 직접 매칭 → 정규화 prefix 매칭 순."""
+    if not gu or not dong_name:
+        return None
+    code = code_map["exact"].get((gu, dong_name))
+    if code:
+        return code
+    target = _normalize_dong(dong_name)
+    if not target:
+        return None
+    # 정규화 후 prefix 매칭
+    candidates = []
+    for adm_name, adm_code in code_map["by_gu"].get(gu, []):
+        adm_norm = _normalize_dong(adm_name)
+        if adm_norm == target or adm_norm.startswith(target) or target.startswith(adm_norm):
+            candidates.append((adm_name, adm_code, abs(len(adm_norm) - len(target))))
+    if not candidates:
+        return None
+    # 가장 가까운 길이의 매칭 (정확도 우선)
+    candidates.sort(key=lambda x: x[2])
+    return candidates[0][1]
+
+
 def sync_naver_to_supabase():
     """SQLite의 네이버 크롤링 데이터를 Supabase로 동기화"""
     if not os.path.exists(NAVER_DB_PATH):
@@ -50,6 +97,9 @@ def sync_naver_to_supabase():
     sb = _get_sb()
     conn = sqlite3.connect(NAVER_DB_PATH)
     conn.row_factory = sqlite3.Row
+
+    # dong_lookup 캐시 — naver listings에 dong_code 부여용
+    code_map = _load_dong_code_map(sb)
 
     # 최근 7일간 snapshots 동기화
     cutoff = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -63,17 +113,19 @@ def sync_naver_to_supabase():
         batch = []
         for r in rows:
             dong = r["dong"] if "dong" in r.keys() else ""
+            gu = DONG_TO_GU.get(dong, "")
             batch.append({
                 "crawl_date": r["crawl_date"],
                 "article_id": str(r["article_id"]),
                 "dong": dong,
+                "dong_code": _resolve_dong_code(code_map, gu, dong),
                 "building": r.get("building", ""),
                 "floor": r.get("floor", ""),
                 "area_m2": r.get("area_m2", 0),
                 "deposit": r.get("deposit", 0),
                 "monthly_rent": r.get("monthly_rent", 0),
                 "article_name": r.get("article_name", ""),
-                "gu": DONG_TO_GU.get(dong, ""),
+                "gu": gu,
             })
 
         # 500건씩 upsert
@@ -92,10 +144,12 @@ def sync_naver_to_supabase():
         batch = []
         for r in deals:
             dong = r["dong"] if "dong" in r.keys() else ""
+            gu = DONG_TO_GU.get(dong, "")
             batch.append({
                 "disappeared_date": r["disappeared_date"],
                 "article_id": str(r["article_id"]),
                 "dong": dong,
+                "dong_code": _resolve_dong_code(code_map, gu, dong),
                 "building": r.get("building", ""),
                 "floor": r.get("floor_type", ""),
                 "area_m2": r.get("area_m2", 0),
@@ -104,7 +158,7 @@ def sync_naver_to_supabase():
                 "estimated_deposit": r.get("estimated_deposit", 0),
                 "estimated_rent": r.get("estimated_rent", 0),
                 "rent_per_pyeong": r.get("rent_per_pyeong", 0),
-                "gu": DONG_TO_GU.get(dong, ""),
+                "gu": gu,
             })
 
         for i in range(0, len(batch), 500):

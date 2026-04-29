@@ -1,11 +1,14 @@
-/* ── 임대료 추정 엔진 v2 ──
+/* ── 임대료 추정 엔진 v2 (4중 검증 확장) ──
 
-   3가지 소스를 교차하여 층별 임대료 추정:
-   1. 매매 실거래 역산법: 평당 매매가 × 수익률 ÷ 12
-   2. 부동산원 호가: 구별 층별 평균 (천원/평/월)
-   3. 네이버 호가 (추정 실거래): DB에서 조회 (Phase 3)
+   소스 (있으면 가중평균 자동 포함):
+   1. 매매 실거래 역산: 구 단위 거래 / 평균 (saleLive)
+   1b. 동 단위 매매역산: dong-sale-data.ts JSON (dongLandPrice 인자)
+   2. 부동산원 호가: gu_rent_stats (rentApi)
+   3. 임대 실거래/호가: naver_estimated_deals (rentLive) + 보정계수 (calibration)
+   4. 시장 보고서 앵커: market_reports (marketReportRent)
+   5. 본인 네트워크 ground truth: owner_network_rents (ownerNetworkRent)
 
-   각 소스에 가중치를 부여하여 최종 추정치 산출.
+   ground truth(5)이 있으면 가중치 최상위 0.5. 호가는 보정계수 자동 적용.
 */
 
 export interface FloorRent {
@@ -78,6 +81,15 @@ interface SaleLiveData {
   recent_deals?: DealRecord[];
 }
 
+/* 4중 검증용 새 입력 — 모두 optional, 있으면 가중평균에 자동 추가 */
+export interface RentEstimatorExtra {
+  dongLandPricePyeong?: number;     // 동 단위 토지 평당가 (만원/대지평) — dong-sale-data.ts
+  marketReportRent?: number;        // 시장 보고서 권역 앵커 (만원/평/월, 1층 기준)
+  ownerNetworkRent?: { rent: number; n: number };  // 본인 네트워크 중위값 (만원/평/월)
+  calibrationPct?: number;          // 호가 보정계수 (예: -22 = 호가 -22%)
+  capRate?: number;                 // 매매역산 캡레이트 % (기본 4.5)
+}
+
 export function estimateRent(
   guName: string,
   rentApi: RentApiData | null,       // 부동산원 호가
@@ -85,6 +97,7 @@ export function estimateRent(
   saleLive: SaleLiveData | null,     // 매매 실거래/폴백
   targetArea: number = 33,
   targetFloor: string = "1층",
+  extra: RentEstimatorExtra = {},
 ): RentEstimate {
   const pyeong = targetArea / 3.3;
   const sources: string[] = [];
@@ -112,12 +125,40 @@ export function estimateRent(
     sources.push("매매가 추정 역산");
   }
 
+  // ── 방법 1b: 동 단위 매매역산 ──
+  // 토지 평당가(대지) → 1층 임대료 추정 시 입지 프리미엄 ×1.7 보정 (실측 기반)
+  if (extra.dongLandPricePyeong) {
+    const cap = extra.capRate ?? yieldRate;
+    const baseRentPerLandPyeong = (extra.dongLandPricePyeong * (cap / 100)) / 12;
+    // 1층 임대료 ≈ 대지 평당 월세 × 1.7 (한남/신사 등 A급 입지 실측 평균 보정)
+    const dongInverse = Math.round(baseRentPerLandPyeong * 1.7);
+    methods.push({ method: `동 단위 매매역산 (cap ${cap}%)`, value: dongInverse, weight: 0.15 });
+    sources.push("동 단위 RTMS 매매역산");
+  }
+
   // ── 방법 2: 부동산원 호가 ──
   let method2_rent = 0;
   if (rentApi?.["1층_평"]) {
     method2_rent = Math.round(rentApi["1층_평"]); // 만원/평/월
     methods.push({ method: "권역 호가 (1층)", value: method2_rent, weight: 0.2 });
     sources.push("권역 호가 DB");
+  }
+
+  // ── 방법 4: 시장 보고서 권역 앵커 (CBRE/JLL/쿠시먼) ──
+  if (extra.marketReportRent && extra.marketReportRent > 0) {
+    methods.push({ method: "시장 보고서 권역 앵커", value: Math.round(extra.marketReportRent), weight: 0.2 });
+    sources.push("시장 보고서");
+  }
+
+  // ── 방법 5: 본인 네트워크 ground truth (가장 높은 가중치) ──
+  if (extra.ownerNetworkRent && extra.ownerNetworkRent.rent > 0) {
+    const w = extra.ownerNetworkRent.n >= 5 ? 0.5 : 0.35;
+    methods.push({
+      method: `본인 네트워크 (n=${extra.ownerNetworkRent.n})`,
+      value: Math.round(extra.ownerNetworkRent.rent),
+      weight: w,
+    });
+    sources.push(`네트워크 실거래 ${extra.ownerNetworkRent.n}건`);
   }
 
   // ── 방법 3: 임대 실거래/폴백 ──
@@ -129,7 +170,12 @@ export function estimateRent(
     const rentsPerPyeong = rentDeals1f.map((d) => (d.monthly_rent ?? 0) / ((d.area_m2 ?? 1) / 3.3));
     rentsPerPyeong.sort((a, b) => a - b);
     method3_rent = Math.round(rentsPerPyeong[Math.floor(rentsPerPyeong.length / 2)]);
-    methods.push({ method: `임대 실거래 중위값 (${rentDeals1f.length}건)`, value: method3_rent, weight: 0.6 });
+    // 호가 기반 데이터에 보정계수 자동 적용 (실거래로 변환)
+    if (extra.calibrationPct) method3_rent = Math.round(method3_rent * (1 + extra.calibrationPct / 100));
+    const label = extra.calibrationPct
+      ? `호가 ${rentDeals1f.length}건 + 보정 ${extra.calibrationPct}%`
+      : `임대 실거래 중위값 (${rentDeals1f.length}건)`;
+    methods.push({ method: label, value: method3_rent, weight: extra.ownerNetworkRent ? 0.25 : 0.6 });
     sources.push(`임대 실거래 ${rentDeals1f.length}건`);
   } else if (rentLive?.avg_monthly_rent) {
     method3_rent = Math.round(rentLive.avg_monthly_rent / Math.max(pyeong, 1));
