@@ -72,12 +72,19 @@ export default function SignupModal() {
     }
 
     if (isUserPending()) {
-      // 승인 대기 중 → DB에서 승인 여부 확인
+      // 승인 대기 중 → DB에서 승인 여부 확인.
+      // 중복 row가 있어도 안전하도록 limit(1) + approved 우선 정렬 사용.
       const stored = getUserInfo();
       if (stored?.email) {
-        supabase.from("users").select("approved").eq("email", stored.email).maybeSingle()
+        supabase
+          .from("users")
+          .select("approved")
+          .eq("email", stored.email)
+          .order("approved", { ascending: false })
+          .limit(1)
           .then(({ data }) => {
-            if (data?.approved) {
+            const row = data?.[0];
+            if (row?.approved) {
               localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...stored, approved: true }));
               setOpen(false);
               setPending(false);
@@ -107,7 +114,38 @@ export default function SignupModal() {
       registeredAt: new Date().toISOString(),
     };
 
-    // Supabase에 저장 (승인 대기)
+    // 1) 이메일로 기존 가입 여부 확인 — 다른 기기에서 접속한 케이스 자동 복구.
+    //    localStorage는 기기·브라우저마다 별개라, 같은 이메일이 이미 DB에 있으면
+    //    INSERT 시도 대신 DB 상태로 localStorage를 동기화한다.
+    //    중복 row가 있을 가능성에 대비해 limit(1) + approved 우선 정렬 사용.
+    let existing: { approved?: boolean } | null = null;
+    try {
+      const { data } = await supabase
+        .from("users")
+        .select("approved")
+        .eq("email", form.email)
+        .order("approved", { ascending: false })
+        .limit(1);
+      existing = data?.[0] ?? null;
+    } catch {
+      // DB 조회 실패 — 신규로 간주하고 INSERT 시도
+    }
+
+    if (existing) {
+      // 이미 가입된 이메일 — INSERT 없이 상태만 동기화
+      const approved = existing.approved === true;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...userInfo, approved }));
+      setSubmitting(false);
+      if (approved) {
+        setOpen(false);
+        setPending(false);
+      } else {
+        setPending(true);
+      }
+      return;
+    }
+
+    // 2) 신규 가입 — DB INSERT
     try {
       await supabase.from("users").insert({
         email: form.email,
@@ -119,7 +157,7 @@ export default function SignupModal() {
         approved: false,
       });
     } catch {
-      // DB insert 실패해도 로컬 등록은 진행
+      // DB insert 실패해도 로컬 등록은 진행 (오프라인 등)
     }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...userInfo, approved: false }));
