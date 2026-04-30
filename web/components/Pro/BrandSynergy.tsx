@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   ResponsiveContainer,
@@ -376,7 +376,10 @@ export default function BrandSynergy() {
       </div>
 
       {view === "subcategory" && (
-        <SubcategoryView ranks={subRanks} rent1f={(rent?.["1층_평"] as number) ?? 0} radius={radius} />
+        <>
+          <RoadLineDistribution radius={radius} />
+          <SubcategoryView ranks={subRanks} rent1f={(rent?.["1층_평"] as number) ?? 0} radius={radius} />
+        </>
       )}
 
       {view === "category" && (
@@ -646,6 +649,71 @@ export default function BrandSynergy() {
 }
 
 import type { SubcategoryRec } from "@/lib/category-economics";
+
+interface StoresNearResponse {
+  source: "kakao" | "sbiz";
+  total: number;
+  summary: {
+    roads: { name: string; total: number; byParent: Record<string, number> }[];
+    byParent: Record<string, number>;
+    byCategory: Record<string, number>;
+  };
+}
+
+function RoadLineDistribution({ radius }: { radius: number }) {
+  const lat = useAnalysisStore((s) => s.clickedLat);
+  const lng = useAnalysisStore((s) => s.clickedLng);
+  const [data, setData] = useState<StoresNearResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // 도로명 분포는 200m 반경 (건물 라인 단위) 고정
+  const lineRadius = Math.min(radius, 200);
+
+  useEffect(() => {
+    if (!lat || !lng) return;
+    setLoading(true);
+    fetch(`/api/stores-near?lat=${lat}&lng=${lng}&radius=${lineRadius}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d: StoresNearResponse | null) => setData(d))
+      .catch(() => setData(null))
+      .finally(() => setLoading(false));
+  }, [lat, lng, lineRadius]);
+
+  if (!lat || !lng) return null;
+  if (loading) return <p className="text-[11px] text-muted">도로 라인 분포 로딩...</p>;
+  if (!data || data.summary.roads.length === 0) return null;
+
+  const sourceLabel = data.source === "sbiz" ? "정식 상가 데이터" : "실시간 (Kakao)";
+
+  return (
+    <div className="rounded-xl border border-gray-100 bg-white px-3 py-3">
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-[11px] font-bold text-gray-900">📍 도로 라인별 점포 분포 (반경 {lineRadius}m)</p>
+        <span className="text-[9px] text-muted">출처: {sourceLabel} · {data.total}개</span>
+      </div>
+      <div className="space-y-1.5">
+        {data.summary.roads.slice(0, 6).map((r) => {
+          const detail = Object.entries(r.byParent)
+            .sort((a, b) => b[1] - a[1])
+            .map(([k, v]) => `${k}×${v}`)
+            .join(" · ");
+          return (
+            <div key={r.name} className="flex items-center gap-2 rounded-lg bg-gray-50 px-2.5 py-1.5">
+              <span className="text-[11px] font-semibold text-gray-800 flex-shrink-0">{r.name}</span>
+              <span className="text-[10px] text-muted">{detail}</span>
+              <span className="ml-auto text-[10px] font-bold text-gray-900">{r.total}개</span>
+            </div>
+          );
+        })}
+      </div>
+      {data.source === "kakao" && (
+        <p className="mt-2 text-[9px] text-muted">
+          ※ Kakao 카테고리는 음식점·카페·병원·학원·숙박만 잡힙니다. 의류·신발 등 일반 소매는 정식 상가 데이터(stores_geo) 임포트 후 자동 표시됩니다.
+        </p>
+      )}
+    </div>
+  );
+}
 
 function SubcategoryView({ ranks, rent1f, radius }: { ranks: SubcategoryRec[]; rent1f: number; radius: number }) {
   if (rent1f <= 0) {
