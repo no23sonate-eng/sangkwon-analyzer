@@ -18,6 +18,7 @@ import {
   type SearchResult,
   type RecommendedArea,
 } from "@/lib/search-data";
+import { track } from "@/lib/track";
 
 /* ── 통계 색상 맵 ── */
 const STAT_COLORS: Record<string, { bg: string; text: string }> = {
@@ -52,6 +53,7 @@ export default function SearchPage() {
     async (q?: string) => {
       const term = q ?? query;
       if (!term.trim()) return;
+      track({ event_type: "search", query: term, path: "/search" });
       setLoading(true);
       setSearched(true);
       const res = await searchAreas(term);
@@ -66,7 +68,15 @@ export default function SearchPage() {
     handleSearch(tag);
   };
 
-  const goToAnalysis = (areaCode: string, lat?: number, lng?: number) => {
+  const goToAnalysis = (areaCode: string, lat?: number, lng?: number, name?: string) => {
+    track({
+      event_type: "area_view",
+      trdar_cd: areaCode,
+      area_name: name,
+      lat,
+      lng,
+      path: "/search",
+    });
     if (lat && lng) {
       router.push(`/map?lat=${lat}&lng=${lng}`);
     } else {
@@ -160,7 +170,7 @@ export default function SearchPage() {
                 {results.map((r) => (
                   <div
                     key={r.areaCode}
-                    onClick={() => goToAnalysis(r.areaCode, r.lat, r.lng)}
+                    onClick={() => goToAnalysis(r.areaCode, r.lat, r.lng, r.name)}
                     className="group flex cursor-pointer items-center gap-5 rounded-[20px] bg-card p-5 shadow-card
                       transition-all hover:shadow-card-hover"
                   >
@@ -194,7 +204,7 @@ export default function SearchPage() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        goToAnalysis(r.areaCode, r.lat, r.lng);
+                        goToAnalysis(r.areaCode, r.lat, r.lng, r.name);
                       }}
                       className="flex shrink-0 items-center gap-1.5 rounded-[var(--radius-button)] border border-primary-200
                         bg-white px-4 py-2.5 text-[13px] font-semibold text-primary-600
@@ -222,7 +232,7 @@ export default function SearchPage() {
                 return (
                   <div
                     key={area.areaCode}
-                    onClick={() => goToAnalysis(area.areaCode, area.lat, area.lng)}
+                    onClick={() => goToAnalysis(area.areaCode, area.lat, area.lng, area.name)}
                     className="group cursor-pointer rounded-[20px] bg-card p-6 shadow-card
                       transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover"
                   >

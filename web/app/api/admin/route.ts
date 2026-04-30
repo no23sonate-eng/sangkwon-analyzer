@@ -24,14 +24,16 @@ export async function GET(req: NextRequest) {
   }
 
   const sb = getServiceClient();
-  const [u, i] = await Promise.all([
+  const [u, i, e] = await Promise.all([
     sb.from("users").select("*").order("registered_at", { ascending: false }),
     sb.from("inquiries").select("*").order("submitted_at", { ascending: false }),
+    sb.from("user_events").select("*").order("ts", { ascending: false }).limit(2000),
   ]);
 
   return NextResponse.json({
     users: u.data ?? [],
     inquiries: i.data ?? [],
+    events: e.data ?? [],
   });
 }
 

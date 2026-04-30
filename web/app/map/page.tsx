@@ -12,6 +12,7 @@ import DataPanel from "@/components/Panel/DataPanel";
 import { useAnalysisStore } from "@/store/analysisStore";
 import { findNearbyTrdar, analyzeArea, getStoreCount, reverseGeocode, searchTrdar, geocode } from "@/lib/api";
 import { DISTRICTS, findDistrictByQuery, ZONE_COLORS, type DistrictDef, type ZonedArea } from "@/lib/district-zones";
+import { track } from "@/lib/track";
 // district-polygons.ts (하드코딩)는 더 이상 사용하지 않음 — /api/districts/polygons에서 실제 SHP 기반 폴리곤 로드
 
 const MapContainer = dynamic(() => import("@/components/Map/MapContainer"), {
@@ -78,8 +79,14 @@ async function triggerAnalysis(lat: number, lng: number) {
 
   try {
     reverseGeocode(lat, lng)
-      .then((res) => store.setClickedAddress(res.address, res.gu, res.dong))
-      .catch(() => store.setClickedAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`, "", ""));
+      .then((res) => {
+        store.setClickedAddress(res.address, res.gu, res.dong);
+        track({ event_type: "map_click", lat, lng, address: res.address, area_name: res.dong || res.gu, path: "/map" });
+      })
+      .catch(() => {
+        store.setClickedAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`, "", "");
+        track({ event_type: "map_click", lat, lng, path: "/map" });
+      });
 
     const list = await findNearbyTrdar(lat, lng, Math.max(radius, 500));
     store.setNearbyList(list);
@@ -315,6 +322,7 @@ export default function MapPage() {
   const handleSearch = useCallback(async () => {
     const q = searchQuery.trim();
     if (!q) return;
+    track({ event_type: "search", query: q, path: "/map" });
     addToHistory(q);
     setSearchFocused(false);
     setSearchQuery("");

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { MessageSquare, Send, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { track } from "@/lib/track";
 
 interface FormData {
   name: string;
@@ -39,6 +40,14 @@ export default function ConsultationForm() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    track({
+      event_type: "consultation_open",
+      area_name: prefillArea || undefined,
+      path: "/consultation",
+    });
+  }, [prefillArea]);
 
   const update = (key: keyof FormData, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
