@@ -11,6 +11,8 @@ import {
   getCategoryEconomics,
   calcRentEconomy,
   rentFitScore,
+  rankSubcategories,
+  CATEGORY_GROUPS,
   SCORE_WEIGHTS,
   RENT_BURDEN_WARN,
   RENT_BURDEN_MAX,
@@ -44,43 +46,7 @@ function relScoreInverse(my: number, seoul: number): number {
    카테고리별 임대비율·평균면적은 web/lib/data/category-economics.json (산업 통계 출처).
 */
 
-const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[] }> = {
-  외식: {
-    label: "외식",
-    icon: "🍽️",
-    subs: ["한식음식점", "중식음식점", "일식음식점", "양식음식점", "분식전문점", "패스트푸드점", "치킨전문점", "제과점", "반찬가게"],
-  },
-  "카페/주류": {
-    label: "카페/주류",
-    icon: "☕",
-    subs: ["커피-음료", "호프-간이주점", "주류도매"],
-  },
-  "소매/유통": {
-    label: "소매",
-    icon: "🛒",
-    subs: ["편의점", "슈퍼마켓", "일반의류", "한복점", "유아의류", "화장품", "신발", "가방", "시계및귀금속", "안경", "서적", "문구", "가전제품", "핸드폰", "운동/경기용품", "예술품", "의약품", "육류판매", "중고가구", "가구", "철물점", "청과상", "수산물판매", "미곡판매", "조명용품", "섬유제품", "완구", "악기", "화초", "애완동물", "미용재료", "컴퓨터및주변장치판매", "의류임대", "가정용품임대", "재생용품 판매점", "비디오/서적임대", "중고차판매", "자전거 및 기타운송장비", "모터사이클및부품"],
-  },
-  "뷰티/건강": {
-    label: "뷰티/의료",
-    icon: "💇",
-    subs: ["미용실", "피부관리실", "네일숍", "일반의원", "치과의원", "한의원", "동물병원", "의료기기"],
-  },
-  교육: {
-    label: "교육",
-    icon: "📚",
-    subs: ["외국어학원", "일반교습학원", "예술학원", "컴퓨터학원", "스포츠 강습", "독서실"],
-  },
-  "생활서비스": {
-    label: "생활서비스",
-    icon: "🔧",
-    subs: ["세탁소", "부동산중개업", "변호사사무소", "회계사사무소", "세무사사무소", "인테리어", "전자상거래업", "자동차수리", "사진관", "여행사", "통번역서비스", "법무사사무소", "변리사사무소", "기타법무서비스", "건축물청소", "자동차미용", "자동차부품", "모터사이클수리", "가전제품수리", "통신기기수리", "주유소", "녹음실"],
-  },
-  "여가/오락": {
-    label: "여가",
-    icon: "🏋️",
-    subs: ["스포츠클럽", "골프연습장", "PC방", "노래방", "당구장", "볼링장", "게스트하우스", "여관", "고시원", "DVD방", "전자게임장", "기타오락장", "복권방"],
-  },
-};
+// CATEGORY_GROUPS는 web/lib/category-economics.ts에서 import (단일 정의)
 
 interface GroupData {
   key: string;
@@ -119,6 +85,16 @@ export default function BrandSynergy() {
   const trdarCount = Math.max(1, analysisData?.trdar_count ?? 1);
 
   const [selected, setSelected] = useState<string | null>(null);
+  const [view, setView] = useState<"category" | "subcategory">("category");
+
+  // 세부업종 단위 추천 (D 시나리오 포함: 임대료 임계 매출 표시)
+  const subRanks = useMemo(() => {
+    const rent1f = (rent?.["1층_평"] as number) ?? 0;
+    if (rent1f <= 0) return [];
+    const perStore = sales?.per_store ?? [];
+    const bySub = store?.by_subcategory ?? {};
+    return rankSubcategories(perStore, bySub, rent1f);
+  }, [sales, store, rent]);
 
   const groups = useMemo(() => {
     if (!store || !ft) return [];
@@ -379,6 +355,32 @@ export default function BrandSynergy() {
 
   return (
     <div className="space-y-4">
+      {/* View 토글: 대분류 vs 세부업종 */}
+      <div className="flex gap-1 rounded-lg bg-gray-100 p-1">
+        <button
+          onClick={() => setView("category")}
+          className={`flex-1 rounded-md py-1.5 text-[11px] font-semibold transition-colors ${
+            view === "category" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+          }`}
+        >
+          대분류 7개
+        </button>
+        <button
+          onClick={() => setView("subcategory")}
+          className={`flex-1 rounded-md py-1.5 text-[11px] font-semibold transition-colors ${
+            view === "subcategory" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+          }`}
+        >
+          세부업종 ({subRanks.length})
+        </button>
+      </div>
+
+      {view === "subcategory" && (
+        <SubcategoryView ranks={subRanks} rent1f={(rent?.["1층_평"] as number) ?? 0} radius={radius} />
+      )}
+
+      {view === "category" && (
+      <>
       {/* 대분류 카테고리 선택 */}
       <div>
         <label className="mb-1.5 block text-[10px] font-medium text-muted">업종 카테고리 ({groups.length}개)</label>
@@ -637,6 +639,88 @@ export default function BrandSynergy() {
           )}
         </>
       )}
+      </>
+      )}
+    </div>
+  );
+}
+
+import type { SubcategoryRec } from "@/lib/category-economics";
+
+function SubcategoryView({ ranks, rent1f, radius }: { ranks: SubcategoryRec[]; rent1f: number; radius: number }) {
+  if (rent1f <= 0) {
+    return <p className="text-[11px] text-muted">임대료 데이터가 없어 세부업종 분석을 할 수 없습니다.</p>;
+  }
+  if (ranks.length === 0) {
+    return <p className="text-[11px] text-muted">세부업종 매출 데이터가 부족합니다.</p>;
+  }
+  const tonePalette: Record<SubcategoryRec["verdict"], { bg: string; text: string; dot: string }> = {
+    "적정": { bg: "#ECFDF5", text: "#047857", dot: "#10B981" },
+    "주의": { bg: "#FFFBEB", text: "#B45309", dot: "#F59E0B" },
+    "부담": { bg: "#FEF2F2", text: "#B91C1C", dot: "#EF4444" },
+    "데이터부족": { bg: "#F3F4F6", text: "#6B7280", dot: "#9CA3AF" },
+  };
+
+  return (
+    <div className="space-y-2">
+      <p className="text-[10px] font-medium text-muted">
+        반경 {radius}m · 1층 평당 {rent1f}만원 · 임대료 감당 매출 임계치 비교
+      </p>
+      <div className="rounded-lg bg-blue-50 px-3 py-2">
+        <p className="text-[10px] font-semibold text-blue-900">
+          임계 매출 = (평당 시세 × 평수) ÷ 매출 대비 임대비율
+        </p>
+        <p className="text-[9px] text-blue-700 mt-0.5">
+          이 권역에서 흑자가 나려면 점포당 매출이 임계치 이상이어야 합니다. 임대료가 비싸면 객단가 큰 업종만 살아남습니다.
+        </p>
+      </div>
+      {ranks.map((r) => {
+        const palette = tonePalette[r.verdict];
+        const ratio = r.thresholdSalesMan > 0 ? r.perStoreSalesMan / r.thresholdSalesMan : 0;
+        return (
+          <div key={r.svcNm} className="rounded-lg border border-gray-100 px-3 py-2.5" style={{ background: palette.bg }}>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full" style={{ background: palette.dot }} />
+              <span className="text-[12px] font-bold" style={{ color: palette.text }}>{r.svcNm}</span>
+              <span className="text-[9px] text-muted">({r.parent})</span>
+              <span className="ml-auto text-[10px] font-semibold" style={{ color: palette.text }}>
+                {r.verdict} <span className="ml-1 text-[9px]">부담 {Math.round(r.rentBurden * 100)}%</span>
+              </span>
+            </div>
+            <div className="mt-2 grid grid-cols-4 gap-1.5 text-center">
+              <div>
+                <p className="text-[8px] text-muted">점포</p>
+                <p className="text-[11px] font-bold text-gray-800">{r.storeCount}개</p>
+              </div>
+              <div>
+                <p className="text-[8px] text-muted">월세 ({r.pyeong}평)</p>
+                <p className="text-[11px] font-bold text-gray-800">{r.monthlyRentMan.toLocaleString()}만</p>
+              </div>
+              <div>
+                <p className="text-[8px] text-muted">임계 매출</p>
+                <p className="text-[11px] font-bold text-gray-800">{r.thresholdSalesMan.toLocaleString()}만</p>
+              </div>
+              <div>
+                <p className="text-[8px] text-muted">실제 매출</p>
+                <p className="text-[11px] font-bold" style={{ color: palette.text }}>
+                  {r.perStoreSalesMan.toLocaleString()}만
+                </p>
+              </div>
+            </div>
+            {r.thresholdSalesMan > 0 && (
+              <div className="mt-1.5 h-1 w-full rounded-full bg-gray-200">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${Math.min(100, ratio * 100)}%`,
+                    background: palette.dot,
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
