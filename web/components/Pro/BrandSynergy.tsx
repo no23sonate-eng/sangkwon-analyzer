@@ -7,6 +7,14 @@ import {
 } from "recharts";
 import { useAnalysisStore } from "@/store/analysisStore";
 import seoulBenchmark from "@/lib/data/seoul-benchmark.json";
+import {
+  getCategoryEconomics,
+  calcRentEconomy,
+  rentFitScore,
+  SCORE_WEIGHTS,
+  RENT_BURDEN_WARN,
+  RENT_BURDEN_MAX,
+} from "@/lib/category-economics";
 
 /* ── 서울 카테고리 벤치마크 ── 분기 단위 정적 집계 (Phase 1)
    값 50 = 서울 일반(median), 100 = median의 2배, 0 = 사실상 없음. */
@@ -33,24 +41,8 @@ function relScoreInverse(my: number, seoul: number): number {
 /* ── 대분류 → 세부 업종 정확 매칭 ──
    실제 서울시 상권 데이터의 업종명과 정확히 일치해야 함.
    부분 문자열 매칭은 오매칭 위험이 있어서 정확 매칭만 사용.
+   카테고리별 임대비율·평균면적은 web/lib/data/category-economics.json (산업 통계 출처).
 */
-/* 업종별 적정 임대비율 (매출 대비 월세 %)
-   한국 상업 부동산 업계 기준 중간값 적용 */
-const RENT_RATIO: Record<string, number> = {
-  "외식": 0.12,        // 10~15% — 재료비 30-35%, 인건비 25-30%
-  "카페/주류": 0.15,   // 15% — 원가율 낮아 임대비중 높아도 가능
-  "소매/유통": 0.07,   // 5~10% — 유통마진 얇음
-  "뷰티/건강": 0.10,   // 8~12% — 인건비 높아 임대 여력 제한
-  "교육": 0.10,        // 8~12% — 강사 인건비 40-50%
-  "생활서비스": 0.06,  // 5~8% — 매출 변동 크고 보수적
-  "여가/오락": 0.12,   // 10~15% — 면적 넓어 총액 큼
-};
-
-/* 업종별 평균 면적 (평) — 임대료 추정 기준. 업계 관행값 하드코딩. */
-const AVG_PYEONG: Record<string, number> = {
-  "외식": 20, "카페/주류": 15, "소매/유통": 25,
-  "뷰티/건강": 15, "교육": 25, "생활서비스": 10, "여가/오락": 40,
-};
 
 const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[] }> = {
   외식: {
@@ -187,14 +179,12 @@ export default function BrandSynergy() {
       const totalOC = openCount + closeCount;
       const survivalRate = totalOC > 0 ? openCount / totalOC : 0.5;
 
-      const avgPyeong = AVG_PYEONG[key] ?? 20;
-      const monthlyRentWon = rent1f > 0 ? rent1f * avgPyeong * 10000 : 0; // 업종별 면적 기준 월세 (원)
-      const rentRatio = RENT_RATIO[key] ?? 0.10;
-      // rentBurden: 실제 월세 / 적정 월세 (1이면 적정, 1초과면 부담)
-      const appropriateRent = avgPerStoreSales * rentRatio;
+      const eco = getCategoryEconomics(key);
+      const monthlyRentWon = rent1f > 0 ? rent1f * eco.avg_pyeong * 10000 : 0;
+      const appropriateRent = avgPerStoreSales * eco.rent_ratio;
       const rentBurden = appropriateRent > 0 && monthlyRentWon > 0
         ? monthlyRentWon / appropriateRent
-        : 1.0;
+        : 0;
 
       const franchiseRatio = storeCount > 0 ? franchise / storeCount : 0;
 
@@ -256,26 +246,34 @@ export default function BrandSynergy() {
       const myOpenRate = oc > 0 ? (r.openCount / oc) * 100 : 50;
       const openRate = cb ? relScore(myOpenRate, cb.avg_open_rate) : Math.round(myOpenRate);
 
-      // 임대 적정: 적정/실제 비율 자체가 절대값 — 그대로 유지
-      const rentRatio = RENT_RATIO[r.key] ?? 0.10;
-      const appropriateRent = r.perStoreSales * rentRatio;
-      const avgPy = AVG_PYEONG[r.key] ?? 20;
-      const actualRentWon = (rent?.["1층_평"] as number ?? 0) * avgPy * 10000;
-      const rentFit = appropriateRent > 0 && actualRentWon > 0
-        ? Math.max(5, Math.min(100, Math.round((appropriateRent / actualRentWon) * 50)))
+      // 임대 적정: rentBurden(실제월세/적정월세) 기반 절대 점수
+      // 1.0 = 적정(50점), 0.7 이하 = 90점, 1.5 이상 = 0점
+      const rentFit = (rent?.["1층_평"] as number ?? 0) > 0 && r.perStoreSales > 0
+        ? rentFitScore(r.rentBurden)
         : 50;
 
       // 진입 용이: 내 프랜차이즈 비율 vs 서울 카테고리 평균 (낮을수록 진입 쉬움)
       const myFranchisePct = r.franchiseRatio * 100;
       const entryEase = cb ? relScoreInverse(myFranchisePct, cb.avg_franchise_ratio) : Math.round((1 - r.franchiseRatio) * 100);
 
-      // 기회 점수: 6축 평균 (모두 50=서울 일반 기준)
+      // 기회 점수: 가중평균 — 임대 30%, 수요 20%, 객단가 15%, 공급여유 15%, 개폐업률 12%, 진입용이 8%
       r.gapScore = Math.max(0, Math.min(100, Math.round(
-        (r.demandScore + supplySlack + ticketScore + openRate + rentFit + entryEase) / 6
+        rentFit * SCORE_WEIGHTS.rentFit +
+        r.demandScore * SCORE_WEIGHTS.demand +
+        ticketScore * SCORE_WEIGHTS.ticket +
+        supplySlack * SCORE_WEIGHTS.supplySlack +
+        openRate * SCORE_WEIGHTS.openRate +
+        entryEase * SCORE_WEIGHTS.entryEase,
       )));
     }
 
-    return valid.sort((a, b) => b.gapScore - a.gapScore);
+    // 하드 필터: 임대 부담이 RENT_BURDEN_MAX(1.5) 초과 → 추천 제외
+    // 단 rentBurden 산출 불가(0)인 경우는 데이터 부족이라 통과
+    const filtered = valid.filter((r) =>
+      r.rentBurden === 0 || r.rentBurden < RENT_BURDEN_MAX
+    );
+
+    return filtered.sort((a, b) => b.gapScore - a.gapScore);
   }, [store, ft, sales, scSummary, rent, pop, trdarCount]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
@@ -344,22 +342,20 @@ export default function BrandSynergy() {
         desc: `${myOR.toFixed(0)}% (서울 ${seoulOR}%) · 개${selectedGroup.displayOpen}/폐${selectedGroup.displayClose}`,
       };
     })(),
-    // 임대 적정: 업종 적정 / 실제 (절대값)
+    // 임대 적정: rentBurden 기반 (calcRentEconomy 사용)
     (() => {
-      const ratio = RENT_RATIO[selectedGroup.key] ?? 0.10;
-      const expectedRent = selectedGroup.perStoreSales * ratio;
       const rent1f = (rent?.["1층_평"] as number) ?? 0;
-      const avgPy = AVG_PYEONG[selectedGroup.key] ?? 20;
-      const actualRent = rent1f > 0 ? rent1f * avgPy * 10000 : 0;
-      const value = (actualRent > 0 && expectedRent > 0)
-        ? Math.max(5, Math.min(100, Math.round((expectedRent / actualRent) * 50)))
+      const econ = calcRentEconomy(selectedGroup.key, rent1f, selectedGroup.perStoreSales);
+      const value = (rent1f > 0 && selectedGroup.perStoreSales > 0)
+        ? rentFitScore(econ.rentBurden)
         : 50;
-      const expectedMan = Math.round(expectedRent / 10000);
-      const actualMan = Math.round(rent1f * avgPy);
+      const eco = getCategoryEconomics(selectedGroup.key);
+      const appropriateRentMan = Math.round(econ.actualSalesMan * eco.rent_ratio);
+      const burdenPct = Math.round(econ.rentBurden * 100);
       return {
         axis: "임대 적정",
         value,
-        desc: `적정 ${expectedMan}만 vs 시세 ${actualMan}만 (${avgPy}평)`,
+        desc: `시세 ${econ.monthlyRentMan}만 vs 적정 ${appropriateRentMan}만 · 부담 ${burdenPct}%`,
       };
     })(),
     // 진입 용이: 내 프랜차이즈 비율 vs 서울 카테고리 평균 (낮을수록 좋음)
@@ -417,15 +413,23 @@ export default function BrandSynergy() {
       {/* 미선택: 추천 점수 요약 */}
       {!selected && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 6축 평균 점수 · 50 = 서울 같은 업종 일반 수준</p>
+          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 가중평균 (임대 30% / 수요 20% / 객단가·공급 15% / 개폐업 12% / 진입 8%)</p>
           {groups.map((g) => {
             const tone = g.gapScore >= 55 ? "emerald" : g.gapScore >= 40 ? "amber" : "red";
             const color = tone === "emerald" ? "#10B981" : tone === "amber" ? "#F59E0B" : "#EF4444";
             const verdict = g.gapScore >= 55 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀";
+            const burdenAlert = g.rentBurden >= RENT_BURDEN_WARN;
             return (
               <div key={g.key} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
                 <span className="text-[14px]">{g.icon}</span>
-                <span className="flex-1 text-[11px] font-semibold text-gray-800">{g.label}</span>
+                <span className="flex-1 text-[11px] font-semibold text-gray-800">
+                  {g.label}
+                  {burdenAlert && (
+                    <span className="ml-1.5 inline-block rounded-full bg-red-100 px-1.5 py-0.5 text-[8px] font-bold text-red-700">
+                      임대 {Math.round(g.rentBurden * 100)}%
+                    </span>
+                  )}
+                </span>
                 <span className="text-[9px] text-muted w-12 text-right">{g.displayStores}개</span>
                 <div className="h-1.5 w-14 rounded-full bg-gray-200">
                   <div className="h-full rounded-full" style={{ width: `${g.gapScore}%`, background: color }} />
@@ -560,6 +564,56 @@ export default function BrandSynergy() {
               </p>
             </div>
           </div>
+
+          {/* 임대 경제성 — 추천 근거의 결정변수 */}
+          {(() => {
+            const rent1f = (rent?.["1층_평"] as number) ?? 0;
+            if (rent1f <= 0 || selectedGroup.perStoreSales <= 0) return null;
+            const econ = calcRentEconomy(selectedGroup.key, rent1f, selectedGroup.perStoreSales);
+            const eco = getCategoryEconomics(selectedGroup.key);
+            const appropriateRentMan = Math.round(econ.actualSalesMan * eco.rent_ratio);
+            const burdenPct = Math.round(econ.rentBurden * 100);
+            const tone = econ.rentBurden >= RENT_BURDEN_MAX ? "red"
+              : econ.rentBurden >= RENT_BURDEN_WARN ? "amber"
+              : econ.rentBurden >= 1.0 ? "stone" : "emerald";
+            const palette = {
+              emerald: { bg: "#ECFDF5", text: "#047857", label: "적정" },
+              stone: { bg: "#F1F5F9", text: "#475569", label: "균형" },
+              amber: { bg: "#FFFBEB", text: "#B45309", label: "주의" },
+              red: { bg: "#FEF2F2", text: "#B91C1C", label: "부담" },
+            }[tone];
+            return (
+              <div className="rounded-xl border border-gray-100 px-3 py-3" style={{ background: palette.bg }}>
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-[11px] font-bold" style={{ color: palette.text }}>
+                    임대 경제성 — {palette.label} (부담 {burdenPct}%)
+                  </p>
+                  <p className="text-[9px] text-muted">평당 {rent1f}만 × {eco.avg_pyeong}평</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-[9px] text-muted">예상 월세</p>
+                    <p className="text-[13px] font-bold" style={{ color: palette.text }}>
+                      {econ.monthlyRentMan.toLocaleString()}<span className="text-[9px] font-medium">만</span>
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] text-muted">적정 월세 <span className="text-[8px]">(매출 × {Math.round(eco.rent_ratio * 100)}%)</span></p>
+                    <p className="text-[13px] font-bold text-gray-900">
+                      {appropriateRentMan.toLocaleString()}<span className="text-[9px] font-medium">만</span>
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] text-muted">실제 매출</p>
+                    <p className="text-[13px] font-bold text-gray-900">
+                      {econ.actualSalesMan.toLocaleString()}<span className="text-[9px] font-medium">만</span>
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-2 text-[9px] text-muted">{eco.source}</p>
+              </div>
+            );
+          })()}
 
           {(strengths.length > 0 || weaknesses.length > 0) && (
             <div className="space-y-2">

@@ -7,6 +7,7 @@
 import { findDongByCoord } from "../lib/dong-lookup";
 import { getDongLandPrice, inverseRentFromDongLand } from "../lib/dong-sale-data";
 import { estimateRent } from "../lib/rent-estimator";
+import { calcRentEconomy, RENT_BURDEN_MAX } from "../lib/category-economics";
 
 interface SanityCase {
   name: string;
@@ -90,6 +91,63 @@ for (const c of CASES) {
   if (passed1f) passed++; else failed++;
 }
 
+/* ── 카테고리 임대 경제성 회귀 ──
+   한남동 1층 평당 120만/월에서 카페/주류 점포당 매출(서울 평균 ~3천만/월,
+   한남동 프라임 가정 6천만/월 이내)는 임대 부담이 RENT_BURDEN_MAX(1.5) 이상이라야 함.
+   → 추천 hard filter에서 빠져야 함.
+*/
+console.log(`\n━━━ 카테고리 임대 경제성 회귀 ━━━`);
+
+interface EconCase {
+  name: string;
+  category: string;
+  rent1fMan: number;          // 1층 평당 만원/월
+  perStoreSalesWon: number;   // 점포당 월매출 원
+  expect: "exclude" | "warn" | "ok";
+}
+
+const ECON_CASES: EconCase[] = [
+  {
+    name: "한남동 대로변 카페/주류 (서울 카페 평균 매출)",
+    category: "카페/주류",
+    rent1fMan: 120,
+    perStoreSalesWon: 32_459_511, // seoul-benchmark avg_per_store_sales
+    expect: "exclude",
+  },
+  {
+    name: "한남동 대로변 카페/주류 (한남동 객단가 보정 +85%)",
+    category: "카페/주류",
+    rent1fMan: 120,
+    perStoreSalesWon: 60_000_000,
+    expect: "exclude",
+  },
+  {
+    name: "외곽 권역 외식 (평당 25만 + 점포당 7천만 매출 → 흑자형)",
+    category: "외식",
+    rent1fMan: 25,
+    perStoreSalesWon: 70_000_000,
+    expect: "ok",
+  },
+  {
+    name: "성수 일반 외식 (평당 40만 + 서울 평균 매출 → 적정 경계)",
+    category: "외식",
+    rent1fMan: 40,
+    perStoreSalesWon: 56_838_786,
+    expect: "warn",
+  },
+];
+
+for (const c of ECON_CASES) {
+  const econ = calcRentEconomy(c.category, c.rent1fMan, c.perStoreSalesWon);
+  const isExcluded = econ.rentBurden >= RENT_BURDEN_MAX;
+  const isWarn = econ.rentBurden >= 1.2 && econ.rentBurden < RENT_BURDEN_MAX;
+  const verdict: EconCase["expect"] = isExcluded ? "exclude" : isWarn ? "warn" : "ok";
+  const ok = verdict === c.expect;
+  console.log(`  ${ok ? "✓" : "✗"} ${c.name}`);
+  console.log(`     월세 ${econ.monthlyRentMan}만 / 적정 ${Math.round(econ.actualSalesMan * (econ.rentBurden > 0 ? econ.monthlyRentMan / (econ.actualSalesMan * econ.rentBurden) : 0.1))}만 → 부담 ${(econ.rentBurden * 100).toFixed(0)}% (${verdict}, 기대 ${c.expect})`);
+  if (ok) passed++; else failed++;
+}
+
 console.log(`\n━━━ 결과 ━━━`);
-console.log(`통과 ${passed} / 실패 ${failed} / 총 ${CASES.length}`);
+console.log(`통과 ${passed} / 실패 ${failed} / 총 ${CASES.length + ECON_CASES.length}`);
 process.exit(failed > 0 ? 1 : 0);
