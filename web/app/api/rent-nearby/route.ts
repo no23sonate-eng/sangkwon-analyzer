@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit } from "@/lib/rate-limit";
+import { resolveDong } from "@/lib/dong-lookup";
+import { getDongLandPrice } from "@/lib/dong-sale-data";
+import { getOwnerNetworkRent, getOwnerNetworkRentByFloor } from "@/lib/owner-network-rents";
+
+const LOC_PREMIUM_1F = 1.7;
+const FLOOR_RATIO = { "1층": 1.0, "2층": 0.55, "지하": 0.45 } as const;
+const DEFAULT_CAP_RATE = 4.5;
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -278,8 +285,44 @@ export async function GET(request: Request) {
     }));
   }
 
-  // DB에 사례가 없으면 네이버(추정실거래→호가) → 구 평균(DB→하드코딩) 순으로 fallback
+  // DB에 사례가 없으면: owner-network → 네이버(추정실거래→호가) → dong RTMS → 구 평균
   if (filtered.length === 0 && gu) {
+    // 클릭 좌표의 행정동 — owner-network·dong RTMS 조회용
+    const clickDong = resolveDong(lat, lng);
+    const clickDongName = clickDong.dong_name;
+
+    // 0차: 본인 네트워크 ground truth — 가장 높은 신뢰도, 위치별 차이 보존
+    const ownerF1 = getOwnerNetworkRent(gu, clickDongName);
+    if (ownerF1 && ownerF1.rent > 0) {
+      const ownerF2 = getOwnerNetworkRentByFloor(gu, clickDongName, "2층이상");
+      const ownerB = getOwnerNetworkRentByFloor(gu, clickDongName, "지하");
+      const makeOwnerStats = (rentPP: number) => ({
+        count: ownerF1.n,
+        avg_rent: Math.round(rentPP * target_pyeong),
+        avg_deposit: Math.round(rentPP * target_pyeong * 12),
+        avg_pyeong: Math.round(rentPP * 10) / 10,
+        min_rent: Math.round(rentPP * target_pyeong * 0.85),
+        max_rent: Math.round(rentPP * target_pyeong * 1.15),
+        median_rent: Math.round(rentPP * target_pyeong),
+        target_pyeong,
+      });
+      return NextResponse.json({
+        total_cases: ownerF1.n,
+        radius: actualRadius,
+        fallback: true,
+        fallback_source: `본인 네트워크 ground truth · ${ownerF1.detail}`,
+        confidence: "actual",
+        stats: {
+          "1층": makeOwnerStats(ownerF1.rent),
+          "2층": makeOwnerStats(ownerF2?.rent ?? ownerF1.rent * FLOOR_RATIO["2층"]),
+          "지하": makeOwnerStats(ownerB?.rent ?? ownerF1.rent * FLOOR_RATIO["지하"]),
+        },
+        sample_cases: [],
+        recent_deals: recentDeals,
+        recent_listings: recentListings,
+      });
+    }
+
     // 이 위치에 가까운 상권들의 행정동 목록 — 네이버 필터에 사용해 gu 전체 희석 방지
     const dongDeg = (1000 / 111000) * 1.2; // 1km 반경
     const { data: nearbyAreas } = await supabase
@@ -346,6 +389,7 @@ export async function GET(request: Request) {
           radius: actualRadius,
           fallback: true,
           fallback_source: `추정 실거래 ${d1.length}건 · ${scopeLabel}`,
+          confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
           stats: {
             "1층": makeNaverStats(avgDeal(d1), d1.length),
             "2층": d2.length > 0 ? makeNaverStats(avgDeal(d2), d2.length) : makeNaverStats(0, 0),
@@ -387,6 +431,7 @@ export async function GET(request: Request) {
           radius: actualRadius,
           fallback: true,
           fallback_source: `현재 호가 ${l1.length}건 · ${scopeLabel}`,
+          confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
           stats: {
             "1층": makeNaverStats(avgList(l1), l1.length),
             "2층": l2.length > 0 ? makeNaverStats(avgList(l2), l2.length) : makeNaverStats(0, 0),
@@ -397,6 +442,37 @@ export async function GET(request: Request) {
           recent_listings: recentListings,
         });
       }
+    }
+
+    // 2.5차: 동 단위 RTMS 매매역산 — 네이버 표본 부족 시 위치별 차이 유지
+    const dongLand = getDongLandPrice(gu, clickDongName, clickDong.dong_code);
+    if (dongLand && dongLand.source !== "gu_avg") {
+      const rent1f = Math.round(((dongLand.pricePerPyeong * (DEFAULT_CAP_RATE / 100)) / 12) * LOC_PREMIUM_1F * 10) / 10;
+      const makeRtmsStats = (rentPP: number) => ({
+        count: dongLand.sampleN,
+        avg_rent: Math.round(rentPP * target_pyeong),
+        avg_deposit: Math.round(rentPP * target_pyeong * 12),
+        avg_pyeong: Math.round(rentPP * 10) / 10,
+        min_rent: Math.round(rentPP * target_pyeong * 0.8),
+        max_rent: Math.round(rentPP * target_pyeong * 1.2),
+        median_rent: Math.round(rentPP * target_pyeong),
+        target_pyeong,
+      });
+      return NextResponse.json({
+        total_cases: dongLand.sampleN,
+        radius: actualRadius,
+        fallback: true,
+        fallback_source: `동 RTMS 매매역산 · ${dongLand.detail} · cap ${DEFAULT_CAP_RATE}% × 1.7`,
+        confidence: dongLand.source === "exact" ? "dong_estimate" : "gu_fallback",
+        stats: {
+          "1층": makeRtmsStats(rent1f),
+          "2층": makeRtmsStats(rent1f * FLOOR_RATIO["2층"]),
+          "지하": makeRtmsStats(rent1f * FLOOR_RATIO["지하"]),
+        },
+        sample_cases: [],
+        recent_deals: recentDeals,
+        recent_listings: recentListings,
+      });
     }
 
     // 3차: 구 평균 (DB)
@@ -423,6 +499,7 @@ export async function GET(request: Request) {
         radius: actualRadius,
         fallback: true,
         fallback_source: `${gu} 권역 평균`,
+        confidence: "gu_fallback",
         stats: {
           "1층": makeGuStats(guStats.f1_pyeong),
           "2층": makeGuStats(guStats.f2_pyeong),
@@ -442,6 +519,7 @@ export async function GET(request: Request) {
         radius: actualRadius,
         fallback: true,
         fallback_source: `${gu} 권역 평균`,
+        confidence: "gu_fallback",
         stats: {
           "1층": makeGuStats(fallback.f1),
           "2층": makeGuStats(fallback.f2),
@@ -457,6 +535,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     total_cases: filtered.length,
     radius: actualRadius,
+    confidence: filtered.length >= 3 ? "actual" : "dong_estimate",
     stats,
     sample_cases: filtered.slice(0, 20),
     recent_deals: recentDeals,

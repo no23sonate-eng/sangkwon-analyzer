@@ -79,6 +79,10 @@ export default function BrandSynergy() {
   const store = analysisData?.store_summary;
   const sales = analysisData?.sales_summary;
   const rent = analysisData?.rent_info as Record<string, unknown> | undefined;
+  const rentConfidence = (rent?.confidence as string | undefined) ?? "actual";
+  const isGuFallback = rentConfidence === "gu_fallback";
+  // 임대 민감 카테고리 — 구 평균 폴백 시 추천 제외 (rent1f가 실시장보다 낮게 잡혀 false positive 위험)
+  const RENT_SENSITIVE_KEYS = new Set(["카페/주류", "외식", "뷰티/건강"]);
   const scSummary = storeCountData?.summary ?? analysisData?.sc_summary;
   const pop = analysisData?.pop_summary;
   // 반경 내 포함된 상권 수 — 점포수 스케일링에 사용 (가중평균 → 반경 내 총합 근사)
@@ -245,12 +249,18 @@ export default function BrandSynergy() {
 
     // 하드 필터: 임대 부담이 RENT_BURDEN_MAX(1.5) 초과 → 추천 제외
     // 단 rentBurden 산출 불가(0)인 경우는 데이터 부족이라 통과
-    const filtered = valid.filter((r) =>
-      r.rentBurden === 0 || r.rentBurden < RENT_BURDEN_MAX
-    );
+    // gu_fallback 신뢰도면 임대 민감 카테고리(카페·외식·뷰티)는 추천에서 다운그레이드
+    const filtered = valid.filter((r) => {
+      if (r.rentBurden > 0 && r.rentBurden >= RENT_BURDEN_MAX) return false;
+      // 구 평균 폴백 + 임대 민감 카테고리는 점수 강제로 깎아 상위 추천에서 빠짐
+      if (isGuFallback && RENT_SENSITIVE_KEYS.has(r.key)) {
+        r.gapScore = Math.min(r.gapScore, 39); // "보통(40)" 미만으로 = "과밀" 표시
+      }
+      return true;
+    });
 
     return filtered.sort((a, b) => b.gapScore - a.gapScore);
-  }, [store, ft, sales, scSummary, rent, pop, trdarCount]);
+  }, [store, ft, sales, scSummary, rent, pop, trdarCount, isGuFallback]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
   if (groups.length === 0) {
@@ -355,6 +365,18 @@ export default function BrandSynergy() {
 
   return (
     <div className="space-y-4">
+      {/* 임대료 신뢰도 경고 — gu_fallback이면 카페·외식 추천이 부정확할 수 있음 */}
+      {isGuFallback && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5">
+          <p className="text-[11px] font-bold text-amber-700">⚠️ 임대료 = 구 평균 폴백</p>
+          <p className="mt-0.5 text-[10px] text-amber-800 leading-relaxed">
+            이 위치의 동 단위 실측·매매역산 데이터가 부족해 {(rent?.gu as string) ?? "구"} 평균을 사용했습니다.
+            한남·청담·신사 등 프라임 입지에서는 실시장보다 낮게 잡혀 카페·외식이 과대 추천될 수 있습니다.
+            카페·외식·뷰티는 자동으로 신뢰도 다운그레이드 처리됨.
+          </p>
+        </div>
+      )}
+
       {/* View 토글: 대분류 vs 세부업종 */}
       <div className="flex gap-1 rounded-lg bg-gray-100 p-1">
         <button

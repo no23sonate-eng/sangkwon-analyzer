@@ -220,13 +220,16 @@ function RentVerification({ guName }: { guName: string }) {
           <div className="mb-2 flex items-center gap-1.5 flex-wrap">
             <p className="text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준</p>
             {(() => {
-              // 출처 배지: 실측(녹색) / 추정(인디고) / 권역평균(앰버)
+              // 출처 배지 + 신뢰도(actual/dong_estimate/gu_fallback)
               const src = rentNearby.fallback_source ?? "";
+              const conf = rentNearby.confidence ?? "actual";
               let tone = "emerald";
               let label = `공공 DB ${rentNearby.stats?.["1층"]?.count ?? 0}건`;
-              if (rentNearby.fallback) {
+              if (src.startsWith("본인 네트워크")) { tone = "violet"; label = "네트워크 GT"; }
+              else if (src.startsWith("동 RTMS")) { tone = "indigo"; label = "동 RTMS 역산"; }
+              else if (rentNearby.fallback) {
                 if (src.startsWith("추정 실거래") || src.startsWith("현재 호가")) {
-                  tone = "indigo";
+                  tone = conf === "gu_fallback" ? "amber" : "indigo";
                   label = src.startsWith("추정 실거래") ? "추정 실거래" : "현재 호가";
                 } else {
                   tone = "amber";
@@ -235,6 +238,7 @@ function RentVerification({ guName }: { guName: string }) {
               }
               const palette: Record<string, { bg: string; text: string }> = {
                 emerald: { bg: "#D1FAE5", text: "#047857" },
+                violet: { bg: "#EDE9FE", text: "#5B21B6" },
                 indigo: { bg: "#E0E7FF", text: "#4338CA" },
                 amber: { bg: "#FEF3C7", text: "#B45309" },
               };
@@ -250,6 +254,13 @@ function RentVerification({ guName }: { guName: string }) {
               );
             })()}
           </div>
+          {rentNearby.confidence === "gu_fallback" && (
+            <div className="mb-2 rounded-lg bg-amber-50 px-2.5 py-1.5">
+              <p className="text-[10px] font-semibold text-amber-800 leading-snug">
+                ⚠️ 동 단위 데이터 부족으로 구 평균을 사용 중입니다. 한남·청담·신사 등 프라임 입지에서는 실시장보다 낮게 잡혀 있을 수 있습니다.
+              </p>
+            </div>
+          )}
           <div className="overflow-hidden rounded-lg border border-gray-100">
             <table className="w-full text-[11px]">
               <thead><tr className="bg-gray-50">

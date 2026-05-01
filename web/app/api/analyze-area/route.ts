@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { rateLimit } from "@/lib/rate-limit";
+import { resolveDong } from "@/lib/dong-lookup";
+import { getDongLandPrice } from "@/lib/dong-sale-data";
+import { getOwnerNetworkRent, getOwnerNetworkRentByFloor } from "@/lib/owner-network-rents";
+
+/* 1층 임대료 = 대지 평당가 × cap/12 × LOC_PREMIUM. 한남·신사 실측 기준 1.7배. */
+const LOC_PREMIUM_1F = 1.7;
+const FLOOR_RATIO = { "1층": 1.0, "2층이상": 0.55, "지하": 0.45 } as const;
+const DEFAULT_CAP_RATE = 4.5; // 매매역산 기본 캡레이트 (%)
 
 /* ── Haversine distance (meters) ── */
 function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -428,7 +436,9 @@ export async function GET(request: Request) {
     by_subcategory: bySubcategory,
   };
 
-  /* ── Step 4: Rent info — 실시간 계층 (실측 → 네이버 추정실거래 → 네이버 호가 → 구 평균) ── */
+  /* ── Step 4: Rent info — 본인 네트워크 → 실측 → 네이버 → dong RTMS 매매역산 → 구 평균
+     confidence 단계: actual (좌표/네트워크) > dong_estimate (네이버 dong/RTMS) > gu_fallback (구 평균)
+     gu_fallback인 경우 BrandSynergy가 카페 같은 임대 민감 카테고리 추천을 다운그레이드. */
   let rentInfo: Record<string, unknown> = {};
 
   const classifyFloor = (floor: string | null | undefined): "1층" | "2층이상" | "지하" | null => {
@@ -439,6 +449,27 @@ export async function GET(request: Request) {
     if (f === "") return null;
     return "2층이상";
   };
+
+  // 클릭 좌표의 행정동 — owner-network·dong RTMS 조회용
+  const clickDong = resolveDong(lat, lng);
+  const clickDongName = clickDong.dong_name;
+
+  // 0차: 본인 네트워크 ground truth (가장 높은 신뢰)
+  const ownerF1 = getOwnerNetworkRent(guName, clickDongName);
+  if (ownerF1 && ownerF1.rent > 0) {
+    const ownerF2 = getOwnerNetworkRentByFloor(guName, clickDongName, "2층이상");
+    const ownerB = getOwnerNetworkRentByFloor(guName, clickDongName, "지하");
+    rentInfo = {
+      gu: guName,
+      dong: clickDongName,
+      "1층_평": ownerF1.rent,
+      "2층이상_평": ownerF2?.rent ?? Math.round(ownerF1.rent * FLOOR_RATIO["2층이상"] * 10) / 10,
+      "지하_평": ownerB?.rent ?? Math.round(ownerF1.rent * FLOOR_RATIO["지하"] * 10) / 10,
+      source: `본인 네트워크 ground truth · ${ownerF1.detail}`,
+      confidence: "actual",
+      source_kind: "owner_network",
+    };
+  }
 
   type RentRow = { lat: number; lng: number; floor: string; rent_pyeong: number };
   const rentsRaw = (rentsRes.data as RentRow[] | null) ?? [];
@@ -463,14 +494,17 @@ export async function GET(request: Request) {
   const rB = rentsNearby.filter((r) => r.floorClass === "지하");
   const MIN_CASES = 3;
 
-  if (r1.length >= MIN_CASES) {
+  if (Object.keys(rentInfo).length === 0 && r1.length >= MIN_CASES) {
     rentInfo = {
       gu: guName,
+      dong: clickDongName,
       "1층_평": weightedAvg(r1),
       "2층이상_평": r2.length > 0 ? weightedAvg(r2) : 0,
       "지하_평": rB.length > 0 ? weightedAvg(rB) : 0,
       source: `공공 실거래 ${r1.length}건 · 반경 ${RENT_RADIUS_M}m 가중평균`,
       cases: { "1층": r1.length, "2층이상": r2.length, "지하": rB.length },
+      confidence: "actual",
+      source_kind: "rents_db",
     };
   }
 
@@ -501,11 +535,14 @@ export async function GET(request: Request) {
         const scopeLabel = scope === "dong" ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}` : guName;
         rentInfo = {
           gu: guName,
+          dong: clickDongName,
           "1층_평": avg(d1),
           "2층이상_평": avg(d2),
           "지하_평": avg(dB),
           source: `추정 실거래 ${d1.length}건 · ${scopeLabel}`,
           cases: { "1층": d1.length, "2층이상": d2.length, "지하": dB.length },
+          confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
+          source_kind: "naver_deal",
         };
         break;
       }
@@ -541,18 +578,40 @@ export async function GET(request: Request) {
         const scopeLabel = scope === "dong" ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}` : guName;
         rentInfo = {
           gu: guName,
+          dong: clickDongName,
           "1층_평": avg(l1),
           "2층이상_평": avg(l2),
           "지하_평": avg(lB),
           source: `현재 호가 ${l1.length}건 · ${scopeLabel}`,
           cases: { "1층": l1.length, "2층이상": l2.length, "지하": lB.length },
+          confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
+          source_kind: "naver_listing",
         };
         break;
       }
     }
   }
 
-  // 4차: 구 평균 (DB → 하드코딩)
+  // 3.5차: 동 단위 RTMS 매매역산 (네이버 표본 부족·프라임 입지 폴백 차단용)
+  //   대지 평당가 × cap/12 × 1.7(입지 프리미엄) = 1층 평당 월세 추정
+  if (Object.keys(rentInfo).length === 0 && guName) {
+    const dongLand = getDongLandPrice(guName, clickDongName, clickDong.dong_code);
+    if (dongLand && dongLand.source !== "gu_avg") {
+      const rent1f = Math.round(((dongLand.pricePerPyeong * (DEFAULT_CAP_RATE / 100)) / 12) * LOC_PREMIUM_1F * 10) / 10;
+      rentInfo = {
+        gu: guName,
+        dong: clickDongName,
+        "1층_평": rent1f,
+        "2층이상_평": Math.round(rent1f * FLOOR_RATIO["2층이상"] * 10) / 10,
+        "지하_평": Math.round(rent1f * FLOOR_RATIO["지하"] * 10) / 10,
+        source: `동 RTMS 매매역산 · ${dongLand.detail} · cap ${DEFAULT_CAP_RATE}% × 1.7`,
+        confidence: dongLand.source === "exact" ? "dong_estimate" : "gu_fallback",
+        source_kind: "dong_rtms",
+      };
+    }
+  }
+
+  // 4차: 구 평균 (DB → 하드코딩) — 폴백, 신뢰도 낮음
   if (Object.keys(rentInfo).length === 0) {
     const { data: rentDbRow } = await supabase
       .from("gu_rent_stats")
@@ -563,20 +622,26 @@ export async function GET(request: Request) {
     if (rentDbRow && rentDbRow.f1_pyeong > 0) {
       rentInfo = {
         gu: guName,
+        dong: clickDongName,
         "1층_평": rentDbRow.f1_pyeong,
         "지하_평": rentDbRow.b1_pyeong,
         "2층이상_평": rentDbRow.f2_pyeong,
         source: `${guName} 권역 평균`,
+        confidence: "gu_fallback",
+        source_kind: "gu_avg",
       };
     } else {
       const rentFallback = RENT_DATA[guName];
       if (rentFallback) {
         rentInfo = {
           gu: guName,
+          dong: clickDongName,
           "1층_평": rentFallback.f1,
           "지하_평": rentFallback.b1,
           "2층이상_평": rentFallback.f2,
           source: "권역 평균 (폴백)",
+          confidence: "gu_fallback",
+          source_kind: "hardcoded",
         };
       }
     }

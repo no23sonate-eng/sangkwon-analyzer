@@ -123,10 +123,15 @@ export interface StoreCountSummary {
 
 export interface RentInfo {
   gu: string;
+  dong?: string;
   source: string;
   "1층_평": number;
   "지하_평": number;
   "2층이상_평": number;
+  /** actual: 본인 네트워크/좌표 실측. dong_estimate: 동 단위 추정. gu_fallback: 구 평균. */
+  confidence?: "actual" | "dong_estimate" | "gu_fallback";
+  /** owner_network · rents_db · naver_deal · naver_listing · dong_rtms · gu_avg · hardcoded */
+  source_kind?: "owner_network" | "rents_db" | "naver_deal" | "naver_listing" | "dong_rtms" | "gu_avg" | "hardcoded";
 }
 
 /* ── 전체 분석 응답 (/api/analyze 반환값) ── */
