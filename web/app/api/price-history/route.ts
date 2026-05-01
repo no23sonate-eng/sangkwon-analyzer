@@ -37,7 +37,7 @@ interface TrendResponse {
   rent: number[];   // 1층 평당 월세 (만원)
   land: number[];   // 토지 상업지역 평당가 (만원)
   source: {
-    rent: "rone_floor1" | "rone_avg" | "estimate";  // 1층 / 권역평균 / 자체추정
+    rent: "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "estimate";  // 1층(13년인덱스) / 1층(4년) / 권역평균 / 자체추정
     land: "rtms" | "estimate";
   };
   note?: string;
@@ -64,33 +64,57 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "lat/lng 또는 gu 파라미터 필요" }, { status: 400 });
   }
 
-  /* ── 1차: R-ONE 1층 임대료 시계열 (정확한 1층 시세, 2022~) ── */
-  let rentSource: "rone_floor1" | "rone_avg" | "estimate" = "estimate";
+  /* ── 1차: R-ONE 1층 임대료 시계열 ──
+     - floor1 (2022~)은 1층 정확하나 시계열 짧음 (4 포인트, 거의 변동 없음)
+     - avg (2013~)은 13년 시계열이나 평균이라 절대값 낮음
+     - 두 데이터 모두 있을 때: avg 변동률(인덱스) × floor1 anchor = 1층 13년 추정
+       → 1층 절대값 + 권역 변동률 합성. 시각화 변동성 + 절대값 정확도 모두 확보
+  */
+  let rentSource: "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "estimate" = "estimate";
   let rentSeries: Array<{ year: number; value: number }> = [];
   if (region) {
-    // 1순위: 1층 전용 데이터 (2022~)
     const f1Entry = RONE_RENT_FLOOR1[region.name];
-    if (f1Entry?.yearly) {
-      const entries = Object.entries(f1Entry.yearly)
-        .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
-        .filter((r) => r.value > 0);
-      if (entries.length >= 2) {
-        rentSeries = entries;
-        rentSource = "rone_floor1";
+    const avgEntry = RONE_RENT_AVG[region.name];
+
+    const f1Series = f1Entry?.yearly
+      ? Object.entries(f1Entry.yearly)
+          .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
+          .filter((r) => r.value > 0)
+          .sort((a, b) => a.year - b.year)
+      : [];
+    const avgSeries = avgEntry?.yearly
+      ? Object.entries(avgEntry.yearly)
+          .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
+          .filter((r) => r.value > 0)
+          .sort((a, b) => a.year - b.year)
+      : [];
+
+    // 1순위: 1층 anchor × 평균 인덱스 변동률 → 13년 1층 추정 시계열
+    if (f1Series.length >= 2 && avgSeries.length >= 5) {
+      const overlap = f1Series
+        .map((f) => ({ year: f.year, f1: f.value, avg: avgSeries.find((a) => a.year === f.year)?.value }))
+        .filter((r): r is { year: number; f1: number; avg: number } => r.avg != null && r.avg > 0);
+      if (overlap.length >= 2) {
+        // 겹치는 연도들의 1층/평균 비율 평균 → ratio
+        const ratio = overlap.reduce((s, r) => s + r.f1 / r.avg, 0) / overlap.length;
+        rentSeries = avgSeries.map((a) => ({
+          year: a.year,
+          value: Math.round(a.value * ratio * 10) / 10,
+        }));
+        rentSource = "rone_floor1_indexed";
       }
     }
-    // 2순위: 권역 평균 (시계열 더 길지만 모든 층 평균이라 1층보다 낮음)
-    if (rentSeries.length === 0) {
-      const avgEntry = RONE_RENT_AVG[region.name];
-      if (avgEntry?.yearly) {
-        const entries = Object.entries(avgEntry.yearly)
-          .map(([y, v]) => ({ year: Number(y), value: typeof v === "number" ? v : 0 }))
-          .filter((r) => r.value > 0);
-        if (entries.length >= 3) {
-          rentSeries = entries;
-          rentSource = "rone_avg";
-        }
-      }
+
+    // 2순위: 1층 데이터만 (4 포인트라도 1층 정확)
+    if (rentSeries.length === 0 && f1Series.length >= 2) {
+      rentSeries = f1Series;
+      rentSource = "rone_floor1";
+    }
+
+    // 3순위: 권역 평균만
+    if (rentSeries.length === 0 && avgSeries.length >= 3) {
+      rentSeries = avgSeries;
+      rentSource = "rone_avg";
     }
   }
 
@@ -145,8 +169,9 @@ export async function GET(request: Request) {
   };
 
   const notes: string[] = [];
-  if (rentSource === "rone_floor1") notes.push("임대 = R-ONE 1층 전용 데이터 (2022~)");
-  else if (rentSource === "rone_avg") notes.push("임대 = R-ONE 중대형 상가 권역 평균 (1층 데이터 부족 폴백)");
+  if (rentSource === "rone_floor1_indexed") notes.push("임대 = R-ONE 1층 anchor × 권역 임대지수 변동률 (2013~)");
+  else if (rentSource === "rone_floor1") notes.push("임대 = R-ONE 1층 전용 데이터 (2022~)");
+  else if (rentSource === "rone_avg") notes.push("임대 = R-ONE 중대형 상가 권역 평균");
   else if (rentSource === "estimate") notes.push("임대 = 자체 추정값");
   if (notes.length > 0) response.note = notes.join(" · ");
   if (!HAS_PUBLIC_DATA_KEY && rentSource === "estimate") {

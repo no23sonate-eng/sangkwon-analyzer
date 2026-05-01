@@ -59,7 +59,7 @@ export default function GrowthPrediction() {
   type TrendDb = {
     years: string[]; land: number[]; rent: number[];
     region?: { code: string; name: string; distanceKm: number };
-    source: { rent: "rone_floor1" | "rone_avg" | "estimate"; land: "rtms" | "estimate" };
+    source: { rent: "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "estimate"; land: "rtms" | "estimate" };
     note?: string;
   };
   const [dbHistory, setDbHistory] = useState<TrendDb | null>(null);
@@ -110,6 +110,26 @@ export default function GrowthPrediction() {
   const rentChartData = hasHistory
     ? histYears.map((y, i) => ({ year: y, 임대시세: histRent[i] })).filter((d) => d.임대시세 > 0)
     : [];
+
+  // Y축 도메인: dataMin/dataMax 기준 ±5% 패딩 — 작은 변동도 시각화
+  // R-ONE 임대 지수가 구조적으로 평탄(연 1~2%)이라 0 포함 도메인은 직선처럼 보임
+  const rentValues = rentChartData.map((d) => d.임대시세);
+  const rentMin = rentValues.length ? Math.min(...rentValues) : 0;
+  const rentMax = rentValues.length ? Math.max(...rentValues) : 0;
+  const rentPad = Math.max((rentMax - rentMin) * 0.3, rentMax * 0.05, 0.5);
+  const rentDomain: [number, number] = [
+    Math.max(0, Math.floor((rentMin - rentPad) * 10) / 10),
+    Math.ceil((rentMax + rentPad) * 10) / 10,
+  ];
+
+  const landValues = landChartData.map((d) => d.토지시세);
+  const landMin = landValues.length ? Math.min(...landValues) : 0;
+  const landMax = landValues.length ? Math.max(...landValues) : 0;
+  const landPad = Math.max((landMax - landMin) * 0.2, landMax * 0.05, 100);
+  const landDomain: [number, number] = [
+    Math.max(0, Math.floor((landMin - landPad) / 100) * 100),
+    Math.ceil((landMax + landPad) / 100) * 100,
+  ];
 
   // 상승률 계산 — 유효 값(>0)만 사용
   const validLand = histLand.filter((v) => v > 0);
@@ -175,7 +195,7 @@ export default function GrowthPrediction() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <p className="text-[12px] font-bold text-gray-800">임대 시세 추이 (1층 평당/월)</p>
-              <SourceBadge source={dbHistory?.source.rent === "rone_floor1" ? "rone_floor1" : dbHistory?.source.rent === "rone_avg" ? "rone_avg" : "estimate"} />
+              <SourceBadge source={dbHistory?.source.rent ?? "estimate"} />
             </div>
             <div className="flex items-center gap-1">
               <span className={`text-[11px] font-bold ${rentGrowth10y > 0 ? "text-emerald-600" : "text-red-500"}`}>
@@ -189,7 +209,13 @@ export default function GrowthPrediction() {
               <LineChart data={rentChartData} margin={{ left: 0, right: 10, top: 5, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
                 <XAxis dataKey="year" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} />
-                <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickFormatter={(v: number) => `${v}만`} width={40} />
+                <YAxis
+                  tick={{ fill: "#94A3B8", fontSize: 10 }}
+                  tickFormatter={(v: number) => `${v}만`}
+                  width={40}
+                  domain={rentDomain}
+                  allowDecimals
+                />
                 <Tooltip {...tt} formatter={(v) => [`${v}만원/평`, "임대 시세"]} />
                 <Line type="monotone" dataKey="임대시세" stroke="#6366F1" strokeWidth={2.5} dot={{ r: 3, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }} />
               </LineChart>
@@ -218,7 +244,12 @@ export default function GrowthPrediction() {
               <LineChart data={landChartData} margin={{ left: 0, right: 10, top: 5, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
                 <XAxis dataKey="year" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} />
-                <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}천만`} width={45} />
+                <YAxis
+                  tick={{ fill: "#94A3B8", fontSize: 10 }}
+                  tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}천만`}
+                  width={45}
+                  domain={landDomain}
+                />
                 <Tooltip {...tt} formatter={(v) => [`${Number(v).toLocaleString()}만원/평`, "토지 시세"]} />
                 <Line type="monotone" dataKey="토지시세" stroke="#10B981" strokeWidth={2.5} dot={{ r: 3, fill: "#10B981", stroke: "#fff", strokeWidth: 2 }} />
               </LineChart>
@@ -272,7 +303,8 @@ export default function GrowthPrediction() {
           {dbHistory.note && <p className="mt-0.5">{dbHistory.note}</p>}
           <p className="mt-0.5">
             출처: 임대 = {
-              dbHistory.source.rent === "rone_floor1" ? "한국부동산원 R-ONE 중대형 상가 1층 임대료"
+              dbHistory.source.rent === "rone_floor1_indexed" ? "한국부동산원 R-ONE 1층 anchor × 권역 임대지수 변동률 (2013~)"
+              : dbHistory.source.rent === "rone_floor1" ? "한국부동산원 R-ONE 중대형 상가 1층 임대료"
               : dbHistory.source.rent === "rone_avg" ? "한국부동산원 R-ONE 중대형 상가 권역 평균"
               : "자체 추정"
             } ·
@@ -285,7 +317,7 @@ export default function GrowthPrediction() {
 }
 
 /* ── 출처 배지 ── */
-function SourceBadge({ source }: { source: "rone_floor1" | "rone_avg" | "rtms" | "estimate" }) {
+function SourceBadge({ source }: { source: "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "rtms" | "estimate" }) {
   if (source === "estimate") {
     return (
       <span className="rounded-full px-1.5 py-0.5 text-[9px] font-bold" style={{ background: "#FEF3C7", color: "#B45309" }}>
@@ -293,7 +325,8 @@ function SourceBadge({ source }: { source: "rone_floor1" | "rone_avg" | "rtms" |
       </span>
     );
   }
-  const label = source === "rone_floor1" ? "R-ONE 1층"
+  const label = source === "rone_floor1_indexed" ? "R-ONE 1층 (13년)"
+    : source === "rone_floor1" ? "R-ONE 1층"
     : source === "rone_avg" ? "R-ONE 권역평균"
     : "RTMS";
   return (
