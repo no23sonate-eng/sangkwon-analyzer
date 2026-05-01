@@ -71,13 +71,13 @@ function main() {
   }
   const text = fs.readFileSync(CSV, "utf8");
   const rows = parseCsv(text);
-  // (gu, dong, floor) 단위 집계
+  // (gu, dong, floor) 단위 집계 — rent + 수집일(가장 최근) 함께
   const agg = {};
   for (const r of rows) {
     const f = classifyFloor(r.floor);
     const key = `${r.gu}|${r.dong}`;
     if (!agg[key]) agg[key] = { gu: r.gu, dong: r.dong, floors: { "1층": [], "2층이상": [], "지하": [] } };
-    agg[key].floors[f].push(r.rent_pp);
+    agg[key].floors[f].push({ rent: r.rent_pp, recorded_at: r.recorded_at });
   }
 
   const byDong = {};
@@ -85,7 +85,19 @@ function main() {
     const out = { gu: v.gu, dong: v.dong };
     for (const [f, arr] of Object.entries(v.floors)) {
       if (!arr.length) continue;
-      out[f] = { rent: Math.round(median(arr) * 10) / 10, n: arr.length };
+      const rents = arr.map((x) => x.rent);
+      const med = Math.round(median(rents) * 10) / 10;
+      // 최신 수집일을 collected_at 으로 채택 (만료 판정 기준)
+      const latest = arr
+        .map((x) => x.recorded_at)
+        .filter(Boolean)
+        .sort()
+        .pop() || new Date().toISOString().slice(0, 10);
+      // 표본 분산(rent 변동계수, %) — single이면 0
+      const cv = rents.length >= 2
+        ? Math.round((Math.sqrt(rents.reduce((s, r) => s + (r - med) ** 2, 0) / rents.length) / med) * 1000) / 10
+        : 0;
+      out[f] = { rent: med, n: rents.length, collected_at: latest, cv };
     }
     byDong[`${v.gu}|${v.dong}`] = out;
   }
@@ -105,7 +117,10 @@ function main() {
   console.log(`[owner-network] ✓ ${rows.length}건 / ${Object.keys(byDong).length}개 동 → ${OUT}`);
   for (const v of Object.values(byDong)) {
     const fs1 = v["1층"];
-    if (fs1) console.log(`  ${v.gu} ${v.dong} 1층: ${fs1.rent}만/평 (n=${fs1.n})`);
+    if (fs1) {
+      const warn = fs1.n < 3 ? "  ⚠️ n<3 (참고용)" : "";
+      console.log(`  ${v.gu} ${v.dong} 1층: ${fs1.rent}만/평 (n=${fs1.n}, ${fs1.collected_at})${warn}`);
+    }
   }
 }
 

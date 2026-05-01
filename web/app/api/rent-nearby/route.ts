@@ -4,6 +4,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { resolveDong } from "@/lib/dong-lookup";
 import { getDongLandPrice } from "@/lib/dong-sale-data";
 import { getOwnerNetworkRent, getOwnerNetworkRentByFloor } from "@/lib/owner-network-rents";
+import { makeProvenance } from "@/lib/data-quality";
 
 const LOC_PREMIUM_1F = 1.7;
 const FLOOR_RATIO = { "1층": 1.0, "2층": 0.55, "지하": 0.45 } as const;
@@ -292,8 +293,9 @@ export async function GET(request: Request) {
     const clickDongName = clickDong.dong_name;
 
     // 0차: 본인 네트워크 ground truth — 가장 높은 신뢰도, 위치별 차이 보존
+    // 단, n>=3 일 때만 단독 GT로 인정. n<3 은 보조로만 쓰고 다른 폴백을 우선.
     const ownerF1 = getOwnerNetworkRent(gu, clickDongName);
-    if (ownerF1 && ownerF1.rent > 0) {
+    if (ownerF1 && ownerF1.rent > 0 && ownerF1.n >= 3) {
       const ownerF2 = getOwnerNetworkRentByFloor(gu, clickDongName, "2층이상");
       const ownerB = getOwnerNetworkRentByFloor(gu, clickDongName, "지하");
       const makeOwnerStats = (rentPP: number) => ({
@@ -312,6 +314,7 @@ export async function GET(request: Request) {
         fallback: true,
         fallback_source: `본인 네트워크 ground truth · ${ownerF1.detail}`,
         confidence: "actual",
+        provenance: ownerF1.prov,
         stats: {
           "1층": makeOwnerStats(ownerF1.rent),
           "2층": makeOwnerStats(ownerF2?.rent ?? ownerF1.rent * FLOOR_RATIO["2층"]),
@@ -384,12 +387,20 @@ export async function GET(request: Request) {
         const scopeLabel = scope === "dong"
           ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}`
           : gu;
+        const latestDate = (data as { disappeared_date?: string }[] | null)?.[0]?.disappeared_date
+          || new Date().toISOString();
         return NextResponse.json({
           total_cases: d1.length,
           radius: actualRadius,
           fallback: true,
           fallback_source: `추정 실거래 ${d1.length}건 · ${scopeLabel}`,
           confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
+          provenance: makeProvenance({
+            source: "naver_deal",
+            sample_size: d1.length,
+            collected_at: latestDate,
+            category: "rent",
+          }),
           stats: {
             "1층": makeNaverStats(avgDeal(d1), d1.length),
             "2층": d2.length > 0 ? makeNaverStats(avgDeal(d2), d2.length) : makeNaverStats(0, 0),
@@ -426,12 +437,20 @@ export async function GET(request: Request) {
         const scopeLabel = scope === "dong"
           ? `${nearbyDongs.slice(0, 2).join("/")}${nearbyDongs.length > 2 ? " 외" : ""}`
           : gu;
+        const latestDate = (data as { crawl_date?: string }[] | null)?.[0]?.crawl_date
+          || new Date().toISOString();
         return NextResponse.json({
           total_cases: l1.length,
           radius: actualRadius,
           fallback: true,
           fallback_source: `현재 호가 ${l1.length}건 · ${scopeLabel}`,
           confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
+          provenance: makeProvenance({
+            source: "naver_listing",
+            sample_size: l1.length,
+            collected_at: latestDate,
+            category: "rent",
+          }),
           stats: {
             "1층": makeNaverStats(avgList(l1), l1.length),
             "2층": l2.length > 0 ? makeNaverStats(avgList(l2), l2.length) : makeNaverStats(0, 0),
@@ -464,6 +483,12 @@ export async function GET(request: Request) {
         fallback: true,
         fallback_source: `동 RTMS 매매역산 · ${dongLand.detail} · cap ${DEFAULT_CAP_RATE}% × 1.7`,
         confidence: dongLand.source === "exact" ? "dong_estimate" : "gu_fallback",
+        provenance: makeProvenance({
+          source: "dong_rtms_inverse",
+          sample_size: dongLand.sampleN,
+          collected_at: new Date().toISOString(),
+          category: "rent",
+        }),
         stats: {
           "1층": makeRtmsStats(rent1f),
           "2층": makeRtmsStats(rent1f * FLOOR_RATIO["2층"]),
@@ -500,6 +525,12 @@ export async function GET(request: Request) {
         fallback: true,
         fallback_source: `${gu} 권역 평균`,
         confidence: "gu_fallback",
+        provenance: makeProvenance({
+          source: "gu_avg",
+          sample_size: 1,
+          collected_at: new Date().toISOString(),
+          category: "rent",
+        }),
         stats: {
           "1층": makeGuStats(guStats.f1_pyeong),
           "2층": makeGuStats(guStats.f2_pyeong),
@@ -520,6 +551,12 @@ export async function GET(request: Request) {
         fallback: true,
         fallback_source: `${gu} 권역 평균`,
         confidence: "gu_fallback",
+        provenance: makeProvenance({
+          source: "hardcoded_fallback",
+          sample_size: 1,
+          collected_at: "2025-09-01",  // 한국부동산원 2025 Q3 발표
+          category: "rent",
+        }),
         stats: {
           "1층": makeGuStats(fallback.f1),
           "2층": makeGuStats(fallback.f2),
@@ -536,6 +573,12 @@ export async function GET(request: Request) {
     total_cases: filtered.length,
     radius: actualRadius,
     confidence: filtered.length >= 3 ? "actual" : "dong_estimate",
+    provenance: makeProvenance({
+      source: "rtms_rent",
+      sample_size: filtered.length,
+      collected_at: new Date().toISOString(),
+      category: "rent",
+    }),
     stats,
     sample_cases: filtered.slice(0, 20),
     recent_deals: recentDeals,

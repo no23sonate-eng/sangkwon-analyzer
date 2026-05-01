@@ -220,36 +220,36 @@ function RentVerification({ guName }: { guName: string }) {
           <div className="mb-2 flex items-center gap-1.5 flex-wrap">
             <p className="text-[11px] font-semibold text-gray-600">이 위치 시세 · {selectedPyeong}평 기준</p>
             {(() => {
-              // 출처 배지 + 신뢰도(actual/dong_estimate/gu_fallback)
-              const src = rentNearby.fallback_source ?? "";
-              const conf = rentNearby.confidence ?? "actual";
-              let tone = "emerald";
-              let label = `공공 DB ${rentNearby.stats?.["1층"]?.count ?? 0}건`;
-              if (src.startsWith("본인 네트워크")) { tone = "violet"; label = "네트워크 실거래"; }
-              else if (src.startsWith("동 RTMS")) { tone = "indigo"; label = "동 RTMS 역산"; }
-              else if (rentNearby.fallback) {
-                if (src.startsWith("추정 실거래") || src.startsWith("현재 호가")) {
-                  tone = conf === "gu_fallback" ? "amber" : "indigo";
-                  label = src.startsWith("추정 실거래") ? "추정 실거래" : "현재 호가";
-                } else {
-                  tone = "amber";
-                  label = "권역 평균";
-                }
+              // Tier 메타 우선 (data-quality.makeProvenance 가 만들어낸 prov)
+              const prov = rentNearby.provenance;
+              if (prov) {
+                const palette: Record<string, { bg: string; text: string }> = {
+                  emerald: { bg: "#D1FAE5", text: "#047857" },
+                  violet: { bg: "#EDE9FE", text: "#5B21B6" },
+                  indigo: { bg: "#E0E7FF", text: "#4338CA" },
+                  amber: { bg: "#FEF3C7", text: "#B45309" },
+                };
+                const tonByTier: Record<number, keyof typeof palette> = { 1: "emerald", 2: "violet", 3: "indigo", 4: "amber" };
+                const tone = tonByTier[prov.tier as 1|2|3|4];
+                const p = palette[tone];
+                const downgrade = prov.downgrade_reasons?.length
+                  ? ` · ⚠️ ${prov.downgrade_reasons.join(", ")}`
+                  : "";
+                return (
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[9px] font-semibold"
+                    style={{ background: p.bg, color: p.text }}
+                    title={`Tier ${prov.tier} · ${prov.source_label} (n=${prov.sample_size})${downgrade}`}
+                  >
+                    Tier {prov.tier} · {prov.source_label} {prov.sample_size > 1 && prov.sample_size < 999 ? `(n=${prov.sample_size})` : ""}
+                  </span>
+                );
               }
-              const palette: Record<string, { bg: string; text: string }> = {
-                emerald: { bg: "#D1FAE5", text: "#047857" },
-                violet: { bg: "#EDE9FE", text: "#5B21B6" },
-                indigo: { bg: "#E0E7FF", text: "#4338CA" },
-                amber: { bg: "#FEF3C7", text: "#B45309" },
-              };
-              const p = palette[tone];
+              // 폴백 (provenance 없는 구버전 응답)
+              const src = rentNearby.fallback_source ?? "";
               return (
-                <span
-                  className="rounded-full px-2 py-0.5 text-[9px] font-semibold"
-                  style={{ background: p.bg, color: p.text }}
-                  title={src || "반경 내 실측 임대사례 기반"}
-                >
-                  {label}
+                <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold bg-gray-100 text-gray-600" title={src}>
+                  {src || `공공 DB ${rentNearby.stats?.["1층"]?.count ?? 0}건`}
                 </span>
               );
             })()}

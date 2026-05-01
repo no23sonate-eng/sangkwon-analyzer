@@ -150,15 +150,18 @@ export function estimateRent(
     sources.push("시장 보고서");
   }
 
-  // ── 방법 5: 본인 네트워크 ground truth (가장 높은 가중치) ──
+  // ── 방법 5: 본인 네트워크 ground truth ──
+  // 가중치 정책: n>=5 → 0.50 (최상), n>=3 → 0.35, n<3 → 0.15 (참고).
+  // 단일사례(n=1) GT가 권역을 지배하던 한남동 사고를 방지.
   if (extra.ownerNetworkRent && extra.ownerNetworkRent.rent > 0) {
-    const w = extra.ownerNetworkRent.n >= 5 ? 0.5 : 0.35;
+    const n = extra.ownerNetworkRent.n;
+    const w = n >= 5 ? 0.5 : n >= 3 ? 0.35 : 0.15;
     methods.push({
-      method: `본인 네트워크 (n=${extra.ownerNetworkRent.n})`,
+      method: `본인 네트워크 (n=${n}${n < 3 ? ", 참고용" : ""})`,
       value: Math.round(extra.ownerNetworkRent.rent),
       weight: w,
     });
-    sources.push(`네트워크 실거래 ${extra.ownerNetworkRent.n}건`);
+    sources.push(`네트워크 실거래 ${n}건${n < 3 ? "(참고)" : ""}`);
   }
 
   // ── 방법 3: 임대 실거래/폴백 ──
