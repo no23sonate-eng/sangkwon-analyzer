@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  web:
+    name: web — typecheck + sanity
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      # owner-network JSON 생성 (CSV 없으면 빈 JSON 자동 생성됨 — 빌드/타입체크 깨지지 않게)
+      - name: Build owner-network
+        run: node scripts/build-owner-network.mjs
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Sanity check (회귀 + 모듈)
+        run: npm run sanity
+
+      - name: Lint
+        run: npm run lint
