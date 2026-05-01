@@ -121,6 +121,8 @@ export interface StoreCountSummary {
 
 /* ── 임대료 ── */
 
+import type { Provenance } from "./data-quality";
+
 export interface RentInfo {
   gu: string;
   dong?: string;
@@ -132,6 +134,10 @@ export interface RentInfo {
   confidence?: "actual" | "dong_estimate" | "gu_fallback";
   /** owner_network · rents_db · naver_deal · naver_listing · dong_rtms · gu_avg · hardcoded */
   source_kind?: "owner_network" | "rents_db" | "naver_deal" | "naver_listing" | "dong_rtms" | "gu_avg" | "hardcoded";
+  /** Tier·표본·CV·만료 메타 (data-quality.makeProvenance 산출). 리포트 인용 형식 자동 생성용. */
+  provenance?: Provenance;
+  /** Cross-check 보조 소스 (출처 각주 "± OO" 표기에 사용) */
+  provenance_secondary?: Provenance;
 }
 
 /* ── 전체 분석 응답 (/api/analyze 반환값) ── */

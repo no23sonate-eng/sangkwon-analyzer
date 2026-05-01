@@ -261,6 +261,25 @@ function RentVerification({ guName }: { guName: string }) {
               </p>
             </div>
           )}
+          {(() => {
+            // 출처 각주 (인용 형식) — 컨설팅 리포트 신뢰도 핵심 표시
+            const prov = rentNearby.provenance;
+            if (!prov) return null;
+            const dateOnly = (prov.collected_at || "").slice(0, 10);
+            const cv = prov.spread_cv != null ? ` · 변동계수 ${prov.spread_cv.toFixed?.(0) ?? prov.spread_cv}%` : "";
+            const downgrade = prov.downgrade_reasons?.length ? ` (주의: ${prov.downgrade_reasons.join(", ")})` : "";
+            return (
+              <div className="mb-2 rounded-md bg-gray-50 px-2.5 py-1.5">
+                <p className="text-[10px] text-gray-600 leading-snug">
+                  <span className="font-semibold">출처</span> · {prov.source_label}
+                  {prov.sample_size > 1 && prov.sample_size < 999 ? ` (n=${prov.sample_size})` : ""}
+                  {cv}
+                  {dateOnly ? ` · 갱신 ${dateOnly}` : ""}
+                  {downgrade ? <span className="text-amber-700">{downgrade}</span> : null}
+                </p>
+              </div>
+            );
+          })()}
           <div className="overflow-hidden rounded-lg border border-gray-100">
             <table className="w-full text-[11px]">
               <thead><tr className="bg-gray-50">

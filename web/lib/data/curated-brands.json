@@ -1,0 +1,12 @@
+{
+  "_meta": {
+    "source": "본인 큐레이션 브랜드 (data/curated-brands.csv)",
+    "synced_at": "2026-05-01T10:15:57.135Z",
+    "brand_count": 0,
+    "dong_count": 0,
+    "category_count": 0
+  },
+  "brands": [],
+  "by_dong": {},
+  "by_category": {}
+}

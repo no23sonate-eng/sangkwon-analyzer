@@ -2,6 +2,7 @@
 
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import type { AnalysisData } from "@/lib/types";
+import { formatCitation, TIER_LABEL, type Provenance } from "@/lib/data-quality";
 
 // 한글 폰트 (나눔고딕)
 Font.register({
@@ -197,6 +198,34 @@ export default function ReportPDF({ data, areaName, address, generatedAt }: Prop
               <Text style={styles.td}>{num(rent["지하_평"] as number)}만원</Text>
             </View>
             {(() => {
+              // provenance 메타가 있으면 Tier 라벨 + 인용 형식 자동 출력
+              const prov = rent["provenance"] as Provenance | undefined;
+              const provSec = rent["provenance_secondary"] as Provenance | undefined;
+              if (prov) {
+                const tonePalette: Record<string, { bg: string; color: string }> = {
+                  emerald: { bg: "#D1FAE5", color: "#047857" },
+                  violet: { bg: "#EDE9FE", color: "#5B21B6" },
+                  indigo: { bg: "#E0E7FF", color: "#4338CA" },
+                  amber: { bg: "#FEF3C7", color: "#B45309" },
+                };
+                const tier = TIER_LABEL[prov.tier];
+                const palette = tonePalette[tier.tone];
+                return (
+                  <>
+                    <View style={styles.sourceRow}>
+                      <Text style={[styles.sourceBadge, { backgroundColor: palette.bg, color: palette.color }]}>
+                        {tier.label}
+                      </Text>
+                      <Text style={styles.cardLabel}>{formatCitation(prov, provSec)}</Text>
+                    </View>
+                    {prov.downgrade_reasons?.length ? (
+                      <Text style={[styles.cardLabel, { marginTop: 3, color: "#B45309" }]}>
+                        ⚠️ {prov.downgrade_reasons.join(" · ")}
+                      </Text>
+                    ) : null}
+                  </>
+                );
+              }
               const src = (rent["source"] as string) ?? "";
               const tier = sourceTier(src);
               return (
