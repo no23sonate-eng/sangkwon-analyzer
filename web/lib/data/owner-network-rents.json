@@ -1,27 +1,11 @@
 {
   "_meta": {
     "source": "본인 네트워크 실거래 (data/owner-network-rents.csv)",
-    "synced_at": "2026-05-01T02:09:12.880Z",
-    "case_count": 8,
-    "dong_count": 5
+    "synced_at": "2026-05-01T03:45:17.728Z",
+    "case_count": 5,
+    "dong_count": 4
   },
   "by_dong": {
-    "용산구|한남동": {
-      "gu": "용산구",
-      "dong": "한남동",
-      "1층": {
-        "rent": 120,
-        "n": 1
-      },
-      "2층이상": {
-        "rent": 55,
-        "n": 1
-      },
-      "지하": {
-        "rent": 35,
-        "n": 1
-      }
-    },
     "강남구|청담동": {
       "gu": "강남구",
       "dong": "청담동",

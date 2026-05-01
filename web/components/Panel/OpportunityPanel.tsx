@@ -225,7 +225,7 @@ function RentVerification({ guName }: { guName: string }) {
               const conf = rentNearby.confidence ?? "actual";
               let tone = "emerald";
               let label = `공공 DB ${rentNearby.stats?.["1층"]?.count ?? 0}건`;
-              if (src.startsWith("본인 네트워크")) { tone = "violet"; label = "네트워크 GT"; }
+              if (src.startsWith("본인 네트워크")) { tone = "violet"; label = "네트워크 실거래"; }
               else if (src.startsWith("동 RTMS")) { tone = "indigo"; label = "동 RTMS 역산"; }
               else if (rentNearby.fallback) {
                 if (src.startsWith("추정 실거래") || src.startsWith("현재 호가")) {

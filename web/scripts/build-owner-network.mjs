@@ -22,6 +22,12 @@ function parseCsv(text) {
     const [recorded_at, dong_name, gu_name, floor, area_pyeong, rent_pp, deposit_pp = "", grade = "", source_note = "", contributed_by = "", notes = ""] = cols;
     const rent = parseFloat(rent_pp);
     if (!isFinite(rent) || rent <= 0) continue;
+    // 가정/추정/시뮬 행은 GT 아님 — source_note·notes에 키워드 있으면 skip
+    const noteBlob = `${source_note} ${notes}`.toLowerCase();
+    if (/가정|추정|시뮬|예상|hypothetical|assumed|estimate/.test(noteBlob)) {
+      console.warn(`[owner-network] skip 가정행: ${gu_name} ${dong_name} ${floor} ${rent}만 (${source_note})`);
+      continue;
+    }
     rows.push({
       recorded_at,
       gu: gu_name,
