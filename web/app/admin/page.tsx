@@ -41,6 +41,28 @@ interface EventRow {
   ts: string;
 }
 
+interface DataHealthRes {
+  generated_at: string;
+  network: {
+    meta: { synced_at?: string; case_count?: number; dong_count?: number };
+    total_records: number;
+    n_lt_3: number;
+    expired: number;
+    by_dong: Array<{
+      gu: string;
+      dong: string;
+      floors: Record<string, { rent: number; n: number; collected_at?: string; expired: boolean }>;
+    }>;
+  };
+  curated: {
+    meta: { synced_at?: string; brand_count?: number; dong_count?: number; category_count?: number };
+    total_brands: number;
+    by_category: Record<string, number>;
+    by_dong: Record<string, number>;
+  };
+  freshness_policy_months: Record<string, number>;
+}
+
 function AdminContent() {
   const params = useSearchParams();
   const authKey = params.get("key") ?? "";
@@ -50,7 +72,9 @@ function AdminContent() {
   const [inquiries, setInquiries] = useState<InquiryRow[]>([]);
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"users" | "inquiries" | "events">("users");
+  const [tab, setTab] = useState<"users" | "inquiries" | "events" | "data_health">("users");
+  const [health, setHealth] = useState<DataHealthRes | null>(null);
+  const [healthLoading, setHealthLoading] = useState(false);
   const [expandedInquiry, setExpandedInquiry] = useState<number | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -247,6 +271,23 @@ function AdminContent() {
           >
             사용 현황 ({events.length})
           </button>
+          <button
+            onClick={async () => {
+              setTab("data_health");
+              if (health || healthLoading) return;
+              setHealthLoading(true);
+              try {
+                const res = await fetch(`/api/admin/data-health?key=${encodeURIComponent(authKey)}`);
+                if (res.ok) setHealth(await res.json());
+              } catch {
+                /* network */
+              }
+              setHealthLoading(false);
+            }}
+            className={`px-4 py-2 text-[13px] font-semibold border-b-2 ${tab === "data_health" ? "border-primary-600 text-primary-600" : "border-transparent text-gray-500"}`}
+          >
+            데이터 헬스
+          </button>
           {tab === "users" && users.some((u) => !u.approved) && (
             <button
               onClick={approveAll}
@@ -371,12 +412,14 @@ function AdminContent() {
               ))
             )}
           </div>
-        ) : (
+        ) : tab === "events" ? (
           <EventsView
             events={events}
             expandedUser={expandedUser}
             setExpandedUser={setExpandedUser}
           />
+        ) : (
+          <DataHealthView health={health} loading={healthLoading} />
         )}
       </div>
     </div>
@@ -576,6 +619,125 @@ function EventsView({
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── 데이터 헬스 패널 ──
+   브랜드/건물주 신뢰도 운영 가시성:
+   - Tier 2 (네트워크 GT) 표본 충실도 (n<3 비중·만료 비중)
+   - 큐레이션 브랜드 카테고리 분포
+   - 신선도 정책 가시화
+*/
+function DataHealthView({ health, loading }: { health: DataHealthRes | null; loading: boolean }) {
+  if (loading) return <div className="rounded-[20px] bg-white p-12 text-center shadow-card text-muted">로딩 중...</div>;
+  if (!health) return <div className="rounded-[20px] bg-white p-12 text-center shadow-card text-muted">탭을 클릭해 데이터를 불러오세요</div>;
+
+  const net = health.network;
+  const cur = health.curated;
+  const networkOkRatio = net.total_records > 0
+    ? Math.round(((net.total_records - net.n_lt_3 - net.expired) / net.total_records) * 100)
+    : 0;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-4 gap-4">
+        <HealthCard label="네트워크 GT 레코드" value={net.total_records.toString()} accent="violet" />
+        <HealthCard label="n<3 (참고용 격하)" value={net.n_lt_3.toString()} accent="amber" />
+        <HealthCard label="만료된 GT" value={net.expired.toString()} accent="amber" />
+        <HealthCard label="GT 정상 비율" value={`${networkOkRatio}%`} accent={networkOkRatio >= 70 ? "emerald" : "amber"} />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="rounded-[20px] bg-white p-5 shadow-card">
+          <h3 className="text-[14px] font-bold text-gray-900 mb-3">네트워크 GT 동별 현황</h3>
+          {net.by_dong.length === 0 ? (
+            <p className="text-[12px] text-muted">data/owner-network-rents.csv에 실거래를 누적하세요.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px]">
+                <thead><tr className="bg-gray-50">
+                  <th className="px-2 py-1.5 text-left font-medium text-muted">동</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">1층</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">2층+</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">지하</th>
+                  <th className="px-2 py-1.5 text-right font-medium text-muted">상태</th>
+                </tr></thead>
+                <tbody>
+                  {net.by_dong.map((d, i) => {
+                    const f1 = d.floors["1층"];
+                    const f2 = d.floors["2층이상"];
+                    const fb = d.floors["지하"];
+                    const anyExpired = Object.values(d.floors).some((f) => f.expired);
+                    const anyLow = Object.values(d.floors).some((f) => f.n < 3);
+                    return (
+                      <tr key={i} className="border-t border-gray-50">
+                        <td className="px-2 py-1.5">{d.gu} {d.dong}</td>
+                        <td className="px-2 py-1.5 text-right">{f1 ? `${f1.rent}만 (n=${f1.n})` : "-"}</td>
+                        <td className="px-2 py-1.5 text-right">{f2 ? `${f2.rent}만 (n=${f2.n})` : "-"}</td>
+                        <td className="px-2 py-1.5 text-right">{fb ? `${fb.rent}만 (n=${fb.n})` : "-"}</td>
+                        <td className="px-2 py-1.5 text-right">
+                          {anyExpired ? <span className="text-amber-700 font-semibold">만료</span>
+                            : anyLow ? <span className="text-amber-600">참고용</span>
+                            : <span className="text-emerald-600">정상</span>}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-[20px] bg-white p-5 shadow-card">
+          <h3 className="text-[14px] font-bold text-gray-900 mb-3">큐레이션 브랜드 카테고리</h3>
+          {cur.total_brands === 0 ? (
+            <p className="text-[12px] text-muted">data/curated-brands.csv를 채우세요. 한남·청담·신사 우선.</p>
+          ) : (
+            <ul className="space-y-1.5">
+              {Object.entries(cur.by_category).sort((a, b) => b[1] - a[1]).map(([cat, n]) => (
+                <li key={cat} className="flex justify-between text-[12px]">
+                  <span className="text-gray-700">{cat}</span>
+                  <span className="font-semibold text-gray-900">{n}개</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-3 text-[10px] text-muted">총 {cur.total_brands}개 / {Object.keys(cur.by_dong).length}개 동</p>
+        </div>
+      </div>
+
+      <div className="rounded-[20px] bg-white p-5 shadow-card">
+        <h3 className="text-[14px] font-bold text-gray-900 mb-3">신선도 정책 (개월)</h3>
+        <ul className="grid grid-cols-3 gap-2 text-[11px]">
+          {Object.entries(health.freshness_policy_months).map(([k, v]) => (
+            <li key={k} className="rounded bg-gray-50 px-2 py-1.5">
+              <span className="text-muted">{k}</span>{" "}
+              <span className="font-semibold text-gray-900">{v}개월</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="text-[10px] text-muted">생성: {new Date(health.generated_at).toLocaleString("ko-KR")}</p>
+    </div>
+  );
+}
+
+function HealthCard({ label, value, accent }: { label: string; value: string; accent: "emerald" | "violet" | "amber" | "indigo" }) {
+  const palette: Record<string, { bg: string; text: string }> = {
+    emerald: { bg: "bg-emerald-50", text: "text-emerald-600" },
+    violet: { bg: "bg-violet-50", text: "text-violet-600" },
+    amber: { bg: "bg-amber-50", text: "text-amber-600" },
+    indigo: { bg: "bg-indigo-50", text: "text-indigo-600" },
+  };
+  const p = palette[accent];
+  return (
+    <div className="rounded-[20px] bg-white p-5 shadow-card">
+      <p className="text-[11px] text-muted">{label}</p>
+      <p className={`text-[24px] font-bold mt-1 ${p.text}`}>{value}</p>
+      <div className={`mt-2 h-1 w-8 rounded-full ${p.bg}`}></div>
     </div>
   );
 }
