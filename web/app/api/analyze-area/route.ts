@@ -4,6 +4,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { resolveDong } from "@/lib/dong-lookup";
 import { getDongLandPrice } from "@/lib/dong-sale-data";
 import { getOwnerNetworkRent, getOwnerNetworkRentByFloor } from "@/lib/owner-network-rents";
+import { makeProvenance } from "@/lib/data-quality";
 
 /* 1층 임대료 = 대지 평당가 × cap/12 × LOC_PREMIUM. 한남·신사 실측 기준 1.7배. */
 const LOC_PREMIUM_1F = 1.7;
@@ -454,9 +455,10 @@ export async function GET(request: Request) {
   const clickDong = resolveDong(lat, lng);
   const clickDongName = clickDong.dong_name;
 
-  // 0차: 본인 네트워크 ground truth (가장 높은 신뢰)
+  // 0차: 본인 네트워크 ground truth — n>=3 일 때만 단독 GT 인정.
+  // n<3 단독 GT가 한남동 같은 권역을 지배하던 사고 방지.
   const ownerF1 = getOwnerNetworkRent(guName, clickDongName);
-  if (ownerF1 && ownerF1.rent > 0) {
+  if (ownerF1 && ownerF1.rent > 0 && ownerF1.n >= 3) {
     const ownerF2 = getOwnerNetworkRentByFloor(guName, clickDongName, "2층이상");
     const ownerB = getOwnerNetworkRentByFloor(guName, clickDongName, "지하");
     rentInfo = {
@@ -468,6 +470,7 @@ export async function GET(request: Request) {
       source: `본인 네트워크 ground truth · ${ownerF1.detail}`,
       confidence: "actual",
       source_kind: "owner_network",
+      provenance: ownerF1.prov,
     };
   }
 
@@ -505,6 +508,12 @@ export async function GET(request: Request) {
       cases: { "1층": r1.length, "2층이상": r2.length, "지하": rB.length },
       confidence: "actual",
       source_kind: "rents_db",
+      provenance: makeProvenance({
+        source: "rtms_rent",
+        sample_size: r1.length,
+        collected_at: new Date().toISOString(),
+        category: "rent",
+      }),
     };
   }
 
@@ -543,6 +552,12 @@ export async function GET(request: Request) {
           cases: { "1층": d1.length, "2층이상": d2.length, "지하": dB.length },
           confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
           source_kind: "naver_deal",
+          provenance: makeProvenance({
+            source: "naver_deal",
+            sample_size: d1.length,
+            collected_at: new Date().toISOString(),
+            category: "rent",
+          }),
         };
         break;
       }
@@ -586,6 +601,12 @@ export async function GET(request: Request) {
           cases: { "1층": l1.length, "2층이상": l2.length, "지하": lB.length },
           confidence: scope === "dong" ? "dong_estimate" : "gu_fallback",
           source_kind: "naver_listing",
+          provenance: makeProvenance({
+            source: "naver_listing",
+            sample_size: l1.length,
+            collected_at: new Date().toISOString(),
+            category: "rent",
+          }),
         };
         break;
       }
@@ -607,6 +628,12 @@ export async function GET(request: Request) {
         source: `동 RTMS 매매역산 · ${dongLand.detail} · cap ${DEFAULT_CAP_RATE}% × 1.7`,
         confidence: dongLand.source === "exact" ? "dong_estimate" : "gu_fallback",
         source_kind: "dong_rtms",
+        provenance: makeProvenance({
+          source: "dong_rtms_inverse",
+          sample_size: dongLand.sampleN,
+          collected_at: new Date().toISOString(),
+          category: "rent",
+        }),
       };
     }
   }
@@ -629,6 +656,12 @@ export async function GET(request: Request) {
         source: `${guName} 권역 평균`,
         confidence: "gu_fallback",
         source_kind: "gu_avg",
+        provenance: makeProvenance({
+          source: "gu_avg",
+          sample_size: 1,
+          collected_at: new Date().toISOString(),
+          category: "rent",
+        }),
       };
     } else {
       const rentFallback = RENT_DATA[guName];
@@ -642,6 +675,12 @@ export async function GET(request: Request) {
           source: "권역 평균 (폴백)",
           confidence: "gu_fallback",
           source_kind: "hardcoded",
+          provenance: makeProvenance({
+            source: "hardcoded_fallback",
+            sample_size: 1,
+            collected_at: "2025-09-01",
+            category: "rent",
+          }),
         };
       }
     }
