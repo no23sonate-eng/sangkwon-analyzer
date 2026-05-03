@@ -1,7 +1,8 @@
 /* ── 임대·토지 시세 추이 ──
    좌표 기반: lat/lng → 행정동 + R-ONE 권역 + 구 매핑 → 위치 맞춤 시계열 반환
    - 토지 시세: 동 단위 RTMS anchor × 구 RTMS 변동률 = 위치 맞춤 토지 시계열
-   - 임대 시세: 동 토지 평당가 매매역산 anchor × R-ONE 권역 인덱스 변동률 = 위치 맞춤 임대 시계열
+   - 임대 시세: 네이버 등 실제 임대 데이터 anchor × R-ONE 권역 인덱스 변동률 = 위치 맞춤 임대 시계열
+     anchor 우선순위: 본인 네트워크 GT → 네이버 추정실거래(동→구) → 네이버 호가(동→구) → 동 RTMS 역산
    - 폴백 단계: 위치 맞춤 → R-ONE/RTMS 권역 절대값 → gu_price_history 추정 → 자체 추정
 */
 import { NextResponse } from "next/server";
@@ -10,6 +11,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { nearestRoneRegion } from "@/lib/rone-lookup";
 import { findDongByCoord } from "@/lib/dong-lookup";
 import { getDongLandPrice } from "@/lib/dong-sale-data";
+import { getRentAnchor1F, type RentAnchorSource } from "@/lib/rent-anchor";
 import rtmsLandData from "@/lib/data/rtms-land-yearly.json";
 import rtmsLandDongData from "@/lib/data/rtms-land-yearly-dong.json";
 import roneRentData from "@/lib/data/rone-rent-yearly.json";
@@ -34,12 +36,8 @@ const RONE_RENT_AVG = (roneRentData as { data?: Record<string, RoneRegion> }).da
 type RoneFloor1 = { fullName?: string; yearly: Record<string, number> };
 const RONE_RENT_FLOOR1 = (roneRentFloor1Data as { data?: Record<string, RoneFloor1> }).data ?? {};
 
-// 매매역산 상수 (rent-estimator.ts와 동일)
-const DEFAULT_CAP_RATE = 0.05;       // 5% (4.5/5/5.5 시나리오 중 중앙)
-const FLOOR1_BOOST = 1.7;             // 대지 평당 월세 → 1층 임대료 보정 (실측 평균)
-
 type RentSource =
-  | "dong_anchor_rone_index"   // 동 매매역산 anchor × R-ONE 인덱스 변동률 (위치 맞춤)
+  | "anchor_rone_index"        // 위치별 anchor × R-ONE 권역 변동률 (위치 맞춤)
   | "rone_floor1_indexed"      // R-ONE 1층 anchor × 권역 인덱스 (권역 평균)
   | "rone_floor1"              // R-ONE 1층 (4년)
   | "rone_avg"                 // R-ONE 권역 평균
@@ -59,10 +57,11 @@ interface TrendResponse {
   land: number[];
   source: { rent: RentSource; land: LandSource };
   anchor?: {
-    landPyeong?: number;       // 동 단위 anchor 토지 평당가 (만원)
-    rentPyeong1F?: number;     // 동 매매역산 1층 임대료 anchor (만원/평/월)
-    capRate?: number;          // 사용된 캡레이트 (0.05 = 5%)
-    detail?: string;           // 동 anchor 산출 근거
+    landPyeong?: number;            // 동 단위 anchor 토지 평당가 (만원)
+    rentPyeong1F?: number;          // 1층 임대료 anchor (만원/평/월)
+    rentAnchorSource?: RentAnchorSource; // 임대 anchor 출처
+    rentAnchorDetail?: string;      // 임대 anchor 근거 ("한남동 인근 네이버 추정 실거래 1층 (n=12)")
+    landAnchorDetail?: string;      // 토지 anchor 근거
   };
   note?: string;
 }
@@ -99,7 +98,7 @@ export async function GET(request: Request) {
   let dongName: string | undefined;
   let dongCode: string | undefined;
   let dongLandAnchor: { value: number; year: number; detail: string } | null = null;
-  let rentAnchor1F: number | null = null;
+  let rentAnchor: { value: number; source: RentAnchorSource; detail: string } | null = null;
 
   if (Number.isFinite(lat) && Number.isFinite(lng)) {
     const r = nearestRoneRegion(lat, lng);
@@ -111,13 +110,17 @@ export async function GET(request: Request) {
     if (dong) {
       dongName = dong.dong_name;
       dongCode = dong.dong_code;
-      gu = dong.gu_name; // 동 매핑이 더 정확
+      gu = dong.gu_name;
       const price = getDongLandPrice(dong.gu_name, dong.dong_name, dong.dong_code);
       if (price) {
         dongLandAnchor = { value: price.pricePerPyeong, year: price.year, detail: price.detail };
-        // 매매역산 1층 임대료 anchor: 토지평당가 × cap/12 × 1.7
-        rentAnchor1F = Math.round((price.pricePerPyeong * DEFAULT_CAP_RATE) / 12 * FLOOR1_BOOST);
       }
+    }
+
+    // 임대료 anchor: 네이버 등 실제 임대 데이터 우선 (rent-anchor.ts)
+    const a = await getRentAnchor1F(supabase, gu, dongName, dongCode, lat, lng);
+    if (a.rent > 0) {
+      rentAnchor = { value: a.rent, source: a.source, detail: a.detail };
     }
   } else if (!gu) {
     return NextResponse.json({ error: "lat/lng 또는 gu 파라미터 필요" }, { status: 400 });
@@ -149,9 +152,9 @@ export async function GET(request: Request) {
     if (regionSeries.length === 0 && avgSeries.length >= 3) regionSeries = avgSeries;
 
     // (b) 위치별 anchor 있으면 권역 시계열을 anchor에 맞춰 재스케일 → 위치 맞춤
-    if (regionSeries.length > 0 && rentAnchor1F && rentAnchor1F > 0) {
-      rentSeries = rescaleSeriesToAnchor(regionSeries, rentAnchor1F);
-      rentSource = "dong_anchor_rone_index";
+    if (regionSeries.length > 0 && rentAnchor && rentAnchor.value > 0) {
+      rentSeries = rescaleSeriesToAnchor(regionSeries, rentAnchor.value);
+      rentSource = "anchor_rone_index";
     } else if (regionSeries.length > 0) {
       rentSeries = regionSeries;
       rentSource = f1Series.length >= 2 && avgSeries.length >= 5 ? "rone_floor1_indexed"
@@ -242,18 +245,20 @@ export async function GET(request: Request) {
     source: { rent: rentSource, land: landSource },
   };
 
-  if (dongLandAnchor || rentAnchor1F) {
+  if (dongLandAnchor || rentAnchor) {
     response.anchor = {
       landPyeong: dongLandAnchor?.value,
-      rentPyeong1F: rentAnchor1F ?? undefined,
-      capRate: rentAnchor1F ? DEFAULT_CAP_RATE : undefined,
-      detail: dongLandAnchor?.detail,
+      rentPyeong1F: rentAnchor?.value,
+      rentAnchorSource: rentAnchor?.source,
+      rentAnchorDetail: rentAnchor?.detail,
+      landAnchorDetail: dongLandAnchor?.detail,
     };
   }
 
   const notes: string[] = [];
-  if (rentSource === "dong_anchor_rone_index") notes.push(`임대 = 동 매매역산 anchor × R-ONE 권역 변동률 (1층, cap ${DEFAULT_CAP_RATE * 100}%)`);
-  else if (rentSource === "rone_floor1_indexed") notes.push("임대 = R-ONE 1층 anchor × 권역 임대지수 변동률 (2013~)");
+  if (rentSource === "anchor_rone_index" && rentAnchor) {
+    notes.push(`임대 = ${rentAnchor.detail} × R-ONE 권역 변동률 (위치 맞춤)`);
+  } else if (rentSource === "rone_floor1_indexed") notes.push("임대 = R-ONE 1층 anchor × 권역 임대지수 변동률 (2013~)");
   else if (rentSource === "rone_floor1") notes.push("임대 = R-ONE 1층 전용 데이터 (2022~)");
   else if (rentSource === "rone_avg") notes.push("임대 = R-ONE 중대형 상가 권역 평균");
   else if (rentSource === "estimate") notes.push("임대 = 자체 추정값");

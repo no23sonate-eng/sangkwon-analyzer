@@ -56,15 +56,22 @@ export default function GrowthPrediction() {
 
   // DB에서 가격 추이 가져오기 (좌표 기반 → R-ONE 권역 매핑)
   // 폴백 우선순위: R-ONE/RTMS 캐시 → gu_price_history → 하드코딩 PRICE_HISTORY
+  type RentAnchorSource = "owner_network" | "naver_deal_dong" | "naver_deal_gu" | "naver_listing_dong" | "naver_listing_gu" | "dong_rtms_inverse" | "gu_avg_db" | "none";
   type TrendDb = {
     years: string[]; land: number[]; rent: number[];
     dong?: string;
     region?: { code: string; name: string; distanceKm: number };
     source: {
-      rent: "dong_anchor_rone_index" | "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "estimate";
+      rent: "anchor_rone_index" | "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "estimate";
       land: "dong_anchor_gu_trend" | "rtms" | "estimate";
     };
-    anchor?: { landPyeong?: number; rentPyeong1F?: number; capRate?: number; detail?: string };
+    anchor?: {
+      landPyeong?: number;
+      rentPyeong1F?: number;
+      rentAnchorSource?: RentAnchorSource;
+      rentAnchorDetail?: string;
+      landAnchorDetail?: string;
+    };
     note?: string;
   };
   const [dbHistory, setDbHistory] = useState<TrendDb | null>(null);
@@ -200,7 +207,7 @@ export default function GrowthPrediction() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <p className="text-[12px] font-bold text-gray-800">임대 시세 추이 (1층 평당/월)</p>
-              <SourceBadge source={dbHistory?.source.rent ?? "estimate"} />
+              <SourceBadge source={dbHistory?.source.rent === "anchor_rone_index" ? "anchor_rone_index" : (dbHistory?.source.rent ?? "estimate")} />
             </div>
             <div className="flex items-center gap-1">
               <span className={`text-[11px] font-bold ${rentGrowth10y > 0 ? "text-emerald-600" : "text-red-500"}`}>
@@ -312,14 +319,20 @@ export default function GrowthPrediction() {
               {dbHistory.anchor?.landPyeong != null && (
                 <span className="ml-1 text-[9px] text-muted">
                   (토지 anchor {dbHistory.anchor.landPyeong.toLocaleString()}만/평
-                  {dbHistory.anchor.rentPyeong1F != null && `, 1층 임대 ${dbHistory.anchor.rentPyeong1F}만/평/월 cap ${(dbHistory.anchor.capRate ?? 0) * 100}%`})
+                  {dbHistory.anchor.rentPyeong1F != null && `, 1층 임대 anchor ${dbHistory.anchor.rentPyeong1F}만/평/월`})
                 </span>
               )}
             </p>
           )}
+          {dbHistory.anchor?.rentAnchorDetail && (
+            <p className="mt-0.5">임대 anchor: <span className="text-gray-600">{dbHistory.anchor.rentAnchorDetail}</span></p>
+          )}
+          {dbHistory.anchor?.landAnchorDetail && (
+            <p className="mt-0.5">토지 anchor: <span className="text-gray-600">{dbHistory.anchor.landAnchorDetail}</span></p>
+          )}
           <p className="mt-0.5">
             출처: 임대 = {
-              dbHistory.source.rent === "dong_anchor_rone_index" ? "동 매매역산 anchor × R-ONE 권역 변동률 (위치 맞춤)"
+              dbHistory.source.rent === "anchor_rone_index" ? `${rentAnchorLabel(dbHistory.anchor?.rentAnchorSource)} × R-ONE 권역 변동률 (위치 맞춤)`
               : dbHistory.source.rent === "rone_floor1_indexed" ? "한국부동산원 R-ONE 1층 anchor × 권역 임대지수 변동률 (2013~)"
               : dbHistory.source.rent === "rone_floor1" ? "한국부동산원 R-ONE 중대형 상가 1층 임대료"
               : dbHistory.source.rent === "rone_avg" ? "한국부동산원 R-ONE 중대형 상가 권역 평균"
@@ -339,7 +352,7 @@ export default function GrowthPrediction() {
 
 /* ── 출처 배지 ── */
 function SourceBadge({ source }: {
-  source: "dong_anchor_rone_index" | "dong_anchor_gu_trend" | "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "rtms" | "estimate";
+  source: "anchor_rone_index" | "dong_anchor_gu_trend" | "rone_floor1_indexed" | "rone_floor1" | "rone_avg" | "rtms" | "estimate";
 }) {
   if (source === "estimate") {
     return (
@@ -348,11 +361,10 @@ function SourceBadge({ source }: {
       </span>
     );
   }
-  // 위치 맞춤 시계열 — 강조 색
-  if (source === "dong_anchor_rone_index" || source === "dong_anchor_gu_trend") {
+  if (source === "anchor_rone_index" || source === "dong_anchor_gu_trend") {
     return (
       <span className="rounded-full px-1.5 py-0.5 text-[9px] font-bold" style={{ background: "#DBEAFE", color: "#1D4ED8" }}>
-        동 위치 맞춤
+        위치 맞춤
       </span>
     );
   }
@@ -365,4 +377,17 @@ function SourceBadge({ source }: {
       {label}
     </span>
   );
+}
+
+function rentAnchorLabel(s?: string): string {
+  switch (s) {
+    case "owner_network": return "본인 네트워크 GT";
+    case "naver_deal_dong": return "네이버 추정 실거래 (동)";
+    case "naver_deal_gu": return "네이버 추정 실거래 (구)";
+    case "naver_listing_dong": return "네이버 호가 (동)";
+    case "naver_listing_gu": return "네이버 호가 (구)";
+    case "dong_rtms_inverse": return "동 RTMS 매매역산 (폴백)";
+    case "gu_avg_db": return "구 평균 (폴백)";
+    default: return "anchor";
+  }
 }
