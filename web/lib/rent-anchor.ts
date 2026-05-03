@@ -1,13 +1,14 @@
 /* ── 1층 임대료 anchor 산출 ──
-   네이버 등 "실제 임대 데이터" 우선. 매매역산은 마지막 폴백.
+   "실제 임대 데이터" 우선. 매매역산은 마지막 폴백.
    price-history 시계열 anchor에 사용 (위치 맞춤 절대값).
 
    우선순위:
      1. 본인 네트워크 ground truth (owner_network)
-     2. 네이버 추정 실거래 (dong → gu)
-     3. 네이버 호가 (dong → gu)
-     4. 동 RTMS 매매역산 (cap 5%, 1층 보정 1.7×) — 폴백
-     5. 구 평균 (gu_rent_stats / hardcoded) — 폴백
+     2. RTMS 임대 실거래 (rents 테이블, 좌표 반경 검색) — 정부 공식
+     3. 네이버 추정 실거래 (naver_estimated_deals, dong → gu)
+     4. 네이버 호가 (naver_listings, dong → gu)
+     5. 동 RTMS 매매역산 (cap 5%, 1층 보정 1.7×) — 폴백
+     6. 구 평균 (gu_rent_stats) — 폴백
 */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getOwnerNetworkRent } from "./owner-network-rents";
@@ -19,6 +20,7 @@ const MIN_NAVER = 3;
 
 export type RentAnchorSource =
   | "owner_network"
+  | "rtms_rent_actual"
   | "naver_deal_dong"
   | "naver_deal_gu"
   | "naver_listing_dong"
@@ -36,6 +38,19 @@ export interface RentAnchor {
 
 interface DealRow { rent_per_pyeong: number; floor: string }
 interface ListingRow { monthly_rent: number; area_m2: number; floor: string }
+interface RtmsRentRow { lat: number; lng: number; floor: string; rent_pyeong: number }
+
+function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371000;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 function classifyFloor(f: string | null | undefined): "1층" | "2층" | "지하" | null {
   if (f == null) return null;
@@ -78,6 +93,13 @@ export async function getRentAnchor1F(
   lat: number,
   lng: number,
 ): Promise<RentAnchor> {
+  const median = (arr: number[]) => {
+    if (arr.length === 0) return 0;
+    const s = [...arr].sort((a, b) => a - b);
+    const m = Math.floor(s.length / 2);
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  };
+
   // 1차: 본인 네트워크 ground truth
   if (dongName) {
     const own = getOwnerNetworkRent(gu, dongName);
@@ -91,14 +113,34 @@ export async function getRentAnchor1F(
     }
   }
 
+  // 2차: RTMS 임대 실거래 — 좌표 반경 검색 (rents 테이블)
+  // target_pyeong에 따라 평당가가 약간 달라지므로 모든 평수 통합 후 1층 median
+  {
+    const deg = (1500 / 111000) * 1.2; // 1.5km 반경
+    const { data } = await supabase
+      .from("rents")
+      .select("lat, lng, floor, rent_pyeong")
+      .gte("lat", lat - deg).lte("lat", lat + deg)
+      .gte("lng", lng - deg).lte("lng", lng + deg)
+      .gt("rent_pyeong", 0)
+      .limit(50000);
+    const rows = ((data as RtmsRentRow[] | null) ?? [])
+      .map((r) => ({ ...r, distance: haversineM(lat, lng, r.lat, r.lng) }))
+      .filter((r) => r.distance <= 1500);
+    const f1 = rows
+      .filter((r) => classifyFloor(r.floor) === "1층")
+      .map((r) => r.rent_pyeong);
+    if (f1.length >= MIN_NAVER) {
+      return {
+        rent: Math.round(median(f1) * 10) / 10,
+        source: "rtms_rent_actual",
+        detail: `${dongName ? `${dongName} 인근 1.5km` : "좌표 반경 1.5km"} RTMS 임대 실거래 1층 (n=${f1.length}, median)`,
+        sampleN: f1.length,
+      };
+    }
+  }
+
   const nearbyDongs = await nearbyDongNames(supabase, gu, lat, lng);
-  const avgPP = (rents: number[]) => rents.reduce((s, r) => s + r, 0) / rents.length;
-  const median = (arr: number[]) => {
-    if (arr.length === 0) return 0;
-    const s = [...arr].sort((a, b) => a - b);
-    const m = Math.floor(s.length / 2);
-    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-  };
 
   // 2~3차: 네이버 추정 실거래 → 호가 (dong → gu)
   for (const scope of ["dong", "gu"] as const) {
@@ -187,6 +229,7 @@ export async function getRentAnchor1F(
 export function rentAnchorSourceLabel(src: RentAnchorSource): string {
   switch (src) {
     case "owner_network": return "본인 네트워크 GT";
+    case "rtms_rent_actual": return "RTMS 임대 실거래 (1.5km)";
     case "naver_deal_dong": return "네이버 추정 실거래 (동)";
     case "naver_deal_gu": return "네이버 추정 실거래 (구)";
     case "naver_listing_dong": return "네이버 호가 (동)";

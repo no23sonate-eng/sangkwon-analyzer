@@ -56,7 +56,7 @@ export default function GrowthPrediction() {
 
   // DB에서 가격 추이 가져오기 (좌표 기반 → R-ONE 권역 매핑)
   // 폴백 우선순위: R-ONE/RTMS 캐시 → gu_price_history → 하드코딩 PRICE_HISTORY
-  type RentAnchorSource = "owner_network" | "naver_deal_dong" | "naver_deal_gu" | "naver_listing_dong" | "naver_listing_gu" | "dong_rtms_inverse" | "gu_avg_db" | "none";
+  type RentAnchorSource = "owner_network" | "rtms_rent_actual" | "naver_deal_dong" | "naver_deal_gu" | "naver_listing_dong" | "naver_listing_gu" | "dong_rtms_inverse" | "gu_avg_db" | "none";
   type TrendDb = {
     years: string[]; land: number[]; rent: number[];
     dong?: string;
@@ -382,6 +382,7 @@ function SourceBadge({ source }: {
 function rentAnchorLabel(s?: string): string {
   switch (s) {
     case "owner_network": return "본인 네트워크 GT";
+    case "rtms_rent_actual": return "RTMS 임대 실거래 (1.5km)";
     case "naver_deal_dong": return "네이버 추정 실거래 (동)";
     case "naver_deal_gu": return "네이버 추정 실거래 (구)";
     case "naver_listing_dong": return "네이버 호가 (동)";
