@@ -41,6 +41,25 @@ interface EventRow {
   ts: string;
 }
 
+interface PlaceRow {
+  id: number;
+  kakao_place_id: string;
+  brand_name: string;
+  category: string;
+  kakao_category_name?: string | null;
+  road_name?: string | null;
+  road_address?: string | null;
+  address?: string | null;
+  lat: number;
+  lng: number;
+  gu?: string | null;
+  dong?: string | null;
+  collected_at?: string | null;
+  is_curated?: boolean;
+  is_disabled?: boolean;
+  source_query?: string | null;
+}
+
 interface DataHealthRes {
   generated_at: string;
   network: {
@@ -72,9 +91,12 @@ function AdminContent() {
   const [inquiries, setInquiries] = useState<InquiryRow[]>([]);
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"users" | "inquiries" | "events" | "data_health">("users");
+  const [tab, setTab] = useState<"users" | "inquiries" | "events" | "data_health" | "places">("users");
   const [health, setHealth] = useState<DataHealthRes | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
+  const [places, setPlaces] = useState<PlaceRow[] | null>(null);
+  const [placesLoading, setPlacesLoading] = useState(false);
+  const [placesFilter, setPlacesFilter] = useState<{ gu: string; dong: string; category: string; status: string }>({ gu: "", dong: "", category: "", status: "uncurated" });
   const [expandedInquiry, setExpandedInquiry] = useState<number | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -288,6 +310,29 @@ function AdminContent() {
           >
             데이터 헬스
           </button>
+          <button
+            onClick={async () => {
+              setTab("places");
+              setPlacesLoading(true);
+              try {
+                const qs = new URLSearchParams({ key: authKey, status: placesFilter.status });
+                if (placesFilter.gu) qs.set("gu", placesFilter.gu);
+                if (placesFilter.dong) qs.set("dong", placesFilter.dong);
+                if (placesFilter.category) qs.set("category", placesFilter.category);
+                const res = await fetch(`/api/admin/places?${qs}`);
+                if (res.ok) {
+                  const j = await res.json();
+                  setPlaces(j.places ?? []);
+                }
+              } catch {
+                /* network */
+              }
+              setPlacesLoading(false);
+            }}
+            className={`px-4 py-2 text-[13px] font-semibold border-b-2 ${tab === "places" ? "border-primary-600 text-primary-600" : "border-transparent text-gray-500"}`}
+          >
+            매장 검수
+          </button>
           {tab === "users" && users.some((u) => !u.approved) && (
             <button
               onClick={approveAll}
@@ -418,8 +463,31 @@ function AdminContent() {
             expandedUser={expandedUser}
             setExpandedUser={setExpandedUser}
           />
-        ) : (
+        ) : tab === "data_health" ? (
           <DataHealthView health={health} loading={healthLoading} />
+        ) : (
+          <PlacesView
+            places={places}
+            loading={placesLoading}
+            filter={placesFilter}
+            setFilter={setPlacesFilter}
+            authKey={authKey}
+            onMutate={async () => {
+              setPlacesLoading(true);
+              try {
+                const qs = new URLSearchParams({ key: authKey, status: placesFilter.status });
+                if (placesFilter.gu) qs.set("gu", placesFilter.gu);
+                if (placesFilter.dong) qs.set("dong", placesFilter.dong);
+                if (placesFilter.category) qs.set("category", placesFilter.category);
+                const res = await fetch(`/api/admin/places?${qs}`);
+                if (res.ok) {
+                  const j = await res.json();
+                  setPlaces(j.places ?? []);
+                }
+              } catch { /* */ }
+              setPlacesLoading(false);
+            }}
+          />
         )}
       </div>
     </div>
@@ -738,6 +806,164 @@ function HealthCard({ label, value, accent }: { label: string; value: string; ac
       <p className="text-[11px] text-muted">{label}</p>
       <p className={`text-[24px] font-bold mt-1 ${p.text}`}>{value}</p>
       <div className={`mt-2 h-1 w-8 rounded-full ${p.bg}`}></div>
+    </div>
+  );
+}
+
+/* ── 매장 검수 패널 ──
+   place_crawler.py 가 자동 수집한 매장(places)을 본인이 검수.
+   - curate: ground truth 인정 → BrandSynergy/dominant 가 신뢰
+   - disable: 폐점·오매핑 → 분석에서 제외
+   - 카테고리 매핑 보정 (luxury로 잘못 잡힌 카페 등)
+*/
+const PLACE_CATEGORIES = ["luxury", "flagship", "gallery", "fine_dining", "select_shop", "lifestyle", "contemporary", "streetwear_premium"];
+
+function PlacesView({
+  places, loading, filter, setFilter, authKey, onMutate,
+}: {
+  places: PlaceRow[] | null;
+  loading: boolean;
+  filter: { gu: string; dong: string; category: string; status: string };
+  setFilter: (f: { gu: string; dong: string; category: string; status: string }) => void;
+  authKey: string;
+  onMutate: () => Promise<void>;
+}) {
+  const [acting, setActing] = useState<number | null>(null);
+
+  const apply = async (id: number, action: "curate" | "uncurate" | "disable" | "restore", category?: string) => {
+    setActing(id);
+    try {
+      const res = await fetch(`/api/admin/places?key=${encodeURIComponent(authKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, action, ...(category ? { category } : {}) }),
+      });
+      if (res.ok) await onMutate();
+    } catch { /* */ }
+    setActing(null);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-[20px] bg-white p-4 shadow-card">
+        <div className="grid grid-cols-5 gap-2 text-[12px]">
+          <input
+            placeholder="구 (예: 용산구)"
+            value={filter.gu}
+            onChange={(e) => setFilter({ ...filter, gu: e.target.value })}
+            className="rounded-lg border border-gray-200 px-3 py-1.5"
+          />
+          <input
+            placeholder="동 (예: 한남동)"
+            value={filter.dong}
+            onChange={(e) => setFilter({ ...filter, dong: e.target.value })}
+            className="rounded-lg border border-gray-200 px-3 py-1.5"
+          />
+          <select
+            value={filter.category}
+            onChange={(e) => setFilter({ ...filter, category: e.target.value })}
+            className="rounded-lg border border-gray-200 px-3 py-1.5"
+          >
+            <option value="">전체 카테고리</option>
+            {PLACE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select
+            value={filter.status}
+            onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+            className="rounded-lg border border-gray-200 px-3 py-1.5"
+          >
+            <option value="all">전체</option>
+            <option value="uncurated">미검수</option>
+            <option value="curated">검수 완료</option>
+            <option value="disabled">비활성</option>
+          </select>
+          <button
+            onClick={onMutate}
+            className="rounded-lg bg-primary-600 px-3 py-1.5 text-white text-[12px] font-semibold"
+          >
+            새로고침
+          </button>
+        </div>
+      </div>
+
+      {loading && <p className="text-center text-muted">로딩 중...</p>}
+      {!loading && places && places.length === 0 && (
+        <div className="rounded-[20px] bg-white p-12 text-center shadow-card">
+          <p className="text-muted">매장 데이터 없음 — services/place_crawler.py 실행 필요</p>
+          <p className="mt-2 text-[11px] text-muted">예: <code>python services/place_crawler.py --bootstrap-prime</code></p>
+        </div>
+      )}
+      {!loading && places && places.length > 0 && (
+        <div className="rounded-[20px] bg-white shadow-card overflow-x-auto">
+          <table className="w-full text-[12px]">
+            <thead><tr className="bg-gray-50">
+              <th className="px-3 py-2 text-left font-medium text-muted">상태</th>
+              <th className="px-3 py-2 text-left font-medium text-muted">브랜드</th>
+              <th className="px-3 py-2 text-left font-medium text-muted">카테고리</th>
+              <th className="px-3 py-2 text-left font-medium text-muted">위치</th>
+              <th className="px-3 py-2 text-left font-medium text-muted">출처</th>
+              <th className="px-3 py-2 text-right font-medium text-muted">검수</th>
+            </tr></thead>
+            <tbody>
+              {places.map((p) => (
+                <tr key={p.id} className={`border-t border-gray-50 ${p.is_disabled ? "opacity-50" : ""}`}>
+                  <td className="px-3 py-2">
+                    {p.is_disabled
+                      ? <span className="text-amber-700">⛔ 비활성</span>
+                      : p.is_curated
+                        ? <span className="text-emerald-700 font-semibold">✓ 검수</span>
+                        : <span className="text-gray-400">⊘ 미검수</span>}
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="font-semibold text-gray-900">{p.brand_name}</div>
+                    <div className="text-[10px] text-muted">{p.kakao_category_name ?? ""}</div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <select
+                      value={p.category}
+                      onChange={(e) => apply(p.id, "curate", e.target.value)}
+                      className="rounded border border-gray-200 px-2 py-0.5 text-[11px]"
+                      disabled={acting === p.id}
+                    >
+                      {PLACE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </td>
+                  <td className="px-3 py-2">
+                    <div>{p.gu} {p.dong} <span className="text-muted">{p.road_name ?? ""}</span></div>
+                    <div className="text-[10px] text-muted">{p.road_address ?? p.address}</div>
+                  </td>
+                  <td className="px-3 py-2 text-[10px] text-muted">{p.source_query ?? ""}</td>
+                  <td className="px-3 py-2 text-right">
+                    <div className="inline-flex gap-1">
+                      {!p.is_curated && !p.is_disabled && (
+                        <button
+                          disabled={acting === p.id}
+                          onClick={() => apply(p.id, "curate")}
+                          className="rounded bg-emerald-100 px-2 py-1 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-200"
+                        >검수</button>
+                      )}
+                      {!p.is_disabled && (
+                        <button
+                          disabled={acting === p.id}
+                          onClick={() => apply(p.id, "disable")}
+                          className="rounded bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700 hover:bg-amber-200"
+                        >비활성</button>
+                      )}
+                      {p.is_disabled && (
+                        <button
+                          disabled={acting === p.id}
+                          onClick={() => apply(p.id, "restore")}
+                          className="rounded bg-gray-100 px-2 py-1 text-[10px] font-semibold text-gray-700 hover:bg-gray-200"
+                        >복원</button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
