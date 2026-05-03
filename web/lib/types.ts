@@ -140,6 +140,15 @@ export interface RentInfo {
   provenance_secondary?: Provenance;
 }
 
+/* ── 통합 dominant 카테고리 (trdar 7개 + places 6개) ── */
+export interface UnifiedDominant {
+  total: number;
+  by_group: Record<string, number>;
+  share: Record<string, number>;
+  dominant: Array<{ group: string; share: number; count: number }>;
+  source_breakdown: { trdar: number; places: number };
+}
+
 /* ── 전체 분석 응답 (/api/analyze 반환값) ── */
 
 export interface AnalysisData {
@@ -155,6 +164,9 @@ export interface AnalysisData {
   trdar_count?: number;
   trdar_names?: string[];
   gu_name?: string;
+  /** trdar 7개 + places 6개 통합 dominant. BrandSynergy 가 13개 그룹 점수 산출에 사용. */
+  unified_dominant?: UnifiedDominant;
+  places_meta?: { total: number; collected_at: string };
 }
 
 /* ── store-count API 응답 ── */

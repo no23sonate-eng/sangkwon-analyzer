@@ -8,8 +8,11 @@ export interface CategoryEconomics {
 
 /* 세부업종 → 대분류 매핑.
    세부업종은 부모 대분류의 rent_ratio/avg_pyeong을 상속받지만
-   특수 업종(신발·명품·편의점 등)은 별도 override 가능 (subcategory_overrides). */
-export const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[] }> = {
+   특수 업종(신발·명품·편의점 등)은 별도 override 가능 (subcategory_overrides).
+
+   13개 그룹 = trdar 7개 + 자동수집(places) 6개.
+   from_places: true 인 그룹은 trdar 분류로 안 잡혀서 places 테이블에서 카운트. */
+export const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs: string[]; from_places?: boolean }> = {
   외식: {
     label: "외식",
     icon: "🍽️",
@@ -45,6 +48,54 @@ export const CATEGORY_GROUPS: Record<string, { label: string; icon: string; subs
     icon: "🏋️",
     subs: ["스포츠클럽", "골프연습장", "PC방", "노래방", "당구장", "볼링장", "게스트하우스", "여관", "고시원", "DVD방", "전자게임장", "기타오락장", "복권방"],
   },
+  "명품/럭셔리": {
+    label: "명품",
+    icon: "💎",
+    subs: [],
+    from_places: true,
+  },
+  "플래그십": {
+    label: "플래그십",
+    icon: "🏛️",
+    subs: [],
+    from_places: true,
+  },
+  "갤러리": {
+    label: "갤러리",
+    icon: "🎨",
+    subs: [],
+    from_places: true,
+  },
+  "파인다이닝": {
+    label: "파인다이닝",
+    icon: "🍷",
+    subs: [],
+    from_places: true,
+  },
+  "편집숍": {
+    label: "편집숍",
+    icon: "🛍️",
+    subs: [],
+    from_places: true,
+  },
+  "라이프스타일": {
+    label: "라이프스타일",
+    icon: "🪴",
+    subs: [],
+    from_places: true,
+  },
+};
+
+/* place_crawler.py 가 산출한 카테고리 → CATEGORY_GROUPS 키 매핑 */
+export const PLACE_CATEGORY_TO_GROUP: Record<string, string> = {
+  luxury: "명품/럭셔리",
+  flagship: "플래그십",
+  contemporary: "플래그십",
+  gallery: "갤러리",
+  fine_dining: "파인다이닝",
+  select_shop: "편집숍",
+  streetwear_premium: "편집숍",
+  lifestyle: "라이프스타일",
 };
 
 const SUB_TO_PARENT: Record<string, string> = (() => {

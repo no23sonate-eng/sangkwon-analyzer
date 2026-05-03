@@ -5,6 +5,8 @@ import { resolveDong } from "@/lib/dong-lookup";
 import { getDongLandPrice } from "@/lib/dong-sale-data";
 import { getOwnerNetworkRent, getOwnerNetworkRentByFloor } from "@/lib/owner-network-rents";
 import { makeProvenance } from "@/lib/data-quality";
+import { getPlacesNear } from "@/lib/places";
+import { unifyDominant } from "@/lib/road-line";
 
 /* 1층 임대료 = 대지 평당가 × cap/12 × LOC_PREMIUM. 한남·신사 실측 기준 1.7배. */
 const LOC_PREMIUM_1F = 1.7;
@@ -777,6 +779,24 @@ export async function GET(request: Request) {
   /* ── Step 6: Cross result (placeholder) ── */
   const crossResult: Array<Record<string, unknown>> = [];
 
+  /* ── Step 7: places 기반 dominant 카테고리 ──
+     trdar 7개(외식·카페 등) + places 6개(명품·플래그십·갤러리·파인다이닝·편집숍·라이프스타일)
+     합산해서 13개 그룹 단위 dominant Top 3 산출. BrandSynergy 가 입력으로 사용.
+
+     places 테이블이 비어있어도 trdar 단독으로 동작 (fallback safe). */
+  let placesByGroup: Record<string, number> = {};
+  let placesTotal = 0;
+  let placesProvCollectedAt = "";
+  try {
+    const placesRes = await getPlacesNear(lat, lng, 200);
+    placesByGroup = placesRes.by_group;
+    placesTotal = placesRes.places.length;
+    placesProvCollectedAt = placesRes.prov.collected_at;
+  } catch {
+    /* 마이그레이션 전이면 places 테이블 없을 수 있음 — 무시 */
+  }
+  const unifiedDominant = unifyDominant(bySubcategory, placesByGroup);
+
   /* ── Build response ── */
   return NextResponse.json({
     store_summary: storeSummary,
@@ -791,6 +811,11 @@ export async function GET(request: Request) {
     trdar_count: nearby.length,
     trdar_names: nearby.map((r) => r.trdar_nm),
     gu_name: guName,
+    unified_dominant: unifiedDominant,
+    places_meta: {
+      total: placesTotal,
+      collected_at: placesProvCollectedAt,
+    },
   });
 }
 

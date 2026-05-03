@@ -69,6 +69,10 @@ interface GroupData {
   rentBurden: number;
   franchiseRatio: number;
   hasData: boolean;
+  /** unified_dominant 의 share (0~1) — 실제 그 자리에 그 카테고리가 얼마나 차지하는지.
+   *  한남대로 명품 0.6 → 명품 dominant 매칭 점수 60점. */
+  dominantShare: number;
+  isFromPlaces: boolean;
 }
 
 export default function BrandSynergy() {
@@ -81,8 +85,6 @@ export default function BrandSynergy() {
   const rent = analysisData?.rent_info as Record<string, unknown> | undefined;
   const rentConfidence = (rent?.confidence as string | undefined) ?? "actual";
   const isGuFallback = rentConfidence === "gu_fallback";
-  // 임대 민감 카테고리 — 구 평균 폴백 시 추천 제외 (rent1f가 실시장보다 낮게 잡혀 false positive 위험)
-  const RENT_SENSITIVE_KEYS = new Set(["카페/주류", "외식", "뷰티/건강"]);
   const scSummary = storeCountData?.summary ?? analysisData?.sc_summary;
   const pop = analysisData?.pop_summary;
   // 반경 내 포함된 상권 수 — 점포수 스케일링에 사용 (가중평균 → 반경 내 총합 근사)
@@ -117,8 +119,12 @@ export default function BrandSynergy() {
     let categorizedStores = 0;
     const result: GroupData[] = [];
 
+    // places 6개 카테고리 카운트 (trdar 분류로는 안 잡히는 명품/플래그십 등)
+    const placesByGroup = analysisData?.unified_dominant?.by_group ?? {};
+
     for (const [key, group] of Object.entries(CATEGORY_GROUPS)) {
       const subsSet = new Set(group.subs);
+      const isFromPlaces = group.from_places === true;
 
       let storeCount = 0;
       let totalSalesAmt = 0;
@@ -128,6 +134,11 @@ export default function BrandSynergy() {
       let openCount = 0;
       let closeCount = 0;
       let franchise = 0;
+
+      // places 카테고리는 trdar 매출 데이터 없음 — 점포수만 places 에서 직접
+      if (isFromPlaces) {
+        storeCount = placesByGroup[key] ?? 0;
+      }
 
       for (const [subName, info] of Object.entries(bySub)) {
         if (subsSet.has(subName)) storeCount += info.count;
@@ -175,17 +186,19 @@ export default function BrandSynergy() {
 
       const avgTicket = totalCountAmt > 0 ? totalSalesAmt / totalCountAmt : 0;
 
+      // dominant share — unified_dominant.share 에서 가져옴 (이 자리에 이 카테고리 비중)
+      const dominantShare = analysisData?.unified_dominant?.share?.[key] ?? 0;
+
       result.push({
         key,
         label: group.label,
         icon: group.icon,
         storeCount,
-        // 반경 내 상권수로 스케일 → "반경 내 총량" 근사. 비율·스코어는 storeCount(가중평균)를 사용하므로 영향 없음.
-        displayStores: Math.round(storeCount * trdarCount),
+        displayStores: isFromPlaces ? storeCount : Math.round(storeCount * trdarCount),
         displayOpen: Math.round(openCount * trdarCount),
         displayClose: Math.round(closeCount * trdarCount),
         supplyRatio: 0,
-        demandScore: salesPerPerson, // 임시: 원시값, 아래서 정규화
+        demandScore: salesPerPerson,
         gapScore: 0,
         totalSales: totalSalesAmt,
         perStoreSales: avgPerStoreSales,
@@ -196,7 +209,10 @@ export default function BrandSynergy() {
         survivalRate,
         rentBurden,
         franchiseRatio,
+        // places 그룹은 trdar 매출 데이터 없음 — storeCount > 0 이면 데이터 있는 것으로 간주.
         hasData: storeCount > 0 || totalSalesAmt > 0,
+        dominantShare,
+        isFromPlaces,
       });
     }
 
@@ -236,31 +252,47 @@ export default function BrandSynergy() {
       const myFranchisePct = r.franchiseRatio * 100;
       const entryEase = cb ? relScoreInverse(myFranchisePct, cb.avg_franchise_ratio) : Math.round((1 - r.franchiseRatio) * 100);
 
-      // 기회 점수: 가중평균 — 임대 30%, 수요 20%, 객단가 15%, 공급여유 15%, 개폐업률 12%, 진입용이 8%
+      // ── dominantMatchScore (신규) ──
+      // 실제 그 자리에 그 카테고리가 차지하는 비중 (unified_dominant.share, 0~1).
+      // 한남대로면 명품·플래그십 share 가 0.5+ 로 높음 → 명품·플래그십 점수 +50점.
+      // 카페가 share 0.1 이면 +10점. 즉 "이 자리에 누가 운영 중인가" 가 점수에 직접 반영.
+      // share × 100 → 0~100 점수.
+      const dominantMatch = Math.round(r.dominantShare * 100);
+
+      // 카니발리제이션 가드: share 가 너무 높으면 (이미 포화) -10
+      const cannibalPenalty = r.dominantShare > 0.5 ? -10 : 0;
+
+      // 6요소 점수 (가중치 합 1.0):
+      //   임대 25%, dominantMatch 30%, 수요 12%, 객단가 10%, 공급여유 10%, 개폐업률 8%, 진입용이 5%
+      // dominantMatch 가 가장 높은 가중치 — "데이터 정확도" 의 핵심 신호.
+      // places 그룹(매출 데이터 없음)은 demand/ticket/openRate=50 폴백이라 dominantMatch 가 사실상 단독 결정자.
+      const w = {
+        rentFit: 0.25,
+        dominant: 0.30,
+        demand: 0.12,
+        ticket: 0.10,
+        supplySlack: 0.10,
+        openRate: 0.08,
+        entryEase: 0.05,
+      };
       r.gapScore = Math.max(0, Math.min(100, Math.round(
-        rentFit * SCORE_WEIGHTS.rentFit +
-        r.demandScore * SCORE_WEIGHTS.demand +
-        ticketScore * SCORE_WEIGHTS.ticket +
-        supplySlack * SCORE_WEIGHTS.supplySlack +
-        openRate * SCORE_WEIGHTS.openRate +
-        entryEase * SCORE_WEIGHTS.entryEase,
+        rentFit * w.rentFit +
+        dominantMatch * w.dominant +
+        r.demandScore * w.demand +
+        ticketScore * w.ticket +
+        supplySlack * w.supplySlack +
+        openRate * w.openRate +
+        entryEase * w.entryEase +
+        cannibalPenalty,
       )));
+      // 미사용 변수 (린트) — SCORE_WEIGHTS는 더이상 사용 안함 (인라인 가중치로 교체)
+      void SCORE_WEIGHTS;
     }
 
-    // 하드 필터: 임대 부담이 RENT_BURDEN_MAX(1.5) 초과 → 추천 제외
-    // 단 rentBurden 산출 불가(0)인 경우는 데이터 부족이라 통과
-    // gu_fallback 신뢰도면 임대 민감 카테고리(카페·외식·뷰티)는 추천에서 다운그레이드
-    const filtered = valid.filter((r) => {
-      if (r.rentBurden > 0 && r.rentBurden >= RENT_BURDEN_MAX) return false;
-      // 구 평균 폴백 + 임대 민감 카테고리는 점수 강제로 깎아 상위 추천에서 빠짐
-      if (isGuFallback && RENT_SENSITIVE_KEYS.has(r.key)) {
-        r.gapScore = Math.min(r.gapScore, 39); // "보통(40)" 미만으로 = "과밀" 표시
-      }
-      return true;
-    });
-
-    return filtered.sort((a, b) => b.gapScore - a.gapScore);
-  }, [store, ft, sales, scSummary, rent, pop, trdarCount, isGuFallback]);
+    // 정렬: 점수 높은 순 (실제 그 자리에 dominant 인 카테고리가 위로 올라옴).
+    // 한남대로 클릭 → 명품·플래그십이 카페보다 위 (실제 거리 모습 그대로).
+    return valid.sort((a, b) => b.gapScore - a.gapScore);
+  }, [store, ft, sales, scSummary, rent, pop, trdarCount, analysisData]);
 
   if (!store || !ft) return <p className="text-[12px] text-muted">데이터 로딩 중...</p>;
   if (groups.length === 0) {
@@ -356,10 +388,6 @@ export default function BrandSynergy() {
     })(),
   ] : null;
 
-  // 추천 점수 — 리스트의 gapScore와 동일 값(6축 평균). 선택화면 원 안에도 같은 수를 노출.
-  const totalScore = selectedGroup?.gapScore ?? 0;
-  const totalVerdict = totalScore >= 55 ? "기회" : totalScore >= 40 ? "보통" : "과밀";
-
   const strengths = radarData?.filter((d) => d.value >= 65).sort((a, b) => b.value - a.value) ?? [];
   const weaknesses = radarData?.filter((d) => d.value < 45).sort((a, b) => a.value - b.value) ?? [];
 
@@ -412,7 +440,7 @@ export default function BrandSynergy() {
         <div className="grid grid-cols-4 gap-1.5">
           {groups.map((g) => {
             const isSelected = selected === g.key;
-            const isTop = g.gapScore >= 55;
+            const burdenOver = g.rentBurden >= RENT_BURDEN_MAX;
             return (
               <button
                 key={g.key}
@@ -423,8 +451,11 @@ export default function BrandSynergy() {
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                {isTop && !isSelected && (
-                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[8px] text-white">!</span>
+                {burdenOver && !isSelected && (
+                  <span
+                    className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white"
+                    title={`임대 부담 ${Math.round(g.rentBurden * 100)}% (적정 초과)`}
+                  >!</span>
                 )}
                 <span className="block text-[16px]">{g.icon}</span>
                 <span className="block text-[10px] font-semibold leading-tight mt-0.5">{g.label}</span>
@@ -437,124 +468,56 @@ export default function BrandSynergy() {
         </div>
       </div>
 
-      {/* 미선택: 추천 점수 요약 */}
+      {/* 미선택: 카테고리 요약 (점수 없이 점포 수·임대 부담만) */}
       {!selected && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 가중평균 (임대 30% / 수요 20% / 객단가·공급 15% / 개폐업 12% / 진입 8%)</p>
+          <p className="text-[10px] font-medium text-muted">반경 {radius}m · 카테고리 클릭 시 6축 다이어그램</p>
           {groups.map((g) => {
-            const tone = g.gapScore >= 55 ? "emerald" : g.gapScore >= 40 ? "amber" : "red";
-            const color = tone === "emerald" ? "#10B981" : tone === "amber" ? "#F59E0B" : "#EF4444";
-            const verdict = g.gapScore >= 55 ? "기회" : g.gapScore >= 40 ? "보통" : "과밀";
             const burdenAlert = g.rentBurden >= RENT_BURDEN_WARN;
+            const burdenOver = g.rentBurden >= RENT_BURDEN_MAX;
+            const burdenColor = burdenOver ? "#DC2626" : burdenAlert ? "#B45309" : "#475569";
+            const burdenBg = burdenOver ? "#FEE2E2" : burdenAlert ? "#FEF3C7" : "#F1F5F9";
             return (
-              <div key={g.key} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
+              <button
+                key={g.key}
+                onClick={() => setSelected(g.key)}
+                className="flex w-full items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-left hover:bg-gray-100"
+              >
                 <span className="text-[14px]">{g.icon}</span>
-                <span className="flex-1 text-[11px] font-semibold text-gray-800">
-                  {g.label}
-                  {burdenAlert && (
-                    <span className="ml-1.5 inline-block rounded-full bg-red-100 px-1.5 py-0.5 text-[8px] font-bold text-red-700">
-                      임대 {Math.round(g.rentBurden * 100)}%
-                    </span>
-                  )}
-                </span>
-                <span className="text-[9px] text-muted w-12 text-right">{g.displayStores}개</span>
-                <div className="h-1.5 w-14 rounded-full bg-gray-200">
-                  <div className="h-full rounded-full" style={{ width: `${g.gapScore}%`, background: color }} />
-                </div>
-                <span className={`text-[11px] font-bold w-14 text-right`} style={{ color }}>
-                  {g.gapScore}<span className="text-[9px] font-medium"> 점</span>
-                  <span className="ml-1 text-[9px] font-medium" style={{ color }}>{verdict}</span>
-                </span>
-              </div>
+                <span className="flex-1 text-[11px] font-semibold text-gray-800">{g.label}</span>
+                <span className="text-[10px] text-muted w-12 text-right">{g.displayStores}개</span>
+                {g.rentBurden > 0 && (
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[9px] font-bold"
+                    style={{ background: burdenBg, color: burdenColor }}
+                  >
+                    임대 {Math.round(g.rentBurden * 100)}%
+                  </span>
+                )}
+              </button>
             );
           })}
+          <p className="mt-2 text-[9px] text-muted leading-relaxed">
+            임대 부담 = 시세 기준 월세 / 매출 대비 적정 월세. 100% 초과 시 임대료가 업계 적정 비율을 넘는 상태.
+          </p>
         </div>
       )}
 
       {/* 선택됨: 상세 분석 */}
       {selectedGroup && radarData && (
         <>
-          <div className="flex items-center gap-3 rounded-xl px-4 py-3"
-            style={{ background: totalScore >= 55 ? "#ECFDF5" : totalScore >= 40 ? "#FFF7ED" : "#FEF2F2" }}>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full"
-              style={{ background: totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444" }}>
-              <span className="text-[18px] font-black text-white">{totalScore}</span>
-            </div>
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
+            <span className="text-[24px]">{selectedGroup.icon}</span>
             <div className="min-w-0 flex-1">
-              <p className="text-[14px] font-bold text-gray-900">
-                {selectedGroup.icon} {selectedGroup.label}
-                <span
-                  className="ml-2 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                  style={{
-                    background: totalScore >= 55 ? "#D1FAE5" : totalScore >= 40 ? "#FEF3C7" : "#FEE2E2",
-                    color: totalScore >= 55 ? "#059669" : totalScore >= 40 ? "#B45309" : "#DC2626",
-                  }}
-                >
-                  추천 {totalVerdict}
-                </span>
-              </p>
-              <p className="text-[11px] text-muted">
-                {(() => {
-                  const g = selectedGroup;
-                  const s = g.gapScore;
-                  const k = g.key;
-                  const verdicts: Record<string, [string, string, string, string]> = {
-                    "외식": [
-                      "유동인구 대비 외식 점포가 부족해 신규 출점 여건이 좋습니다",
-                      "외식 수요가 안정적이며 객단가 확보가 가능합니다",
-                      "외식업 경쟁이 존재하나 메뉴 특화로 승산이 있습니다",
-                      "외식 점포가 밀집해 있어 가격·마진 경쟁이 치열합니다",
-                    ],
-                    "카페/주류": [
-                      "카페·주류 수요 대비 공급이 적어 입점 기회가 열려 있습니다",
-                      "음료·주류 소비가 활발하고 원가율이 낮아 수익성이 양호합니다",
-                      "카페 밀도가 있으나 콘셉트 차별화로 시장 진입이 가능합니다",
-                      "카페·주류 업종 포화 상태로 임대 부담이 수익을 압박합니다",
-                    ],
-                    "소매/유통": [
-                      "거주·유동인구 대비 소매 점포가 적어 생활 소비 수요를 흡수할 여지가 큽니다",
-                      "소매 매출이 꾸준하며 일상 소비 기반의 안정적 수익이 예상됩니다",
-                      "소매 경쟁이 있으나 전문 품목 특화 시 틈새 수요 공략이 가능합니다",
-                      "대형 유통과 온라인에 밀려 소규모 소매의 수익성이 낮은 구간입니다",
-                    ],
-                    "뷰티/건강": [
-                      "미용·의료 수요 대비 공급이 적어 안정적 고객 확보가 가능합니다",
-                      "뷰티·건강 분야의 재방문율이 높아 매출 안정성이 좋습니다",
-                      "뷰티 업종 경쟁이 있으나 전문 시술·차별 서비스로 가능성이 있습니다",
-                      "미용·건강 점포가 과밀하여 고객 확보 비용이 높아질 수 있습니다",
-                    ],
-                    "교육": [
-                      "교육 수요 대비 학원이 적어 수강생 모집이 수월할 환경입니다",
-                      "교육 업종은 경기 방어력이 높고 월정기 매출이 안정적입니다",
-                      "학원 간 경쟁이 존재하나 전문 분야 특화로 차별화 여지가 있습니다",
-                      "교육 시설이 밀집돼 있어 수강생 유치 경쟁이 심합니다",
-                    ],
-                    "생활서비스": [
-                      "생활 편의 수요는 높으나 서비스 공급이 부족한 상태입니다",
-                      "필수 서비스 특성상 수요가 꾸준하고 폐업 위험이 낮습니다",
-                      "서비스 업종 경쟁이 있으나 접근성·편의성으로 우위를 잡을 수 있습니다",
-                      "생활서비스 업종이 많아 단가 인하 압력이 있을 수 있습니다",
-                    ],
-                    "여가/오락": [
-                      "여가 시설이 부족해 유동인구의 체류 소비를 끌어낼 기회입니다",
-                      "여가·오락 소비 의향이 높고 객단가 확보 여건이 갖춰져 있습니다",
-                      "여가 시설 경쟁이 있으나 체험형 콘텐츠로 차별화가 가능합니다",
-                      "여가 시설이 과밀하여 고정비 대비 가동률 확보가 어렵습니다",
-                    ],
-                  };
-                  const msgs = verdicts[k] ?? [
-                    "수요 대비 공급이 적어 진입 여건이 우수합니다",
-                    "수익성과 경쟁 환경이 양호한 편입니다",
-                    "경쟁이 있으나 차별화로 가능성이 있습니다",
-                    "점포 밀도가 높아 수익 압박이 예상됩니다",
-                  ];
-                  if (s >= 70) return msgs[0];
-                  if (s >= 55) return msgs[1];
-                  if (s >= 40) return msgs[2];
-                  return msgs[3];
-                })()}
-              </p>
+              <p className="text-[14px] font-bold text-gray-900">{selectedGroup.label}</p>
+              <p className="text-[11px] text-muted">반경 {radius}m · {selectedGroup.displayStores}개 점포 · 6축 서울 평균 대비</p>
             </div>
+            <button
+              onClick={() => setSelected(null)}
+              className="rounded-md bg-white px-2.5 py-1 text-[10px] font-semibold text-gray-600 hover:bg-gray-100 border border-gray-200"
+            >
+              ← 목록
+            </button>
           </div>
 
           <ResponsiveContainer width="100%" height={260}>
@@ -563,10 +526,10 @@ export default function BrandSynergy() {
               <PolarAngleAxis dataKey="axis" tick={{ fill: "#64748B", fontSize: 11 }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: "#94A3B8", fontSize: 9 }} axisLine={false} />
               <Radar dataKey="value"
-                stroke={totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444"}
-                fill={totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444"}
+                stroke="#6366F1"
+                fill="#6366F1"
                 fillOpacity={0.12} strokeWidth={2}
-                dot={{ r: 3, fill: totalScore >= 55 ? "#10B981" : totalScore >= 40 ? "#F59E0B" : "#EF4444", stroke: "#fff", strokeWidth: 2 }} />
+                dot={{ r: 3, fill: "#6366F1", stroke: "#fff", strokeWidth: 2 }} />
             </RadarChart>
           </ResponsiveContainer>
 
