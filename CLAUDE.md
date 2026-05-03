@@ -23,8 +23,8 @@
 ## sanity check (회귀 케이스)
 
 자동 산출값이 본인 수기값 ±20% 벗어나면 빌드 실패:
-- 한남동 726-54 — 1층 평당 ≈ 120만/월, 캡레이트 5~8%
-- 컨설팅 들어오는 케이스마다 `web/scripts/sanity-check.mjs`에 누적
+- 컨설팅 들어오는 케이스마다 본인 실측값을 `web/scripts/sanity-check.mjs`에 누적
+- 가정값/추정값은 회귀 기대치로 사용 금지. 본인이 직접 측정한 실거래만
 
 ## 디렉토리
 
@@ -37,8 +37,11 @@
 
 1. CBRE/JLL/쿠시먼 PDF를 `data/reports/`에 업로드 (분기 1회)
 2. 네트워크 실거래를 `data/owner-network-rents.csv`에 추가 (들어올 때마다)
+3. Supabase 마이그레이션 SQL은 dashboard SQL Editor 에서 수기 적용 — REST 자동화 불가
+4. 신규 권역 매장 자동수집: `python services/place_crawler.py --bootstrap-prime` (분기 1회) +
+   admin "매장 검수" 탭에서 컨설팅 들어가는 권역만 수기 검수
 
-이 둘 외에는 자동.
+이 4개 외에는 자동.
 
 ## 메모리 vs CLAUDE.md
 
