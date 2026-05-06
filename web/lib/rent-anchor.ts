@@ -38,7 +38,7 @@ export interface RentAnchor {
 
 interface DealRow { rent_per_pyeong: number; floor: string }
 interface ListingRow { monthly_rent: number; area_m2: number; floor: string }
-interface RtmsRentRow { lat: number; lng: number; floor: string; rent_pyeong: number }
+interface RtmsRentRow { lat: number; lng: number; floor: string; rent_pyeong: number; target_pyeong?: number }
 
 function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371000;
@@ -114,27 +114,38 @@ export async function getRentAnchor1F(
   }
 
   // 2차: RTMS 임대 실거래 — 좌표 반경 검색 (rents 테이블)
-  // target_pyeong에 따라 평당가가 약간 달라지므로 모든 평수 통합 후 1층 median
+  // 동일 좌표(매물)는 target_pyeong 별로 5~6중 가짜 행이 저장되어 있어
+  // 좌표 단위 dedupe + target_pyeong=30 (또는 가장 가까운 값) 단일 선택해야 한다.
+  // (한남동 738-29 사례: 한 매물이 30행 중복 → median이 50평 환산값 11.4만/평으로 떨어져
+  //  prime 입지 anchor를 망가뜨림 → 매매역산 108만/평이 정답이었던 케이스)
   {
     const deg = (1500 / 111000) * 1.2; // 1.5km 반경
     const { data } = await supabase
       .from("rents")
-      .select("lat, lng, floor, rent_pyeong")
+      .select("lat, lng, floor, rent_pyeong, target_pyeong")
       .gte("lat", lat - deg).lte("lat", lat + deg)
       .gte("lng", lng - deg).lte("lng", lng + deg)
       .gt("rent_pyeong", 0)
       .limit(50000);
     const rows = ((data as RtmsRentRow[] | null) ?? [])
       .map((r) => ({ ...r, distance: haversineM(lat, lng, r.lat, r.lng) }))
-      .filter((r) => r.distance <= 1500);
-    const f1 = rows
-      .filter((r) => classifyFloor(r.floor) === "1층")
-      .map((r) => r.rent_pyeong);
+      .filter((r) => r.distance <= 1500 && classifyFloor(r.floor) === "1층");
+    // 좌표 dedupe + target_pyeong=30 우선 (소형 프리미엄·대형 디스카운트 편향 최소화)
+    const prefScore = (tp: number | undefined) => Math.abs((tp ?? 999) - 30);
+    const byCoord = new Map<string, RtmsRentRow & { distance: number }>();
+    for (const r of rows) {
+      const key = `${r.lat.toFixed(6)}_${r.lng.toFixed(6)}`;
+      const cur = byCoord.get(key);
+      if (!cur || prefScore(r.target_pyeong) < prefScore(cur.target_pyeong)) {
+        byCoord.set(key, r);
+      }
+    }
+    const f1 = Array.from(byCoord.values()).map((r) => r.rent_pyeong);
     if (f1.length >= MIN_NAVER) {
       return {
         rent: Math.round(median(f1) * 10) / 10,
         source: "rtms_rent_actual",
-        detail: `${dongName ? `${dongName} 인근 1.5km` : "좌표 반경 1.5km"} RTMS 임대 실거래 1층 (n=${f1.length}, median)`,
+        detail: `${dongName ? `${dongName} 인근 1.5km` : "좌표 반경 1.5km"} RTMS 임대 실거래 1층 (n=${f1.length}건 매물, median)`,
         sampleN: f1.length,
       };
     }

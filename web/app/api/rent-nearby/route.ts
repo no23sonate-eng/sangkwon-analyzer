@@ -158,13 +158,20 @@ export async function GET(request: Request) {
 
   // Calculate distance and filter by 3km max
   const MAX_RADIUS = 3000;
-  const withDistance: RentRow[] = (data ?? [])
+  const rawWithDistance: RentRow[] = (data ?? [])
     .map((row) => ({
       ...row,
       distance: haversineM(lat, lng, row.lat, row.lng),
     }))
-    .filter((row) => row.distance! <= MAX_RADIUS)
-    .sort((a, b) => a.distance! - b.distance!);
+    .filter((row) => row.distance! <= MAX_RADIUS);
+
+  // 좌표·층 단위 dedupe — 동일 매물이 target_pyeong 외 다른 컬럼 차이로 다중 저장된 경우 1건으로
+  const seen = new Map<string, RentRow>();
+  for (const r of rawWithDistance) {
+    const key = `${r.lat.toFixed(6)}_${r.lng.toFixed(6)}_${r.floor}`;
+    if (!seen.has(key)) seen.set(key, r);
+  }
+  const withDistance: RentRow[] = Array.from(seen.values()).sort((a, b) => a.distance! - b.distance!);
 
   // Expand radius until >= 3 cases found
   const radiusSteps = [300, 500, 800, 1000, 1500, 2000, 3000];
