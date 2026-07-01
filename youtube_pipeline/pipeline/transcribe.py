@@ -92,11 +92,26 @@ def _segments_as_sentences(segments: list[dict]) -> list[dict]:
     return out
 
 
+def _resolve_model(model_name: str) -> str:
+    """모델 이름을 로컬 경로로 해석. youtube_pipeline/models/ 아래에
+    같은 이름(또는 -int8 변형) 폴더가 있으면 그것을 쓴다 (오프라인 지원).
+    없으면 이름 그대로 반환해 faster-whisper 가 다운로드하게 둔다."""
+    p = Path(model_name)
+    if p.is_dir():
+        return str(p)
+    models_dir = common.ROOT_DIR / "models"
+    for cand in (models_dir / model_name, models_dir / f"{model_name}-int8"):
+        if (cand / "model.bin").exists():
+            log.info("로컬 모델 사용: %s", cand)
+            return str(cand)
+    return model_name
+
+
 def transcribe(project: common.Project, config: dict) -> dict:
     from faster_whisper import WhisperModel
 
     tconf = config.get("transcribe", {})
-    model_name = tconf.get("model", "small")
+    model_name = _resolve_model(tconf.get("model", "small"))
     language = tconf.get("language") or None
     device = tconf.get("device", "cpu")
     compute_type = tconf.get("compute_type", "int8")

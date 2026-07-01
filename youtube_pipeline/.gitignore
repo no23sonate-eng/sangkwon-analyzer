@@ -4,3 +4,6 @@
 # 프로젝트 폴더의 원본 미디어와 중간/최종 산출물은 커밋하지 않는다
 projects/*
 !projects/.gitkeep
+
+# 로컬 whisper 모델 (대용량 — scripts/setup_model.py 로 재다운로드)
+models/

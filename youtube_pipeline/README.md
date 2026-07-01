@@ -22,6 +22,20 @@ cp youtube_pipeline/.env.example youtube_pipeline/.env   # 키 채우기
 
 Python 3.10+ 필요.
 
+### huggingface.co 가 막힌 환경 (오프라인 모델 설치)
+
+faster-whisper 는 기본적으로 huggingface.co 에서 모델을 받는다. 그게 막힌
+환경(원격 실행 환경 egress 정책 등)에서는:
+
+```bash
+pip install transformers tiktoken numpy   # 설치 스크립트용
+python youtube_pipeline/scripts/setup_model.py small-int8
+```
+
+GitHub 릴리스에서 모델을 받아 `models/small-int8/` 에 설치하고 tokenizer /
+alignment heads 까지 자동 구성한다. `transcribe.py` 는 `models/` 에 로컬
+모델이 있으면 그것을 우선 사용한다.
+
 ## 실행
 
 ```bash
