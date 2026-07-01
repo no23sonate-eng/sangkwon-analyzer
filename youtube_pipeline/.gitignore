@@ -1,0 +1,6 @@
+# youtube_pipeline 로컬 산출물/비밀
+.env
+
+# 프로젝트 폴더의 원본 미디어와 중간/최종 산출물은 커밋하지 않는다
+projects/*
+!projects/.gitkeep

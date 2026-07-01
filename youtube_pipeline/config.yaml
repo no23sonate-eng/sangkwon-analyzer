@@ -1,0 +1,58 @@
+# 유튜브 편집 자동화 파이프라인 설정
+# 각 단계(transcribe / broll / subtitle / render)가 공통으로 참조한다.
+
+# ── 렌더 포맷 ──────────────────────────────────────────────
+# 기본은 가로 1920x1080. 세로 쇼츠는 나중에 profiles 아래에 추가만 하면 됨.
+render:
+  # 활성 프로파일 (profiles 의 key 중 하나)
+  active_profile: "landscape"
+
+  profiles:
+    landscape:
+      width: 1920
+      height: 1080
+      fps: 30
+      # 유튜브 롱폼 기본
+      orientation: "horizontal"
+
+    # 세로 쇼츠 — 구조만 잡아둠. active_profile 을 "shorts" 로 바꾸면 사용.
+    shorts:
+      width: 1080
+      height: 1920
+      fps: 30
+      orientation: "vertical"
+
+  # 최종 인코딩 옵션 (render.py 에서 사용)
+  video_codec: "libx264"
+  audio_codec: "aac"
+  crf: 18              # 품질 (낮을수록 고화질, 18~23 권장)
+  preset: "medium"
+  pixel_format: "yuv420p"
+
+# ── 전사 (transcribe.py) ──────────────────────────────────
+transcribe:
+  # faster-whisper 모델: tiny / base / small / medium / large-v3
+  model: "small"
+  language: "ko"        # None 으로 두면 자동 감지
+  device: "cpu"         # "cuda" 사용 가능 시 변경
+  compute_type: "int8"  # cpu: int8, gpu: float16
+  # VAD 필터로 무음 구간 제거 (긴 침묵에서의 환각 완화)
+  vad_filter: true
+  beam_size: 5
+
+# ── Anthropic (broll / subtitle 의 AI 판단) ────────────────
+anthropic:
+  model: "claude-sonnet-5"
+  max_tokens: 4096
+  # 판단 기준은 코드가 아니라 이 파일을 읽어 프롬프트에 넣는다.
+  style_guide: "style_guide.md"
+
+# ── B-roll (broll.py) — 상세 스펙은 후속 지시 예정 ─────────
+broll:
+  providers: ["pexels", "pixabay"]
+  per_query_results: 5
+
+# ── 자막 (subtitle.py) — 상세 스펙은 후속 지시 예정 ────────
+subtitle:
+  font: "NanumGothic"
+  # 세부 스타일은 style_guide.md + 후속 스펙에서 결정
