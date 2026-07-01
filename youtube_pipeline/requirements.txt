@@ -5,3 +5,5 @@ anthropic>=0.40.0
 python-dotenv>=1.0.0
 PyYAML>=6.0
 requests>=2.31.0
+# 한국어 띄어쓰기 교정 (transcribe.fix_spacing)
+kiwipiepy>=0.18.0

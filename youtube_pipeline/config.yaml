@@ -39,6 +39,8 @@ transcribe:
   # VAD 필터로 무음 구간 제거 (긴 침묵에서의 환각 완화)
   vad_filter: true
   beam_size: 5
+  # 한국어 띄어쓰기 자동 교정 (Kiwi 형태소 분석기). 원문은 text_raw 로 보존.
+  fix_spacing: true
 
 # ── Anthropic (broll / subtitle 의 AI 판단) ────────────────
 anthropic:

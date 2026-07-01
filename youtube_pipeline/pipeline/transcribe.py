@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -32,6 +33,36 @@ log = common.get_logger("transcribe")
 
 # 문장 종결로 볼 문자 (한국어/영문/기호)
 _SENT_END = tuple(".?!…。！？")
+
+# 띄어쓰기 교정 후 숫자+단위가 "1 층"처럼 쪼개지는 것 되돌리기
+_NUM_UNIT = re.compile(
+    r"(\d)\s+(층|평|년|월|일|시|분|초|원|개|명|호|건|곳|배|번|위|천|만|억|조|%|퍼센트)"
+)
+
+_kiwi = None  # 지연 로드 (모델 로딩이 느려서 필요할 때 한 번만)
+
+
+def _fix_spacing(text: str) -> str:
+    """한국어 띄어쓰기 교정 (Kiwi 형태소 분석기).
+
+    - 빠진 띄어쓰기를 삽입한다 (기존 띄어쓰기는 최대한 보존)
+    - 숫자+단위("1 층")가 쪼개지면 다시 붙인다
+    - kiwipiepy 미설치 시 원문 그대로 반환 (경고 1회)
+    """
+    global _kiwi
+    if _kiwi is None:
+        try:
+            from kiwipiepy import Kiwi
+            _kiwi = Kiwi()
+        except ImportError:
+            log.warning("kiwipiepy 미설치 — 띄어쓰기 교정 생략 (pip install kiwipiepy)")
+            _kiwi = False
+    if not _kiwi:
+        return text
+    fixed = _kiwi.space(text, reset_whitespace=False)
+    fixed = _NUM_UNIT.sub(r"\1\2", fixed)
+    # "1200만 원" → "1200만원" (자막 관례)
+    return re.sub(r"(\d[천만억조]?)\s+(원)", r"\1\2", fixed)
 
 
 def _regroup_into_sentences(segments: list[dict]) -> list[dict]:
@@ -148,6 +179,21 @@ def transcribe(project: common.Project, config: dict) -> dict:
         log.info("  [%6.2f→%6.2f] %s", seg.start, seg.end, seg.text.strip())
 
     sentences = _regroup_into_sentences(segments)
+    if not sentences and info.duration > 1.0:
+        log.warning(
+            "전사 결과가 비어 있습니다 (길이 %.1fs). 일시적 오류일 수 있으니 다시 실행해 보고, "
+            "반복되면 config 의 vad_filter 를 false 로 바꿔 보세요.", info.duration
+        )
+
+    # 한국어 띄어쓰기 교정 — 원문은 text_raw 로 보존
+    if info.language == "ko" and tconf.get("fix_spacing", True):
+        log.info("띄어쓰기 교정 중 (Kiwi)...")
+        for s in sentences:
+            fixed = _fix_spacing(s["text"])
+            if fixed != s["text"]:
+                s["text_raw"] = s["text"]
+                s["text"] = fixed
+                log.info("  교정: %s → %s", s["text_raw"], s["text"])
 
     result = {
         "project": project.name,
