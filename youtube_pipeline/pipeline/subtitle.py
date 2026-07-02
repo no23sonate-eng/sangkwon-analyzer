@@ -465,7 +465,7 @@ for (const d of displays) {
 document.getElementById('save').onclick = async () => {
   const st = document.getElementById('status');
   try {
-    const r = await fetch('/api/save', { method:'POST',
+    const r = await fetch('api/save-subtitle', { method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ project: BOOT.plan.project, cues, displays }) });
     if (!r.ok) throw new Error(await r.text());
@@ -565,7 +565,7 @@ def serve_review(project: common.Project, config: dict, port: int) -> None:
             pass
 
         def do_POST(self):
-            if self.path != "/api/save":
+            if not self.path.endswith(("/api/save", "/api/save-subtitle")):
                 self.send_error(404)
                 return
             length = int(self.headers.get("Content-Length", 0))

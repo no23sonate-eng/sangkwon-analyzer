@@ -541,7 +541,7 @@ document.getElementById('save').onclick = async () => {
   const payload = { project: DATA.project, sections };
   const st = document.getElementById('status');
   try {
-    const r = await fetch('/api/save', { method:'POST',
+    const r = await fetch('api/save', { method:'POST',
       headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
     if (!r.ok) throw new Error(await r.text());
     st.textContent = '✅ selections.json 저장 완료 (' + new Date().toLocaleTimeString() + ')';
@@ -615,7 +615,7 @@ def serve_review(project: common.Project, port: int) -> None:
             pass
 
         def do_POST(self):
-            if self.path != "/api/save":
+            if not self.path.endswith("/api/save"):
                 self.send_error(404)
                 return
             length = int(self.headers.get("Content-Length", 0))

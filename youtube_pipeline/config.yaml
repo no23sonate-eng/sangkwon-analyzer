@@ -92,3 +92,7 @@ subtitle:
   margin_bottom: 110
   # 검토 표 서버 포트
   review_port: 8788
+
+# ── 로컬 웹앱 (app.py) ────────────────────────────────────
+web:
+  port: 8500
