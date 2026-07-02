@@ -19,9 +19,10 @@
 import { ZONES, getUseAllowance, type ZoneKey, type UseKey } from "./use-zones";
 import {
   PROGRAMS, USE_KEYS, PYEONG_M2, DEFAULT_STALL_AREA_M2,
-  DEFAULT_AVG_UNIT_AREA_M2, residentialStallsPerUnit, m2ToPyeong,
+  DEFAULT_AVG_UNIT_AREA_M2, DEFAULT_AVG_ROOM_NET_M2, residentialStallsPerUnit, m2ToPyeong,
 } from "./programs";
 import { solarEnvelope, type SolarResult, type SolarSkipped } from "./solar-setback";
+import { buildFloorStack, type FloorStack, type StackUseInfo } from "./floor-stack";
 
 export interface VolumeOptions {
   useSeoulOrdinance?: boolean; // true(기본): 서울 조례값 / false: 법정 상한
@@ -29,6 +30,7 @@ export interface VolumeOptions {
   farOverride?: number; // 용적률 % 직접 지정
   heightLimitM?: number; // 가로구역별 최고높이 등 (있으면 층수 캡)
   avgUnitAreaM2?: number; // 주거 평균 전용면적
+  avgRoomAreaM2?: number; // 호텔 객실 평균 순면적(전용)
   parkingStallAreaM2?: number; // 대당 주차소요면적
   // 정북 일조 정밀 계산용 대지 형상 (없으면 주거지역 일조 미적용 경고)
   northLotWidthM?: number;
@@ -45,6 +47,8 @@ export interface UseResult {
   gfaAbovePyeong: number;
   netAreaPyeong: number;
   units?: number; // 주거 세대수
+  rooms?: number; // 호텔 객실수
+  floors?: number; // 이 용도가 차지하는 지상 층수
   parkingStalls: number;
   allowance: "allowed" | "conditional" | "notAllowed";
   allowanceNote?: string;
@@ -85,10 +89,12 @@ export interface VolumeStudy {
   };
   solar: SolarResult | SolarSkipped;
   uses: UseResult[];
+  stack: FloorStack; // 층별 적층 계획 + 기준층 편면
   totals: {
     netAreaM2: number; // 전체 순사용면적 합
     netAreaPyeong: number;
     totalUnits: number;
+    totalRooms: number;
   };
   warnings: string[];
 }
@@ -194,13 +200,16 @@ export function computeVolumeStudy(
     }
   }
 
-  // ── 4. 용도 믹스 배분 → 용도별 순면적·세대수·주차 ──
+  // ── 4. 용도 믹스 배분 → 용도별 순면적·세대수·객실수·주차 ──
   const avgUnit = options.avgUnitAreaM2 ?? DEFAULT_AVG_UNIT_AREA_M2;
+  const avgRoom = options.avgRoomAreaM2 ?? DEFAULT_AVG_ROOM_NET_M2;
   const stallArea = options.parkingStallAreaM2 ?? DEFAULT_STALL_AREA_M2;
 
   const uses: UseResult[] = [];
+  const stackUses: StackUseInfo[] = [];
   let totalNetM2 = 0;
   let totalUnits = 0;
+  let totalRooms = 0;
   let totalStalls = 0;
 
   for (const use of USE_KEYS) {
@@ -211,6 +220,7 @@ export function computeVolumeStudy(
     const netArea = gfaAbove * prog.efficiency;
 
     let units: number | undefined;
+    let rooms: number | undefined;
     let stalls: number;
     if (prog.parkingBasis === "unit") {
       // 주거: 세대수 = 전용면적 합 / 평균 전용면적
@@ -220,6 +230,11 @@ export function computeVolumeStudy(
       // 시설면적(지상 연면적) 원단위
       stalls = Math.ceil(gfaAbove / (prog.parkingUnitM2 ?? 100));
     }
+    if (use === "hotel") rooms = Math.floor(netArea / avgRoom);
+
+    // 편면(층당 세대·객실) 산정 모듈 — 옵션 반영
+    const countModuleM2 =
+      use === "residential" ? avgUnit : use === "hotel" ? avgRoom : prog.countModuleM2;
 
     const { allowance, note } = getUseAllowance(zoneKey, use);
     if (allowance === "notAllowed") {
@@ -230,6 +245,7 @@ export function computeVolumeStudy(
 
     totalNetM2 += netArea;
     totalUnits += units ?? 0;
+    totalRooms += rooms ?? 0;
     totalStalls += stalls;
 
     uses.push({
@@ -242,15 +258,37 @@ export function computeVolumeStudy(
       gfaAbovePyeong: round(m2ToPyeong(gfaAbove)),
       netAreaPyeong: round(m2ToPyeong(netArea)),
       units,
+      rooms,
       parkingStalls: stalls,
       allowance,
       allowanceNote: note,
+    });
+
+    stackUses.push({
+      use, label: prog.label, gfaAboveM2: gfaAbove, efficiency: prog.efficiency,
+      floorHeightM: prog.floorHeight, stackOrder: prog.stackOrder,
+      countModuleM2, countLabel: prog.countLabel,
     });
   }
 
   // ── 5. 주차 → 지하 면적·층수 ──
   const parkingAreaM2 = totalStalls * stallArea;
   const basementFloors = footprintM2 > 0 ? Math.ceil(parkingAreaM2 / footprintM2) : 0;
+
+  // ── 6. 층별 적층 계획 + 기준층 편면 → 층수·높이 확정 ──
+  const stack = buildFloorStack({
+    footprintM2, uses: stackUses, groundFloorHeightM,
+    basementFloors, parkingAreaM2, stallAreaM2: stallArea,
+  });
+  // 적층 결과를 지상 층수·건물높이의 확정값으로 사용(스탯카드·표 일관성)
+  if (stack.floorsAbove > 0) {
+    floorsAbove = stack.floorsAbove;
+    buildingHeightM = stack.buildingHeightM;
+  }
+  // 용도별 지상 층수 주입
+  for (const u of uses) {
+    u.floors = stack.typicalFloors.find((t) => t.use === u.use)?.floors ?? 0;
+  }
 
   return {
     input: {
@@ -283,10 +321,12 @@ export function computeVolumeStudy(
     },
     solar,
     uses,
+    stack,
     totals: {
       netAreaM2: round(totalNetM2),
       netAreaPyeong: round(m2ToPyeong(totalNetM2)),
       totalUnits,
+      totalRooms,
     },
     warnings,
   };

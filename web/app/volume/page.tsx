@@ -24,8 +24,25 @@ interface UseResult {
   use: UseKey; label: string; sharePct: number;
   gfaAboveM2: number; netAreaM2: number; netAreaLabel: string;
   gfaAbovePyeong: number; netAreaPyeong: number;
-  units?: number; parkingStalls: number;
+  units?: number; rooms?: number; floors?: number; parkingStalls: number;
   allowance: "allowed" | "conditional" | "notAllowed"; allowanceNote?: string;
+}
+
+interface FloorRow {
+  level: string; n: number; use: string; useLabel: string;
+  plateM2: number; platePyeong: number; netM2: number; netPyeong: number;
+  count?: number; countLabel?: string; stalls?: number;
+  floorHeightM: number; topHeightM: number;
+}
+interface TypicalFloor {
+  use: UseKey; label: string; floors: number;
+  plateM2: number; platePyeong: number; netPerFloorM2: number; netPerFloorPyeong: number;
+  countPerFloor?: number; countLabel?: string; moduleM2?: number; floorHeightM: number;
+}
+interface FloorStack {
+  above: FloorRow[]; below: FloorRow[];
+  floorsAbove: number; floorsBelow: number; buildingHeightM: number;
+  typicalFloors: TypicalFloor[];
 }
 interface Ranking {
   use: UseKey; label: string; netAreaM2: number; netAreaPyeong: number;
@@ -46,7 +63,8 @@ interface Study {
   parking: { requiredStalls: number; stallAreaM2: number; parkingAreaM2: number; basementFloors: number };
   solar: { applied: boolean; floors?: number; gfaM2?: number; buildingHeightM?: number; limitedBySolar?: boolean; reason?: string };
   uses: UseResult[];
-  totals: { netAreaM2: number; netAreaPyeong: number; totalUnits: number };
+  stack: FloorStack;
+  totals: { netAreaM2: number; netAreaPyeong: number; totalUnits: number; totalRooms: number };
   warnings: string[];
 }
 
@@ -56,6 +74,8 @@ const USE_LABELS: Record<UseKey, string> = {
 const USE_COLORS: Record<UseKey, string> = {
   residential: "#6366F1", office: "#0EA5E9", retail: "#F59E0B", hotel: "#EC4899",
 };
+const colorFor = (use: string) =>
+  use === "parking" ? "#94A3B8" : (USE_COLORS[use as UseKey] ?? "#94A3B8");
 const ALLOWANCE_BADGE: Record<string, { label: string; cls: string }> = {
   allowed: { label: "허용", cls: "bg-emerald-50 text-emerald-600" },
   conditional: { label: "조건부", cls: "bg-amber-50 text-amber-600" },
@@ -77,6 +97,7 @@ export default function VolumePage() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [useSeoul, setUseSeoul] = useState(true);
   const [avgUnit, setAvgUnit] = useState("60");
+  const [avgRoom, setAvgRoom] = useState("26");
   const [northWidth, setNorthWidth] = useState("");
   const [lotDepth, setLotDepth] = useState("");
   const [heightLimit, setHeightLimit] = useState("");
@@ -127,6 +148,7 @@ export default function VolumePage() {
           options: {
             useSeoulOrdinance: useSeoul,
             avgUnitAreaM2: parseFloat(avgUnit) || undefined,
+            avgRoomAreaM2: parseFloat(avgRoom) || undefined,
             northLotWidthM: parseFloat(northWidth) || undefined,
             lotDepthM: parseFloat(lotDepth) || undefined,
             heightLimitM: parseFloat(heightLimit) || undefined,
@@ -256,10 +278,17 @@ export default function VolumePage() {
                   <input type="checkbox" checked={useSeoul} onChange={(e) => setUseSeoul(e.target.checked)} />
                   서울시 조례 기준 (해제 시 법정 상한)
                 </label>
-                <div>
-                  <label className="mb-1 block text-[11px] text-gray-500">주거 평균 전용면적 (㎡)</label>
-                  <input type="number" value={avgUnit} onChange={(e) => setAvgUnit(e.target.value)}
-                    className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="mb-1 block text-[11px] text-gray-500">주거 평균 전용 (㎡/세대)</label>
+                    <input type="number" value={avgUnit} onChange={(e) => setAvgUnit(e.target.value)}
+                      className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[11px] text-gray-500">호텔 객실 순면적 (㎡/실)</label>
+                    <input type="number" value={avgRoom} onChange={(e) => setAvgRoom(e.target.value)}
+                      className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
@@ -357,7 +386,7 @@ function Results({ study, ranking, legalRefs }: {
                 <th className="pb-2 font-medium">비율</th>
                 <th className="pb-2 font-medium">지상 연면적</th>
                 <th className="pb-2 font-medium">순사용면적</th>
-                <th className="pb-2 font-medium">세대/주차</th>
+                <th className="pb-2 font-medium">층수·세대/객실·주차</th>
                 <th className="pb-2 font-medium">허용</th>
               </tr>
             </thead>
@@ -379,7 +408,9 @@ function Results({ study, ranking, legalRefs }: {
                       <span className="ml-1 text-[10px] text-gray-400">{u.netAreaLabel}</span>
                     </td>
                     <td className="py-2.5 text-gray-600">
-                      {u.units != null ? `${u.units}세대 · ` : ""}{u.parkingStalls}대
+                      {u.floors != null ? `${u.floors}층 · ` : ""}
+                      {u.units != null ? `${u.units}세대 · ` : u.rooms != null ? `${u.rooms}객실 · ` : ""}
+                      {u.parkingStalls}대
                     </td>
                     <td className="py-2.5">
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${badge.cls}`}>{badge.label}</span>
@@ -393,13 +424,18 @@ function Results({ study, ranking, legalRefs }: {
                 <td className="pt-2.5" colSpan={3}>합계 순사용면적</td>
                 <td className="pt-2.5">{s.totals.netAreaPyeong.toLocaleString()}평</td>
                 <td className="pt-2.5" colSpan={2}>
-                  {s.totals.totalUnits > 0 ? `${s.totals.totalUnits}세대 · ` : ""}{s.parking.requiredStalls}대
+                  {s.totals.totalUnits > 0 ? `${s.totals.totalUnits}세대 · ` : ""}
+                  {s.totals.totalRooms > 0 ? `${s.totals.totalRooms}객실 · ` : ""}
+                  {s.parking.requiredStalls}대
                 </td>
               </tr>
             </tfoot>
           </table>
         </div>
       </div>
+
+      {/* 층별 적층 계획 + 기준층 편면 */}
+      <StackSection stack={s.stack} totals={s.totals} />
 
       {/* 단일용도 랭킹 */}
       <div className="rounded-[20px] bg-white p-5 shadow-card">
@@ -485,6 +521,124 @@ function Results({ study, ranking, legalRefs }: {
         </details>
       )}
     </>
+  );
+}
+
+/* ── 층별 적층 계획 + 기준층 편면 ── */
+function StackSection({ stack, totals }: {
+  stack: FloorStack;
+  totals: { totalUnits: number; totalRooms: number };
+}) {
+  // 지상: 연속 동일용도 층을 밴드로 묶음 (적층 순서상 용도별 1밴드)
+  type Band = { use: string; label: string; from: number; to: number; floors: number; count?: number; countLabel?: string };
+  const bands: Band[] = [];
+  for (const f of stack.above) {
+    const last = bands[bands.length - 1];
+    if (last && last.use === f.use) { last.to = f.n; last.floors++; }
+    else bands.push({ use: f.use, label: f.useLabel, from: f.n, to: f.n, floors: 1, count: f.count, countLabel: f.countLabel });
+  }
+  const maxFloors = Math.max(1, ...bands.map((b) => b.floors), ...stack.below.map(() => 1));
+
+  return (
+    <div className="rounded-[20px] bg-white p-5 shadow-card">
+      <h3 className="mb-1 text-[14px] font-bold text-gray-900">층별 적층 계획</h3>
+      <p className="mb-4 text-[11px] text-gray-400">
+        지상 {stack.floorsAbove}층 · 지하 {stack.floorsBelow}층 · 건물높이 {stack.buildingHeightM}m
+        {totals.totalUnits > 0 && ` · 총 ${totals.totalUnits}세대`}
+        {totals.totalRooms > 0 && ` · 총 ${totals.totalRooms}객실`}
+      </p>
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[240px_1fr]">
+        {/* 적층 다이어그램 (위=최상층) */}
+        <div className="flex flex-col gap-1">
+          {[...bands].reverse().map((b) => (
+            <div key={`a-${b.use}-${b.from}`}
+              className="flex items-center gap-2 rounded-lg px-3 text-white"
+              style={{
+                background: colorFor(b.use),
+                minHeight: 34,
+                height: 30 + (b.floors / maxFloors) * 70,
+              }}>
+              <span className="text-[11px] font-bold">
+                {b.from === b.to ? `${b.from}F` : `${b.from}–${b.to}F`}
+              </span>
+              <span className="ml-auto text-right text-[11px] font-semibold">
+                {b.label} · {b.floors}개층
+                {b.count != null && <div className="text-[10px] font-normal opacity-90">층당 {b.count}{b.countLabel}</div>}
+              </span>
+            </div>
+          ))}
+          {stack.below.map((f) => (
+            <div key={f.level}
+              className="flex items-center gap-2 rounded-lg bg-slate-400 px-3 text-white"
+              style={{ minHeight: 26 }}>
+              <span className="text-[11px] font-bold">{f.level}</span>
+              <span className="ml-auto text-[11px] font-semibold">주차 · {f.stalls}대</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 기준층 편면 카드 */}
+        <div>
+          <div className="mb-2 text-[12px] font-bold text-gray-700">기준층 편면 (층당 계획)</div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {stack.typicalFloors.map((t) => (
+              <div key={t.use} className="rounded-[14px] border border-gray-100 p-3">
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-[13px] font-bold text-gray-800">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: colorFor(t.use) }} />
+                    {t.label}
+                  </span>
+                  <span className="text-[11px] text-gray-400">{t.floors}개층 · 층고 {t.floorHeightM}m</span>
+                </div>
+                <div className="mb-2 text-[11px] text-gray-500">
+                  기준층 {t.platePyeong}평 · 순 {t.netPerFloorPyeong}평
+                  {t.countPerFloor != null && (
+                    <span className="font-semibold text-gray-700">
+                      {" · 층당 "}{t.countPerFloor}{t.countLabel}
+                      <span className="font-normal text-gray-400">(모듈 {t.moduleM2}㎡)</span>
+                    </span>
+                  )}
+                </div>
+                {t.countPerFloor != null
+                  ? <FloorPlanSchematic count={t.countPerFloor} color={colorFor(t.use)} />
+                  : <div className="rounded-md bg-gray-50 py-3 text-center text-[10px] text-gray-400">
+                      개방형 임대 평면 (기준층 순 {t.netPerFloorPyeong}평)
+                    </div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* 기준층 편면 스키매틱 — 중복도(double-loaded) 세대·객실 배치 개략도 */
+function FloorPlanSchematic({ count, color }: { count: number; color: string }) {
+  const shown = Math.min(count, 16);
+  const perSide = Math.ceil(shown / 2);
+  const W = 260, H = 78, pad = 4, corr = 14;
+  const cellW = (W - pad * 2) / perSide;
+  const roomH = (H - corr) / 2 - pad;
+  const cells = (row: 0 | 1) =>
+    Array.from({ length: row === 0 ? Math.ceil(shown / 2) : Math.floor(shown / 2) }, (_, i) => {
+      const y = row === 0 ? pad : pad + roomH + corr;
+      return <rect key={`${row}-${i}`} x={pad + i * cellW + 1} y={y} width={cellW - 2} height={roomH}
+        rx={2} fill={color} opacity={0.82} />;
+    });
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 84 }}>
+      <rect x={0.5} y={0.5} width={W - 1} height={H - 1} rx={4} fill="none" stroke="#E2E8F0" />
+      {cells(0)}
+      {/* 복도 */}
+      <rect x={pad} y={pad + roomH} width={W - pad * 2} height={corr} fill="#F1F5F9" />
+      <text x={W / 2} y={pad + roomH + corr / 2 + 3} textAnchor="middle" fontSize="8" fill="#94A3B8">복도</text>
+      {cells(1)}
+      {count > shown && (
+        <text x={W - 6} y={H - 5} textAnchor="end" fontSize="9" fontWeight="700" fill={color}>×{count}</text>
+      )}
+    </svg>
   );
 }
 

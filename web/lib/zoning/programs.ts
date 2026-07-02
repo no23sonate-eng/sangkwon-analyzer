@@ -22,24 +22,30 @@ export interface ProgramDef {
   parkingBasis: "unit" | "area";
   parkingUnitM2?: number; // area 방식일 때 ㎡/대
   netAreaLabel: string; // 순면적 표기 라벨
+  // 편면(기준층 평면) 산정용: 순면적을 이 모듈로 나눠 층당 세대·객실 수 산출
+  countLabel?: string; // "세대" | "객실"
+  countModuleM2?: number; // 세대/객실 1개당 순면적(㎡) 기본값
+  stackOrder: number; // 적층 순서(작을수록 저층). 리테일→오피스→호텔→주거
 }
 
 export const PROGRAMS: Record<UseKey, ProgramDef> = {
   residential: {
     key: "residential", label: "주거", efficiency: 0.75, floorHeight: 2.9,
     parkingBasis: "unit", netAreaLabel: "전용면적",
+    countLabel: "세대", countModuleM2: 60, stackOrder: 4,
   },
   office: {
     key: "office", label: "오피스", efficiency: 0.72, floorHeight: 4.0,
-    parkingBasis: "area", parkingUnitM2: 100, netAreaLabel: "임대면적",
+    parkingBasis: "area", parkingUnitM2: 100, netAreaLabel: "임대면적", stackOrder: 2,
   },
   retail: {
     key: "retail", label: "리테일", efficiency: 0.80, floorHeight: 4.5,
-    parkingBasis: "area", parkingUnitM2: 134, netAreaLabel: "임대면적",
+    parkingBasis: "area", parkingUnitM2: 134, netAreaLabel: "임대면적", stackOrder: 1,
   },
   hotel: {
     key: "hotel", label: "호텔", efficiency: 0.65, floorHeight: 3.3,
     parkingBasis: "area", parkingUnitM2: 200, netAreaLabel: "객실부문 순면적",
+    countLabel: "객실", countModuleM2: 26, stackOrder: 3,
   },
 };
 
@@ -67,6 +73,9 @@ export function residentialStallsPerUnit(avgUnitAreaM2: number): number {
 
 // 주거 세대 산정용 기본 평균 전용면적(㎡)
 export const DEFAULT_AVG_UNIT_AREA_M2 = 60;
+
+// 호텔 객실 1실당 순면적(전용, ㎡) — 편면 객실수 산정 기본값. 비즈니스호텔 표준.
+export const DEFAULT_AVG_ROOM_NET_M2 = 26;
 
 export const m2ToPyeong = (m2: number) => m2 / PYEONG_M2;
 export const pyeongToM2 = (py: number) => py * PYEONG_M2;
