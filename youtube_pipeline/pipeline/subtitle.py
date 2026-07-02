@@ -72,14 +72,21 @@ def plan_ai(config: dict, sentences: list[dict]) -> list[dict]:
         "다음은 영상 전체 나레이션이다 (문장 번호 포함):\n\n"
         f"{numbered}\n\n"
         "영상 **전체 맥락**에서 어떤 문장이 핵심 주장이고 어떤 문장이 부연인지 판단해,\n"
-        "문장별 자막 스타일을 정하라.\n"
+        "① 문장별 자막 스타일(cues)과 ② 대형 키워드 타이포(displays)를 정하라.\n\n"
+        "cues — 모든 문장에 대해:\n"
         f"- size: 핵심 주장은 \"large\", 부연은 \"normal\"\n"
-        f"- color: 강조 단어에 적용할 색. 기본 강조색 {sconf.get('accent_color', '#FFD84D')} 를 쓰되,"
+        f"- color: 강조 단어에 적용할 색. 기본 강조색 {sconf.get('accent_color', '#FAFF2E')} 를 쓰되,"
         " 가이드가 허용하는 범위에서만 바꾼다\n"
         "- emphasis: 강조할 단어들(원문 그대로, 수치·지명·브랜드명·공간 용어만, 문장당 최대 2개, 없으면 빈 배열)\n"
         "- reason: 판단 이유 한 줄 (한국어)\n\n"
-        "모든 문장에 대해 아래 JSON 배열 형식으로만 답하라 (설명 금지):\n"
-        '[{"id": 0, "size": "normal", "color": "#FFD84D", "emphasis": ["단어"], "reason": "..."}, ...]'
+        "displays — 영상 전체에서 2~4개만 (가이드 '계층 2' 대형 키워드 타이포 기준):\n"
+        "- sentence_id: 타이포를 띄울 문장 번호\n"
+        "- text: 화면을 채울 짧은 구문 (10자 이내, 질문형/핵심 개념)\n"
+        "- style: 질문·핵심 구문 = \"headline\", 외국어 개념어·수치 = \"concept\"\n"
+        "- reason: 판단 이유 한 줄\n\n"
+        "아래 JSON 형식으로만 답하라 (설명 금지):\n"
+        '{"cues": [{"id": 0, "size": "normal", "color": "#FAFF2E", "emphasis": [], "reason": "..."}],\n'
+        ' "displays": [{"sentence_id": 2, "text": "진짜 질문?", "style": "headline", "reason": "..."}]}'
     )
     resp = client.messages.create(
         model=aconf.get("model", "claude-sonnet-4-6"),
@@ -89,13 +96,16 @@ def plan_ai(config: dict, sentences: list[dict]) -> list[dict]:
     )
     text = next(b.text for b in resp.content if b.type == "text")
     text = re.sub(r"^```(json)?|```$", "", text.strip(), flags=re.M).strip()
-    items = {it["id"]: it for it in json.loads(text)}
+    data = json.loads(text)
+    if isinstance(data, list):  # 배열만 온 경우 방어
+        data = {"cues": data, "displays": []}
+    items = {it["id"]: it for it in data.get("cues", [])}
 
     cues = []
     for s in sentences:
         it = items.get(s["id"], {})
         cues.append(_make_cue(s, it, sconf))
-    return cues
+    return cues, _make_displays(data.get("displays", []), sentences)
 
 
 def plan_mock(config: dict, sentences: list[dict]) -> list[dict]:
@@ -115,7 +125,37 @@ def plan_mock(config: dict, sentences: list[dict]) -> list[dict]:
               "emphasis": emphasis,
               "reason": "mock: " + ("수치/핵심 표현 포함 → 핵심 주장" if core else "부연 설명")}
         cues.append(_make_cue(s, it, sconf))
-    return cues
+    # displays 휴리스틱: large 문장의 강조어/의문형을 타이포로 (최대 3개)
+    raw_displays = []
+    for c in cues:
+        if c["size"] != "large" or len(raw_displays) >= 3:
+            continue
+        txt = c["emphasis"][0] if c["emphasis"] else c["text"][:10]
+        style = "concept" if re.search(r"[0-9A-Za-z%]", txt) else "headline"
+        raw_displays.append({"sentence_id": c["id"], "text": txt,
+                             "style": style, "reason": "mock: 핵심 문장 키워드"})
+    return cues, _make_displays(raw_displays, sentences)
+
+
+def _make_displays(raw: list[dict], sentences: list[dict]) -> list[dict]:
+    """AI/mock 이 고른 displays 를 타임코드가 붙은 형태로 변환."""
+    by_id = {s["id"]: s for s in sentences}
+    out = []
+    for i, d in enumerate(raw):
+        sent = by_id.get(d.get("sentence_id"))
+        if not sent or not d.get("text"):
+            continue
+        start = sent["start"] + 0.15
+        out.append({
+            "id": i, "sentence_id": sent["id"],
+            "start": round(start, 3),
+            "end": round(min(sent["end"], start + 3.0), 3),
+            "text": str(d["text"])[:14],
+            "style": d.get("style", "headline"),
+            "enabled": True,
+            "reason": d.get("reason", ""),
+        })
+    return out
 
 
 def _make_cue(s: dict, it: dict, sconf: dict) -> dict:
@@ -142,7 +182,7 @@ def _words_in_range(segments: list[dict], start: float, end: float) -> list[dict
 
 
 def split_long_cues(cues: list[dict], segments: list[dict],
-                    max_sec: float, max_chars_2lines: int) -> list[dict]:
+                    max_sec: float, max_chars: int) -> list[dict]:
     """긴 문장 큐를 단어 타임스탬프 기준으로 여러 큐로 나눈다.
 
     - 기준 초과(시간 또는 2줄 분량 글자수) 시에만 분할
@@ -153,7 +193,7 @@ def split_long_cues(cues: list[dict], segments: list[dict],
     out: list[dict] = []
     for c in cues:
         dur = c["end"] - c["start"]
-        if dur <= max_sec and len(c["text"]) <= max_chars_2lines:
+        if dur <= max_sec and len(c["text"]) <= max_chars:
             out.append(c)
             continue
         words = _words_in_range(segments, c["start"], c["end"])
@@ -161,7 +201,7 @@ def split_long_cues(cues: list[dict], segments: list[dict],
             out.append(c)
             continue
 
-        n_chunks = max(int(dur // max_sec) + 1, (len(c["text"]) // max_chars_2lines) + 1)
+        n_chunks = max(int(dur // max_sec) + 1, (len(c["text"]) - 1) // max_chars + 1)
         target = len(words) / n_chunks
         # 분할점: 목표 지점 근처에서 단어 간 간격(침묵)이 가장 큰 곳
         cuts = []
@@ -229,13 +269,14 @@ def _ts(sec: float) -> str:
 
 
 def build_ass(config: dict, cues: list[dict], out_path: Path,
-              segments: list[dict] | None = None) -> None:
+              segments: list[dict] | None = None,
+              displays: list[dict] | None = None) -> None:
     sconf = config.get("subtitle", {})
     if segments:
         cues = split_long_cues(
             cues, segments,
             max_sec=float(sconf.get("max_cue_sec", 5.0)),
-            max_chars_2lines=int(sconf.get("max_chars_per_line", 22)) * 2,
+            max_chars=int(sconf.get("max_chars_per_line", 20)),
         )
     profile = common.get_render_profile(config)
     w, h = profile["width"], profile["height"]
@@ -246,7 +287,12 @@ def build_ass(config: dict, cues: list[dict], out_path: Path,
     size_l = round(int(sconf.get("size_large", 76)) * scale)
     margin_v = round(int(sconf.get("margin_bottom", 110)) * scale)
     base = _hex_to_ass(sconf.get("base_color", "#FFFFFF"))
-    maxc = int(sconf.get("max_chars_per_line", 22))
+    accent = _hex_to_ass(sconf.get("accent_color", "#FAFF2E"))
+    maxc = int(sconf.get("max_chars_per_line", 20))
+    fam_h = sconf.get("display_headline_family", "A2Z 1 Thin")
+    fam_c = sconf.get("display_concept_family", "A2Z 5 Medium")
+    size_h = round(int(sconf.get("display_headline_size", 120)) * scale)
+    size_c = round(int(sconf.get("display_concept_size", 88)) * scale)
 
     # Alignment 2 = 하단 중앙. Outline+Shadow 로 가독성 확보(반투명 검정 테두리).
     header = f"""[Script Info]
@@ -260,6 +306,8 @@ ScaledBorderAndShadow: yes
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Normal,{fam_n},{size_n},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
 Style: Large,{fam_l},{size_l},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
+Style: Headline,{fam_h},{size_h},{base},{base},&H82000000,&HC8000000,0,0,0,0,100,100,1,0,1,1,1,5,60,60,0,1
+Style: Concept,{fam_c},{size_c},{accent},{accent},&H82000000,&HC8000000,0,0,0,0,100,100,1,0,1,1.5,1,5,60,60,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -276,8 +324,17 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         style = "Large" if c.get("size") == "large" else "Normal"
         lines.append(f"Dialogue: 0,{_ts(c['start'])},{_ts(c['end'])},{style},,0,0,0,,{text}")
 
+    n_disp = 0
+    for d in displays or []:
+        if not d.get("enabled", True):
+            continue
+        style = "Concept" if d.get("style") == "concept" else "Headline"
+        lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
+                     f"{{\\fad(250,250)}}{d['text']}")
+        n_disp += 1
+
     out_path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")
-    log.info("ASS 생성: %s (%d개 자막)", out_path, len(lines))
+    log.info("ASS 생성: %s (자막 %d개 + 타이포 %d개)", out_path, len(lines) - n_disp, n_disp)
 
 
 # ══════════════════════════════════════════════════════════
@@ -323,11 +380,17 @@ subtitle_plan.json 이 갱신되고 <b>subtitle.ass 가 재생성</b>되며, 수
 <table><thead><tr>
   <th>#</th><th>시간</th><th>문장 / 적용 스타일 미리보기</th><th>크기</th><th>강조색</th><th>강조 단어 (쉼표 구분)</th><th>AI 판단 이유</th>
 </tr></thead><tbody id="rows"></tbody></table>
+<h2 style="font-size:16px;margin-top:28px">대형 키워드 타이포 (화면 중앙 디스플레이)</h2>
+<div class="sub">채널 시그니처 — 핵심 순간에 화면을 채우는 타이포. 텍스트/스타일 수정, 체크 해제로 제외.</div>
+<table><thead><tr>
+  <th>사용</th><th>문장</th><th>타이포 텍스트</th><th>스타일</th><th>미리보기</th><th>AI 판단 이유</th>
+</tr></thead><tbody id="drows"></tbody></table>
 <div id="savebar"><button id="save">확정 저장 (plan + ASS 재생성)</button><span id="status"></span></div>
 <script>
 const BOOT = __DATA__;
 const CONF = BOOT.conf;
 const cues = BOOT.plan.cues.map(c => ({...c, emphasis: [...(c.emphasis||[])]}));
+const displays = (BOOT.plan.displays||[]).map(d => ({...d}));
 const orig = JSON.parse(JSON.stringify(cues));
 const tbody = document.getElementById('rows');
 
@@ -369,12 +432,42 @@ for (const c of cues) {
   tbody.appendChild(tr);
 }
 
+const drows = document.getElementById('drows');
+function dPreview(d) {
+  const isC = d.style === 'concept';
+  const col = isC ? '#FAFF2E' : '#fff';
+  const w = isC ? 600 : 200;
+  return `<div style="background:#000;border-radius:8px;padding:14px;text-align:center">
+    <span style="font-family:'Pretendard',sans-serif;font-weight:${w};font-size:26px;color:${col}">${esc(d.text)}</span></div>`;
+}
+for (const d of displays) {
+  const tr = document.createElement('tr');
+  const sent = cues.find(c => String(c.id) === String(d.sentence_id));
+  tr.innerHTML = `
+    <td><input type="checkbox" data-f="enabled" ${d.enabled ? 'checked' : ''}></td>
+    <td style="max-width:200px">${esc(sent ? sent.text : '#'+d.sentence_id)}</td>
+    <td><input type="text" data-f="text" value="${esc(d.text)}" maxlength="14"></td>
+    <td><select data-f="style">
+        <option value="headline" ${d.style==='headline'?'selected':''}>headline (얇은 화이트)</option>
+        <option value="concept" ${d.style==='concept'?'selected':''}>concept (볼드 옐로)</option></select></td>
+    <td><div id="dpv${d.id}">${dPreview(d)}</div></td>
+    <td class="reason">${esc(d.reason||'')}</td>`;
+  tr.addEventListener('input', e => {
+    const f = e.target.dataset.f;
+    if (f === 'enabled') d.enabled = e.target.checked;
+    if (f === 'text') d.text = e.target.value;
+    if (f === 'style') d.style = e.target.value;
+    document.getElementById('dpv'+d.id).innerHTML = dPreview(d);
+  });
+  drows.appendChild(tr);
+}
+
 document.getElementById('save').onclick = async () => {
   const st = document.getElementById('status');
   try {
     const r = await fetch('/api/save', { method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ project: BOOT.plan.project, cues }) });
+      body: JSON.stringify({ project: BOOT.plan.project, cues, displays }) });
     if (!r.ok) throw new Error(await r.text());
     const res = await r.json();
     st.textContent = `✅ 저장 완료 — ASS 재생성, 피드백 ${res.feedback_added}건 기록 (${new Date().toLocaleTimeString()})`;
@@ -425,6 +518,35 @@ def _append_feedback(project: common.Project, old_cues: list[dict], new_cues: li
     return added
 
 
+def _append_display_feedback(project: common.Project, old: list[dict], new: list[dict]) -> int:
+    fb_path = project.path / FEEDBACK_JSON
+    feedback = common.read_json(fb_path) if fb_path.exists() else []
+    old_by_id = {d["id"]: d for d in old}
+    added = 0
+    for d in new:
+        o = old_by_id.get(d["id"])
+        if not o:
+            continue
+        changed = {k: {"ai": o.get(k), "user": d.get(k)}
+                   for k in ("text", "style", "enabled") if o.get(k) != d.get(k)}
+        if not changed:
+            continue
+        feedback.append({
+            "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "stage": "subtitle",
+            "kind": "display",
+            "project": project.name,
+            "sentence_id": d.get("sentence_id"),
+            "sentence_text": d.get("text", ""),
+            "ai_reason": o.get("reason", ""),
+            "changes": changed,
+        })
+        added += 1
+    if added:
+        common.write_json(fb_path, feedback)
+    return added
+
+
 def serve_review(project: common.Project, config: dict, port: int) -> None:
     proj_dir = str(project.path)
     # 검토 페이지 미리보기에서 폰트를 쓸 수 있게 assets 링크
@@ -451,12 +573,16 @@ def serve_review(project: common.Project, config: dict, port: int) -> None:
             plan_path = project.path / PLAN_JSON
             plan = common.read_json(plan_path)
             added = _append_feedback(project, plan["cues"], payload["cues"])
+            added += _append_display_feedback(project, plan.get("displays", []),
+                                              payload.get("displays", []))
             plan["cues"] = payload["cues"]
+            plan["displays"] = payload.get("displays", plan.get("displays", []))
             plan["user_confirmed"] = True
             common.write_json(plan_path, plan)
             transcript = common.read_json(project.transcript_path)
             build_ass(config, plan["cues"], project.path / ASS_FILE,
-                      segments=transcript.get("segments"))
+                      segments=transcript.get("segments"),
+                      displays=plan["displays"])
             body = json.dumps({"ok": True, "feedback_added": added}).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -483,14 +609,16 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
     sentences = transcript["sentences"]
 
     if mock:
-        cues = plan_mock(config, sentences)
+        cues, displays = plan_mock(config, sentences)
     else:
         try:
             common.load_env()
-            cues = plan_ai(config, sentences)
+            cues, displays = plan_ai(config, sentences)
         except Exception as e:
             log.warning("AI 스타일링 실패(%s) — 휴리스틱 폴백", e)
-            cues = plan_mock(config, sentences)
+            cues, displays = plan_mock(config, sentences)
+    if not config.get("subtitle", {}).get("displays_enabled", True):
+        displays = []
 
     plan = {
         "project": project.name,
@@ -499,14 +627,18 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
         "font": config.get("subtitle", {}).get("font_file"),
         "user_confirmed": False,
         "cues": cues,
+        "displays": displays,
     }
     common.write_json(project.path / PLAN_JSON, plan)
     for c in cues:
         log.info("  #%d [%s] 강조=%s — %s", c["id"], c["size"], c["emphasis"], c["reason"])
+    for d in displays:
+        log.info("  타이포 #%d [%s] \"%s\" — %s", d["id"], d["style"], d["text"], d["reason"])
 
     build_review_html(project, plan, config)
     build_ass(config, cues, project.path / ASS_FILE,
-              segments=transcript.get("segments"))  # 초안 ASS (확정 저장 시 재생성)
+              segments=transcript.get("segments"),
+              displays=displays)  # 초안 ASS (확정 저장 시 재생성)
     return plan
 
 

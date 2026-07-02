@@ -78,8 +78,16 @@ subtitle:
   accent_color: "#FAFF2E"
   # 자막 한 개 최대 노출 시간(초) — 초과하는 긴 문장은 단어 타임스탬프로 분할
   max_cue_sec: 5.0
-  # 한 줄 최대 글자수(공백 포함) — 초과 시 의미 단위에서 줄바꿈, 최대 2줄
-  max_chars_per_line: 22
+  # 자막 한 개 최대 글자수(공백 포함) — 항상 한 줄, 넘으면 여러 자막으로 분할
+  max_chars_per_line: 20
+  # ── 대형 키워드 타이포 (채널 시그니처 — 화면 중앙 디스플레이) ──
+  displays_enabled: true
+  # headline: 질문/핵심 구문 — 초대형 얇은 화이트
+  display_headline_family: "A2Z 1 Thin"
+  display_headline_size: 120
+  # concept: 외국어 개념어·수치 — 볼드 옐로
+  display_concept_family: "A2Z 5 Medium"
+  display_concept_size: 88
   # 하단 안전영역: 화면 아래에서 이만큼 띄움 (px, 1080p 기준)
   margin_bottom: 110
   # 검토 표 서버 포트
