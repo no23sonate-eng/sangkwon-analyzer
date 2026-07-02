@@ -63,7 +63,20 @@ broll:
   # 검토 페이지 서버 포트
   review_port: 8787
 
-# ── 자막 (subtitle.py) — 상세 스펙은 후속 지시 예정 ────────
+# ── 자막 (subtitle.py) ─────────────────────────────────────
 subtitle:
-  font: "NanumGothic"
-  # 세부 스타일은 style_guide.md + 후속 스펙에서 결정
+  # 프로젝트에 포함된 폰트 (assets/fonts/) — ffmpeg 굽기 시 fontsdir 로 지정
+  font_family: "Pretendard"
+  font_file: "assets/fonts/Pretendard-Bold.otf"
+  # 크기(px, 1080p 기준): AI가 문장별로 normal/large 중 선택
+  size_normal: 60
+  size_large: 76
+  # 기본 본문색 / 강조색 (강조색은 브랜드 컬러 1색만 — style_guide)
+  base_color: "#FFFFFF"
+  accent_color: "#FFD84D"
+  # 한 줄 최대 글자수(공백 포함) — 초과 시 의미 단위에서 줄바꿈, 최대 2줄
+  max_chars_per_line: 22
+  # 하단 안전영역: 화면 아래에서 이만큼 띄움 (px, 1080p 기준)
+  margin_bottom: 110
+  # 검토 표 서버 포트
+  review_port: 8788
