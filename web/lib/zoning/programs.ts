@@ -26,26 +26,32 @@ export interface ProgramDef {
   countLabel?: string; // "세대" | "객실"
   countModuleM2?: number; // 세대/객실 1개당 순면적(㎡) 기본값
   stackOrder: number; // 적층 순서(작을수록 저층). 리테일→오피스→호텔→주거
+  // 바닥면적 구성: 코어(계단·EV·화장실·PS) 비율. 나머지 = 공용(복도) + 전용/임대.
+  //   전용/임대(efficiency) + 코어(coreRatio) + 공용복도 = 1.0
+  coreRatio: number;
 }
 
+// 층 바닥면적 구성 = 전용/임대(efficiency) + 코어(coreRatio) + 공용복도(나머지)
 export const PROGRAMS: Record<UseKey, ProgramDef> = {
   residential: {
     key: "residential", label: "주거", efficiency: 0.75, floorHeight: 2.9,
     parkingBasis: "unit", netAreaLabel: "전용면적",
-    countLabel: "세대", countModuleM2: 60, stackOrder: 4,
+    countLabel: "세대", countModuleM2: 60, stackOrder: 4, coreRatio: 0.13,
   },
   office: {
     key: "office", label: "오피스", efficiency: 0.72, floorHeight: 4.0,
     parkingBasis: "area", parkingUnitM2: 100, netAreaLabel: "임대면적", stackOrder: 2,
+    coreRatio: 0.16,
   },
   retail: {
     key: "retail", label: "리테일", efficiency: 0.80, floorHeight: 4.5,
     parkingBasis: "area", parkingUnitM2: 134, netAreaLabel: "임대면적", stackOrder: 1,
+    coreRatio: 0.10,
   },
   hotel: {
     key: "hotel", label: "호텔", efficiency: 0.65, floorHeight: 3.3,
     parkingBasis: "area", parkingUnitM2: 200, netAreaLabel: "객실부문 순면적",
-    countLabel: "객실", countModuleM2: 26, stackOrder: 3,
+    countLabel: "객실", countModuleM2: 26, stackOrder: 3, coreRatio: 0.15,
   },
 };
 

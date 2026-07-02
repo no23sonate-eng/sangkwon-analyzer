@@ -266,7 +266,7 @@ export function computeVolumeStudy(
 
     stackUses.push({
       use, label: prog.label, gfaAboveM2: gfaAbove, efficiency: prog.efficiency,
-      floorHeightM: prog.floorHeight, stackOrder: prog.stackOrder,
+      coreRatio: prog.coreRatio, floorHeightM: prog.floorHeight, stackOrder: prog.stackOrder,
       countModuleM2, countLabel: prog.countLabel,
     });
   }
@@ -276,9 +276,12 @@ export function computeVolumeStudy(
   const basementFloors = footprintM2 > 0 ? Math.ceil(parkingAreaM2 / footprintM2) : 0;
 
   // ── 6. 층별 적층 계획 + 기준층 편면 → 층수·높이 확정 ──
+  // 정북 일조 봉투가 계산됐으면 층별 바닥면적(계단식 후퇴)을 그대로 적층에 사용
+  const solarPlates = solar.applied ? solar.floorFootprints : undefined;
   const stack = buildFloorStack({
     footprintM2, uses: stackUses, groundFloorHeightM,
     basementFloors, parkingAreaM2, stallAreaM2: stallArea,
+    floorPlatesM2: solarPlates,
   });
   // 적층 결과를 지상 층수·건물높이의 확정값으로 사용(스탯카드·표 일관성)
   if (stack.floorsAbove > 0) {

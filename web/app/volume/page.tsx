@@ -31,17 +31,19 @@ interface UseResult {
 interface FloorRow {
   level: string; n: number; use: string; useLabel: string;
   plateM2: number; platePyeong: number; netM2: number; netPyeong: number;
+  coreM2: number; serviceM2: number;
   count?: number; countLabel?: string; stalls?: number;
   floorHeightM: number; topHeightM: number;
 }
 interface TypicalFloor {
   use: UseKey; label: string; floors: number;
   plateM2: number; platePyeong: number; netPerFloorM2: number; netPerFloorPyeong: number;
+  coreM2: number; serviceM2: number; efficiency: number; coreRatio: number;
   countPerFloor?: number; countLabel?: string; moduleM2?: number; floorHeightM: number;
 }
 interface FloorStack {
   above: FloorRow[]; below: FloorRow[];
-  floorsAbove: number; floorsBelow: number; buildingHeightM: number;
+  floorsAbove: number; floorsBelow: number; buildingHeightM: number; stepped: boolean;
   typicalFloors: TypicalFloor[];
 }
 interface Ranking {
@@ -529,7 +531,9 @@ function StackSection({ stack, totals }: {
   stack: FloorStack;
   totals: { totalUnits: number; totalRooms: number };
 }) {
-  // 지상: 연속 동일용도 층을 밴드로 묶음 (적층 순서상 용도별 1밴드)
+  const maxPlate = Math.max(1, ...stack.above.map((f) => f.plateM2));
+
+  // 지상: 연속 동일용도 층을 밴드로 묶음 (균일 적층일 때)
   type Band = { use: string; label: string; from: number; to: number; floors: number; count?: number; countLabel?: string };
   const bands: Band[] = [];
   for (const f of stack.above) {
@@ -537,7 +541,7 @@ function StackSection({ stack, totals }: {
     if (last && last.use === f.use) { last.to = f.n; last.floors++; }
     else bands.push({ use: f.use, label: f.useLabel, from: f.n, to: f.n, floors: 1, count: f.count, countLabel: f.countLabel });
   }
-  const maxFloors = Math.max(1, ...bands.map((b) => b.floors), ...stack.below.map(() => 1));
+  const maxFloors = Math.max(1, ...bands.map((b) => b.floors));
 
   return (
     <div className="rounded-[20px] bg-white p-5 shadow-card">
@@ -546,32 +550,40 @@ function StackSection({ stack, totals }: {
         지상 {stack.floorsAbove}층 · 지하 {stack.floorsBelow}층 · 건물높이 {stack.buildingHeightM}m
         {totals.totalUnits > 0 && ` · 총 ${totals.totalUnits}세대`}
         {totals.totalRooms > 0 && ` · 총 ${totals.totalRooms}객실`}
+        {stack.stepped && <span className="ml-1 rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-600">정북 일조 사선 후퇴 반영</span>}
       </p>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[240px_1fr]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[250px_1fr]">
         {/* 적층 다이어그램 (위=최상층) */}
         <div className="flex flex-col gap-1">
-          {[...bands].reverse().map((b) => (
-            <div key={`a-${b.use}-${b.from}`}
-              className="flex items-center gap-2 rounded-lg px-3 text-white"
-              style={{
-                background: colorFor(b.use),
-                minHeight: 34,
-                height: 30 + (b.floors / maxFloors) * 70,
-              }}>
-              <span className="text-[11px] font-bold">
-                {b.from === b.to ? `${b.from}F` : `${b.from}–${b.to}F`}
-              </span>
-              <span className="ml-auto text-right text-[11px] font-semibold">
-                {b.label} · {b.floors}개층
-                {b.count != null && <div className="text-[10px] font-normal opacity-90">층당 {b.count}{b.countLabel}</div>}
-              </span>
-            </div>
-          ))}
+          {stack.stepped
+            // 사선 후퇴: 층별 바닥면적 비례 폭으로 계단식 표현
+            ? [...stack.above].reverse().map((f) => (
+                <div key={f.level} className="flex items-center gap-2" title={`${f.plateM2}㎡`}>
+                  <span className="w-7 shrink-0 text-right text-[10px] font-bold text-gray-400">{f.level}</span>
+                  <div className="flex h-[26px] items-center rounded-r-md px-2 text-white"
+                    style={{ background: colorFor(f.use), width: `${40 + (f.plateM2 / maxPlate) * 60}%` }}>
+                    <span className="truncate text-[10px] font-semibold">
+                      {f.useLabel} {f.platePyeong}평{f.count != null && ` · ${f.count}${f.countLabel}`}
+                    </span>
+                  </div>
+                </div>
+              ))
+            // 균일 적층: 용도 밴드
+            : [...bands].reverse().map((b) => (
+                <div key={`a-${b.use}-${b.from}`}
+                  className="flex items-center gap-2 rounded-lg px-3 text-white"
+                  style={{ background: colorFor(b.use), minHeight: 34, height: 30 + (b.floors / maxFloors) * 70 }}>
+                  <span className="text-[11px] font-bold">{b.from === b.to ? `${b.from}F` : `${b.from}–${b.to}F`}</span>
+                  <span className="ml-auto text-right text-[11px] font-semibold">
+                    {b.label} · {b.floors}개층
+                    {b.count != null && <div className="text-[10px] font-normal opacity-90">층당 {b.count}{b.countLabel}</div>}
+                  </span>
+                </div>
+              ))}
           {stack.below.map((f) => (
             <div key={f.level}
-              className="flex items-center gap-2 rounded-lg bg-slate-400 px-3 text-white"
-              style={{ minHeight: 26 }}>
+              className="flex items-center gap-2 rounded-lg bg-slate-400 px-3 text-white" style={{ minHeight: 26 }}>
               <span className="text-[11px] font-bold">{f.level}</span>
               <span className="ml-auto text-[11px] font-semibold">주차 · {f.stalls}대</span>
             </div>
@@ -580,7 +592,7 @@ function StackSection({ stack, totals }: {
 
         {/* 기준층 편면 카드 */}
         <div>
-          <div className="mb-2 text-[12px] font-bold text-gray-700">기준층 편면 (층당 계획)</div>
+          <div className="mb-2 text-[12px] font-bold text-gray-700">기준층 편면 · 코어/전용 구성</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {stack.typicalFloors.map((t) => (
               <div key={t.use} className="rounded-[14px] border border-gray-100 p-3">
@@ -591,20 +603,17 @@ function StackSection({ stack, totals }: {
                   </span>
                   <span className="text-[11px] text-gray-400">{t.floors}개층 · 층고 {t.floorHeightM}m</span>
                 </div>
-                <div className="mb-2 text-[11px] text-gray-500">
-                  기준층 {t.platePyeong}평 · 순 {t.netPerFloorPyeong}평
+                {/* 코어/공용/전용 구성 바 */}
+                <CompositionBar t={t} color={colorFor(t.use)} />
+                <div className="mb-2 mt-1 text-[10px] text-gray-500">
+                  전용/임대 {t.netPerFloorPyeong}평({Math.round(t.efficiency * 100)}%)
+                  {" · 공용 "}{Math.round(t.serviceM2 / 3.3058)}평
+                  {" · 코어 "}{Math.round(t.coreM2 / 3.3058)}평({Math.round(t.coreRatio * 100)}%)
                   {t.countPerFloor != null && (
-                    <span className="font-semibold text-gray-700">
-                      {" · 층당 "}{t.countPerFloor}{t.countLabel}
-                      <span className="font-normal text-gray-400">(모듈 {t.moduleM2}㎡)</span>
-                    </span>
+                    <span className="font-semibold text-gray-700"> · 층당 {t.countPerFloor}{t.countLabel}<span className="font-normal text-gray-400">(모듈 {t.moduleM2}㎡)</span></span>
                   )}
                 </div>
-                {t.countPerFloor != null
-                  ? <FloorPlanSchematic count={t.countPerFloor} color={colorFor(t.use)} />
-                  : <div className="rounded-md bg-gray-50 py-3 text-center text-[10px] text-gray-400">
-                      개방형 임대 평면 (기준층 순 {t.netPerFloorPyeong}평)
-                    </div>}
+                <FloorPlanSchematic count={t.countPerFloor} coreRatio={t.coreRatio} color={colorFor(t.use)} />
               </div>
             ))}
           </div>
@@ -614,30 +623,58 @@ function StackSection({ stack, totals }: {
   );
 }
 
-/* 기준층 편면 스키매틱 — 중복도(double-loaded) 세대·객실 배치 개략도 */
-function FloorPlanSchematic({ count, color }: { count: number; color: string }) {
-  const shown = Math.min(count, 16);
-  const perSide = Math.ceil(shown / 2);
-  const W = 260, H = 78, pad = 4, corr = 14;
-  const cellW = (W - pad * 2) / perSide;
-  const roomH = (H - corr) / 2 - pad;
-  const cells = (row: 0 | 1) =>
-    Array.from({ length: row === 0 ? Math.ceil(shown / 2) : Math.floor(shown / 2) }, (_, i) => {
-      const y = row === 0 ? pad : pad + roomH + corr;
-      return <rect key={`${row}-${i}`} x={pad + i * cellW + 1} y={y} width={cellW - 2} height={roomH}
-        rx={2} fill={color} opacity={0.82} />;
-    });
+/* 코어/공용/전용 구성 스택 바 */
+function CompositionBar({ t, color }: { t: TypicalFloor; color: string }) {
+  const netPct = t.efficiency * 100;
+  const corePct = t.coreRatio * 100;
+  const svcPct = Math.max(0, 100 - netPct - corePct);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 84 }}>
+    <div className="flex h-3.5 w-full overflow-hidden rounded-full">
+      <div style={{ width: `${netPct}%`, background: color }} title={`전용/임대 ${Math.round(netPct)}%`} />
+      <div style={{ width: `${svcPct}%`, background: "#CBD5E1" }} title={`공용 ${Math.round(svcPct)}%`} />
+      <div style={{ width: `${corePct}%`, background: "#475569" }} title={`코어 ${Math.round(corePct)}%`} />
+    </div>
+  );
+}
+
+/* 기준층 편면 스키매틱 — 중앙 코어 + 중복도(double-loaded) 세대·객실/개방형 */
+function FloorPlanSchematic({ count, coreRatio, color }: { count?: number; coreRatio: number; color: string }) {
+  const W = 260, H = 82, pad = 4, corr = 14;
+  const coreW = Math.max(20, Math.min(70, Math.sqrt(coreRatio) * 150)); // 코어 폭(면적감 반영)
+  const coreX = (W - coreW) / 2;
+  const roomH = (H - corr) / 2 - pad;
+  const usableW = W - pad * 2;
+
+  const rooms = (row: 0 | 1) => {
+    if (count == null) return null;
+    const n = row === 0 ? Math.ceil(Math.min(count, 16) / 2) : Math.floor(Math.min(count, 16) / 2);
+    const cellW = usableW / Math.max(n, 1);
+    const y = row === 0 ? pad : pad + roomH + corr;
+    return Array.from({ length: n }, (_, i) => (
+      <rect key={`${row}-${i}`} x={pad + i * cellW + 1} y={y} width={cellW - 2} height={roomH} rx={2} fill={color} opacity={0.82} />
+    ));
+  };
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 88 }}>
       <rect x={0.5} y={0.5} width={W - 1} height={H - 1} rx={4} fill="none" stroke="#E2E8F0" />
-      {cells(0)}
-      {/* 복도 */}
-      <rect x={pad} y={pad + roomH} width={W - pad * 2} height={corr} fill="#F1F5F9" />
-      <text x={W / 2} y={pad + roomH + corr / 2 + 3} textAnchor="middle" fontSize="8" fill="#94A3B8">복도</text>
-      {cells(1)}
-      {count > shown && (
-        <text x={W - 6} y={H - 5} textAnchor="end" fontSize="9" fontWeight="700" fill={color}>×{count}</text>
+      {count != null ? (
+        <>
+          {rooms(0)}
+          <rect x={pad} y={pad + roomH} width={usableW} height={corr} fill="#F1F5F9" />
+          <text x={pad + 20} y={pad + roomH + corr / 2 + 3} textAnchor="middle" fontSize="7.5" fill="#94A3B8">복도</text>
+          {rooms(1)}
+          {count > 16 && <text x={W - 6} y={H - 5} textAnchor="end" fontSize="9" fontWeight="700" fill={color}>×{count}</text>}
+        </>
+      ) : (
+        <>
+          <rect x={pad} y={pad} width={usableW} height={H - pad * 2} rx={3} fill={color} opacity={0.14} />
+          <text x={W * 0.28} y={H / 2 + 3} textAnchor="middle" fontSize="8.5" fill={color} fontWeight="600">개방형 임대</text>
+        </>
       )}
+      {/* 중앙 코어 */}
+      <rect x={coreX} y={pad + 2} width={coreW} height={H - pad * 2 - 4} rx={2} fill="#475569" />
+      <text x={W / 2} y={H / 2 + 3} textAnchor="middle" fontSize="8" fill="#fff" fontWeight="700">코어</text>
     </svg>
   );
 }
