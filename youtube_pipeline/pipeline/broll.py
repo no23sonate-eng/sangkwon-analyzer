@@ -662,7 +662,10 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
     client = None
     if not mock:
         common.load_env()
-        client = common.anthropic_client()
+        try:
+            client = common.anthropic_client()
+        except Exception as e:
+            log.warning("Anthropic 클라이언트 생성 실패(%s) — 키워드는 매핑 표 폴백, 톤 큐레이션 생략", e)
     for sec in sections:
         if not sec["broll"]:
             continue
