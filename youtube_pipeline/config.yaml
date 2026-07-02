@@ -69,11 +69,12 @@ subtitle:
   font_family: "Pretendard"
   font_file: "assets/fonts/Pretendard-Bold.otf"
   # 크기(px, 1080p 기준): AI가 문장별로 normal/large 중 선택
-  size_normal: 60
-  size_large: 76
-  # 기본 본문색 / 강조색 (강조색은 브랜드 컬러 1색만 — style_guide)
+  # 채널 레퍼런스 실측 반영 — 얇고 작게, 화면에 떠 있는 느낌
+  size_normal: 46
+  size_large: 60
+  # 기본 본문색 / 강조색 — 강조는 채널 시그니처 레몬 옐로 (기존 영상 실측값)
   base_color: "#FFFFFF"
-  accent_color: "#FFD84D"
+  accent_color: "#FAFF2E"
   # 자막 한 개 최대 노출 시간(초) — 초과하는 긴 문장은 단어 타임스탬프로 분할
   max_cue_sec: 5.0
   # 한 줄 최대 글자수(공백 포함) — 초과 시 의미 단위에서 줄바꿈, 최대 2줄

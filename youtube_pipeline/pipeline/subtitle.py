@@ -257,8 +257,8 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Normal,{family},{size_n},{base},{base},&H64000000,&H96000000,-1,0,0,0,100,100,0,0,1,3,1,2,60,60,{margin_v},1
-Style: Large,{family},{size_l},{base},{base},&H64000000,&H96000000,-1,0,0,0,100,100,0,0,1,3,1,2,60,60,{margin_v},1
+Style: Normal,{family},{size_n},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
+Style: Large,{family},{size_l},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
