@@ -66,8 +66,9 @@ broll:
 # ── 자막 (subtitle.py) ─────────────────────────────────────
 subtitle:
   # 프로젝트에 포함된 폰트 (assets/fonts/) — ffmpeg 굽기 시 fontsdir 로 지정
-  font_family: "Pretendard"
-  font_file: "assets/fonts/Pretendard-Bold.otf"
+  # 채널 실사용 폰트: 에이투지체(A2Z). 본문은 Regular, 핵심(large)은 얇은 Light
+  font_family_normal: "A2Z 4 Regular"
+  font_family_large: "A2Z 3 Light"
   # 크기(px, 1080p 기준): AI가 문장별로 normal/large 중 선택
   # 채널 레퍼런스 실측 반영 — 얇고 작게, 화면에 떠 있는 느낌
   size_normal: 46

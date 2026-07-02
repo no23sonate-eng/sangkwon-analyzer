@@ -240,7 +240,8 @@ def build_ass(config: dict, cues: list[dict], out_path: Path,
     profile = common.get_render_profile(config)
     w, h = profile["width"], profile["height"]
     scale = h / 1080  # 설정값은 1080p 기준
-    family = sconf.get("font_family", "Pretendard")
+    fam_n = sconf.get("font_family_normal") or sconf.get("font_family", "Pretendard")
+    fam_l = sconf.get("font_family_large") or fam_n
     size_n = round(int(sconf.get("size_normal", 60)) * scale)
     size_l = round(int(sconf.get("size_large", 76)) * scale)
     margin_v = round(int(sconf.get("margin_bottom", 110)) * scale)
@@ -257,8 +258,8 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Normal,{family},{size_n},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
-Style: Large,{family},{size_l},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
+Style: Normal,{fam_n},{size_n},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
+Style: Large,{fam_l},{size_l},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
