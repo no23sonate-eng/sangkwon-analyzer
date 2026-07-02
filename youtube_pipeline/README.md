@@ -4,10 +4,10 @@
 중간 결과는 JSON 으로 저장돼 다음 단계가 이어받는다.
 
 ```
-① transcribe.py  Whisper 전사        → transcript.json
-② broll.py       B-roll 검색/검토     → broll.json     (후속 스펙)
-③ subtitle.py    자막 스타일링        → subtitle.json  (후속 스펙)
-④ render.py      ffmpeg 최종 합성      → output.mp4     (후속 스펙)
+① transcribe.py  Whisper 전사 + 띄어쓰기 교정 → transcript.json
+② broll.py       B-roll 검색/검토(HTML)       → broll.json, selections.json, feedback_log.json
+③ subtitle.py    AI 자막 스타일링/검토(HTML)   → subtitle_plan.json, subtitle.ass
+④ render.py      B-roll 오버레이+자막 굽기     → output.mp4
 ```
 
 ## 설치
@@ -45,10 +45,15 @@ cp ~/내영상.mp4 youtube_pipeline/projects/내영상/
 
 # 2) 단계별 실행 (각각 독립)
 python youtube_pipeline/pipeline/transcribe.py 내영상
-python youtube_pipeline/pipeline/broll.py      내영상   # 후속 스펙
-python youtube_pipeline/pipeline/subtitle.py   내영상   # 후속 스펙
-python youtube_pipeline/pipeline/render.py     내영상   # 후속 스펙
+python youtube_pipeline/pipeline/broll.py      내영상   # → http://localhost:8787/review.html 에서 후보 선택
+python youtube_pipeline/pipeline/subtitle.py   내영상   # → http://localhost:8788/subtitle_review.html 에서 확정
+python youtube_pipeline/pipeline/render.py     내영상   # → projects/내영상/output.mp4
 ```
+
+- 검토 페이지에서 저장해야 다음 단계가 그 선택을 사용한다
+  (B-roll: selections.json / 자막: subtitle.ass 재생성).
+- AI 제안과 다른 선택·수정은 feedback_log.json 에 자동 누적된다.
+- `--mock` 플래그: API 키/네트워크 없이 전체 흐름 데모.
 
 `transcribe.py 내영상` 처럼 영상명만 줘도 되고, 폴더 경로를 직접 줘도 된다.
 
