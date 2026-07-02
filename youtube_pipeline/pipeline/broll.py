@@ -187,13 +187,92 @@ def _parse_mapping_table(mapping_md: str) -> list[tuple[str, str]]:
     return pairs
 
 
-def extract_keywords_mock(section: dict, mapping_md: str) -> dict:
+def _tone_modifiers(criteria_md: str) -> list[str]:
+    """style_guide ① 섹션의 톤 수식어(백틱 목록)를 파싱."""
+    m = re.search(r"톤 수식어[^\n]*\n\s*`([^\n]+)`", criteria_md)
+    if not m:
+        return []
+    return [w.strip(" `") for w in m.group(1).split("`,") if w.strip(" `")]
+
+
+def extract_keywords_mock(section: dict, mapping_md: str, criteria_md: str = "") -> dict:
     """API 없이 매핑 표 매칭만으로 키워드 생성 (데모/오프라인용)."""
     pairs = _parse_mapping_table(mapping_md)
     found = [en for ko, en in pairs if ko and ko in section["text"]]
     if not found:
         found = ["city street aerial", "urban neighborhood walking"]
-    return {"suitable": True, "keywords": found[:3], "reason": "mock: 매핑 표 매칭"}
+    # style_guide 톤 수식어 조합 (감각적인 소스 우선)
+    mods = _tone_modifiers(criteria_md)
+    if mods:
+        found = [f"{kw} {mods[i % len(mods)]}" for i, kw in enumerate(found)]
+    return {"suitable": True, "keywords": found[:3], "reason": "mock: 매핑 표 매칭 + 톤 수식어"}
+
+
+# ══════════════════════════════════════════════════════════
+# 2.5. 비전 큐레이션 — AI가 후보 화면을 직접 보고 톤앤매너 점수
+# ══════════════════════════════════════════════════════════
+
+def _thumb_for(c: dict, project_path: Path) -> Path | None:
+    """후보의 대표 프레임(jpg) 경로. 영상이면 1초 지점 프레임 추출."""
+    if not c.get("file"):
+        return None
+    src = project_path / c["file"]
+    if c["type"] == "photo":
+        return src
+    thumb_dir = project_path / CANDIDATES_DIR / "thumbs"
+    thumb_dir.mkdir(parents=True, exist_ok=True)
+    thumb = thumb_dir / (Path(c["file"]).stem + ".jpg")
+    if not thumb.exists():
+        r = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "1",
+                            "-i", str(src), "-frames:v", "1",
+                            "-vf", "scale=640:-2", "-update", "1", str(thumb)])
+        if r.returncode != 0 or not thumb.exists():
+            return None
+    return thumb
+
+
+def curate_candidates_ai(client, model: str, section: dict, cands: list[dict],
+                         criteria: str, project_path: Path) -> list[dict]:
+    """다운로드된 후보의 대표 프레임을 Claude 비전으로 평가해 톤 점수순 정렬.
+
+    style_guide 의 '톤앤매너' 기준으로 1~10점. 실패 시 원래 순서 유지.
+    """
+    import base64
+    content = []
+    idx_map = []
+    for i, c in enumerate(cands):
+        thumb = _thumb_for(c, project_path)
+        if not thumb:
+            continue
+        data = base64.standard_b64encode(thumb.read_bytes()).decode()
+        content.append({"type": "image",
+                        "source": {"type": "base64", "media_type": "image/jpeg", "data": data}})
+        idx_map.append(i)
+    if not content:
+        return cands
+    content.append({"type": "text", "text": (
+        f"위 이미지들은 B-roll 후보 {len(idx_map)}개의 대표 프레임이다 (순서대로 1번부터).\n"
+        f"발화 맥락: \"{section['text']}\"\n\n"
+        "스타일 가이드의 '톤앤매너' 기준(시네마틱·필름 감성·자연광, 기업 홍보 스톡 배제)으로\n"
+        "각 후보를 1~10점으로 평가하라. 아래 JSON 배열로만 답하라:\n"
+        '[{"index": 1, "tone_score": 8, "reason": "한 줄 근거"}, ...]')})
+
+    resp = client.messages.create(
+        model=model, max_tokens=500,
+        system=f"너는 영상 톤앤매너 큐레이터다. 판단 기준:\n\n{criteria}",
+        messages=[{"role": "user", "content": content}],
+    )
+    text = next(b.text for b in resp.content if b.type == "text")
+    text = re.sub(r"^```(json)?|```$", "", text.strip(), flags=re.M).strip()
+    for item in json.loads(text):
+        i = item.get("index", 0) - 1
+        if 0 <= i < len(idx_map):
+            cands[idx_map[i]]["tone_score"] = item.get("tone_score")
+            cands[idx_map[i]]["tone_reason"] = item.get("reason", "")
+    ordered = sorted(cands, key=lambda c: -(c.get("tone_score") or 0))
+    log.info("구간 %d 톤 큐레이션: %s", section["id"],
+             ", ".join(f"{c.get('tone_score', '?')}점" for c in ordered))
+    return ordered
 
 
 # ══════════════════════════════════════════════════════════
@@ -415,8 +494,9 @@ for (const sec of DATA.sections) {
       const media = c.type === 'video'
         ? `<video src="${c.file}" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" controls></video>`
         : `<img src="${c.file}">`;
+      if (c.tone_reason) card.title = '톤 평가: ' + c.tone_reason;
       card.innerHTML = media +
-        `<div class="meta"><span>${c.source}</span><span class="badge ${c.type}">${c.type}</span></div>` +
+        `<div class="meta"><span>${c.source}${c.tone_score ? ' · 톤 '+c.tone_score+'/10' : ''}</span><span class="badge ${c.type}">${c.type}</span></div>` +
         `<button class="pick">후보 ${i+1} 선택${i===0?' (AI 1순위)':''}</button>`;
       card.querySelector('.pick').onclick = () => select(sec.id, i);
       wrap.appendChild(card);
@@ -588,13 +668,13 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
             continue
         try:
             if mock:
-                result = extract_keywords_mock(sec, mapping)
+                result = extract_keywords_mock(sec, mapping, criteria)
             else:
                 result = extract_keywords_ai(client, aconf.get("model", "claude-sonnet-4-6"),
                                              sec, full_text, criteria, mapping)
         except Exception as e:
             log.warning("구간 %d 키워드 추출 실패(%s) — 매핑 표 폴백", sec["id"], e)
-            result = extract_keywords_mock(sec, mapping)
+            result = extract_keywords_mock(sec, mapping, criteria)
         if not result.get("suitable", True):
             log.info("구간 %d: AI 판단 부적합 → 얼굴 유지 (%s)", sec["id"], result.get("reason", ""))
             sec["broll"] = False
@@ -620,7 +700,16 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
                 sec["broll"] = False
                 continue
             download_candidates(sec, cands, cand_dir)
-            sec["candidates"] = [c for c in cands if c.get("file")]
+            cands = [c for c in cands if c.get("file")]
+            # 비전 큐레이션: AI가 후보 프레임을 보고 톤앤매너 점수순 정렬
+            if client and cands:
+                try:
+                    cands = curate_candidates_ai(
+                        client, aconf.get("model", "claude-sonnet-4-6"),
+                        sec, cands, criteria, project.path)
+                except Exception as e:
+                    log.warning("구간 %d 톤 큐레이션 실패(%s) — 검색 순서 유지", sec["id"], e)
+            sec["candidates"] = cands
 
     broll = {
         "project": project.name,
