@@ -1,0 +1,501 @@
+"use client";
+
+/* ── 건축 볼륨 스터디 페이지 ──
+   대지 주소·면적·용도지역 + 용도 믹스를 입력 → 서울시 조례 기준 법규 검토
+   (건폐율·용적률·주차·일조)를 반영한 볼륨과 "어떤 용도가 면적이 가장 잘
+   나오는지" 랭킹을 산출한다. 초기 검토용 개략치.
+*/
+
+import { useEffect, useMemo, useState } from "react";
+import {
+  Building2, Ruler, Car, Sun, AlertTriangle, Layers, Trophy, Loader2,
+} from "lucide-react";
+
+type UseKey = "residential" | "office" | "retail" | "hotel";
+
+interface ZoneOpt {
+  key: string; name: string; group: string;
+  seoulBCR: number; seoulFAR: number;
+  legalMaxBCR: number; legalMaxFAR: number;
+  solarRegulated: boolean; note?: string;
+}
+
+interface UseResult {
+  use: UseKey; label: string; sharePct: number;
+  gfaAboveM2: number; netAreaM2: number; netAreaLabel: string;
+  gfaAbovePyeong: number; netAreaPyeong: number;
+  units?: number; parkingStalls: number;
+  allowance: "allowed" | "conditional" | "notAllowed"; allowanceNote?: string;
+}
+interface Ranking {
+  use: UseKey; label: string; netAreaM2: number; netAreaPyeong: number;
+  gfaAboveM2: number; units?: number; parkingStalls: number;
+  allowance: "allowed" | "conditional" | "notAllowed"; efficiency: number;
+}
+interface Study {
+  input: { siteAreaM2: number; siteAreaPyeong: number; zoneName: string; mix: Record<string, number> };
+  regulation: {
+    appliedBCR: number; appliedFAR: number; basis: string;
+    legalMaxBCR: number; legalMaxFAR: number; seoulBCR: number; seoulFAR: number;
+  };
+  massing: {
+    footprintM2: number; maxGfaAboveM2: number; effectiveGfaAboveM2: number;
+    floorsAbove: number; buildingHeightM: number;
+    footprintPyeong: number; maxGfaAbovePyeong: number; effectiveGfaAbovePyeong: number;
+  };
+  parking: { requiredStalls: number; stallAreaM2: number; parkingAreaM2: number; basementFloors: number };
+  solar: { applied: boolean; floors?: number; gfaM2?: number; buildingHeightM?: number; limitedBySolar?: boolean; reason?: string };
+  uses: UseResult[];
+  totals: { netAreaM2: number; netAreaPyeong: number; totalUnits: number };
+  warnings: string[];
+}
+
+const USE_LABELS: Record<UseKey, string> = {
+  residential: "주거", office: "오피스", retail: "리테일", hotel: "호텔",
+};
+const USE_COLORS: Record<UseKey, string> = {
+  residential: "#6366F1", office: "#0EA5E9", retail: "#F59E0B", hotel: "#EC4899",
+};
+const ALLOWANCE_BADGE: Record<string, { label: string; cls: string }> = {
+  allowed: { label: "허용", cls: "bg-emerald-50 text-emerald-600" },
+  conditional: { label: "조건부", cls: "bg-amber-50 text-amber-600" },
+  notAllowed: { label: "불허", cls: "bg-rose-50 text-rose-600" },
+};
+
+const GROUP_LABEL: Record<string, string> = {
+  residential: "주거지역", commercial: "상업지역", industrial: "공업지역", green: "녹지지역",
+};
+
+export default function VolumePage() {
+  const [zones, setZones] = useState<ZoneOpt[]>([]);
+  const [address, setAddress] = useState("");
+  const [areaM2, setAreaM2] = useState("660");
+  const [zoneKey, setZoneKey] = useState("res2_general");
+  const [mix, setMix] = useState<Record<UseKey, number>>({
+    residential: 100, office: 0, retail: 0, hotel: 0,
+  });
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [useSeoul, setUseSeoul] = useState(true);
+  const [avgUnit, setAvgUnit] = useState("60");
+  const [northWidth, setNorthWidth] = useState("");
+  const [lotDepth, setLotDepth] = useState("");
+  const [heightLimit, setHeightLimit] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{
+    study: Study; ranking: Ranking[];
+    legal_refs?: { topic: string; basis: string; detail: string; verified: boolean }[];
+    disclaimer?: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/volume")
+      .then((r) => r.json())
+      .then((d) => setZones(d.zones ?? []))
+      .catch(() => {});
+  }, []);
+
+  const selectedZone = useMemo(() => zones.find((z) => z.key === zoneKey), [zones, zoneKey]);
+  const mixSum = (Object.values(mix) as number[]).reduce((s, v) => s + v, 0);
+
+  const groupedZones = useMemo(() => {
+    const g: Record<string, ZoneOpt[]> = {};
+    for (const z of zones) (g[z.group] ??= []).push(z);
+    return g;
+  }, [zones]);
+
+  function setMixValue(use: UseKey, val: number) {
+    setMix((m) => ({ ...m, [use]: Math.max(0, Math.min(100, val)) }));
+  }
+
+  async function compute() {
+    setError(null);
+    const site = parseFloat(areaM2);
+    if (!site || site <= 0) { setError("대지면적을 입력하세요."); return; }
+    if (mixSum <= 0) { setError("용도 믹스를 1개 이상 지정하세요."); return; }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/volume", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          siteAreaM2: site,
+          zoneKey,
+          mix,
+          address: address || undefined,
+          options: {
+            useSeoulOrdinance: useSeoul,
+            avgUnitAreaM2: parseFloat(avgUnit) || undefined,
+            northLotWidthM: parseFloat(northWidth) || undefined,
+            lotDepthM: parseFloat(lotDepth) || undefined,
+            heightLimitM: parseFloat(heightLimit) || undefined,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error ?? "산출 실패"); setResult(null); }
+      else setResult(data);
+    } catch {
+      setError("네트워크 오류");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="ml-[60px] min-h-full bg-surface px-6 py-8 lg:px-10">
+      <div className="mx-auto max-w-[1100px]">
+        {/* ── 헤더 ── */}
+        <header className="mb-6 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 text-white">
+            <Building2 size={22} />
+          </div>
+          <div>
+            <h1 className="text-[22px] font-extrabold text-gray-900">건축 볼륨 스터디</h1>
+            <p className="text-[13px] text-gray-500">
+              대지·용도지역·용도 믹스 → 서울시 조례 기준 법규 검토(건폐율·용적률·주차·일조) 볼륨 산출
+            </p>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr]">
+          {/* ── 입력 폼 ── */}
+          <section className="rounded-[20px] bg-white p-5 shadow-card">
+            <h2 className="mb-4 text-[15px] font-bold text-gray-900">대지 정보</h2>
+
+            <label className="mb-1 block text-[12px] font-medium text-gray-500">주소 (선택)</label>
+            <input
+              value={address} onChange={(e) => setAddress(e.target.value)}
+              placeholder="예: 서울 성동구 성수동2가 000-0"
+              className="mb-4 w-full rounded-[14px] border border-gray-200 px-3 py-2.5 text-[13px] outline-none focus:border-primary-500"
+            />
+
+            <label className="mb-1 block text-[12px] font-medium text-gray-500">대지면적 (㎡)</label>
+            <div className="mb-4 flex items-center gap-2">
+              <input
+                type="number" value={areaM2} onChange={(e) => setAreaM2(e.target.value)}
+                className="w-full rounded-[14px] border border-gray-200 px-3 py-2.5 text-[13px] outline-none focus:border-primary-500"
+              />
+              <span className="whitespace-nowrap text-[12px] text-gray-400">
+                ≈ {areaM2 ? Math.round(parseFloat(areaM2) / 3.3058).toLocaleString() : 0}평
+              </span>
+            </div>
+
+            <label className="mb-1 block text-[12px] font-medium text-gray-500">용도지역</label>
+            <select
+              value={zoneKey} onChange={(e) => setZoneKey(e.target.value)}
+              className="mb-2 w-full rounded-[14px] border border-gray-200 bg-white px-3 py-2.5 text-[13px] outline-none focus:border-primary-500"
+            >
+              {Object.entries(groupedZones).map(([group, zs]) => (
+                <optgroup key={group} label={GROUP_LABEL[group] ?? group}>
+                  {zs.map((z) => (
+                    <option key={z.key} value={z.key}>{z.name}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            {selectedZone && (
+              <p className="mb-4 text-[11px] text-gray-400">
+                서울조례 건폐율 {selectedZone.seoulBCR}% · 용적률 {selectedZone.seoulFAR}%
+                {selectedZone.solarRegulated && " · 정북일조 적용"}
+                {selectedZone.note && ` · ${selectedZone.note}`}
+              </p>
+            )}
+
+            {/* ── 용도 믹스 ── */}
+            <div className="mb-2 flex items-center justify-between">
+              <label className="text-[12px] font-medium text-gray-500">용도 믹스</label>
+              <span className={`text-[12px] font-bold ${mixSum === 100 ? "text-emerald-600" : "text-amber-600"}`}>
+                합계 {mixSum}%
+              </span>
+            </div>
+            {(Object.keys(USE_LABELS) as UseKey[]).map((use) => (
+              <div key={use} className="mb-2.5">
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-[12px] font-medium text-gray-700">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: USE_COLORS[use] }} />
+                    {USE_LABELS[use]}
+                  </span>
+                  <span className="text-[12px] font-semibold text-gray-600">{mix[use]}%</span>
+                </div>
+                <input
+                  type="range" min={0} max={100} step={5} value={mix[use]}
+                  onChange={(e) => setMixValue(use, parseInt(e.target.value))}
+                  className="w-full accent-primary-600"
+                />
+              </div>
+            ))}
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              {([
+                { label: "주거 100", v: { residential: 100, office: 0, retail: 0, hotel: 0 } },
+                { label: "오피스 100", v: { residential: 0, office: 100, retail: 0, hotel: 0 } },
+                { label: "주상복합", v: { residential: 60, office: 0, retail: 20, hotel: 0 } },
+                { label: "오피스+리테일", v: { residential: 0, office: 80, retail: 20, hotel: 0 } },
+              ] as { label: string; v: Record<UseKey, number> }[]).map((preset) => (
+                <button
+                  key={preset.label}
+                  onClick={() => setMix(preset.v)}
+                  className="rounded-full border border-gray-200 px-2.5 py-1 text-[11px] text-gray-600 hover:border-primary-400 hover:text-primary-600"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {/* ── 고급 옵션 ── */}
+            <button
+              onClick={() => setShowAdvanced((v) => !v)}
+              className="mb-2 text-[12px] font-medium text-primary-600"
+            >
+              {showAdvanced ? "− 고급 옵션 닫기" : "+ 고급 옵션 (일조·높이·기준)"}
+            </button>
+            {showAdvanced && (
+              <div className="mb-4 space-y-3 rounded-[14px] bg-gray-50 p-3">
+                <label className="flex items-center gap-2 text-[12px] text-gray-600">
+                  <input type="checkbox" checked={useSeoul} onChange={(e) => setUseSeoul(e.target.checked)} />
+                  서울시 조례 기준 (해제 시 법정 상한)
+                </label>
+                <div>
+                  <label className="mb-1 block text-[11px] text-gray-500">주거 평균 전용면적 (㎡)</label>
+                  <input type="number" value={avgUnit} onChange={(e) => setAvgUnit(e.target.value)}
+                    className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="mb-1 block text-[11px] text-gray-500">북측 폭 (m, 일조용)</label>
+                    <input type="number" value={northWidth} onChange={(e) => setNorthWidth(e.target.value)}
+                      placeholder="선택" className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[11px] text-gray-500">남북 깊이 (m)</label>
+                    <input type="number" value={lotDepth} onChange={(e) => setLotDepth(e.target.value)}
+                      placeholder="선택" className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1 block text-[11px] text-gray-500">높이제한 (m, 가로구역 등)</label>
+                  <input type="number" value={heightLimit} onChange={(e) => setHeightLimit(e.target.value)}
+                    placeholder="선택" className="w-full rounded-lg border border-gray-200 px-2.5 py-2 text-[12px] outline-none focus:border-primary-500" />
+                </div>
+                <p className="text-[10px] leading-relaxed text-gray-400">
+                  주거지역 정북일조는 대지 형상(북측 폭·남북 깊이) 입력 시에만 연면적 감소를 반영합니다.
+                </p>
+              </div>
+            )}
+
+            <button
+              onClick={compute} disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded-[14px] bg-primary-600 py-3 text-[14px] font-bold text-white transition hover:bg-primary-700 disabled:opacity-60"
+            >
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <Ruler size={16} />}
+              볼륨 산출
+            </button>
+            {error && <p className="mt-2 text-[12px] text-rose-500">{error}</p>}
+          </section>
+
+          {/* ── 결과 ── */}
+          <section className="space-y-5">
+            {!result && (
+              <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-[20px] border border-dashed border-gray-200 bg-white/50 text-center">
+                <Building2 size={40} className="mb-3 text-gray-300" />
+                <p className="text-[14px] font-medium text-gray-400">대지 정보를 입력하고 볼륨을 산출하세요</p>
+                <p className="mt-1 text-[12px] text-gray-300">용도별 면적·주차·층수와 최적 용도 랭킹을 확인할 수 있습니다</p>
+              </div>
+            )}
+            {result && <Results study={result.study} ranking={result.ranking} legalRefs={result.legal_refs} />}
+          </section>
+        </div>
+
+        {/* ── 면책 ── */}
+        <p className="mx-auto mt-8 max-w-[900px] text-center text-[11px] leading-relaxed text-gray-400">
+          ⚠ 본 산출은 서울시 도시계획·주차장 조례 적용값 기준의 <b>초기 검토용 개략치</b>입니다.
+          지구단위계획·가로구역별 최고높이·인동거리·대지안의공지 세부·주차 완화·문화재/고도지구 등
+          개별 규제는 반영되지 않으며, 실제 인허가 도서를 대체하지 않습니다. 최종 검토는 건축사와 협의하세요.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ── 결과 렌더 ── */
+function Results({ study, ranking, legalRefs }: {
+  study: Study; ranking: Ranking[];
+  legalRefs?: { topic: string; basis: string; detail: string; verified: boolean }[];
+}) {
+  const s = study;
+  const maxNet = Math.max(...ranking.map((r) => r.netAreaPyeong), 1);
+
+  return (
+    <>
+      {/* 규제 + 매싱 요약 */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Stat label="건폐율" value={`${s.regulation.appliedBCR}%`} sub={s.regulation.basis} />
+        <Stat label="용적률" value={`${s.regulation.appliedFAR}%`}
+          sub={s.regulation.basis === "직접 지정" ? "직접 지정" : `법정상한 ${s.regulation.legalMaxFAR}%`} />
+        <Stat label="건축면적" value={`${s.massing.footprintPyeong.toLocaleString()}평`} sub={`${s.massing.footprintM2.toLocaleString()}㎡`} />
+        <Stat label="지상 연면적" value={`${s.massing.effectiveGfaAbovePyeong.toLocaleString()}평`}
+          sub={s.massing.effectiveGfaAboveM2 < s.massing.maxGfaAboveM2 ? `상한 ${s.massing.maxGfaAbovePyeong}평` : `${s.massing.effectiveGfaAboveM2.toLocaleString()}㎡`} />
+      </div>
+
+      {/* 층수/높이/주차 */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Stat label="예상 지상층수" value={`${s.massing.floorsAbove}층`} icon={<Layers size={13} />} />
+        <Stat label="건물 높이" value={`${s.massing.buildingHeightM}m`} icon={<Building2 size={13} />} />
+        <Stat label="필요 주차" value={`${s.parking.requiredStalls}대`} sub={`${s.parking.parkingAreaM2.toLocaleString()}㎡`} icon={<Car size={13} />} />
+        <Stat label="주차 지하층" value={`B${s.parking.basementFloors}`} sub={`대당 ${s.parking.stallAreaM2}㎡`} icon={<Layers size={13} />} />
+      </div>
+
+      {/* 용도별 결과 */}
+      <div className="rounded-[20px] bg-white p-5 shadow-card">
+        <h3 className="mb-3 text-[14px] font-bold text-gray-900">용도별 면적 산출</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12px]">
+            <thead>
+              <tr className="border-b border-gray-100 text-left text-gray-400">
+                <th className="pb-2 font-medium">용도</th>
+                <th className="pb-2 font-medium">비율</th>
+                <th className="pb-2 font-medium">지상 연면적</th>
+                <th className="pb-2 font-medium">순사용면적</th>
+                <th className="pb-2 font-medium">세대/주차</th>
+                <th className="pb-2 font-medium">허용</th>
+              </tr>
+            </thead>
+            <tbody>
+              {s.uses.map((u) => {
+                const badge = ALLOWANCE_BADGE[u.allowance];
+                return (
+                  <tr key={u.use} className="border-b border-gray-50">
+                    <td className="py-2.5">
+                      <span className="flex items-center gap-1.5 font-semibold text-gray-800">
+                        <span className="h-2.5 w-2.5 rounded-full" style={{ background: USE_COLORS[u.use] }} />
+                        {u.label}
+                      </span>
+                    </td>
+                    <td className="py-2.5 text-gray-600">{u.sharePct}%</td>
+                    <td className="py-2.5 text-gray-800">{u.gfaAbovePyeong.toLocaleString()}평</td>
+                    <td className="py-2.5">
+                      <span className="font-semibold text-gray-900">{u.netAreaPyeong.toLocaleString()}평</span>
+                      <span className="ml-1 text-[10px] text-gray-400">{u.netAreaLabel}</span>
+                    </td>
+                    <td className="py-2.5 text-gray-600">
+                      {u.units != null ? `${u.units}세대 · ` : ""}{u.parkingStalls}대
+                    </td>
+                    <td className="py-2.5">
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${badge.cls}`}>{badge.label}</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr className="font-bold text-gray-900">
+                <td className="pt-2.5" colSpan={3}>합계 순사용면적</td>
+                <td className="pt-2.5">{s.totals.netAreaPyeong.toLocaleString()}평</td>
+                <td className="pt-2.5" colSpan={2}>
+                  {s.totals.totalUnits > 0 ? `${s.totals.totalUnits}세대 · ` : ""}{s.parking.requiredStalls}대
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      {/* 단일용도 랭킹 */}
+      <div className="rounded-[20px] bg-white p-5 shadow-card">
+        <h3 className="mb-1 flex items-center gap-1.5 text-[14px] font-bold text-gray-900">
+          <Trophy size={15} className="text-amber-500" /> 어떤 용도가 면적이 가장 잘 나오는가
+        </h3>
+        <p className="mb-3 text-[11px] text-gray-400">
+          각 용도 100% 가정 · 순사용면적(전용/임대) 기준 · {s.input.zoneName}
+        </p>
+        <div className="space-y-2">
+          {ranking.map((r, i) => {
+            const badge = ALLOWANCE_BADGE[r.allowance];
+            return (
+              <div key={r.use} className="flex items-center gap-3">
+                <span className="w-4 text-[12px] font-bold text-gray-400">{i + 1}</span>
+                <span className="w-14 text-[12px] font-semibold text-gray-700">{r.label}</span>
+                <div className="relative h-6 flex-1 overflow-hidden rounded-md bg-gray-50">
+                  <div className="h-full rounded-md transition-all"
+                    style={{ width: `${(r.netAreaPyeong / maxNet) * 100}%`, background: USE_COLORS[r.use], opacity: r.allowance === "notAllowed" ? 0.35 : 0.85 }} />
+                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] font-bold text-white mix-blend-plus-lighter">
+                    {r.netAreaPyeong.toLocaleString()}평
+                  </span>
+                </div>
+                <span className={`w-11 rounded-full px-1.5 py-0.5 text-center text-[10px] font-semibold ${badge.cls}`}>{badge.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 일조 정보 */}
+      <div className="rounded-[20px] bg-white p-4 shadow-card">
+        <div className="flex items-start gap-2">
+          <Sun size={16} className="mt-0.5 text-amber-500" />
+          <div className="text-[12px] text-gray-600">
+            <b className="text-gray-800">정북 일조 검토: </b>
+            {s.solar.applied
+              ? `대지 형상 반영 — 봉투 지상 ${s.solar.floors}층, 연면적 약 ${Math.round((s.solar.gfaM2 ?? 0) / 3.3058).toLocaleString()}평` +
+                (s.solar.limitedBySolar ? " (일조 사선으로 상부 감소)" : " (용적률 상한 내 수용)")
+              : s.solar.reason}
+          </div>
+        </div>
+      </div>
+
+      {/* 경고 */}
+      {s.warnings.length > 0 && (
+        <div className="rounded-[20px] border border-amber-100 bg-amber-50/60 p-4">
+          <div className="mb-2 flex items-center gap-1.5 text-[13px] font-bold text-amber-700">
+            <AlertTriangle size={15} /> 법규 검토 유의사항
+          </div>
+          <ul className="space-y-1.5">
+            {s.warnings.map((w, i) => (
+              <li key={i} className="flex gap-1.5 text-[12px] leading-relaxed text-amber-800">
+                <span className="text-amber-400">•</span>{w}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 법적 근거 */}
+      {legalRefs && legalRefs.length > 0 && (
+        <details className="rounded-[20px] bg-white p-4 shadow-card">
+          <summary className="cursor-pointer text-[13px] font-bold text-gray-800">
+            법적 근거 (조문 인용)
+          </summary>
+          <div className="mt-3 space-y-2.5">
+            {legalRefs.map((r) => (
+              <div key={r.topic} className="border-l-2 border-primary-200 pl-3">
+                <div className="flex items-center gap-1.5 text-[12px] font-semibold text-gray-800">
+                  {r.topic}
+                  {r.verified && (
+                    <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] text-emerald-600">
+                      원문대조
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] text-primary-600">{r.basis}</div>
+                <div className="mt-0.5 text-[11px] leading-relaxed text-gray-500">{r.detail}</div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+    </>
+  );
+}
+
+function Stat({ label, value, sub, icon }: { label: string; value: string; sub?: string; icon?: React.ReactNode }) {
+  return (
+    <div className="rounded-[16px] bg-white p-3.5 shadow-card">
+      <div className="mb-1 flex items-center gap-1 text-[11px] font-medium text-gray-400">
+        {icon}{label}
+      </div>
+      <div className="text-[18px] font-extrabold text-gray-900">{value}</div>
+      {sub && <div className="mt-0.5 text-[10px] text-gray-400">{sub}</div>}
+    </div>
+  );
+}
