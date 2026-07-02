@@ -66,6 +66,7 @@ def plan_ai(config: dict, sentences: list[dict]) -> list[dict]:
     system = (
         "너는 유튜브 자막 디자이너다. 아래 스타일 가이드가 판단의 유일한 기준이다.\n\n"
         f"{_style_rules(config)}"
+        f"{common.feedback_prompt_block('subtitle')}"
     )
     user = (
         "다음은 영상 전체 나레이션이다 (문장 번호 포함):\n\n"
@@ -128,6 +129,73 @@ def _make_cue(s: dict, it: dict, sconf: dict) -> dict:
 
 
 # ══════════════════════════════════════════════════════════
+# 긴 문장 분할 — 단어 타임스탬프로 호흡 단위 큐 쪼개기
+# ══════════════════════════════════════════════════════════
+
+def _words_in_range(segments: list[dict], start: float, end: float) -> list[dict]:
+    out = []
+    for seg in segments or []:
+        for w in seg.get("words") or []:
+            if w["start"] >= start - 0.05 and w["end"] <= end + 0.05:
+                out.append(w)
+    return out
+
+
+def split_long_cues(cues: list[dict], segments: list[dict],
+                    max_sec: float, max_chars_2lines: int) -> list[dict]:
+    """긴 문장 큐를 단어 타임스탬프 기준으로 여러 큐로 나눈다.
+
+    - 기준 초과(시간 또는 2줄 분량 글자수) 시에만 분할
+    - 단어 사이 간격이 큰 곳(호흡)을 우선 분할점으로 선택
+    - 스타일(size/color)은 유지, 강조 단어는 해당 단어가 든 조각에만 적용
+    - 단어 타임스탬프가 없으면 원본 유지
+    """
+    out: list[dict] = []
+    for c in cues:
+        dur = c["end"] - c["start"]
+        if dur <= max_sec and len(c["text"]) <= max_chars_2lines:
+            out.append(c)
+            continue
+        words = _words_in_range(segments, c["start"], c["end"])
+        if len(words) < 4:
+            out.append(c)
+            continue
+
+        n_chunks = max(int(dur // max_sec) + 1, (len(c["text"]) // max_chars_2lines) + 1)
+        target = len(words) / n_chunks
+        # 분할점: 목표 지점 근처에서 단어 간 간격(침묵)이 가장 큰 곳
+        cuts = []
+        for k in range(1, n_chunks):
+            center = round(k * target)
+            best, best_gap = center, -1.0
+            for j in range(max(1, center - 2), min(len(words) - 1, center + 3)):
+                gap = words[j]["start"] - words[j - 1]["end"]
+                if gap > best_gap:
+                    best, best_gap = j, gap
+            cuts.append(best)
+        cuts = sorted(set(cuts))
+
+        pieces = []
+        prev = 0
+        for cut in cuts + [len(words)]:
+            chunk = words[prev:cut]
+            if chunk:
+                pieces.append(chunk)
+            prev = cut
+
+        for i, chunk in enumerate(pieces):
+            text = "".join(w["word"] for w in chunk).strip()
+            emphasis = [e for e in c.get("emphasis", []) if e in text]
+            out.append({**c,
+                        "id": c["id"] if i == 0 else f"{c['id']}.{i}",
+                        "start": round(chunk[0]["start"], 3),
+                        "end": round(chunk[-1]["end"], 3),
+                        "text": text, "emphasis": emphasis})
+        log.info("긴 문장 #%s 를 %d개 큐로 분할 (%.1fs)", c["id"], len(pieces), dur)
+    return out
+
+
+# ══════════════════════════════════════════════════════════
 # 5. ASS 변환 — Pretendard Bold, 2줄 제한, 하단 중앙
 # ══════════════════════════════════════════════════════════
 
@@ -160,8 +228,15 @@ def _ts(sec: float) -> str:
     return f"{h}:{m:02d}:{s:05.2f}"
 
 
-def build_ass(config: dict, cues: list[dict], out_path: Path) -> None:
+def build_ass(config: dict, cues: list[dict], out_path: Path,
+              segments: list[dict] | None = None) -> None:
     sconf = config.get("subtitle", {})
+    if segments:
+        cues = split_long_cues(
+            cues, segments,
+            max_sec=float(sconf.get("max_cue_sec", 5.0)),
+            max_chars_2lines=int(sconf.get("max_chars_per_line", 22)) * 2,
+        )
     profile = common.get_render_profile(config)
     w, h = profile["width"], profile["height"]
     scale = h / 1080  # 설정값은 1080p 기준
@@ -378,7 +453,9 @@ def serve_review(project: common.Project, config: dict, port: int) -> None:
             plan["cues"] = payload["cues"]
             plan["user_confirmed"] = True
             common.write_json(plan_path, plan)
-            build_ass(config, plan["cues"], project.path / ASS_FILE)
+            transcript = common.read_json(project.transcript_path)
+            build_ass(config, plan["cues"], project.path / ASS_FILE,
+                      segments=transcript.get("segments"))
             body = json.dumps({"ok": True, "feedback_added": added}).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -427,7 +504,8 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
         log.info("  #%d [%s] 강조=%s — %s", c["id"], c["size"], c["emphasis"], c["reason"])
 
     build_review_html(project, plan, config)
-    build_ass(config, cues, project.path / ASS_FILE)  # 초안 ASS (확정 저장 시 재생성)
+    build_ass(config, cues, project.path / ASS_FILE,
+              segments=transcript.get("segments"))  # 초안 ASS (확정 저장 시 재생성)
     return plan
 
 

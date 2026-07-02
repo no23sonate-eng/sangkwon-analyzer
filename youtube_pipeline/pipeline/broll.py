@@ -145,6 +145,7 @@ def extract_keywords_ai(client, model: str, section: dict, full_text: str,
     system = (
         "너는 유튜브 편집자의 B-roll 검색 보조다. 아래 스타일 가이드가 판단의 유일한 기준이다.\n\n"
         f"{criteria}\n\n{mapping}"
+        f"{common.feedback_prompt_block('broll')}"
     )
     user = (
         "전체 나레이션 맥락:\n"

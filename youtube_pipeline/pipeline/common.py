@@ -189,6 +189,74 @@ def load_style_guide(config: dict[str, Any] | None = None) -> str:
     return path.read_text(encoding="utf-8")
 
 
+# ── 피드백 학습 루프 ───────────────────────────────────────
+def collect_feedback(stage: str, limit: int = 20) -> list[dict]:
+    """모든 프로젝트의 feedback_log.json 에서 해당 단계 피드백을 최신순으로 모은다.
+
+    stage: "broll" (스킵/후보 변경) 또는 "subtitle" (스타일 수정)
+    broll 단계 초기 항목에는 stage 필드가 없으므로 없으면 broll 로 간주.
+    """
+    entries: list[dict] = []
+    if not PROJECTS_DIR.exists():
+        return entries
+    for fb in PROJECTS_DIR.glob("*/feedback_log.json"):
+        try:
+            for e in read_json(fb):
+                if e.get("stage", "broll") == stage:
+                    entries.append(e)
+        except Exception:
+            continue
+    entries.sort(key=lambda e: e.get("ts", ""), reverse=True)
+    return entries[:limit]
+
+
+def feedback_prompt_block(stage: str, limit: int = 20) -> str:
+    """AI 프롬프트에 주입할 '과거 사용자 피드백' 블록. 피드백이 없으면 빈 문자열.
+
+    broll.py / subtitle.py 가 판단 프롬프트에 덧붙여, 사용자가 과거에 AI 제안을
+    어떻게 고쳤는지를 다음 판단에 반영한다 (쓸수록 취향에 수렴).
+    """
+    entries = collect_feedback(stage, limit)
+    if not entries:
+        return ""
+    lines = []
+    for e in entries:
+        if e.get("stage", "broll") == "broll":
+            ch = e.get("user_choice")
+            if ch == "skip":
+                action = "AI가 제안한 B-roll을 스킵하고 얼굴샷 유지"
+            else:
+                action = (f"AI 1순위 대신 {ch.get('candidate_index', '?')}번 후보"
+                          f"({ch.get('type', '?')}) 선택")
+            lines.append(f'- 발화 "{e.get("section_text", "")}" '
+                         f'(AI 키워드: {", ".join(e.get("ai_keywords", []))}) → {action}')
+        else:
+            diffs = []
+            for k, v in e.get("changes", {}).items():
+                diffs.append(f"{k}: {v.get('ai')} → {v.get('user')}")
+            lines.append(f'- 문장 "{e.get("sentence_text", "")}" → 사용자가 수정: {"; ".join(diffs)}')
+    return (
+        "\n\n## 과거 사용자 피드백 (최근 순 — 이 사용자의 취향이므로 판단에 적극 반영하라)\n"
+        + "\n".join(lines)
+    )
+
+
+# ── 고유명사 사전 (glossary) ───────────────────────────────
+GLOSSARY_PATH = ROOT_DIR / "glossary.txt"
+
+
+def load_glossary() -> list[str]:
+    """자주 쓰는 고유명사/용어 목록. 전사 힌트·띄어쓰기 보호·오인식 치환에 사용."""
+    if not GLOSSARY_PATH.exists():
+        return []
+    terms = []
+    for line in GLOSSARY_PATH.read_text(encoding="utf-8").splitlines():
+        line = line.split("#")[0].strip()
+        if line:
+            terms.append(line)
+    return terms
+
+
 # ── Anthropic ──────────────────────────────────────────────
 def anthropic_client():
     """Anthropic 클라이언트. broll/subtitle 단계에서 사용."""

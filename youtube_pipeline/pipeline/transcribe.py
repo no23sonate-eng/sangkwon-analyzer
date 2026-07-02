@@ -40,6 +40,14 @@ _NUM_UNIT = re.compile(
 )
 
 _kiwi = None  # 지연 로드 (모델 로딩이 느려서 필요할 때 한 번만)
+_glossary_cache: list[str] | None = None
+
+
+def _glossary() -> list[str]:
+    global _glossary_cache
+    if _glossary_cache is None:
+        _glossary_cache = common.load_glossary()
+    return _glossary_cache
 
 
 def _fix_spacing(text: str) -> str:
@@ -47,6 +55,7 @@ def _fix_spacing(text: str) -> str:
 
     - 빠진 띄어쓰기를 삽입한다 (기존 띄어쓰기는 최대한 보존)
     - 숫자+단위("1 층")가 쪼개지면 다시 붙인다
+    - glossary.txt 용어는 쪼개지지 않게 사전 등록 + 띄어진 오인식은 붙임
     - kiwipiepy 미설치 시 원문 그대로 반환 (경고 1회)
     """
     global _kiwi
@@ -54,15 +63,38 @@ def _fix_spacing(text: str) -> str:
         try:
             from kiwipiepy import Kiwi
             _kiwi = Kiwi()
+            for term in _glossary():
+                if " " not in term:
+                    try:
+                        _kiwi.add_user_word(term, "NNP")
+                    except Exception:
+                        pass
         except ImportError:
             log.warning("kiwipiepy 미설치 — 띄어쓰기 교정 생략 (pip install kiwipiepy)")
             _kiwi = False
+    text = _apply_glossary(text)
     if not _kiwi:
         return text
     fixed = _kiwi.space(text, reset_whitespace=False)
     fixed = _NUM_UNIT.sub(r"\1\2", fixed)
     # "1200만 원" → "1200만원" (자막 관례)
-    return re.sub(r"(\d[천만억조]?)\s+(원)", r"\1\2", fixed)
+    fixed = re.sub(r"(\d[천만억조]?)\s+(원)", r"\1\2", fixed)
+    return _apply_glossary(fixed)  # 교정기가 쪼갠 용어 복원
+
+
+def _apply_glossary(text: str) -> str:
+    """glossary 용어가 띄어쓰기로 쪼개져 있으면 원형으로 붙인다.
+
+    예: 용어 '한강진역' → 전사가 "한강 진 역" 으로 나와도 "한강진역" 으로 복원.
+    3글자 미만 용어는 오탐 위험이 커서 제외.
+    """
+    for term in _glossary():
+        compact = term.replace(" ", "")
+        if len(compact) < 3:
+            continue
+        pattern = r"\s*".join(map(re.escape, compact))
+        text = re.sub(pattern, term, text)
+    return text
 
 
 def _regroup_into_sentences(segments: list[dict]) -> list[dict]:
@@ -155,6 +187,13 @@ def transcribe(project: common.Project, config: dict) -> dict:
 
     model = WhisperModel(model_name, device=device, compute_type=compute_type)
 
+    # glossary 용어를 전사 힌트로 주입 (고유명사 인식률 향상)
+    initial_prompt = None
+    terms = _glossary()
+    if terms and (language or "ko") == "ko":
+        initial_prompt = "다음 용어가 자주 등장합니다: " + ", ".join(terms) + "."
+        log.info("전사 힌트 주입: 용어 %d개 (glossary.txt)", len(terms))
+
     log.info("전사 시작 (language=%s, vad=%s)...", language or "auto", vad_filter)
     seg_iter, info = model.transcribe(
         str(source),
@@ -162,6 +201,7 @@ def transcribe(project: common.Project, config: dict) -> dict:
         beam_size=beam_size,
         vad_filter=vad_filter,
         word_timestamps=True,
+        initial_prompt=initial_prompt,
     )
 
     segments: list[dict] = []
