@@ -44,15 +44,24 @@ transcribe:
 
 # ── Anthropic (broll / subtitle 의 AI 판단) ────────────────
 anthropic:
-  model: "claude-sonnet-5"
-  max_tokens: 4096
+  model: "claude-sonnet-4-6"
+  max_tokens: 2048
   # 판단 기준은 코드가 아니라 이 파일을 읽어 프롬프트에 넣는다.
   style_guide: "style_guide.md"
 
-# ── B-roll (broll.py) — 상세 스펙은 후속 지시 예정 ─────────
+# ── B-roll (broll.py) ──────────────────────────────────────
 broll:
-  providers: ["pexels", "pixabay"]
-  per_query_results: 5
+  providers: ["pexels", "pixabay"]   # 검색 우선순위
+  # 구간 길이(초)
+  min_section_sec: 3
+  max_section_sec: 8
+  # B-roll 커버리지 (전체 발화 시간 대비) — 얼굴 노출과 번갈아 리듬
+  min_coverage: 0.4
+  max_coverage: 0.6
+  # 구간당 후보 수
+  candidates_per_section: 3
+  # 검토 페이지 서버 포트
+  review_port: 8787
 
 # ── 자막 (subtitle.py) — 상세 스펙은 후속 지시 예정 ────────
 subtitle:
