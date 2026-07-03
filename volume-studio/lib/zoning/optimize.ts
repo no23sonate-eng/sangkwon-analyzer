@@ -83,3 +83,56 @@ export function optimizeProgram(
   const study = computeVolumeStudy(siteAreaM2, zoneKey, recommendedMix, options);
   return { recommendedMix, primaryUse: primary, podiumUse, rationale, excluded, study };
 }
+
+/* ── 대안 자동 생성 ──
+   한 번의 산출로 비교 가능한 설계 대안들을 만든다 (Buildit "다른 설계결과"류).
+   추천안 + 허용 용도 100% 단일안 + 주력용도+리테일 포디움안. 중복 믹스 제거, 최대 7개.
+*/
+export interface Alternative {
+  id: string;
+  label: string;
+  mix: Partial<Record<UseKey, number>>;
+  study: VolumeStudy;
+  recommended?: boolean;
+  rationale?: string[];
+}
+
+const mixKey = (m: Partial<Record<UseKey, number>>) =>
+  (Object.keys(m) as UseKey[]).sort().map((k) => `${k}:${Math.round(m[k] ?? 0)}`).join("|");
+
+export function generateAlternatives(
+  siteAreaM2: number,
+  zoneKey: ZoneKey,
+  desiredUses: UseKey[],
+  options: VolumeOptions = {},
+): Alternative[] {
+  const zone = ZONES[zoneKey];
+  const opt = optimizeProgram(siteAreaM2, zoneKey, desiredUses, options);
+  const list: Alternative[] = [{
+    id: "reco", label: "추천안", mix: opt.recommendedMix, study: opt.study,
+    recommended: true, rationale: opt.rationale,
+  }];
+  const seen = new Set([mixKey(opt.recommendedMix)]);
+
+  const podiumPct = clamp(Math.round((2 * zone.seoulBCR / zone.seoulFAR) * 100), 5, 40);
+  const allUses: UseKey[] = ["residential", "office", "retail", "hotel"];
+  const candidates: { label: string; mix: Partial<Record<UseKey, number>> }[] = [];
+  for (const u of allUses) {
+    if (getUseAllowance(zoneKey, u).allowance === "notAllowed") continue;
+    candidates.push({ label: `${PROGRAMS[u].label} 100%`, mix: { [u]: 100 } });
+    if (u !== "retail" && getUseAllowance(zoneKey, "retail").allowance !== "notAllowed") {
+      candidates.push({
+        label: `${PROGRAMS[u].label} + 리테일`,
+        mix: { [u]: 100 - podiumPct, retail: podiumPct },
+      });
+    }
+  }
+  for (const c of candidates) {
+    if (list.length >= 7) break;
+    const k = mixKey(c.mix);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    list.push({ id: k, label: c.label, mix: c.mix, study: computeVolumeStudy(siteAreaM2, zoneKey, c.mix, options) });
+  }
+  return list;
+}

@@ -8,8 +8,8 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import {
-  optimizeProgram, ZONE_LIST, VOLUME_DISCLAIMER,
-  type ZoneKey, type UseKey, type OptimizeResult,
+  generateAlternatives, computeEconomics, ZONE_LIST, VOLUME_DISCLAIMER, CAP_RATES,
+  type ZoneKey, type UseKey, type Alternative,
 } from "@/lib/zoning";
 import {
   ringToLocalMeters, rectRing, ringArea, scaleToArea, clipToAreaFromNorth, type Pt,
@@ -41,8 +41,13 @@ export default function Home() {
 
   const [lookupBusy, setLookupBusy] = useState(false);
   const [lookupMsg, setLookupMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [result, setResult] = useState<OptimizeResult | null>(null);
+  const [alts, setAlts] = useState<Alternative[]>([]);
+  const [sel, setSel] = useState(0);
   const [err, setErr] = useState<string | null>(null);
+  // 사업성 입력 (만원/평/월 · 만원/평 · 억원)
+  const [rents, setRents] = useState<Record<UseKey, string>>({ residential: "", office: "", retail: "", hotel: "" });
+  const [constCost, setConstCost] = useState("");
+  const [landCost, setLandCost] = useState("");
 
   const zone = ZONE_LIST.find((z) => z.key === zoneKey);
 
@@ -82,21 +87,37 @@ export default function Home() {
     if (!site || site <= 0) { setErr("대지면적을 입력하세요."); return; }
     if (uses.length === 0) { setErr("원하는 용도를 1개 이상 선택하세요."); return; }
     try {
-      const r = optimizeProgram(site, zoneKey, uses, {
+      const list = generateAlternatives(site, zoneKey, uses, {
         avgUnitAreaM2: parseFloat(avgUnit) || undefined,
         avgRoomAreaM2: parseFloat(avgRoom) || undefined,
         northLotWidthM: parseFloat(northW) || undefined,
         lotDepthM: parseFloat(depth) || undefined,
       });
-      setResult(r);
+      setAlts(list);
+      setSel(0);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "산출 오류");
     }
   }
 
+  const current = alts[sel] ?? null;
+
+  // ── 사업성 (현재 안 + 대안 카드용) ──
+  const econInput = useMemo(() => ({
+    rents: Object.fromEntries(
+      USE_KEYS.map((u) => [u, parseFloat(rents[u]) || 0]).filter(([, v]) => (v as number) > 0),
+    ) as Partial<Record<UseKey, number>>,
+    constructionCostPerPyeong: parseFloat(constCost) || undefined,
+    landCostEok: parseFloat(landCost) || undefined,
+  }), [rents, constCost, landCost]);
+  const econ = useMemo(
+    () => (current ? computeEconomics(current.study, econInput) : null),
+    [current, econInput],
+  );
+
   // ── 3D 매스 데이터 ──
   const { parcelLocal, massFloors } = useMemo(() => {
-    const s = result?.study;
+    const s = current?.study;
     const site = parseFloat(areaM2) || 0;
     // 대지 링: 실필지 > 폭×깊이 직사각형 > 정사각형
     let base: Pt[] | null = null;
@@ -121,9 +142,9 @@ export default function Home() {
       floors.push({ ring: foot, z0: -3.5 * (i + 1), h: 3.4, color: "#94a3b8", below: true });
     });
     return { parcelLocal: base, massFloors: floors };
-  }, [result, parcelRing, areaM2, northW, depth]);
+  }, [current, parcelRing, areaM2, northW, depth]);
 
-  const s = result?.study;
+  const s = current?.study;
 
   return (
     <div className="shell">
@@ -206,6 +227,31 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="sec">
+            <div className="sec-t">④ 사업성 (선택 — 입력 시 수익·가치 산출)</div>
+            <div className="chips" style={{ marginBottom: 8 }}>
+              {USE_KEYS.map((u) => (
+                <div className="field" key={u} style={{ margin: 0 }}>
+                  <label style={{ color: USE_COLORS[u] }}>{USE_LABELS[u]} 임대료 (만원/평/월)</label>
+                  <input className="inp" type="number" value={rents[u]} placeholder="—"
+                    onChange={(e) => setRents((r) => ({ ...r, [u]: e.target.value }))} />
+                </div>
+              ))}
+            </div>
+            <div className="row">
+              <div className="field" style={{ flex: 1 }}>
+                <label>공사비 (만원/평)</label>
+                <input className="inp" type="number" value={constCost} placeholder="예: 900"
+                  onChange={(e) => setConstCost(e.target.value)} />
+              </div>
+              <div className="field" style={{ flex: 1 }}>
+                <label>토지비 (억원)</label>
+                <input className="inp" type="number" value={landCost} placeholder="선택"
+                  onChange={(e) => setLandCost(e.target.value)} />
+              </div>
+            </div>
+          </div>
+
           <button className="btn btn-primary" onClick={run}>볼륨 산출</button>
           {err && <div className="note-bad">{err}</div>}
           <p className="disclaimer">{VOLUME_DISCLAIMER}</p>
@@ -243,22 +289,71 @@ export default function Home() {
         {/* ── 우: 건축개요 / 층별 면적표 ── */}
         <aside className="rpanel">
           {!s ? (
-            <p className="hint">산출 후 건축개요·층별 면적표가 표시됩니다.</p>
+            <p className="hint">산출 후 대안 비교·건축개요·층별 면적표가 표시됩니다.</p>
           ) : (
             <>
-              {result?.rationale?.length ? (
+              {/* 대안 비교 카드 */}
+              <div className="sec">
+                <div className="sec-t">설계 대안 비교 — 클릭하면 매스·표 전환</div>
+                {alts.map((a, i) => {
+                  const e = computeEconomics(a.study, econInput);
+                  const st = a.study;
+                  return (
+                    <button key={a.id} className={`altcard${i === sel ? " on" : ""}`} onClick={() => setSel(i)}>
+                      <div className="altcard-h">
+                        <b>{i + 1}. {a.label}</b>
+                        {a.recommended && <span className="badge ok">추천</span>}
+                      </div>
+                      <div className="altcard-b">
+                        지상 {st.massing.floorsAbove}층 · 연면적 {py(st.massing.effectiveGfaAboveM2)}평
+                        {st.totals.totalUnits > 0 && ` · ${st.totals.totalUnits}세대`}
+                        {st.totals.totalRooms > 0 && ` · ${st.totals.totalRooms}실`}
+                        {` · 주차 ${st.parking.requiredStalls}대`}
+                        {e && <span className="altcard-v"> · 가치 {e.valueAtCap[1].valueEok.toLocaleString()}억<i>@5.0%</i></span>}
+                      </div>
+                      <div className="altcard-mix">
+                        {(Object.entries(st.input.mix) as [UseKey, number][]).filter(([, v]) => v > 0).map(([u, v]) => (
+                          <i key={u} style={{ width: `${v}%`, background: USE_COLORS[u] }} />
+                        ))}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {current?.rationale?.length ? (
                 <div className="reco">
-                  <div className="t">최대치 상품계획 (자동)</div>
-                  <div>
-                    {Object.entries(result.recommendedMix).filter(([, v]) => (v ?? 0) > 0).map(([u, v]) => (
-                      <span key={u} className="pill" style={{ background: USE_COLORS[u as UseKey] }}>
-                        {USE_LABELS[u as UseKey]} {v}%{result.podiumUse === u ? " · 포디움" : ""}
-                      </span>
-                    ))}
-                  </div>
-                  <ul>{result.rationale.map((r, i) => <li key={i}>{r}</li>)}</ul>
+                  <div className="t">추천 배분 근거</div>
+                  <ul>{current.rationale.map((r, i) => <li key={i}>{r}</li>)}</ul>
                 </div>
               ) : null}
+
+              {/* 사업성 검토 */}
+              {econ && (
+                <div className="sec">
+                  <div className="sec-t">사업성 검토 (개략)</div>
+                  <div className="kv">
+                    <span className="k">월 임대수익</span><span className="v">{econ.monthlyRentManwon.toLocaleString()}만원</span>
+                    <span className="k">연 임대수익</span><span className="v">{econ.annualRentEok.toLocaleString()}억</span>
+                    <span className="k">보증금 추정</span><span className="v">{econ.depositEok.toLocaleString()}억</span>
+                    {econ.valueAtCap.map((v) => (
+                      <span key={v.cap} style={{ display: "contents" }}>
+                        <span className="k">자산가치 @{v.cap}%</span>
+                        <span className="v" style={v.cap === 5.0 ? { color: "var(--accent)" } : {}}>{v.valueEok.toLocaleString()}억</span>
+                      </span>
+                    ))}
+                    {econ.totalCostEok != null && <>
+                      <span className="k">총사업비 (토지+공사)</span><span className="v">{econ.totalCostEok.toLocaleString()}억</span>
+                      <span className="k">Yield on Cost</span><span className="v">{econ.yieldOnCostPct}%</span>
+                      <span className="k">마진 (가치@5.0−사업비)</span>
+                      <span className="v" style={{ color: (econ.marginEok ?? 0) >= 0 ? "var(--ok)" : "var(--bad)" }}>
+                        {econ.marginEok?.toLocaleString()}억
+                      </span>
+                    </>}
+                  </div>
+                  <p className="hint">순면적 기준 · 공실/운영비/금융비 미반영 · 보증금 = 월세×(리테일12/기타10개월) · 캡레이트 {CAP_RATES.join("/")}%</p>
+                </div>
+              )}
 
               <div className="sec">
                 <div className="sec-t">건축개요</div>
