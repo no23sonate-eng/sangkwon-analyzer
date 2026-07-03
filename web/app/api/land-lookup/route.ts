@@ -1,0 +1,119 @@
+import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
+import {
+  parseGeocode, parseFeatures, outerRing, polygonMetrics,
+  extractZoneName, zoneNameToKey,
+} from "@/lib/zoning/land-lookup";
+
+/* ── 주소 → 필지 자동조회 (VWorld) ──
+   GET /api/land-lookup?address=서울 성동구 성수동2가 277-52
+
+   반환: 좌표 · 필지 폴리곤 기반 면적/북측폭/남북깊이 · 용도지역(zoneKey)
+   필요 env: VWORLD_API_KEY (vworld.kr 오픈API 인증키)
+
+   ⚠ VWorld는 해외 IP를 차단하므로 국내(로컬/국내 서버)에서만 동작.
+     면적은 연속지적도 폴리곤 실측치로, 공부(대장)상 면적과 수 ㎡ 차이 가능.
+*/
+
+const VW = "https://api.vworld.kr/req";
+
+async function vw(path: string, params: Record<string, string>): Promise<unknown> {
+  const qs = new URLSearchParams(params).toString();
+  const res = await fetch(`${VW}/${path}?${qs}`, {
+    signal: AbortSignal.timeout(10_000),
+    headers: { accept: "application/json" },
+  });
+  if (!res.ok) throw new Error(`VWorld HTTP ${res.status}`);
+  return res.json();
+}
+
+export async function GET(request: Request) {
+  const limited = rateLimit(request, "land-lookup", 30, 60_000);
+  if (limited) return limited;
+
+  const key = process.env.VWORLD_API_KEY;
+  if (!key) {
+    return NextResponse.json(
+      { error: "VWORLD_API_KEY 미설정 — web/.env.local 에 VWORLD_API_KEY=발급키 를 추가하고 서버를 재시작하세요." },
+      { status: 400 },
+    );
+  }
+
+  const address = new URL(request.url).searchParams.get("address")?.trim();
+  if (!address) return NextResponse.json({ error: "address 파라미터가 필요합니다." }, { status: 400 });
+
+  const warnings: string[] = [];
+
+  try {
+    // ── 1. 주소 → 좌표 (지번 우선, 도로명 폴백) ──
+    let point = null as null | { lat: number; lng: number; refined?: string };
+    for (const type of ["parcel", "road"]) {
+      try {
+        const g = await vw("address", {
+          service: "address", request: "getcoord", version: "2.0", format: "json",
+          crs: "epsg:4326", refine: "true", simple: "false", type, address, key,
+        });
+        point = parseGeocode(g);
+        if (point) break;
+      } catch { /* 다음 타입 시도 */ }
+    }
+    if (!point) {
+      return NextResponse.json({ error: `주소를 찾지 못했습니다: "${address}"` }, { status: 404 });
+    }
+    const pt = `POINT(${point.lng} ${point.lat})`;
+
+    // ── 2. 연속지적도 필지 폴리곤 → 면적·형상 ──
+    let parcel: null | {
+      areaM2: number; northWidthM: number; lotDepthM: number;
+      jibun?: string; pnu?: string;
+    } = null;
+    try {
+      const pj = await vw("data", {
+        service: "data", request: "GetFeature", data: "LP_PA_CBND_BUBUN",
+        format: "json", crs: "EPSG:4326", geometry: "true", size: "1",
+        geomFilter: pt, key, domain: "localhost",
+      });
+      const feats = parseFeatures(pj);
+      const ring = feats[0] ? outerRing(feats[0].geometry) : null;
+      if (ring) {
+        const m = polygonMetrics(ring);
+        parcel = {
+          areaM2: m.areaM2, northWidthM: m.northWidthM, lotDepthM: m.lotDepthM,
+          jibun: (feats[0].properties.jibun as string) ?? undefined,
+          pnu: (feats[0].properties.pnu as string) ?? undefined,
+        };
+      }
+    } catch { /* 아래 warning */ }
+    if (!parcel) warnings.push("필지 폴리곤 조회 실패 — 대지면적·형상은 직접 입력하세요.");
+
+    // ── 3. 용도지역 ──
+    let zoneName: string | null = null;
+    let zoneKey: string | null = null;
+    try {
+      const zj = await vw("data", {
+        service: "data", request: "GetFeature", data: "LT_C_UQ111",
+        format: "json", crs: "EPSG:4326", geometry: "false", size: "5",
+        geomFilter: pt, key, domain: "localhost",
+      });
+      for (const f of parseFeatures(zj)) {
+        const name = extractZoneName(f.properties);
+        if (name && zoneNameToKey(name)) { zoneName = name; zoneKey = zoneNameToKey(name); break; }
+        if (name && !zoneName) zoneName = name;
+      }
+    } catch { /* 아래 warning */ }
+    if (!zoneKey) warnings.push(`용도지역 자동 매핑 실패${zoneName ? ` (조회값: ${zoneName})` : ""} — 직접 선택하세요.`);
+
+    return NextResponse.json({
+      address, refined: point.refined ?? null,
+      point: { lat: point.lat, lng: point.lng },
+      parcel, zoneName, zoneKey, warnings,
+      source: "VWorld 연속지적도·용도지역(LT_C_UQ111)",
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json(
+      { error: `VWorld 조회 실패: ${msg}. 국내 네트워크인지, 키·도메인(localhost) 등록을 확인하세요.` },
+      { status: 502 },
+    );
+  }
+}

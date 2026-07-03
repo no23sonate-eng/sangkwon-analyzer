@@ -8,7 +8,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  Building2, Ruler, Car, Sun, AlertTriangle, Layers, Trophy, Loader2, Sparkles,
+  Building2, Ruler, Car, Sun, AlertTriangle, Layers, Trophy, Loader2, Sparkles, MapPin,
 } from "lucide-react";
 
 type UseKey = "residential" | "office" | "retail" | "hotel";
@@ -109,6 +109,9 @@ export default function VolumePage() {
   const [heightLimit, setHeightLimit] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const [lookupInfo, setLookupInfo] = useState<string | null>(null);
+  const [lookupError, setLookupError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     study: Study; ranking: Ranking[];
     recommendation?: null | {
@@ -141,6 +144,34 @@ export default function VolumePage() {
   }
 
   const desiredList = (Object.keys(desired) as UseKey[]).filter((u) => desired[u]);
+
+  /* 주소 → 면적·용도지역·대지형상 자동조회 (VWorld) */
+  async function lookupAddress() {
+    if (!address.trim()) { setLookupError("주소를 입력하세요."); return; }
+    setLookupLoading(true); setLookupError(null); setLookupInfo(null);
+    try {
+      const res = await fetch(`/api/land-lookup?address=${encodeURIComponent(address.trim())}`);
+      const d = await res.json();
+      if (!res.ok) { setLookupError(d.error ?? "조회 실패"); return; }
+      const parts: string[] = [];
+      if (d.parcel?.areaM2) {
+        setAreaM2(String(d.parcel.areaM2));
+        parts.push(`대지 ${d.parcel.areaM2.toLocaleString()}㎡`);
+        if (d.parcel.northWidthM) { setNorthWidth(String(d.parcel.northWidthM)); }
+        if (d.parcel.lotDepthM) { setLotDepth(String(d.parcel.lotDepthM)); parts.push(`형상 ${d.parcel.northWidthM}×${d.parcel.lotDepthM}m`); }
+      }
+      if (d.zoneKey) { setZoneKey(d.zoneKey); parts.push(d.zoneName ?? d.zoneKey); }
+      else if (d.zoneName) parts.push(`용도지역 확인 필요(${d.zoneName})`);
+      setLookupInfo(
+        (d.refined ? `${d.refined} — ` : "") + (parts.length ? parts.join(" · ") : "필지 정보 없음") +
+        (d.warnings?.length ? ` ⚠ ${d.warnings.join(" / ")}` : ""),
+      );
+    } catch {
+      setLookupError("네트워크 오류 — 국내 네트워크에서 실행 중인지 확인하세요.");
+    } finally {
+      setLookupLoading(false);
+    }
+  }
 
   async function compute() {
     setError(null);
@@ -200,12 +231,31 @@ export default function VolumePage() {
           <section className="rounded-[20px] bg-white p-5 shadow-card">
             <h2 className="mb-4 text-[15px] font-bold text-gray-900">대지 정보</h2>
 
-            <label className="mb-1 block text-[12px] font-medium text-gray-500">주소 (선택)</label>
-            <input
-              value={address} onChange={(e) => setAddress(e.target.value)}
-              placeholder="예: 서울 성동구 성수동2가 000-0"
-              className="mb-4 w-full rounded-[14px] border border-gray-200 px-3 py-2.5 text-[13px] outline-none focus:border-primary-500"
-            />
+            <label className="mb-1 block text-[12px] font-medium text-gray-500">
+              주소 — 조회하면 면적·용도지역·형상 자동 입력
+            </label>
+            <div className="mb-1.5 flex gap-2">
+              <input
+                value={address} onChange={(e) => setAddress(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") lookupAddress(); }}
+                placeholder="예: 서울 성동구 성수동2가 277-52"
+                className="w-full rounded-[14px] border border-gray-200 px-3 py-2.5 text-[13px] outline-none focus:border-primary-500"
+              />
+              <button onClick={lookupAddress} disabled={lookupLoading}
+                className="flex shrink-0 items-center gap-1 rounded-[14px] bg-gray-900 px-3.5 text-[12px] font-bold text-white transition hover:bg-gray-700 disabled:opacity-60">
+                {lookupLoading ? <Loader2 size={13} className="animate-spin" /> : <MapPin size={13} />}
+                조회
+              </button>
+            </div>
+            {lookupInfo && (
+              <p className="mb-3 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] leading-relaxed text-emerald-700">
+                ✓ {lookupInfo}
+              </p>
+            )}
+            {lookupError && (
+              <p className="mb-3 rounded-lg bg-rose-50 px-2.5 py-1.5 text-[11px] leading-relaxed text-rose-600">{lookupError}</p>
+            )}
+            {!lookupInfo && !lookupError && <div className="mb-2.5" />}
 
             <label className="mb-1 block text-[12px] font-medium text-gray-500">대지면적 (㎡)</label>
             <div className="mb-4 flex items-center gap-2">
