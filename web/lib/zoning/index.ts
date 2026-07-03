@@ -4,3 +4,4 @@ export * from "./programs";
 export * from "./solar-setback";
 export * from "./volume-study";
 export * from "./legal-refs";
+export * from "./optimize";

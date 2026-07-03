@@ -8,7 +8,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  Building2, Ruler, Car, Sun, AlertTriangle, Layers, Trophy, Loader2,
+  Building2, Ruler, Car, Sun, AlertTriangle, Layers, Trophy, Loader2, Sparkles,
 } from "lucide-react";
 
 type UseKey = "residential" | "office" | "retail" | "hotel";
@@ -96,6 +96,10 @@ export default function VolumePage() {
   const [mix, setMix] = useState<Record<UseKey, number>>({
     residential: 100, office: 0, retail: 0, hotel: 0,
   });
+  const [mode, setMode] = useState<"auto" | "manual">("auto");
+  const [desired, setDesired] = useState<Record<UseKey, boolean>>({
+    residential: true, office: false, retail: true, hotel: false,
+  });
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [useSeoul, setUseSeoul] = useState(true);
   const [avgUnit, setAvgUnit] = useState("60");
@@ -107,6 +111,10 @@ export default function VolumePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
     study: Study; ranking: Ranking[];
+    recommendation?: null | {
+      recommendedMix: Record<string, number>; primaryUse: UseKey; podiumUse?: UseKey;
+      rationale: string[]; excluded: { use: UseKey; reason: string }[];
+    };
     legal_refs?: { topic: string; basis: string; detail: string; verified: boolean }[];
     disclaimer?: string;
   } | null>(null);
@@ -132,11 +140,15 @@ export default function VolumePage() {
     setMix((m) => ({ ...m, [use]: Math.max(0, Math.min(100, val)) }));
   }
 
+  const desiredList = (Object.keys(desired) as UseKey[]).filter((u) => desired[u]);
+
   async function compute() {
     setError(null);
     const site = parseFloat(areaM2);
     if (!site || site <= 0) { setError("대지면적을 입력하세요."); return; }
-    if (mixSum <= 0) { setError("용도 믹스를 1개 이상 지정하세요."); return; }
+    if (mode === "auto" ? desiredList.length === 0 : mixSum <= 0) {
+      setError(mode === "auto" ? "목표 용도를 1개 이상 선택하세요." : "용도 믹스를 1개 이상 지정하세요."); return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/volume", {
@@ -145,7 +157,7 @@ export default function VolumePage() {
         body: JSON.stringify({
           siteAreaM2: site,
           zoneKey,
-          mix,
+          ...(mode === "auto" ? { desiredUses: desiredList } : { mix }),
           address: address || undefined,
           options: {
             useSeoulOrdinance: useSeoul,
@@ -227,45 +239,78 @@ export default function VolumePage() {
               </p>
             )}
 
-            {/* ── 용도 믹스 ── */}
-            <div className="mb-2 flex items-center justify-between">
-              <label className="text-[12px] font-medium text-gray-500">용도 믹스</label>
-              <span className={`text-[12px] font-bold ${mixSum === 100 ? "text-emerald-600" : "text-amber-600"}`}>
-                합계 {mixSum}%
-              </span>
+            {/* ── 모드 토글 ── */}
+            <div className="mb-3 flex rounded-[12px] bg-gray-100 p-0.5 text-[12px] font-semibold">
+              <button onClick={() => setMode("auto")}
+                className={`flex-1 rounded-[10px] py-1.5 transition ${mode === "auto" ? "bg-white text-primary-600 shadow-sm" : "text-gray-500"}`}>
+                목표 용도 자동최적
+              </button>
+              <button onClick={() => setMode("manual")}
+                className={`flex-1 rounded-[10px] py-1.5 transition ${mode === "manual" ? "bg-white text-primary-600 shadow-sm" : "text-gray-500"}`}>
+                직접 배분
+              </button>
             </div>
-            {(Object.keys(USE_LABELS) as UseKey[]).map((use) => (
-              <div key={use} className="mb-2.5">
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-[12px] font-medium text-gray-700">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: USE_COLORS[use] }} />
-                    {USE_LABELS[use]}
-                  </span>
-                  <span className="text-[12px] font-semibold text-gray-600">{mix[use]}%</span>
+
+            {mode === "auto" ? (
+              /* ── 목표 용도 선택 (최대치 자동 배분) ── */
+              <div className="mb-4">
+                <label className="mb-2 block text-[12px] font-medium text-gray-500">
+                  원하는 용도 (복수 선택 → 최대치로 자동 배분)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(Object.keys(USE_LABELS) as UseKey[]).map((use) => (
+                    <button key={use}
+                      onClick={() => setDesired((d) => ({ ...d, [use]: !d[use] }))}
+                      className={`flex items-center gap-1.5 rounded-[12px] border-2 px-3 py-2.5 text-[13px] font-semibold transition ${
+                        desired[use] ? "text-white" : "border-gray-200 bg-white text-gray-500"
+                      }`}
+                      style={desired[use] ? { background: USE_COLORS[use], borderColor: USE_COLORS[use] } : {}}>
+                      <span className="h-2.5 w-2.5 rounded-full"
+                        style={{ background: desired[use] ? "#fff" : USE_COLORS[use] }} />
+                      {USE_LABELS[use]}
+                    </button>
+                  ))}
                 </div>
-                <input
-                  type="range" min={0} max={100} step={5} value={mix[use]}
-                  onChange={(e) => setMixValue(use, parseInt(e.target.value))}
-                  className="w-full accent-primary-600"
-                />
+                <p className="mt-2 text-[11px] text-gray-400">
+                  리테일+주력용도 선택 시 리테일은 저층 포디움으로, 용도지역 불허 용도는 자동 제외됩니다.
+                </p>
               </div>
-            ))}
-            <div className="mb-4 flex flex-wrap gap-1.5">
-              {([
-                { label: "주거 100", v: { residential: 100, office: 0, retail: 0, hotel: 0 } },
-                { label: "오피스 100", v: { residential: 0, office: 100, retail: 0, hotel: 0 } },
-                { label: "주상복합", v: { residential: 60, office: 0, retail: 20, hotel: 0 } },
-                { label: "오피스+리테일", v: { residential: 0, office: 80, retail: 20, hotel: 0 } },
-              ] as { label: string; v: Record<UseKey, number> }[]).map((preset) => (
-                <button
-                  key={preset.label}
-                  onClick={() => setMix(preset.v)}
-                  className="rounded-full border border-gray-200 px-2.5 py-1 text-[11px] text-gray-600 hover:border-primary-400 hover:text-primary-600"
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
+            ) : (
+              /* ── 직접 배분 (슬라이더) ── */
+              <>
+                <div className="mb-2 flex items-center justify-between">
+                  <label className="text-[12px] font-medium text-gray-500">용도 믹스</label>
+                  <span className={`text-[12px] font-bold ${mixSum === 100 ? "text-emerald-600" : "text-amber-600"}`}>합계 {mixSum}%</span>
+                </div>
+                {(Object.keys(USE_LABELS) as UseKey[]).map((use) => (
+                  <div key={use} className="mb-2.5">
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-[12px] font-medium text-gray-700">
+                        <span className="h-2.5 w-2.5 rounded-full" style={{ background: USE_COLORS[use] }} />
+                        {USE_LABELS[use]}
+                      </span>
+                      <span className="text-[12px] font-semibold text-gray-600">{mix[use]}%</span>
+                    </div>
+                    <input type="range" min={0} max={100} step={5} value={mix[use]}
+                      onChange={(e) => setMixValue(use, parseInt(e.target.value))}
+                      className="w-full accent-primary-600" />
+                  </div>
+                ))}
+                <div className="mb-4 flex flex-wrap gap-1.5">
+                  {([
+                    { label: "주거 100", v: { residential: 100, office: 0, retail: 0, hotel: 0 } },
+                    { label: "오피스 100", v: { residential: 0, office: 100, retail: 0, hotel: 0 } },
+                    { label: "주상복합", v: { residential: 60, office: 0, retail: 20, hotel: 0 } },
+                    { label: "오피스+리테일", v: { residential: 0, office: 80, retail: 20, hotel: 0 } },
+                  ] as { label: string; v: Record<UseKey, number> }[]).map((preset) => (
+                    <button key={preset.label} onClick={() => setMix(preset.v)}
+                      className="rounded-full border border-gray-200 px-2.5 py-1 text-[11px] text-gray-600 hover:border-primary-400 hover:text-primary-600">
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
             {/* ── 고급 옵션 ── */}
             <button
@@ -334,7 +379,7 @@ export default function VolumePage() {
                 <p className="mt-1 text-[12px] text-gray-300">용도별 면적·주차·층수와 최적 용도 랭킹을 확인할 수 있습니다</p>
               </div>
             )}
-            {result && <Results study={result.study} ranking={result.ranking} legalRefs={result.legal_refs} />}
+            {result && <Results study={result.study} ranking={result.ranking} legalRefs={result.legal_refs} recommendation={result.recommendation} />}
           </section>
         </div>
 
@@ -350,15 +395,40 @@ export default function VolumePage() {
 }
 
 /* ── 결과 렌더 ── */
-function Results({ study, ranking, legalRefs }: {
+function Results({ study, ranking, legalRefs, recommendation }: {
   study: Study; ranking: Ranking[];
   legalRefs?: { topic: string; basis: string; detail: string; verified: boolean }[];
+  recommendation?: null | {
+    recommendedMix: Record<string, number>; primaryUse: UseKey; podiumUse?: UseKey;
+    rationale: string[]; excluded: { use: UseKey; reason: string }[];
+  };
 }) {
   const s = study;
   const maxNet = Math.max(...ranking.map((r) => r.netAreaPyeong), 1);
 
   return (
     <>
+      {/* 자동 최적 추천 배너 */}
+      {recommendation && (
+        <div className="rounded-[20px] border border-primary-100 bg-primary-50/60 p-4">
+          <div className="mb-1.5 flex items-center gap-1.5 text-[13px] font-bold text-primary-700">
+            <Sparkles size={15} /> 최대치 상품계획 (자동 추천)
+          </div>
+          <div className="mb-2 flex flex-wrap gap-1.5">
+            {Object.entries(recommendation.recommendedMix).filter(([, v]) => v > 0).map(([u, v]) => (
+              <span key={u} className="rounded-full px-2.5 py-1 text-[12px] font-semibold text-white"
+                style={{ background: USE_COLORS[u as UseKey] }}>
+                {USE_LABELS[u as UseKey]} {v}%{recommendation.podiumUse === u ? " · 포디움" : ""}
+              </span>
+            ))}
+          </div>
+          <ul className="space-y-1">
+            {recommendation.rationale.map((r, i) => (
+              <li key={i} className="text-[11px] leading-relaxed text-primary-900/70">· {r}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       {/* 규제 + 매싱 요약 */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="건폐율" value={`${s.regulation.appliedBCR}%`} sub={s.regulation.basis} />
