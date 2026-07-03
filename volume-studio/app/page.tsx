@@ -8,7 +8,8 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import {
-  generateAlternatives, computeEconomics, ZONE_LIST, VOLUME_DISCLAIMER, CAP_RATES,
+  generateAlternatives, computeEconomics, runCompliance, combineIncentives,
+  INCENTIVES, SITE_SPECIFIC_INCENTIVES, ZONE_LIST, VOLUME_DISCLAIMER, CAP_RATES,
   type ZoneKey, type UseKey, type Alternative,
 } from "@/lib/zoning";
 import {
@@ -48,6 +49,8 @@ export default function Home() {
   const [rents, setRents] = useState<Record<UseKey, string>>({ residential: "", office: "", retail: "", hotel: "" });
   const [constCost, setConstCost] = useState("");
   const [landCost, setLandCost] = useState("");
+  const [roadW, setRoadW] = useState("");
+  const [incSel, setIncSel] = useState<string[]>([]);
 
   const zone = ZONE_LIST.find((z) => z.key === zoneKey);
 
@@ -87,11 +90,15 @@ export default function Home() {
     if (!site || site <= 0) { setErr("대지면적을 입력하세요."); return; }
     if (uses.length === 0) { setErr("원하는 용도를 1개 이상 선택하세요."); return; }
     try {
+      const inc = combineIncentives(incSel);
+      const z = ZONE_LIST.find((x) => x.key === zoneKey)!;
       const list = generateAlternatives(site, zoneKey, uses, {
         avgUnitAreaM2: parseFloat(avgUnit) || undefined,
         avgRoomAreaM2: parseFloat(avgRoom) || undefined,
         northLotWidthM: parseFloat(northW) || undefined,
         lotDepthM: parseFloat(depth) || undefined,
+        farOverride: inc.farMultiplier > 1
+          ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
       });
       setAlts(list);
       setSel(0);
@@ -114,6 +121,21 @@ export default function Home() {
     () => (current ? computeEconomics(current.study, econInput) : null),
     [current, econInput],
   );
+
+  // ── 법규 체크리스트 ──
+  const checks = useMemo(() => {
+    if (!current) return [];
+    const st = current.study;
+    const commercialLike = st.uses
+      .filter((u) => u.use !== "residential")
+      .reduce((s, u) => s + u.gfaAboveM2, 0);
+    return runCompliance(st, {
+      roadWidthM: parseFloat(roadW) || undefined,
+      hasResidential: st.uses.some((u) => u.use === "residential"),
+      commercialLikeGfaM2: commercialLike,
+    });
+  }, [current, roadW]);
+  const incApplied = useMemo(() => combineIncentives(incSel), [incSel]);
 
   // ── 3D 매스 데이터 ──
   const { parcelLocal, massFloors } = useMemo(() => {
@@ -195,6 +217,10 @@ export default function Home() {
                 <label>남북 깊이 (m)</label>
                 <input className="inp" type="number" value={depth} onChange={(e) => { setDepth(e.target.value); setParcelRing(null); }} placeholder="선택" />
               </div>
+              <div className="field" style={{ flex: 1 }}>
+                <label>전면도로 (m)</label>
+                <input className="inp" type="number" value={roadW} onChange={(e) => setRoadW(e.target.value)} placeholder="접도검토" />
+              </div>
             </div>
           </div>
 
@@ -250,6 +276,23 @@ export default function Home() {
                   onChange={(e) => setLandCost(e.target.value)} />
               </div>
             </div>
+          </div>
+
+          <div className="sec">
+            <div className="sec-t">⑤ 용적률 인센티브 (완화 적용 시뮬레이션)</div>
+            {INCENTIVES.map((inc) => (
+              <label key={inc.id} className="inc-row">
+                <input type="checkbox" checked={incSel.includes(inc.id)}
+                  onChange={(e) => setIncSel((s) => e.target.checked ? [...s, inc.id] : s.filter((x) => x !== inc.id))} />
+                <span>
+                  <b>{inc.title}</b> <em>×{inc.farMultiplier}{inc.verified ? " · 원문대조" : ""}</em>
+                  <small>{inc.condition}</small>
+                </span>
+              </label>
+            ))}
+            {incApplied.farMultiplier > 1 && zone && (
+              <div className="note-ok">용적률 {zone.seoulFAR}% → <b>{Math.round(zone.seoulFAR * incApplied.farMultiplier)}%</b> 적용{incApplied.stacked ? " · ⚠ 복수 완화 중복은 건축위원회 심의 사항" : ""}</div>
+            )}
           </div>
 
           <button className="btn btn-primary" onClick={run}>볼륨 산출</button>
@@ -418,6 +461,36 @@ export default function Home() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* 법규 체크리스트 */}
+              <div className="sec">
+                <div className="sec-t">법규 체크리스트 — {checks.filter((c) => c.status === "action").length}건 조치 · {checks.filter((c) => c.status === "review").length}건 확인</div>
+                {checks.map((c) => (
+                  <div key={c.id} className={`check ${c.status}`}>
+                    <div className="check-h">
+                      <span className={`badge ${c.status === "ok" ? "ok" : c.status === "action" ? "no" : c.status === "review" ? "cond" : ""}`}>
+                        {c.status === "ok" ? "충족" : c.status === "action" ? "조치" : c.status === "review" ? "확인" : "해당없음"}
+                      </span>
+                      <b>{c.title}</b>
+                      {c.verified && <em>원문대조</em>}
+                    </div>
+                    <div className="check-b">{c.detail}</div>
+                    <div className="check-f">{c.basis}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 추가 완화 검토 대상 (대상지 조건부) */}
+              <div className="sec">
+                <div className="sec-t">추가 인센티브 검토 대상 (대상지 조건 확인 필요)</div>
+                {SITE_SPECIFIC_INCENTIVES.map((i) => (
+                  <div key={i.title} className="check review">
+                    <div className="check-h"><b>{i.title}</b></div>
+                    <div className="check-b">{i.note}</div>
+                    <div className="check-f">{i.basis}</div>
+                  </div>
+                ))}
               </div>
 
               {s.solar.applied === false && s.solar.reason.includes("미입력") && (
