@@ -14,12 +14,12 @@
 */
 
 import { PYEONG_M2 } from "./programs";
-import type { UseKey } from "./use-zones";
+
 
 export interface FloorRow {
   level: string; // "5F" | "B2"
   n: number; // 지상 양수(1,2..), 지하 음수(-1,-2..)
-  use: UseKey | "parking";
+  use: string; // 시설/용도 키 또는 "parking"
   useLabel: string;
   plateM2: number; // 해당 층 바닥면적
   platePyeong: number;
@@ -35,7 +35,7 @@ export interface FloorRow {
 }
 
 export interface StackUseInfo {
-  use: UseKey;
+  use: string;
   label: string;
   gfaAboveM2: number;
   efficiency: number;
@@ -47,7 +47,7 @@ export interface StackUseInfo {
 }
 
 export interface TypicalFloor {
-  use: UseKey;
+  use: string;
   label: string;
   floors: number; // 이 용도가 차지하는 층 수
   plateM2: number; // 기준층 바닥면적
@@ -92,7 +92,7 @@ export function buildFloorStack(params: {
 
   const above: FloorRow[] = [];
   let cumH = 0;
-  const perUseFloors = new Map<UseKey, number>();
+  const perUseFloors = new Map<string, number>();
 
   const pushFloor = (u: StackUseInfo, plate: number, isGround: boolean) => {
     const level = above.length + 1;

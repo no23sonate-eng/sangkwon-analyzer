@@ -8,9 +8,10 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import {
-  generateAlternatives, computeEconomics, runCompliance, combineIncentives,
-  INCENTIVES, SITE_SPECIFIC_INCENTIVES, ZONE_LIST, VOLUME_DISCLAIMER, CAP_RATES,
-  type ZoneKey, type UseKey, type Alternative,
+  computeFacilityStudy, computeEconomics, runCompliance, combineIncentives,
+  INCENTIVES, SITE_SPECIFIC_INCENTIVES, FACILITIES, FACILITY_KEYS,
+  ZONE_LIST, VOLUME_DISCLAIMER, CAP_RATES,
+  type ZoneKey, type UseKey, type FacilityKey, type FacilityStudy, type Allocation,
 } from "@/lib/zoning";
 import {
   ringToLocalMeters, rectRing, ringArea, scaleToArea, clipToAreaFromNorth, type Pt,
@@ -30,20 +31,20 @@ export default function Home() {
   const [address, setAddress] = useState("");
   const [areaM2, setAreaM2] = useState("660");
   const [zoneKey, setZoneKey] = useState<ZoneKey>("res2_general");
-  const [desired, setDesired] = useState<Record<UseKey, boolean>>({
-    residential: true, office: false, retail: true, hotel: false,
-  });
+  const [progRows, setProgRows] = useState<Array<{
+    facility: FacilityKey; unitPy: string; unitCount: string; targetPy: string; fill: boolean;
+  }>>([
+    { facility: "retail1", unitPy: "20", unitCount: "", targetPy: "", fill: false },
+    { facility: "apt", unitPy: "18", unitCount: "", targetPy: "", fill: true },
+  ]);
   const [parcelRing, setParcelRing] = useState<[number, number][] | null>(null);
   const [northW, setNorthW] = useState("");
   const [depth, setDepth] = useState("");
-  const [avgUnit, setAvgUnit] = useState("60");
-  const [avgRoom, setAvgRoom] = useState("26");
   const [jibun, setJibun] = useState<string | null>(null);
 
   const [lookupBusy, setLookupBusy] = useState(false);
   const [lookupMsg, setLookupMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [alts, setAlts] = useState<Alternative[]>([]);
-  const [sel, setSel] = useState(0);
+  const [study, setStudy] = useState<FacilityStudy | null>(null);
   const [err, setErr] = useState<string | null>(null);
   // 사업성 입력 (만원/평/월 · 만원/평 · 억원)
   const [rents, setRents] = useState<Record<UseKey, string>>({ residential: "", office: "", retail: "", hotel: "" });
@@ -86,28 +87,29 @@ export default function Home() {
   function run() {
     setErr(null);
     const site = parseFloat(areaM2);
-    const uses = USE_KEYS.filter((u) => desired[u]);
     if (!site || site <= 0) { setErr("대지면적을 입력하세요."); return; }
-    if (uses.length === 0) { setErr("원하는 용도를 1개 이상 선택하세요."); return; }
+    if (progRows.length === 0) { setErr("시설을 1개 이상 추가하세요."); return; }
     try {
       const inc = combineIncentives(incSel);
       const z = ZONE_LIST.find((x) => x.key === zoneKey)!;
-      const list = generateAlternatives(site, zoneKey, uses, {
-        avgUnitAreaM2: parseFloat(avgUnit) || undefined,
-        avgRoomAreaM2: parseFloat(avgRoom) || undefined,
+      const allocations: Allocation[] = progRows.map((r) => ({
+        facility: r.facility,
+        unitPy: parseFloat(r.unitPy) || undefined,
+        unitCount: parseFloat(r.unitCount) || undefined,
+        targetGfaPy: parseFloat(r.targetPy) || undefined,
+        fillRemainder: r.fill,
+      }));
+      setStudy(computeFacilityStudy(site, zoneKey, allocations, {
         northLotWidthM: parseFloat(northW) || undefined,
         lotDepthM: parseFloat(depth) || undefined,
-        farOverride: inc.farMultiplier > 1
-          ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
-      });
-      setAlts(list);
-      setSel(0);
+        farOverride: inc.farMultiplier > 1 ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
+      }));
     } catch (e) {
       setErr(e instanceof Error ? e.message : "산출 오류");
     }
   }
 
-  const current = alts[sel] ?? null;
+  const current = study ? { study } : null;
 
   // ── 사업성 (현재 안 + 대안 카드용) ──
   const econInput = useMemo(() => ({
@@ -157,7 +159,7 @@ export default function Home() {
       const ring = f.plateM2 < footArea * 0.985 ? clipToAreaFromNorth(foot, f.plateM2) : foot;
       floors.push({
         ring, z0: f.topHeightM - f.floorHeightM, h: f.floorHeightM,
-        color: USE_COLORS[f.use as UseKey] ?? "#94a3b8",
+        color: (FACILITIES as Record<string, { color: string }>)[f.use]?.color ?? USE_COLORS[f.use as UseKey] ?? "#94a3b8",
       });
     }
     s.stack.below.forEach((b, i) => {
@@ -225,32 +227,58 @@ export default function Home() {
           </div>
 
           <div className="sec">
-            <div className="sec-t">② 원하는 용도 (최대치 자동 배분)</div>
-            <div className="chips">
-              {USE_KEYS.map((u) => (
-                <button key={u} className={`chip${desired[u] ? " on" : ""}`}
-                  style={desired[u] ? { background: USE_COLORS[u], borderColor: USE_COLORS[u] } : {}}
-                  onClick={() => setDesired((d) => ({ ...d, [u]: !d[u] }))}>
-                  <span className="dot" style={{ background: desired[u] ? "#fff" : USE_COLORS[u] }} />
-                  {USE_LABELS[u]}
-                </button>
-              ))}
-            </div>
-            <p className="hint">리테일+주력용도 → 리테일은 저층 포디움. 용도지역 불허 용도는 자동 제외.</p>
-          </div>
-
-          <div className="sec">
-            <div className="sec-t">③ 상품 모듈</div>
-            <div className="row">
-              <div className="field" style={{ flex: 1 }}>
-                <label>주거 전용 (㎡/세대)</label>
-                <input className="inp" type="number" value={avgUnit} onChange={(e) => setAvgUnit(e.target.value)} />
+            <div className="sec-t">② 시설 프로그램 — 면적·유닛(평×개수)으로 직접 구성</div>
+            {progRows.map((r, i) => {
+              const d = FACILITIES[r.facility];
+              return (
+                <div key={i} className="prog-row">
+                  <div className="prog-head">
+                    <span className="dot" style={{ background: d.color }} />
+                    <select className="inp prog-sel" value={r.facility}
+                      onChange={(e) => setProgRows((rs) => rs.map((x, j) => j === i
+                        ? { ...x, facility: e.target.value as FacilityKey, unitPy: String(FACILITIES[e.target.value as FacilityKey].defaultUnitPy ?? 20) } : x))}>
+                      {FACILITY_KEYS.map((k) => <option key={k} value={k}>{FACILITIES[k].label}</option>)}
+                    </select>
+                    <button className="prog-x" onClick={() => setProgRows((rs) => rs.filter((_, j) => j !== i))}>×</button>
+                  </div>
+                  <div className="row">
+                    <div className="field" style={{ flex: 1, margin: 0 }}>
+                      <label>{d.unitLabel} 전용(평)</label>
+                      <input className="inp" type="number" value={r.unitPy}
+                        onChange={(e) => setProgRows((rs) => rs.map((x, j) => j === i ? { ...x, unitPy: e.target.value } : x))} />
+                    </div>
+                    <div className="field" style={{ flex: 1, margin: 0 }}>
+                      <label>{d.unitLabel} 수(목표)</label>
+                      <input className="inp" type="number" placeholder="—" value={r.unitCount}
+                        onChange={(e) => setProgRows((rs) => rs.map((x, j) => j === i ? { ...x, unitCount: e.target.value, fill: false } : x))} />
+                    </div>
+                    <div className="field" style={{ flex: 1, margin: 0 }}>
+                      <label>또는 연면적(평)</label>
+                      <input className="inp" type="number" placeholder="—" value={r.targetPy} disabled={r.fill || !!r.unitCount}
+                        onChange={(e) => setProgRows((rs) => rs.map((x, j) => j === i ? { ...x, targetPy: e.target.value } : x))} />
+                    </div>
+                  </div>
+                  <label className="prog-fill">
+                    <input type="checkbox" checked={r.fill} disabled={!!r.unitCount}
+                      onChange={(e) => setProgRows((rs) => rs.map((x, j) => j === i ? { ...x, fill: e.target.checked, targetPy: "" } : x))} />
+                    잔여 용적률 전부 배정
+                  </label>
+                </div>
+              );
+            })}
+            <button className="btn btn-dark" style={{ width: "100%", marginTop: 4 }}
+              onClick={() => setProgRows((rs) => [...rs, { facility: "office", unitPy: "50", unitCount: "", targetPy: "", fill: false }])}>
+              + 시설 추가
+            </button>
+            {s && (
+              <div className="gauge">
+                <div className="gauge-bar">
+                  <i style={{ width: `${Math.min(100, (s.capacity.usedGfaPy / Math.max(s.capacity.maxGfaPy, 1)) * 100)}%` }} />
+                </div>
+                <span>가용 {s.capacity.maxGfaPy.toLocaleString()}평 중 {s.capacity.usedGfaPy.toLocaleString()}평 사용 · 잔여 {s.capacity.remainingGfaPy.toLocaleString()}평</span>
               </div>
-              <div className="field" style={{ flex: 1 }}>
-                <label>호텔 객실 (㎡/실)</label>
-                <input className="inp" type="number" value={avgRoom} onChange={(e) => setAvgRoom(e.target.value)} />
-              </div>
-            </div>
+            )}
+            <p className="hint">유닛 수를 넣으면 필요 연면적을 역산합니다. 순서 = 적층 순서와 무관(시설별 표준 저층→고층 자동).</p>
           </div>
 
           <div className="sec">
@@ -314,8 +342,8 @@ export default function Home() {
                 </div>
               </div>
               <div className="legend">
-                {s.uses.map((u) => (
-                  <span key={u.use}><i style={{ background: USE_COLORS[u.use] }} />{u.label}</span>
+                {(s as FacilityStudy).programRows.filter((r) => r.gfaPy > 0).map((r) => (
+                  <span key={r.facility}><i style={{ background: FACILITIES[r.facility].color }} />{r.label.split("(")[0]}</span>
                 ))}
                 <span><i style={{ background: "#94a3b8" }} />주차(지하)</span>
               </div>
@@ -335,41 +363,40 @@ export default function Home() {
             <p className="hint">산출 후 대안 비교·건축개요·층별 면적표가 표시됩니다.</p>
           ) : (
             <>
-              {/* 대안 비교 카드 */}
+              {/* 시설 프로그램 결과 */}
               <div className="sec">
-                <div className="sec-t">설계 대안 비교 — 클릭하면 매스·표 전환</div>
-                {alts.map((a, i) => {
-                  const e = computeEconomics(a.study, econInput);
-                  const st = a.study;
-                  return (
-                    <button key={a.id} className={`altcard${i === sel ? " on" : ""}`} onClick={() => setSel(i)}>
-                      <div className="altcard-h">
-                        <b>{i + 1}. {a.label}</b>
-                        {a.recommended && <span className="badge ok">추천</span>}
-                      </div>
-                      <div className="altcard-b">
-                        지상 {st.massing.floorsAbove}층 · 연면적 {py(st.massing.effectiveGfaAboveM2)}평
-                        {st.totals.totalUnits > 0 && ` · ${st.totals.totalUnits}세대`}
-                        {st.totals.totalRooms > 0 && ` · ${st.totals.totalRooms}실`}
-                        {` · 주차 ${st.parking.requiredStalls}대`}
-                        {e && <span className="altcard-v"> · 가치 {e.valueAtCap[1].valueEok.toLocaleString()}억<i>@5.0%</i></span>}
-                      </div>
-                      <div className="altcard-mix">
-                        {(Object.entries(st.input.mix) as [UseKey, number][]).filter(([, v]) => v > 0).map(([u, v]) => (
-                          <i key={u} style={{ width: `${v}%`, background: USE_COLORS[u] }} />
-                        ))}
-                      </div>
-                    </button>
-                  );
-                })}
+                <div className="sec-t">시설 프로그램 산출 — 유닛·층당 배치</div>
+                <table className="spec">
+                  <thead><tr><th>시설</th><th>연면적</th><th>전용</th><th>유닛</th><th>층당</th><th>층수·주차</th></tr></thead>
+                  <tbody>
+                    {(s as FacilityStudy).programRows.map((r) => (
+                      <tr key={r.facility} style={r.clamped ? { background: "#fff7f7" } : {}}>
+                        <td><i style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: FACILITIES[r.facility].color, marginRight: 5 }} />
+                          {r.label}
+                          <span className={`badge ${r.allowance === "allowed" ? "ok" : r.allowance === "conditional" ? "cond" : "no"}`} style={{ marginLeft: 4 }}>
+                            {r.allowance === "allowed" ? "허용" : r.allowance === "conditional" ? "조건부" : "불허"}</span>
+                        </td>
+                        <td>{r.gfaPy.toLocaleString()}평</td>
+                        <td><b>{r.netPy.toLocaleString()}평</b></td>
+                        <td>{r.achievedUnits}{r.requestedUnits ? `/${r.requestedUnits}` : ""}{FACILITIES[r.facility].unitLabel}<div style={{ fontSize: 10, color: "var(--muted)" }}>{r.unitPy}평/유닛</div></td>
+                        <td>{r.unitsPerFloor}</td>
+                        <td>{r.floors}층 · {r.stalls}대</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
-              {current?.rationale?.length ? (
-                <div className="reco">
-                  <div className="t">추천 배분 근거</div>
-                  <ul>{current.rationale.map((r, i) => <li key={i}>{r}</li>)}</ul>
-                </div>
-              ) : null}
+              {/* 시설별 법규 유의사항 */}
+              <div className="sec">
+                <div className="sec-t">시설별 법규 유의사항 (주택법·관광진흥법·체육시설법 등)</div>
+                {(s as FacilityStudy).programRows.map((r) => (
+                  <div key={r.facility} className="check review">
+                    <div className="check-h"><b>{r.label}</b><span style={{ fontSize: 10, color: "var(--muted)" }}>{FACILITIES[r.facility].law}</span></div>
+                    {r.notes.map((n, i) => <div key={i} className="check-b">· {n}</div>)}
+                  </div>
+                ))}
+              </div>
 
               {/* 사업성 검토 */}
               {econ && (
@@ -414,30 +441,6 @@ export default function Home() {
                   {s.totals.totalUnits > 0 && <><span className="k">세대수</span><span className="v">{s.totals.totalUnits}세대</span></>}
                   {s.totals.totalRooms > 0 && <><span className="k">객실수</span><span className="v">{s.totals.totalRooms}실</span></>}
                 </div>
-              </div>
-
-              <div className="sec">
-                <div className="sec-t">용도별 구성</div>
-                <table className="spec">
-                  <thead><tr><th>용도</th><th>비율</th><th>연면적</th><th>전용/임대</th><th>층수</th></tr></thead>
-                  <tbody>
-                    {s.uses.map((u) => (
-                      <tr key={u.use}>
-                        <td><i style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: USE_COLORS[u.use], marginRight: 5 }} />
-                          {u.label} <span className={`badge ${u.allowance === "allowed" ? "ok" : u.allowance === "conditional" ? "cond" : "no"}`}>
-                            {u.allowance === "allowed" ? "허용" : u.allowance === "conditional" ? "조건부" : "불허"}</span></td>
-                        <td>{u.sharePct}%</td>
-                        <td>{py(u.gfaAboveM2)}평</td>
-                        <td><b>{py(u.netAreaM2)}평</b></td>
-                        <td>{u.floors ?? 0}층{u.units != null ? ` · ${u.units}세대` : u.rooms != null ? ` · ${u.rooms}실` : ""}</td>
-                      </tr>
-                    ))}
-                    <tr className="total">
-                      <td>합계</td><td /><td>{py(s.massing.effectiveGfaAboveM2)}평</td>
-                      <td>{py(s.totals.netAreaM2)}평</td><td />
-                    </tr>
-                  </tbody>
-                </table>
               </div>
 
               <div className="sec">
