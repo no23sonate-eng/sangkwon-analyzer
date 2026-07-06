@@ -95,6 +95,15 @@ export function computeFacilityStudy(
   } else {
     solar = { applied: false, reason: "정북 일조 미적용 용도지역" };
   }
+  // 가로구역·고도지구 높이제한 → 층수 캡으로 환산해 연면적 상한 축소
+  if (options.heightLimitM && options.heightLimitM > 0) {
+    const maxFl = Math.max(1, Math.floor((options.heightLimitM - groundH) / avgFloorH) + 1);
+    const capM2 = footprintM2 * maxFl;
+    if (effGfaM2 > capM2) {
+      warnings.push(`높이제한 ${options.heightLimitM}m(고도지구 등) → 지상 약 ${maxFl}층 — 가용 연면적 ${r0(m2ToPyeong(effGfaM2 - capM2))}평 감소.`);
+      effGfaM2 = capM2;
+    }
+  }
   const maxGfaPy = m2ToPyeong(effGfaM2);
 
   // ── 3. 배정: 요청 연면적 산출 → 잔여 클램프 ──

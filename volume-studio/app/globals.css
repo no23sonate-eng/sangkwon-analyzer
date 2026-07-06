@@ -177,3 +177,9 @@ table.spec tr.total td { font-weight: 800; border-top: 2px solid var(--ink); }
 .gauge-bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; margin-bottom: 4px; }
 .gauge-bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
 .gauge span { font-size: 11px; color: var(--ink-2); font-weight: 600; }
+
+/* 고급 설정 접기 */
+.advbox { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fbfcfe; }
+.advbox > summary { cursor: pointer; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+.advbox[open] > summary { margin-bottom: 12px; }
+.chip small { line-height: 1.3; }

@@ -130,3 +130,24 @@ export function parseFeatures(json: unknown): VwFeature[] {
   if (r?.status !== "OK") return [];
   return r.result?.featureCollection?.features ?? [];
 }
+
+/** 용도지구·구역 등 규제명 후보 추출 (스키마 방어적: 한글 명칭 스캔) */
+export function extractDistrictNames(props: Record<string, unknown>): string[] {
+  const out: string[] = [];
+  for (const v of Object.values(props)) {
+    if (typeof v !== "string") continue;
+    const t = v.trim();
+    if (t.length >= 2 && t.length <= 40 && /[가-힣]/.test(t) && /(지구|구역|계획|권역|보호|제한)/.test(t)) out.push(t);
+  }
+  return [...new Set(out)];
+}
+
+/** 고도지구류 명칭에서 높이(m) 파싱 — 예: "20m고도지구" */
+export function parseHeightLimit(names: string[]): number | null {
+  for (const n of names) {
+    if (!/고도/.test(n)) continue;
+    const m = n.match(/(\d+(?:\.\d+)?)\s*(?:m|미터|Ｍ|M)/);
+    if (m) return parseFloat(m[1]);
+  }
+  return null;
+}

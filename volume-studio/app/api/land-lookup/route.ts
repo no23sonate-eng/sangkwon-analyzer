@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   parseGeocode, parseFeatures, outerRing, polygonMetrics,
-  extractZoneName, zoneNameToKey,
+  extractZoneName, zoneNameToKey, extractDistrictNames, parseHeightLimit,
 } from "@/lib/zoning/land-lookup";
 
 /* ── 주소 → 필지 자동조회 (VWorld) ──
@@ -92,10 +92,29 @@ export async function GET(request: Request) {
     } catch { /* warning */ }
     if (!zoneKey) warnings.push(`용도지역 자동 매핑 실패${zoneName ? ` (조회값: ${zoneName})` : ""} — 직접 선택하세요.`);
 
+    // 4. 규제 구역(용도지구·용도구역·지구단위계획) — 고도지구 높이 자동 파싱
+    const districts: { layer: string; names: string[] }[] = [];
+    for (const [layer, label] of [
+      ["LT_C_UQ112", "용도지구(고도·경관 등)"],
+      ["LT_C_UQ113", "용도구역"],
+      ["LT_C_UPISUQ153", "지구단위계획구역"],
+    ] as const) {
+      try {
+        const dj = await vw("data", {
+          service: "data", request: "GetFeature", data: layer,
+          format: "json", crs: "EPSG:4326", geometry: "false", size: "10",
+          geomFilter: pt, key, domain: "localhost",
+        });
+        const names = [...new Set(parseFeatures(dj).flatMap((f) => extractDistrictNames(f.properties)))];
+        if (names.length) districts.push({ layer: label, names });
+      } catch { /* 레이어별 실패 무시 */ }
+    }
+    const heightLimitM = parseHeightLimit(districts.flatMap((d) => d.names));
+
     return NextResponse.json({
       address, refined: point.refined ?? null,
       point: { lat: point.lat, lng: point.lng },
-      parcel, zoneName, zoneKey, warnings,
+      parcel, zoneName, zoneKey, districts, heightLimitM, warnings,
       source: "VWorld 연속지적도·용도지역(LT_C_UQ111)",
     });
   } catch (e) {

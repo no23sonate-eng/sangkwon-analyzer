@@ -51,6 +51,10 @@ export default function Home() {
   const [constCost, setConstCost] = useState("");
   const [landCost, setLandCost] = useState("");
   const [roadW, setRoadW] = useState("");
+  const [districts, setDistricts] = useState<{ layer: string; names: string[] }[]>([]);
+  const [heightLim, setHeightLim] = useState("");
+  const [easySel, setEasySel] = useState<Record<string, boolean>>({ apt: true });
+  const [withRetail, setWithRetail] = useState(true);
   const [incSel, setIncSel] = useState<string[]>([]);
 
   const zone = ZONE_LIST.find((z) => z.key === zoneKey);
@@ -73,6 +77,8 @@ export default function Home() {
         parts.push(`대지 ${d.parcel.areaM2.toLocaleString()}㎡ (${py(d.parcel.areaM2)}평)`);
       }
       if (d.zoneKey) { setZoneKey(d.zoneKey); parts.push(d.zoneName); }
+      setDistricts(d.districts ?? []);
+      if (d.heightLimitM) { setHeightLim(String(d.heightLimitM)); parts.push(`고도제한 ${d.heightLimitM}m 자동 적용`); }
       setLookupMsg({
         ok: true,
         text: (d.refined ? `${d.refined} — ` : "") + parts.join(" · ") +
@@ -83,7 +89,48 @@ export default function Home() {
     } finally { setLookupBusy(false); }
   }
 
-  // ── 산출 ──
+  // ── 쉬운 모드: 선택한 상품으로 자동 구성 ──
+  const EASY: Array<{ key: FacilityKey; label: string; desc: string }> = [
+    { key: "apt", label: "아파트·빌라", desc: "일반 공동주택" },
+    { key: "urban_house", label: "원룸(소형주거)", desc: "도시형생활주택" },
+    { key: "officetel", label: "오피스텔", desc: "주거+업무 겸용" },
+    { key: "office", label: "사무실", desc: "업무시설" },
+    { key: "tourist_hotel", label: "호텔·숙박", desc: "관광호텔 기준" },
+    { key: "sports", label: "운동시설", desc: "헬스·골프연습장 등" },
+  ];
+  function runEasy() {
+    setErr(null);
+    const site = parseFloat(areaM2);
+    if (!site || site <= 0) { setErr("① 에서 주소를 조회하거나 대지면적을 입력해 주세요."); return; }
+    const mains = EASY.filter((e) => easySel[e.key]).map((e) => e.key);
+    if (mains.length === 0 && !withRetail) { setErr("짓고 싶은 상품을 1개 이상 선택해 주세요."); return; }
+    const z = ZONE_LIST.find((x) => x.key === zoneKey)!;
+    const inc = combineIncentives(incSel);
+    const allocations: Allocation[] = [];
+    const footPy = (site * z.seoulBCR / 100) / 3.3058;
+    const estMaxPy = (site * z.seoulFAR * (inc.farMultiplier || 1) / 100) / 3.3058;
+    let remainPy = estMaxPy;
+    if (withRetail) {
+      const retailPy = Math.min(Math.round(footPy * 2), Math.round(estMaxPy * 0.4));
+      allocations.push({ facility: "retail1", targetGfaPy: retailPy });
+      remainPy -= retailPy;
+    }
+    mains.forEach((f, i) => {
+      if (i === mains.length - 1) allocations.push({ facility: f, fillRemainder: true });
+      else allocations.push({ facility: f, targetGfaPy: Math.floor(remainPy / mains.length) });
+    });
+    if (allocations.length === 0) allocations.push({ facility: "retail1", fillRemainder: true });
+    try {
+      setStudy(computeFacilityStudy(site, zoneKey, allocations, {
+        northLotWidthM: parseFloat(northW) || undefined,
+        lotDepthM: parseFloat(depth) || undefined,
+        heightLimitM: parseFloat(heightLim) || undefined,
+        farOverride: inc.farMultiplier > 1 ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
+      }));
+    } catch (e) { setErr(e instanceof Error ? e.message : "산출 오류"); }
+  }
+
+  // ── 산출 (고급: 시설 프로그램 직접 구성) ──
   function run() {
     setErr(null);
     const site = parseFloat(areaM2);
@@ -102,6 +149,7 @@ export default function Home() {
       setStudy(computeFacilityStudy(site, zoneKey, allocations, {
         northLotWidthM: parseFloat(northW) || undefined,
         lotDepthM: parseFloat(depth) || undefined,
+        heightLimitM: parseFloat(heightLim) || undefined,
         farOverride: inc.farMultiplier > 1 ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
       }));
     } catch (e) {
@@ -210,6 +258,42 @@ export default function Home() {
                 {ZONE_LIST.map((z) => <option key={z.key} value={z.key}>{z.name}</option>)}
               </select>
             </div>
+            {districts.length > 0 && (
+              <div style={{ marginTop: 6 }}>
+                {districts.map((d) => (
+                  <div key={d.layer} className="check review" style={{ marginBottom: 4 }}>
+                    <div className="check-h"><b>{d.layer}</b></div>
+                    <div className="check-b">{d.names.join(" · ")}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="sec">
+            <div className="sec-t">② 무엇을 짓고 싶으세요? (복수 선택)</div>
+            <div className="chips">
+              {EASY.map((e) => (
+                <button key={e.key} className={`chip${easySel[e.key] ? " on" : ""}`}
+                  style={easySel[e.key] ? { background: FACILITIES[e.key].color, borderColor: FACILITIES[e.key].color } : {}}
+                  onClick={() => setEasySel((s) => ({ ...s, [e.key]: !s[e.key] }))}>
+                  <span className="dot" style={{ background: easySel[e.key] ? "#fff" : FACILITIES[e.key].color }} />
+                  <span>{e.label}<small style={{ display: "block", fontSize: 10, fontWeight: 500, opacity: .75 }}>{e.desc}</small></span>
+                </button>
+              ))}
+            </div>
+            <label className="prog-fill" style={{ marginTop: 10 }}>
+              <input type="checkbox" checked={withRetail} onChange={(e) => setWithRetail(e.target.checked)} />
+              1~2층에 상가(근린생활시설) 자동 포함
+            </label>
+          </div>
+
+          <button className="btn btn-primary" onClick={runEasy}>이 땅에 뭘 지을 수 있는지 보기</button>
+          {err && <div className="note-bad">{err}</div>}
+          <p className="hint">법규(건폐율·용적률·일조·고도·주차)를 자동 반영해 최대 규모를 계산합니다. 유닛 평수·면적을 직접 지정하려면 아래 고급 설정을 여세요.</p>
+
+          <details className="advbox">
+            <summary>고급 설정 (전문가용 — 유닛·면적 직접 지정, 인센티브, 사업성)</summary>
             <div className="row">
               <div className="field" style={{ flex: 1 }}>
                 <label>북측 폭 (m)</label>
@@ -224,7 +308,13 @@ export default function Home() {
                 <input className="inp" type="number" value={roadW} onChange={(e) => setRoadW(e.target.value)} placeholder="접도검토" />
               </div>
             </div>
-          </div>
+            <div className="row">
+              <div className="field" style={{ flex: 1 }}>
+                <label>높이제한 (m, 고도지구·가로구역)</label>
+                <input className="inp" type="number" value={heightLim} placeholder="주소 조회 시 자동"
+                  onChange={(e) => setHeightLim(e.target.value)} />
+              </div>
+            </div>
 
           <div className="sec">
             <div className="sec-t">② 시설 프로그램 — 면적·유닛(평×개수)으로 직접 구성</div>
@@ -281,6 +371,8 @@ export default function Home() {
             <p className="hint">유닛 수를 넣으면 필요 연면적을 역산합니다. 순서 = 적층 순서와 무관(시설별 표준 저층→고층 자동).</p>
           </div>
 
+          <button className="btn btn-dark" style={{ width: "100%" }} onClick={run}>고급 구성으로 산출</button>
+
           <div className="sec">
             <div className="sec-t">④ 사업성 (선택 — 입력 시 수익·가치 산출)</div>
             <div className="chips" style={{ marginBottom: 8 }}>
@@ -323,8 +415,8 @@ export default function Home() {
             )}
           </div>
 
-          <button className="btn btn-primary" onClick={run}>볼륨 산출</button>
-          {err && <div className="note-bad">{err}</div>}
+          </details>
+
           <p className="disclaimer">{VOLUME_DISCLAIMER}</p>
         </aside>
 
@@ -363,6 +455,19 @@ export default function Home() {
             <p className="hint">산출 후 대안 비교·건축개요·층별 면적표가 표시됩니다.</p>
           ) : (
             <>
+              {/* 쉬운 요약 */}
+              <div className="reco">
+                <div className="t">한눈에 보기</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#1e3a8a", lineHeight: 1.6 }}>
+                  이 땅에는 <u>지상 {s.massing.floorsAbove}층 · 연면적 약 {py(s.massing.effectiveGfaAboveM2)}평</u>까지 지을 수 있어요.
+                </div>
+                <div style={{ fontSize: 12, color: "#1e40af", marginTop: 4, lineHeight: 1.7 }}>
+                  {(s as FacilityStudy).programRows.filter((r) => r.gfaPy > 0).map((r) =>
+                    `${r.label.split("(")[0]} ${r.floors}개층${r.achievedUnits > 0 && FACILITIES[r.facility].unitLabel !== "구획" ? ` ${r.achievedUnits}${FACILITIES[r.facility].unitLabel}` : ""}`
+                  ).join(" + ")} · 주차 {s.parking.requiredStalls}대(지하 {s.parking.basementFloors}층)
+                </div>
+              </div>
+
               {/* 시설 프로그램 결과 */}
               <div className="sec">
                 <div className="sec-t">시설 프로그램 산출 — 유닛·층당 배치</div>
