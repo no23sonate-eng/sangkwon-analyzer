@@ -44,7 +44,8 @@ export default function Home() {
 
   const [lookupBusy, setLookupBusy] = useState(false);
   const [lookupMsg, setLookupMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [study, setStudy] = useState<FacilityStudy | null>(null);
+  const [scens, setScens] = useState<Array<{ label: string; note?: string; farPct: number; study: FacilityStudy }>>([]);
+  const [scenSel, setScenSel] = useState(0);
   const [err, setErr] = useState<string | null>(null);
   // 사업성 입력 (만원/평/월 · 만원/평 · 억원)
   const [rents, setRents] = useState<Record<UseKey, string>>({ residential: "", office: "", retail: "", hotel: "" });
@@ -105,28 +106,45 @@ export default function Home() {
     const mains = EASY.filter((e) => easySel[e.key]).map((e) => e.key);
     if (mains.length === 0 && !withRetail) { setErr("짓고 싶은 상품을 1개 이상 선택해 주세요."); return; }
     const z = ZONE_LIST.find((x) => x.key === zoneKey)!;
-    const inc = combineIncentives(incSel);
-    const allocations: Allocation[] = [];
     const footPy = (site * z.seoulBCR / 100) / 3.3058;
-    const estMaxPy = (site * z.seoulFAR * (inc.farMultiplier || 1) / 100) / 3.3058;
-    let remainPy = estMaxPy;
-    if (withRetail) {
-      const retailPy = Math.min(Math.round(footPy * 2), Math.round(estMaxPy * 0.4));
-      allocations.push({ facility: "retail1", targetGfaPy: retailPy });
-      remainPy -= retailPy;
-    }
-    mains.forEach((f, i) => {
-      if (i === mains.length - 1) allocations.push({ facility: f, fillRemainder: true });
-      else allocations.push({ facility: f, targetGfaPy: Math.floor(remainPy / mains.length) });
-    });
-    if (allocations.length === 0) allocations.push({ facility: "retail1", fillRemainder: true });
+
+    const buildAlloc = (farPct: number): Allocation[] => {
+      const estMaxPy = (site * farPct / 100) / 3.3058;
+      const out: Allocation[] = [];
+      let remainPy = estMaxPy;
+      if (withRetail) {
+        const retailPy = Math.min(Math.round(footPy * 2), Math.round(estMaxPy * 0.4));
+        out.push({ facility: "retail1", targetGfaPy: retailPy });
+        remainPy -= retailPy;
+      }
+      mains.forEach((f, i) => {
+        if (i === mains.length - 1) out.push({ facility: f, fillRemainder: true });
+        else out.push({ facility: f, targetGfaPy: Math.floor(remainPy / mains.length) });
+      });
+      if (out.length === 0) out.push({ facility: "retail1", fillRemainder: true });
+      return out;
+    };
+    const opts = {
+      northLotWidthM: parseFloat(northW) || undefined,
+      lotDepthM: parseFloat(depth) || undefined,
+      heightLimitM: parseFloat(heightLim) || undefined,
+    };
+    const mk = (label: string, ids: string[], note?: string) => {
+      const mult = combineIncentives(ids).farMultiplier || 1;
+      const farPct = Math.round(z.seoulFAR * mult);
+      return {
+        label, note, farPct,
+        study: computeFacilityStudy(site, zoneKey, buildAlloc(farPct),
+          ids.length ? { ...opts, farOverride: farPct } : opts),
+      };
+    };
     try {
-      setStudy(computeFacilityStudy(site, zoneKey, allocations, {
-        northLotWidthM: parseFloat(northW) || undefined,
-        lotDepthM: parseFloat(depth) || undefined,
-        heightLimitM: parseFloat(heightLim) || undefined,
-        farOverride: inc.farMultiplier > 1 ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
-      }));
+      setScens([
+        mk("기본 (서울 조례)", []),
+        mk("공개공지 설치 시", ["pops"], "대지 5~10% 공개공지 제공 → 용적률 1.2배 (건축법 시행령 §27의2)"),
+        mk("최대 완화 (공개공지+녹색건축)", ["pops", "green"], "1.38배 — 서로 다른 근거의 중복 완화는 건축위원회 심의 사항"),
+      ]);
+      setScenSel(0);
     } catch (e) { setErr(e instanceof Error ? e.message : "산출 오류"); }
   }
 
@@ -146,17 +164,23 @@ export default function Home() {
         targetGfaPy: parseFloat(r.targetPy) || undefined,
         fillRemainder: r.fill,
       }));
-      setStudy(computeFacilityStudy(site, zoneKey, allocations, {
-        northLotWidthM: parseFloat(northW) || undefined,
-        lotDepthM: parseFloat(depth) || undefined,
-        heightLimitM: parseFloat(heightLim) || undefined,
-        farOverride: inc.farMultiplier > 1 ? Math.round(z.seoulFAR * inc.farMultiplier) : undefined,
-      }));
+      const farPct = Math.round(z.seoulFAR * (inc.farMultiplier || 1));
+      setScens([{
+        label: "고급 구성 (직접 지정)", farPct,
+        study: computeFacilityStudy(site, zoneKey, allocations, {
+          northLotWidthM: parseFloat(northW) || undefined,
+          lotDepthM: parseFloat(depth) || undefined,
+          heightLimitM: parseFloat(heightLim) || undefined,
+          farOverride: inc.farMultiplier > 1 ? farPct : undefined,
+        }),
+      }]);
+      setScenSel(0);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "산출 오류");
     }
   }
 
+  const study = scens[scenSel]?.study ?? null;
   const current = study ? { study } : null;
 
   // ── 사업성 (현재 안 + 대안 카드용) ──
@@ -455,6 +479,26 @@ export default function Home() {
             <p className="hint">산출 후 대안 비교·건축개요·층별 면적표가 표시됩니다.</p>
           ) : (
             <>
+              {/* 용적률 시나리오 비교 */}
+              {scens.length > 1 && (
+                <div className="sec">
+                  <div className="sec-t">용적률 최대화 대안 — 클릭하면 전환</div>
+                  {scens.map((sc, i) => (
+                    <button key={sc.label} className={`altcard${i === scenSel ? " on" : ""}`} onClick={() => setScenSel(i)}>
+                      <div className="altcard-h"><b>{i + 1}. {sc.label}</b>
+                        <span className="badge ok">용적률 {sc.farPct}%</span></div>
+                      <div className="altcard-b">
+                        지상 {sc.study.massing.floorsAbove}층 · 연면적 <b>{py(sc.study.massing.effectiveGfaAboveM2)}평</b>
+                        {i > 0 && scens[0] && <span className="altcard-v"> (+{(Math.round((sc.study.massing.effectiveGfaAboveM2 - scens[0].study.massing.effectiveGfaAboveM2) / 3.3058)).toLocaleString()}평)</span>}
+                        {sc.study.totals.totalUnits > 0 && ` · ${sc.study.totals.totalUnits}세대`}
+                        {sc.study.totals.totalRooms > 0 && ` · ${sc.study.totals.totalRooms}실`}
+                      </div>
+                      {sc.note && <div className="altcard-b" style={{ color: "var(--warn)" }}>{sc.note}</div>}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {/* 쉬운 요약 */}
               <div className="reco">
                 <div className="t">한눈에 보기</div>
