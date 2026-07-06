@@ -11,6 +11,7 @@ import {
 */
 
 const VW = "https://api.vworld.kr/req";
+const VW_DOMAIN = process.env.VWORLD_DOMAIN ?? "localhost";
 
 async function vw(path: string, params: Record<string, string>): Promise<unknown> {
   const qs = new URLSearchParams(params).toString();
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
       const pj = await vw("data", {
         service: "data", request: "GetFeature", data: "LP_PA_CBND_BUBUN",
         format: "json", crs: "EPSG:4326", geometry: "true", size: "1",
-        geomFilter: pt, key, domain: "localhost",
+        geomFilter: pt, key, domain: VW_DOMAIN,
       });
       const feats = parseFeatures(pj);
       const ring = feats[0] ? outerRing(feats[0].geometry) : null;
@@ -82,7 +83,7 @@ export async function GET(request: Request) {
       const zj = await vw("data", {
         service: "data", request: "GetFeature", data: "LT_C_UQ111",
         format: "json", crs: "EPSG:4326", geometry: "false", size: "5",
-        geomFilter: pt, key, domain: "localhost",
+        geomFilter: pt, key, domain: VW_DOMAIN,
       });
       for (const f of parseFeatures(zj)) {
         const name = extractZoneName(f.properties);
@@ -103,7 +104,7 @@ export async function GET(request: Request) {
         const dj = await vw("data", {
           service: "data", request: "GetFeature", data: layer,
           format: "json", crs: "EPSG:4326", geometry: "false", size: "10",
-          geomFilter: pt, key, domain: "localhost",
+          geomFilter: pt, key, domain: VW_DOMAIN,
         });
         const names = [...new Set(parseFeatures(dj).flatMap((f) => extractDistrictNames(f.properties)))];
         if (names.length) districts.push({ layer: label, names });
