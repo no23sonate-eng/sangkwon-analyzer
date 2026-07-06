@@ -228,7 +228,9 @@ export default function Home() {
 
     const floors: MassFloor[] = [];
     for (const f of s.stack.above) {
-      const ring = f.plateM2 < footArea * 0.985 ? clipToAreaFromNorth(foot, f.plateM2) : foot;
+      const ring = s.stack.stepped
+        ? (f.plateM2 < footArea * 0.985 ? clipToAreaFromNorth(foot, f.plateM2) : foot)
+        : scaleToArea(foot, Math.min(f.plateM2, footArea));
       floors.push({
         ring, z0: f.topHeightM - f.floorHeightM, h: f.floorHeightM,
         color: (FACILITIES as Record<string, { color: string }>)[f.use]?.color ?? USE_COLORS[f.use as UseKey] ?? "#94a3b8",

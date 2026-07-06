@@ -129,12 +129,12 @@ export function buildFloorStack(params: {
       remaining -= plate;
     }
   } else {
+    // 시설별 층수 = ceil(연면적/건축면적), 층 면적은 균등 분할 — 얇은 부분층 방지
     for (const u of uses) {
-      let rem = u.gfaAboveM2;
-      while (rem > 1 && above.length < 200) {
-        pushFloor(u, Math.min(footprintM2, rem), above.length === 0);
-        rem -= footprintM2;
-      }
+      if (u.gfaAboveM2 <= 1) continue;
+      const n = Math.max(1, Math.ceil(u.gfaAboveM2 / footprintM2));
+      const plate = u.gfaAboveM2 / n;
+      for (let i = 0; i < n && above.length < 200; i++) pushFloor(u, plate, above.length === 0);
     }
   }
 
