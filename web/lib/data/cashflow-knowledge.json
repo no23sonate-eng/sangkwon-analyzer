@@ -1,0 +1,125 @@
+{
+  "_meta": {
+    "version": "2026-07-06",
+    "description": "실전 재무모델 4건에서 학습한 캐쉬플로우 표준 파라미터. docs/cashflow/model-spec.md 참조.",
+    "learned_from": [
+      { "id": "brix730dev", "project": "한남동 730 소요한남 (개발기간)", "model_type": "dev_presale", "unit": "천원" },
+      { "id": "brix730ops", "project": "한남동 730 소요한남 (운영기간)", "model_type": "ops_propco_opco", "unit": "백만원" },
+      { "id": "soho", "project": "한남동 28-2 Soho House", "model_type": "dev_lease_exit", "unit": "원" },
+      { "id": "workstay", "project": "제주 맹그로브 시티 (WORKSTAY)", "model_type": "valueadd_lease_ops", "unit": "천원" }
+    ]
+  },
+  "model_types": {
+    "dev_presale": { "label": "개발-분양(보증금)형", "skeleton": "brix730dev", "핵심시트": ["사업수지", "CashFlow(개발기간)", "Loan민감도", "Unit_Price", "Tax"] },
+    "dev_lease_exit": { "label": "개발-임대-매각형", "skeleton": "soho", "핵심시트": ["A&R", "TIC", "Dev.CF(M)", "NOI", "CF(M)", "Rentroll", "투자자수익률"] },
+    "valueadd_lease_ops": { "label": "밸류애드-임대운영형", "skeleton": "workstay", "핵심시트": ["A&R", "TIC", "RentRoll", "운영가정", "CF(M)", "리파자금판", "운영실적", "투자자수익률"] },
+    "ops_propco_opco": { "label": "운영 손익형 (Prop.Co./OpCo.)", "skeleton": "brix730ops", "핵심시트": ["A&R", "IS(FY)부문별", "인건비", "일반관리비", "공통경비안분", "Tax"] }
+  },
+  "tic_taxonomy": [
+    { "code": "land", "name": "토지관련비", "items": ["토지비", "취득세", "국민주택채권할인", "매입세액불공제", "법무사수수료", "명도비", "중개수수료"] },
+    { "code": "construction_direct", "name": "직접공사비", "items": ["도급공사비", "철거공사비", "인입공사비", "공사예비비", "FF&E", "임차인인테리어"] },
+    { "code": "construction_indirect", "name": "간접공사비", "items": ["설계비", "감리비", "CM수수료", "인테리어설계비", "DesignFee", "인허가·지반조사·측량"] },
+    { "code": "levies", "name": "각종부담금", "items": ["하수도원인자", "전기원인자", "가스원인자", "예술장식품", "과밀·교통·개발부담금"] },
+    { "code": "incidental", "name": "부대비·제세공과금", "items": ["사업예비비", "보험·민원", "재산세", "종부세", "건물취득세", "국민주택채권(건물)", "보존등기", "VAT불공제", "세금예비비"] },
+    { "code": "professional", "name": "용역수수료", "items": ["법률", "재무·세무", "감정평가", "사업성평가", "시장조사", "조달대행", "예비"] },
+    { "code": "spc", "name": "SPC·PFV비용", "items": ["설립비용", "AMC매입보수", "AMC운용보수", "신탁수수료", "자금관리", "회계·세무", "PMFee", "TI"] },
+    { "code": "financial", "name": "금융비용", "items": ["브릿지이자", "PF이자", "선취수수료", "미인출수수료", "금융자문", "유동화비용", "중간배당"] },
+    { "code": "sales", "name": "판매비 (분양형)", "items": ["M/H건축", "M/H임차·운영", "광고선전비", "분양수수료", "분양프로모션"] },
+    { "code": "stabilization", "name": "임대안정화 (임대형)", "items": ["임대수수료", "렌트프리손실", "안정화기간순손실"] }
+  ],
+  "rates": {
+    "acquisition_tax": {
+      "land_purchase": { "value": 0.046, "note": "취득세 4% + 지방교육세 0.4% + 농특세 0.2%", "source": ["soho"] },
+      "building_original": { "value": 0.0316, "note": "원시취득 2.8% + 0.16% + 0.2%. 과표 = 공사비+부대+용역+금융 누적", "source": ["brix730dev", "soho"] },
+      "building_renovation": { "value": 0.022, "note": "대수선 (밸류애드)", "source": ["workstay"] }
+    },
+    "contingency": {
+      "construction": { "value": 0.05, "base": "도급공사비", "source": ["soho", "workstay"] },
+      "project": { "value": 0.0184, "base": "대상사업비", "alt": "일식 20억", "source": ["brix730dev", "soho"] },
+      "tax_reserve": { "value": 0.01, "base": "제세공과금", "source": ["soho"] }
+    },
+    "unit_costs": {
+      "design_fee_per_py": { "range_krw1000": [182.5, 300], "source": ["brix730dev", "soho"] },
+      "supervision": { "value": "월 20백만 정액 or 142.86천원/평", "source": ["soho", "brix730dev"] },
+      "cm_fee_monthly_krw": { "value": 40000000, "source": ["soho"] },
+      "utility_connection_per_py": { "range_krw1000": [200, 217.2], "source": ["soho", "brix730dev"] }
+    },
+    "amc_fees": {
+      "acquisition": { "note": "일식. 딜 규모 비례: 236억 딜 3억 ~ 1,650억 딜 20억", "source": ["workstay", "soho"] },
+      "management_annual": { "range": [0.0036, 0.0073], "base": "총사업비", "note": "인허가기간은 절반 수준", "source": ["brix730dev", "soho"] },
+      "pf_arrangement": { "value": 0.005, "base": "대출총액", "source": ["brix730dev"] },
+      "disposition_base": { "range": [0.004, 0.01], "base": "매각가", "source": ["soho", "workstay"] },
+      "disposition_incentive": { "value": 0.1, "base": "초과이익(순매각차익)", "hurdle_irr": 0.12, "source": ["soho", "workstay"] }
+    },
+    "spc": {
+      "capital_registration": { "value": 0.0048, "base": "설립자본금", "source": ["soho", "workstay"] },
+      "land_trust": { "value": "월 35백만 or 사업비의 ~1.5% 일식", "source": ["soho", "brix730dev"] },
+      "collateral_trust_annual": { "value": 0.0025, "base": "총사업비", "source": ["soho"] }
+    },
+    "sales_costs": {
+      "advertising": { "value": 0.009, "base": "매출", "source": ["brix730dev"] },
+      "sales_commission": { "value": 0.013, "base": "매출(분양률 연동)", "source": ["brix730dev"] },
+      "leasing_commission": { "value": 2.5, "base": "신규계약 월임대료 배수", "source": ["workstay"] },
+      "disposition_cost": { "range": [0.005, 0.015], "base": "매각가", "source": ["soho", "workstay"] }
+    },
+    "financing": {
+      "pf_tranche_a": { "all_in": [0.057, 0.066], "upfront": [0.01, 0.011], "source": ["brix730dev", "soho"] },
+      "pf_tranche_b": { "all_in": [0.07, 0.08], "upfront": 0.036, "source": ["brix730dev"] },
+      "pf_tranche_c": { "all_in": [0.09, 0.096], "note": "신탁계정대/사모사채", "source": ["brix730dev", "soho"] },
+      "post_completion_a": { "all_in": [0.0445, 0.045], "source": ["soho", "workstay"] },
+      "post_completion_b": { "all_in": 0.065, "source": ["soho"] },
+      "unused_commitment": { "value": 0.005, "note": "미인출 한도 연 0.5%", "source": ["brix730dev"] },
+      "advisory": { "range": [0.01, 0.0146], "base": "대출총액", "source": ["soho", "brix730dev"] },
+      "interest_engine": { "monthly_rate": "연리/12", "payment_cycle": "Tr.A·B 3개월 적립-지급, Tr.C 매월", "source": ["brix730dev", "soho"] },
+      "ltv_range": [0.46, 0.694],
+      "ltc_range": [0.56, 0.84]
+    },
+    "operating": {
+      "escalation_annual": { "value": 0.025, "note": "매출·비용 일괄. 임대계약은 2~3%/년 + 상승개시 연차 명시", "source": ["brix730ops", "soho", "workstay"] },
+      "rampup_lease": { "value": [0.55, 0.85, 1.0], "note": "연차별 임대료 수취율", "source": ["soho"] },
+      "rampup_hotel_occ": { "value": [0.67, 0.777, 0.862, 0.88], "source": ["workstay"] },
+      "rent_free_months": { "range": [6, 7], "note": "fit-out 포함", "source": ["soho", "workstay"] },
+      "turnover_vacancy": { "value": 0.03, "note": "재계약률 60% × downtime 4개월 ÷ 임대기간 60개월", "source": ["workstay"] },
+      "mgmt_fee_base": { "range": [0.02, 0.03], "base": "총매출", "note": "위탁운영 기본수수료", "source": ["brix730ops", "workstay"] },
+      "mgmt_fee_incentive": { "range": [0.04, 0.08], "base": "AGOP", "source": ["brix730ops", "brix730dev"] },
+      "reserve_ffe": { "value": 0.015, "base": "총매출", "source": ["brix730ops", "brix730dev"] },
+      "brand_marketing_fee": { "value": 0.015, "base": "총매출", "source": ["brix730dev"] },
+      "am_fee_annual": { "value": 0.0008, "base": "총사업비", "source": ["brix730ops"] },
+      "outsourcing_fee": { "value": 0.05, "base": "외주 인건비", "source": ["brix730ops"] },
+      "opex_per_py_monthly_krw": { "수선유지": 1000, "보험": 300, "유틸리티": 3500, "일반관리비": 8675, "note": "2026 단가, 계약면적 평 기준", "source": ["brix730ops"] },
+      "deposit_yield": { "value": 0.03, "note": "보증금 운용이율", "source": ["brix730ops"] }
+    },
+    "revenue_models": {
+      "unit_price_index": { "floor": { "2F": 0.96, "3F": 0.98, "4F": 1.0, "5F": 1.02, "6F": 1.04, "7F": 1.05 }, "location": { "한남대로": 1.02, "이면도로": 1.01 }, "interference": { "비간섭": 1.03, "육교": 0.98, "옹벽": 0.95 }, "note": "기준평당가 × 지수 곱 = 호실별 분양가", "source": ["brix730dev"] },
+      "deposit_conversion_rate": { "value": 0.05, "note": "전환보증금 = 월임대료 × 12 ÷ 5%", "source": ["brix730dev"] },
+      "masterlease_reverse_calc": { "base_rent_cap": 0.065, "capex_recovery_cap": 0.0667, "note": "기본임대료 = 개발원가 × 6.5%; 임차인 CAPEX = 투입비 × 6.67% (15년 회수)", "source": ["soho"] },
+      "mrg_vs_revenue_share": { "revenue_share": { "객실": 0.38, "F&B": 0.15, "대관·코워킹·기타": 0.43, "굿즈": 0.06 }, "note": "납부임대료 = MAX(MRG, Σ 부문매출 × 연동율); 임대료/매출 35~40% 상한 역검증", "source": ["workstay"] },
+      "rent_to_sales_burden_max": { "range": [0.35, 0.42], "note": "임차인 지속가능성 상한", "source": ["workstay", "soho"] }
+    },
+    "presale_schedule": {
+      "down_payment": { "range": [0.017, 0.1] },
+      "installments": { "note": "중도금 회차별 10%, 2~5회" },
+      "balance_at_completion": true,
+      "absorption_curve": { "value": [0.2, 0.2, 0.2, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.03, 0.02], "note": "분양개시 후 12개월 완판", "source": ["brix730dev"] },
+      "account_waterfall": { "note": "분양률 20%까지 상환70/운영30 → 초과 94/6 → 준공후 100/0", "source": ["brix730dev"] }
+    },
+    "exit": {
+      "terminal_cap": { "range": [0.053, 0.06], "base": "forward NOI(N+1)", "source": ["soho", "workstay"] },
+      "waterfall_order": ["매각비용", "기본보수", "성과보수", "대출상환", "보증금반환", "Capex reserve·청산비", "우선주 누적배당", "잔여재산분배"],
+      "preferred_dividend": { "class1": 0.046, "class2_cumulative": 0.07, "source": ["soho"] }
+    },
+    "tax_engine": {
+      "land_official_price_growth": { "range": [0.0627, 0.0713], "note": "5년 기하평균", "source": ["brix730dev", "brix730ops"] },
+      "property_tax": { "fair_market_ratio": 0.7, "brackets": [0.002, 0.003, 0.004], "urban_area": 0.0014, "education_surtax": 0.2, "welfare_reduction": 0.25 },
+      "comprehensive_re_tax": { "deduction_krw": 8000000000, "brackets": [0.005, 0.006, 0.007], "rural_surtax": 0.2 },
+      "building_std_price_per_sqm": { "range_krw1000": [770, 840], "growth": [0.026, 0.032] },
+      "deemed_rent_interest": { "value": 0.035, "vat": 0.1 }
+    }
+  },
+  "output_metrics": ["사업이익·이익률", "Unlevered IRR·MoM", "Levered IRR·MoM", "주주별 XIRR(실출자일)", "NOI·yield on cost", "DSCR(min·max)", "CoC", "LTV·LTC", "대주 Exit 분양률", "EBITDA·마진", "분배가능이익 체크"],
+  "scenario_standards": {
+    "dev_presale": "분양률 100/50/20/0% × 중도금 스케줄 2안 + 미분양 담보대출 Exit(감평×LTV50%)",
+    "dev_lease_exit": "핵심 임차인 재계약 3안 × 매각가, cap ±, 성과임대료 인정률 100/50/0%",
+    "common": "이자 증가분, Check 로직(현금부족·합계일치·청산완료), Log 버전이력"
+  }
+}

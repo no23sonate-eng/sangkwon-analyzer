@@ -26,12 +26,21 @@
 - 컨설팅 들어오는 케이스마다 본인 실측값을 `web/scripts/sanity-check.mjs`에 누적
 - 가정값/추정값은 회귀 기대치로 사용 금지. 본인이 직접 측정한 실거래만
 
+## 캐쉬플로우 학습·작성
+
+실전 재무모델(부동산 개발·운영)을 학습해 신규 캐쉬플로우를 작성하는 시스템. `docs/cashflow/README.md`가 진입점.
+- 원본 엑셀: `data/cashflow-docs/` (**gitignore**) / 학습 스펙: `docs/cashflow/model-spec.md` / 파라미터: `web/lib/data/cashflow-knowledge.json`
+- 새 모델 학습 시: 개별 분석을 `docs/cashflow/models/`에 추가 + spec 요율표·knowledge.json에 근거 병합 (묻지 말고 진행)
+- 신규 캐쉬플로우 작성 시: model-spec.md 유형 분기(분양형/임대-매각형/밸류애드형/운영 손익형) → 체크리스트 10단계. 요율 기본값은 knowledge.json 학습값, 근거 없는 항목은 `추정` 표기
+
 ## 디렉토리
 
 - `services/` — Python 파이프라인 (크롤러·API·스케줄러)
 - `web/` — Next.js·Supabase·rent-estimator
+- `docs/cashflow/` — 캐쉬플로우 학습 지식베이스 (spec + 모델별 분석)
 - `data/reports/` — CBRE/JLL/쿠시먼 PDF (분기 본인 업로드, **gitignore**)
 - `data/owner-network-rents.csv` — 본인 네트워크 실거래 (**gitignore**)
+- `data/cashflow-docs/` — 캐쉬플로우 재무모델 원본 엑셀 (**gitignore**)
 
 ## 본인 입력 필요 (이것만)
 
@@ -40,8 +49,9 @@
 3. Supabase 마이그레이션 SQL은 dashboard SQL Editor 에서 수기 적용 — REST 자동화 불가
 4. 신규 권역 매장 자동수집: `python services/place_crawler.py --bootstrap-prime` (분기 1회) +
    admin "매장 검수" 탭에서 컨설팅 들어가는 권역만 수기 검수
+5. 캐쉬플로우 재무모델이 생기면 업로드 + "학습해" (들어올 때마다)
 
-이 4개 외에는 자동.
+이 5개 외에는 자동.
 
 ## 메모리 vs CLAUDE.md
 
