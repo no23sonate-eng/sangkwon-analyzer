@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   parseGeocode, parseFeatures, outerRing, polygonMetrics,
   extractZoneName, zoneNameToKey, extractDistrictNames, parseHeightLimit,
+  extractRoadInfo, parseElevation,
 } from "@/lib/zoning/land-lookup";
 
 /* ── 주소 → 필지 자동조회 (VWorld) ──
@@ -112,11 +113,47 @@ export async function GET(request: Request) {
     }
     const heightLimitM = parseHeightLimit(districts.flatMap((d) => d.names));
 
+    // 5. 전면도로 자동 감지 — 인접 도로 폭(사선·접도 검토 입력)
+    //    도로 레이어는 지역·버전별로 상이 → 여러 후보를 순차 시도(방어적).
+    let road: { name?: string; widthM?: number } | null = null;
+    for (const layer of ["LT_L_MOCTLINK", "LT_L_SPRD", "LT_C_UPISUQ161"]) {
+      try {
+        const rj = await vw("data", {
+          service: "data", request: "GetFeature", data: layer,
+          format: "json", crs: "EPSG:4326", geometry: "false", size: "5",
+          buffer: "15", geomFilter: pt, key, domain: VW_DOMAIN,
+        });
+        for (const f of parseFeatures(rj)) {
+          const info = extractRoadInfo(f.properties);
+          if (info.name || info.widthM) {
+            const prev: { name?: string; widthM?: number } = road ?? {};
+            road = { name: info.name ?? prev.name, widthM: info.widthM ?? prev.widthM };
+            if (road.widthM) break;
+          }
+        }
+        if (road?.widthM) break;
+      } catch { /* 레이어별 실패 무시 */ }
+    }
+    if (!road?.widthM) warnings.push("전면도로 폭 자동감지 실패 — 접도·사선 검토용으로 직접 입력하세요.");
+
+    // 6. 대지 표고(도로 고저차 참고용) — DEM point elevation (best-effort)
+    //    ※ 정밀 고저차는 현황측량 사항. 여기서는 개략 표고만 참고 제공.
+    let elevationM: number | null = null;
+    try {
+      const ej = await vw("data", {
+        service: "data", request: "GetFeature", data: "LT_P_DEM",
+        format: "json", crs: "EPSG:4326", geometry: "false", size: "1",
+        geomFilter: pt, key, domain: VW_DOMAIN,
+      });
+      elevationM = parseElevation(ej);
+    } catch { /* DEM 미지원 무시 */ }
+
     return NextResponse.json({
       address, refined: point.refined ?? null,
       point: { lat: point.lat, lng: point.lng },
-      parcel, zoneName, zoneKey, districts, heightLimitM, warnings,
-      source: "VWorld 연속지적도·용도지역(LT_C_UQ111)",
+      parcel, zoneName, zoneKey, districts, heightLimitM,
+      road, elevationM, warnings,
+      source: "VWorld 연속지적도·용도지역(LT_C_UQ111)·도로",
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);

@@ -151,3 +151,41 @@ export function parseHeightLimit(names: string[]): number | null {
   }
   return null;
 }
+
+/** 도로 레이어 properties → 도로명·폭(m) 추출 (스키마 방어적)
+   폭 후보 컬럼: width/폭/rdwidth/wdt 류 · 숫자값 0~100m 범위. */
+export function extractRoadInfo(props: Record<string, unknown>): { name?: string; widthM?: number } {
+  let name: string | undefined;
+  let widthM: number | undefined;
+  for (const [k, v] of Object.entries(props)) {
+    if (typeof v === "string") {
+      const t = v.trim();
+      if (!name && /(대로|로|길)$/.test(t) && t.length <= 30 && /[가-힣]/.test(t)) name = t;
+    }
+    if (/(width|폭|rdwid|wdt|rw_?)/i.test(k)) {
+      const n = typeof v === "number" ? v : parseFloat(String(v));
+      if (Number.isFinite(n) && n > 0 && n < 100 && (widthM === undefined || n > widthM)) widthM = n;
+    }
+  }
+  return { name, widthM };
+}
+
+/** DEM 표고 응답에서 표고(m) 파싱 (VWorld getElevation / attr 방어적) */
+export function parseElevation(json: unknown): number | null {
+  // req/data 또는 전용 elevation 응답 모두 대응: 숫자형 height/elevation/z 탐색
+  const walk = (o: unknown, depth: number): number | null => {
+    if (depth > 6 || o == null) return null;
+    if (typeof o === "object") {
+      for (const [k, v] of Object.entries(o as Record<string, unknown>)) {
+        if (/(elevation|height|altitude|^z$|표고|고도)/i.test(k)) {
+          const n = typeof v === "number" ? v : parseFloat(String(v));
+          if (Number.isFinite(n) && Math.abs(n) < 5000) return n;
+        }
+        const r = walk(v, depth + 1);
+        if (r != null) return r;
+      }
+    }
+    return null;
+  };
+  return walk(json, 0);
+}

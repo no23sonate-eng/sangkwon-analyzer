@@ -56,6 +56,7 @@ export default function Home() {
   const [heightLim, setHeightLim] = useState("");
   const [easySel, setEasySel] = useState<Record<string, boolean>>({ apt: true });
   const [withRetail, setWithRetail] = useState(true);
+  const [autoNote, setAutoNote] = useState("");
   const [incSel, setIncSel] = useState<string[]>([]);
 
   const zone = ZONE_LIST.find((z) => z.key === zoneKey);
@@ -80,6 +81,8 @@ export default function Home() {
       if (d.zoneKey) { setZoneKey(d.zoneKey); parts.push(d.zoneName); }
       setDistricts(d.districts ?? []);
       if (d.heightLimitM) { setHeightLim(String(d.heightLimitM)); parts.push(`고도제한 ${d.heightLimitM}m 자동 적용`); }
+      if (d.road?.widthM) { setRoadW(String(d.road.widthM)); parts.push(`전면도로 ${d.road.widthM}m${d.road.name ? `(${d.road.name})` : ""}`); }
+      if (d.elevationM != null) parts.push(`대지표고 약 ${Math.round(d.elevationM)}m`);
       setLookupMsg({
         ok: true,
         text: (d.refined ? `${d.refined} — ` : "") + parts.join(" · ") +
@@ -103,9 +106,16 @@ export default function Home() {
     setErr(null);
     const site = parseFloat(areaM2);
     if (!site || site <= 0) { setErr("① 에서 주소를 조회하거나 대지면적을 입력해 주세요."); return; }
-    const mains = EASY.filter((e) => easySel[e.key]).map((e) => e.key);
-    if (mains.length === 0 && !withRetail) { setErr("짓고 싶은 상품을 1개 이상 선택해 주세요."); return; }
     const z = ZONE_LIST.find((x) => x.key === zoneKey)!;
+    // 선택이 없으면 용도지역에 맞는 최적 상품 자동 선택 (선택 최소화)
+    let mains = EASY.filter((e) => easySel[e.key]).map((e) => e.key);
+    let autoPicked = "";
+    if (mains.length === 0) {
+      if (z.group === "residential") { mains = zoneKey === "semi_residential" ? ["officetel"] : ["apt"]; autoPicked = FACILITIES[mains[0]].label; }
+      else if (z.group === "commercial") { mains = ["office"]; autoPicked = "업무시설 + 저층 상가"; }
+      else if (z.group === "industrial") { mains = ["office"]; autoPicked = "업무시설(지식산업센터 등)"; }
+      else { mains = ["retail1"]; autoPicked = "근린생활시설"; }
+    }
     const footPy = (site * z.seoulBCR / 100) / 3.3058;
 
     const buildAlloc = (farPct: number): Allocation[] => {
@@ -139,6 +149,8 @@ export default function Home() {
       };
     };
     try {
+      if (autoPicked) setAutoNote(`용도지역(${z.name})에 맞춰 자동 선택: ${autoPicked}`);
+      else setAutoNote("");
       setScens([
         mk("기본 (서울 조례)", []),
         mk("공개공지 설치 시", ["pops"], "대지 5~10% 공개공지 제공 → 용적률 1.2배 (건축법 시행령 §27의2)"),
@@ -297,7 +309,7 @@ export default function Home() {
           </div>
 
           <div className="sec">
-            <div className="sec-t">② 무엇을 짓고 싶으세요? (복수 선택)</div>
+            <div className="sec-t">② 무엇을 짓고 싶으세요? <span style={{fontWeight:500,color:"var(--muted)"}}>(안 골라도 됨 — 자동 선택)</span></div>
             <div className="chips">
               {EASY.map((e) => (
                 <button key={e.key} className={`chip${easySel[e.key] ? " on" : ""}`}
@@ -314,7 +326,7 @@ export default function Home() {
             </label>
           </div>
 
-          <button className="btn btn-primary" onClick={runEasy}>이 땅에 뭘 지을 수 있는지 보기</button>
+          <button className="btn btn-primary" onClick={runEasy}>{Object.values(easySel).some(Boolean) ? "이 땅에 뭘 지을 수 있는지 보기" : "🤖 자동으로 최대 규모 분석하기"}</button>
           {err && <div className="note-bad">{err}</div>}
           <p className="hint">법규(건폐율·용적률·일조·고도·주차)를 자동 반영해 최대 규모를 계산합니다. 유닛 평수·면적을 직접 지정하려면 아래 고급 설정을 여세요.</p>
 
@@ -504,6 +516,7 @@ export default function Home() {
               {/* 쉬운 요약 */}
               <div className="reco">
                 <div className="t">한눈에 보기</div>
+                {autoNote && <div style={{ fontSize: 11, color: "#2563eb", marginBottom: 4 }}>🤖 {autoNote}</div>}
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#1e3a8a", lineHeight: 1.6 }}>
                   이 땅에는 <u>지상 {s.massing.floorsAbove}층 · 연면적 약 {py(s.massing.effectiveGfaAboveM2)}평</u>까지 지을 수 있어요.
                 </div>
