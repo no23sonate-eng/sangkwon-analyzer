@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Map,
   GitCompareArrows,
+  Calculator,
   Settings,
 } from "lucide-react";
 
@@ -14,6 +15,7 @@ const NAV_ITEMS = [
   { label: "대시보드", href: "/", icon: LayoutDashboard },
   { label: "지도 분석", href: "/map", icon: Map },
   { label: "입지 비교", href: "/compare", icon: GitCompareArrows },
+  { label: "캐쉬플로우", href: "/cashflow", icon: Calculator },
 ];
 
 export default function Sidebar() {
