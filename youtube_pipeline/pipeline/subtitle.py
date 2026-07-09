@@ -251,7 +251,7 @@ def displays_for_render(project: common.Project, displays: list[dict]) -> list[d
     photo_spans = []
     for sec in common.read_json(sel_path).get("sections", []):
         ch = sec.get("choice")
-        if isinstance(ch, dict) and ch.get("type") == "photo":
+        if isinstance(ch, dict) and ch.get("type") in ("photo", "graphic"):
             photo_spans.append((float(sec["start"]), float(sec["end"])))
     if not photo_spans:
         return displays

@@ -167,13 +167,22 @@ def _draw_polys(ax, geometry, **kw):
         ax.add_patch(MplPolygon(poly[0], closed=True, **kw))
 
 
+CODE_KO = {"KOR": "한국", "USA": "미국", "JPN": "일본", "CHN": "중국",
+           "GBR": "영국", "FRA": "프랑스", "DEU": "독일"}
+
+
 def flat_map(target: str, out: Path, highlight: list[str] | None = None,
-             label: bool = True, config: dict | None = None) -> Path:
-    """플랫 지도 PNG.
+             label: bool = True, config: dict | None = None,
+             regional_zoom: bool = True) -> Path:
+    """플랫 지도 PNG — 고정 고해상도 출력(업스케일 없이 그대로 사용) + 하이라이트 지역 확대.
 
     target: "world" (세계지도) 또는 ISO3 국가코드 ("KOR" 등 단일 국가 확대)
     highlight: 세계지도에서 포인트색으로 칠할 ISO3 코드 목록
+    regional_zoom: world 지도에서 highlight 가 있으면 그 지역으로 확대해
+                   "작은 점" 이 아니라 화면을 지배하는 포인트가 되게 한다
+                   (design_reference §4 — 지도는 장식이 아니라 포인트).
     """
+    import math
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -182,16 +191,31 @@ def flat_map(target: str, out: Path, highlight: list[str] | None = None,
     pal = _palette(config)
     highlight = [h.upper() for h in (highlight or [])]
 
-    # 에이투지체 라벨
-    font_prop = None
-    a2z = common.ROOT_DIR / "assets" / "fonts" / "A2Z-4Regular.ttf"
-    if a2z.exists():
-        font_manager.fontManager.addfont(str(a2z))
-        font_prop = font_manager.FontProperties(fname=str(a2z))
+    # 에이투지체 라벨 (본문 + 강조용 두 웨이트)
+    font_reg = font_bold = None
+    a2z_reg = common.ROOT_DIR / "assets" / "fonts" / "A2Z-4Regular.ttf"
+    a2z_med = common.ROOT_DIR / "assets" / "fonts" / "A2Z-5Medium.ttf"
+    if a2z_reg.exists():
+        font_manager.fontManager.addfont(str(a2z_reg))
+        font_reg = font_manager.FontProperties(fname=str(a2z_reg))
+    if a2z_med.exists():
+        font_manager.fontManager.addfont(str(a2z_med))
+        font_bold = font_manager.FontProperties(fname=str(a2z_med))
+    font_prop = font_reg
 
-    fig, ax = plt.subplots(figsize=(19.2, 10.8), dpi=100)
+    # 고정 고해상도(dpi 200 = 3840x2160) — 렌더 단계에서 업스케일하지 않아도 되도록
+    # 원본 자체를 충분히 크게 만든다. bbox_inches='tight' 는 매번 크기가 달라져
+    # 저해상도로 저장되는 원인이었다.
+    fig, ax = plt.subplots(figsize=(19.2, 10.8), dpi=200)
     fig.patch.set_facecolor(pal["card_bg"])
     ax.set_facecolor(pal["card_bg"])
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.97, bottom=0.03)
+
+    def _pulse(cx: float, cy: float, color: str) -> None:
+        """위치 강조용 동심원 마커 — 지도가 '포인트'로 읽히게."""
+        for radius_pt, alpha in [(46, 0.12), (30, 0.24), (15, 0.9)]:
+            ax.scatter([cx], [cy], s=radius_pt ** 2, color=color,
+                       alpha=alpha, zorder=4, linewidths=0)
 
     if target.lower() == "world":
         geo = _geo_cache(GEO_WORLD, "world.geo.json")
@@ -201,7 +225,7 @@ def flat_map(target: str, out: Path, highlight: list[str] | None = None,
             hl = code in highlight
             _draw_polys(ax, feat["geometry"],
                         facecolor=pal["point"] if hl else pal["surface"],
-                        edgecolor=pal["card_bg"], linewidth=0.4, zorder=2 if hl else 1)
+                        edgecolor=pal["card_bg"], linewidth=0.5, zorder=2 if hl else 1)
             if hl:
                 xs, ys = [], []
                 g = feat["geometry"]
@@ -209,12 +233,25 @@ def flat_map(target: str, out: Path, highlight: list[str] | None = None,
                     for x, y in poly[0]:
                         xs.append(x); ys.append(y)
                 centroids[code] = (sum(xs) / len(xs), sum(ys) / len(ys))
+
+        zoomed = bool(centroids) and regional_zoom
+        if zoomed:
+            cx = sum(c[0] for c in centroids.values()) / len(centroids)
+            cy = sum(c[1] for c in centroids.values()) / len(centroids)
+            ax.set_xlim(cx - 22, cx + 22); ax.set_ylim(cy - 16, cy + 16)
+        else:
+            ax.set_xlim(-180, 180); ax.set_ylim(-60, 85)
+
         if label:
-            for code, (cx, cy) in centroids.items():
-                ax.annotate(code, (cx, cy), color=pal["text"], fontsize=22,
-                            fontproperties=font_prop, ha="center", va="center",
-                            zorder=3, weight="bold")
-        ax.set_xlim(-180, 180); ax.set_ylim(-60, 85)
+            for code, (cx2, cy2) in centroids.items():
+                if zoomed:
+                    _pulse(cx2, cy2, pal["point"])
+                name = CODE_KO.get(code, code) if zoomed else code
+                fontsize = 46 if zoomed else 22
+                ax.annotate(name, (cx2, cy2), color=pal["text"], fontsize=fontsize,
+                            fontproperties=font_bold or font_prop, ha="center",
+                            va="top", zorder=5, xytext=(0, -(fontsize * 1.5)),
+                            textcoords="offset points")
     elif target.upper() in ("KOR", "KOREA", "한국"):
         # 한국 전용 고해상 행정구역 (시·도 17개) — highlight 는 지역명 부분일치 ("서울" 등)
         geo = _geo_cache(GEO_KOREA, "korea_provinces.geo.json")
@@ -263,12 +300,90 @@ def flat_map(target: str, out: Path, highlight: list[str] | None = None,
             ax.annotate(name, (0.05, 0.92), xycoords="axes fraction",
                         color=pal["text"], fontsize=44, fontproperties=font_prop)
 
-    ax.set_aspect(1.3)
+    # 위경도 격자는 위도에 따라 가로가 눌리므로(Mercator 근사) 화면 중심 위도 기준으로
+    # 종횡비를 보정한다 — 확대 시 나라 모양이 눌려 보이던 부분까지 함께 고친다.
+    lat_center = sum(ax.get_ylim()) / 2
+    ax.set_aspect(1 / max(0.35, math.cos(math.radians(lat_center))))
     ax.axis("off")
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, facecolor=pal["card_bg"], bbox_inches="tight", pad_inches=0.4)
+    # bbox_inches='tight' 는 매번 다른(대개 훨씬 작은) 픽셀 크기로 저장되어 이후
+    # 렌더 단계에서 업스케일 → 글자 뭉개짐/줌 떨림의 원인이었다. 고정 크기로 저장.
+    fig.savefig(out, facecolor=pal["card_bg"])
     plt.close(fig)
-    log.info("지도 저장: %s (%s, 하이라이트 %s)", out.name, target, highlight or "-")
+    log.info("지도 저장: %s (%s, 하이라이트 %s, %s)", out.name, target, highlight or "-",
+              "확대" if target.lower() == "world" and highlight and regional_zoom else "전체")
+    return out
+
+
+# ══════════════════════════════════════════════════════════
+# 4. 그래프 카드 — 인포그래픽 팔레트, 고정 고해상도 (design_reference §2)
+# ══════════════════════════════════════════════════════════
+
+def bar_chart(categories: list[str], values: list[float], out: Path,
+              title: str = "", subtitle: str = "", value_suffix: str = "",
+              highlight_index: int | None = None, value_fmt: str = "{:.0f}",
+              config: dict | None = None) -> Path:
+    """막대그래프 카드 PNG — 마지막 값(또는 지정 index) 강조, 고정 고해상도.
+
+    렌더 단계에서 업스케일하지 않도록 dpi 200 으로 고정 저장한다.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts: dict[str, object] = {}
+    for key, fn in [("light", "A2Z-3Light.ttf"), ("reg", "A2Z-4Regular.ttf"),
+                    ("med", "A2Z-5Medium.ttf")]:
+        p = common.ROOT_DIR / "assets" / "fonts" / fn
+        if p.exists():
+            font_manager.fontManager.addfont(str(p))
+            fonts[key] = font_manager.FontProperties(fname=str(p))
+
+    if highlight_index is None:
+        highlight_index = len(values) - 1
+
+    fig, ax = plt.subplots(figsize=(16, 10), dpi=200)
+    fig.patch.set_facecolor(pal["card_bg"])
+    ax.set_facecolor(pal["card_bg"])
+    fig.subplots_adjust(left=0.06, right=0.96, top=0.80, bottom=0.10)
+
+    colors = [pal["point"] if i == highlight_index else pal["surface"]
+              for i in range(len(values))]
+    bars = ax.bar(categories, values, width=0.52, color=colors, zorder=2)
+
+    vmax = max(values)
+    for i, (b, v) in enumerate(zip(bars, values)):
+        hl = i == highlight_index
+        ax.annotate(value_fmt.format(v) + value_suffix,
+                    (b.get_x() + b.get_width() / 2, v + vmax * 0.025),
+                    ha="center", color="#FFFFFF" if hl else pal["text"],
+                    fontsize=40 if hl else 30,
+                    fontproperties=fonts.get("med" if hl else "reg"))
+
+    if title:
+        ax.annotate(title, (0.0, 1.14), xycoords="axes fraction",
+                    color=pal["text"], fontsize=32, fontproperties=fonts.get("reg"))
+    if subtitle:
+        ax.annotate(subtitle, (0.0, 1.05), xycoords="axes fraction",
+                    color=pal["highlight"], fontsize=19, fontproperties=fonts.get("light"))
+
+    ax.set_ylim(0, vmax * 1.28)
+    ax.set_yticks([])
+    for lbl in ax.get_xticklabels():
+        lbl.set_fontproperties(fonts.get("reg"))
+        lbl.set_color(pal["text"])
+        lbl.set_fontsize(26)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.axhline(0, color=pal["text"], linewidth=1.4)
+    ax.tick_params(length=0)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["card_bg"])
+    plt.close(fig)
+    log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
 
 
@@ -295,6 +410,14 @@ def main(argv: list[str] | None = None) -> int:
                     help="세계지도: ISO3 코드 / 한국(KOR): 시도명 부분일치 (쉼표 구분)")
     p3.add_argument("--out", default="./assets_out")
 
+    p4 = sub.add_parser("chart", help="막대그래프 카드 PNG")
+    p4.add_argument("categories", help="쉼표 구분 (예: 2023,2024,2025)")
+    p4.add_argument("values", help="쉼표 구분 숫자 (예: 61,117,201)")
+    p4.add_argument("--title", default="")
+    p4.add_argument("--subtitle", default="")
+    p4.add_argument("--suffix", default="")
+    p4.add_argument("--out", default="./assets_out")
+
     args = parser.parse_args(argv)
     out_dir = Path(args.out)
 
@@ -311,6 +434,11 @@ def main(argv: list[str] | None = None) -> int:
         hl = [h for h in args.highlight.split(",") if h]
         safe = re.sub(r"[^\w-]", "_", args.target)
         flat_map(args.target, out_dir / f"map_{safe}.png", hl)
+    elif args.cmd == "chart":
+        cats = args.categories.split(",")
+        vals = [float(v) for v in args.values.split(",")]
+        bar_chart(cats, vals, out_dir / "chart.png",
+                  title=args.title, subtitle=args.subtitle, value_suffix=args.suffix)
     return 0
 
 

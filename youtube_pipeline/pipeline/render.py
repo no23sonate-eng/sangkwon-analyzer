@@ -84,38 +84,48 @@ def _broll_chain(idx: int, b: dict, w: int, h: int, fps: int,
         f"fade=t=out:st={fade_out_st:.3f}:d={XFADE}:alpha=1,"
         f"setpts=PTS-STARTPTS+{b['start']:.3f}/TB[b{idx}]"
     )
-    if b["type"] == "photo":
+    if b["type"] in ("photo", "graphic"):
         frames = max(int(round(dur * fps)), 2)
         fc = frame_conf or {}
+        if b["type"] == "graphic":
+            # 데이터 카드(지도·그래프): 저해상도 소스를 지속적으로 확대해 매 프레임
+            # 리샘플링이 달라지며 생기던 뭉개짐/떨림의 원인이었다. 짧게 자리
+            # 잡히는 정도(0.5초)만 움직이고 이후 완전 정지 — 그래픽은 정지가 원칙.
+            ramp = max(int(round(0.5 * fps)), 1)
+            zoom_amt = 0.04
+            zoom_expr = f"min(1+{zoom_amt},1+{zoom_amt}*on/{ramp})"
+        else:
+            zoom_expr = f"1+{KEN_BURNS_ZOOM}*on/{frames}"
         if fc.get("enabled", True):
-            # 프레임 연출: 배경색 캔버스 + 얇은 흰 테두리 카드 + 카드 내부만 느린 줌
+            # 프레임 연출: 배경색 캔버스 + 얇은 흰 테두리 카드 + 카드 내부만 줌
             # (style_guide ④ — 셜록현준/조승연 스타일, 풀블리드 금지)
             bright = _photo_brightness(b["file"])
             bg = fc.get("bg_light", "#EFEAE3") if bright >= 90 else fc.get("bg_dark", "#16181D")
             card_h = int(h * float(fc.get("card_ratio", 0.74)))
             border = int(fc.get("border", 6) * h / 1080)
-            log.info("  사진 프레임: 밝기 %.0f → 배경 %s", bright, bg)
+            log.info("  프레임(%s): 밝기 %.0f → 배경 %s", b["type"], bright, bg)
             return (
                 # 카드: 줌(내부) → 테두리 → 배경 캔버스 중앙 배치
-                f"[{idx + 1}:v]scale=3840:-2,"
-                f"zoompan=z='1+{KEN_BURNS_ZOOM}*on/{frames}'"
+                # lanczos: 기본(bilinear)보다 선명하게 스케일 — 얇은 폰트 뭉개짐 완화
+                f"[{idx + 1}:v]scale=3840:-2:flags=lanczos,"
+                f"zoompan=z='{zoom_expr}'"
                 f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
                 f":d={frames}:s={int(card_h * w / h)}x{card_h}:fps={fps},"
                 f"pad=iw+{border * 2}:ih+{border * 2}:{border}:{border}:white,"
                 f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:{bg.replace('#', '0x')},setsar=1,"
                 + common_tail
             )
-        # 프레임 연출 끔: 기존 풀화면 Ken Burns
+        # 프레임 연출 끔: 풀화면
         return (
-            f"[{idx + 1}:v]scale=3840:-2,"
-            f"zoompan=z='1+{KEN_BURNS_ZOOM}*on/{frames}'"
+            f"[{idx + 1}:v]scale=3840:-2:flags=lanczos,"
+            f"zoompan=z='{zoom_expr}'"
             f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
             f":d={frames}:s={w}x{h}:fps={fps},setsar=1," + common_tail
         )
     # 영상: 프레임레이트/크기 정규화, 짧으면 마지막 프레임 유지로 채움
     return (
         f"[{idx + 1}:v]fps={fps},"
-        f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},setsar=1,"
+        f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h},setsar=1,"
         f"tpad=stop_mode=clone:stop_duration=30,trim=duration={dur:.3f}," + common_tail
     )
 
@@ -138,7 +148,7 @@ def build_command(project: common.Project, config: dict, use_subtitle: bool = Tr
 
     # 필터 그래프
     parts = [
-        f"[0:v]fps={fps},scale={w}:{h}:force_original_aspect_ratio=decrease,"
+        f"[0:v]fps={fps},scale={w}:{h}:force_original_aspect_ratio=decrease:flags=lanczos,"
         f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2,setsar=1[base0]"
     ]
     cur = "base0"
