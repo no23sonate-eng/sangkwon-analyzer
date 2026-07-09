@@ -345,6 +345,37 @@ def _source_box(ax, pal, fonts, text: str, y: float = -0.16) -> None:
                 color=pal["highlight"], fontsize=15, fontproperties=fonts.get("reg"))
 
 
+def _place_icon(card_path: Path, icon_query: str, config: dict | None = None,
+                color: str = "text", pos: tuple[float, float] = (0.06, 0.06),
+                size_frac: float = 0.16) -> None:
+    """카드에 개념 픽토그램을 합성한다 (design_reference.md §12-6) — "토지",
+    "건물" 같은 대상이 언급될 땐 텍스트/막대만이 아니라 그에 맞는 아이콘이
+    함께 있어야 자연스럽다는 피드백 반영. Iconify 검색 → 컬러 SVG → PNG →
+    카드에 합성. 아이콘을 못 찾으면 조용히 건너뛴다(카드 자체는 그대로 유지).
+
+    pos: 카드 크기 대비 좌상단 기준 배치 위치(가로, 세로 비율).
+    """
+    import tempfile
+    from PIL import Image
+
+    tmp = Path(tempfile.mktemp(suffix=".png"))
+    try:
+        result = icon_png(icon_query, tmp, color=color, size=512, config=config)
+        if not result:
+            return
+        card = Image.open(card_path).convert("RGBA")
+        icon = Image.open(result).convert("RGBA")
+        side = int(card.width * size_frac)
+        icon = icon.resize((side, side), Image.LANCZOS)
+        x, y = int(card.width * pos[0]), int(card.height * pos[1])
+        card.alpha_composite(icon, (x, y))
+        card.convert("RGB").save(card_path)
+    except Exception as e:
+        log.warning("아이콘 합성 실패(%s) — 카드는 아이콘 없이 유지: %s", icon_query, e)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
 def _add_grain(path: Path, amount: int = 9) -> None:
     """빈티지 에이지드 페이퍼 그레인 텍스처 (design_reference.md §12-1) —
     The B1M 카드 특유의 낡은 종이 질감. 미세한 랜덤 노이즈를 얹는다.
@@ -362,11 +393,15 @@ def _add_grain(path: Path, amount: int = 9) -> None:
 def bar_chart(categories: list[str], values: list[float], out: Path,
               title: str = "", subtitle: str = "", value_suffix: str = "",
               highlight_index: int | None = None, value_fmt: str = "{:.0f}",
-              source: str = "", config: dict | None = None) -> Path:
+              source: str = "", icon: str = "", config: dict | None = None) -> Path:
     """가로 막대 "레이스" 카드 PNG — The B1M 채널 스타일 (design_reference.md
     §12): 네이비 블루프린트 캔버스 위 빈티지 페이퍼 카드, 블루(비교)/
     레드(강조) 가로 막대가 막대 끝에 수치 라벨을 달고 나란히 경쟁하는 구도
     (건물 높이 경쟁 그래픽에서 실측). 카테고리 라벨은 막대 왼쪽.
+
+    icon: 주제를 나타내는 픽토그램 검색어(예: "office building", "land
+    plot") — 텍스트/막대만 있으면 어색하다는 피드백(§12-6)에 따라 카드
+    우상단에 개념 아이콘을 함께 넣는다. 비워두면 아이콘 없이 기존과 동일.
 
     렌더 단계에서 업스케일하지 않도록 dpi 200 으로 고정 저장한다.
     """
@@ -424,6 +459,11 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
+    if icon:
+        # 카드(종이) 영역은 fig 기준 x:[0.24,0.88] y:[0.14,0.76](matplotlib,
+        # 아래가 0) → PIL 기준(위가 0) y 는 뒤집혀 [0.24,0.86]. 카드 안쪽
+        # 우상단에 배치 — 네이비 여백에 놓으면 다크 아이콘이 안 보인다.
+        _place_icon(out, icon, config, color="text", pos=(0.76, 0.28), size_frac=0.09)
     _add_grain(out)
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
@@ -499,12 +539,15 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
 
 def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
               value2: str = "", label2: str = "", arrow: bool = False,
-              source: str = "", config: dict | None = None) -> Path:
+              source: str = "", icon: str = "", config: dict | None = None) -> Path:
     """빅넘버 스탯 카드 — The B1M 스타일 (design_reference.md §12). 네이비
     블루프린트 캔버스 위 빈티지 페이퍼 카드, 핵심 숫자는 브릭 레드
     (건물 높이 라벨 문법과 동일), 라벨/캡션은 다크 차콜·올리브그레이.
     화살표로 연결된 두 번째 수치(예: "캡레이트 4%" → "필요 NOI 52억")도 지원 —
     입력값은 블루, 결과값만 레드로 강조.
+
+    icon: 주제 픽토그램 검색어 — 숫자만 덩그러니 있으면 어색하다는 피드백
+    (§12-6)에 따라 카드 좌상단에 개념 아이콘을 함께 넣는다.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -555,6 +598,8 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
+    if icon:
+        _place_icon(out, icon, config, pos=(0.09, 0.10), size_frac=0.14)
     _add_grain(out)
     log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
     return out
