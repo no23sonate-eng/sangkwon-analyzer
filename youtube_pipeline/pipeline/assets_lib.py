@@ -461,9 +461,12 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     plt.close(fig)
     if icon:
         # 카드(종이) 영역은 fig 기준 x:[0.24,0.88] y:[0.14,0.76](matplotlib,
-        # 아래가 0) → PIL 기준(위가 0) y 는 뒤집혀 [0.24,0.86]. 카드 안쪽
-        # 우상단에 배치 — 네이비 여백에 놓으면 다크 아이콘이 안 보인다.
-        _place_icon(out, icon, config, color="text", pos=(0.76, 0.28), size_frac=0.09)
+        # 아래가 0) → PIL 기준(위가 0) y 는 뒤집혀 [0.24,0.86]. 우상단에
+        # 두면 막대 끝 수치 라벨(값이 vmax 에 가까운 막대일 때 카드 우측
+        # 끝까지 뻗음)과 겹치는 버그가 있었다 — 라벨은 항상 막대 오른쪽에서
+        # 시작하므로, 막대가 하나도 없는 카드 좌상단(첫 막대 위 여백)에
+        # 배치해 라벨 위치와 무관하게 항상 안전하도록 고정.
+        _place_icon(out, icon, config, color="text", pos=(0.275, 0.245), size_frac=0.055)
     _add_grain(out)
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
