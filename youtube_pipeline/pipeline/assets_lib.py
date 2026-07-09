@@ -319,11 +319,41 @@ def flat_map(target: str, out: Path, highlight: list[str] | None = None,
 # 4. 그래프 카드 — 인포그래픽 팔레트, 고정 고해상도 (design_reference §2)
 # ══════════════════════════════════════════════════════════
 
+def _load_fonts(font_manager, keys=("light", "reg", "med")):
+    names = {"light": "A2Z-3Light.ttf", "reg": "A2Z-4Regular.ttf", "med": "A2Z-5Medium.ttf",
+             "thin": "A2Z-1Thin.ttf"}
+    fonts: dict[str, object] = {}
+    for key in keys:
+        p = common.ROOT_DIR / "assets" / "fonts" / names[key]
+        if p.exists():
+            font_manager.fontManager.addfont(str(p))
+            fonts[key] = font_manager.FontProperties(fname=str(p))
+    return fonts
+
+
+def _source_box(ax, pal, fonts, text: str, y: float = -0.16) -> None:
+    """카드 맨 아래 출처 캡션(흰 필박스) — 그래프/카드 공통 표준 요소.
+
+    y: axes-fraction 기준 위치. subplots_adjust 로 하단 여백을 둔 카드는
+    음수(-0.16 등)로 여백 안에 배치하고, 여백이 없는 카드(ax.axis('off')
+    로 전체를 캔버스로 쓰는 stat_card 등)는 0~0.1 사이 값을 넘겨 캔버스
+    안쪽에 그려야 잘려나가지 않는다.
+    """
+    if not text:
+        return
+    ax.annotate(text, (0.5, y), xycoords="axes fraction", ha="center",
+                color="#222222", fontsize=15, fontproperties=fonts.get("reg"),
+                bbox=dict(boxstyle="round,pad=0.5", facecolor="#FFFFFF",
+                          edgecolor="none", alpha=0.92))
+
+
 def bar_chart(categories: list[str], values: list[float], out: Path,
               title: str = "", subtitle: str = "", value_suffix: str = "",
               highlight_index: int | None = None, value_fmt: str = "{:.0f}",
-              config: dict | None = None) -> Path:
-    """막대그래프 카드 PNG — 마지막 값(또는 지정 index) 강조, 고정 고해상도.
+              source: str = "", config: dict | None = None) -> Path:
+    """막대그래프 카드 PNG — 셜록현준 채널 고해상도 스토리보드 재확인 스펙
+    (design_reference.md §7-1): 위아래 둥근 필(pill) 막대, 제목 중앙정렬,
+    수치 라벨은 막대 위, 카테고리 라벨은 막대 아래, 강조는 임의 index.
 
     렌더 단계에서 업스케일하지 않도록 dpi 200 으로 고정 저장한다.
     """
@@ -331,59 +361,182 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from matplotlib import font_manager
+    from matplotlib.patches import FancyBboxPatch
 
     pal = _palette(config)
-    fonts: dict[str, object] = {}
-    for key, fn in [("light", "A2Z-3Light.ttf"), ("reg", "A2Z-4Regular.ttf"),
-                    ("med", "A2Z-5Medium.ttf")]:
-        p = common.ROOT_DIR / "assets" / "fonts" / fn
-        if p.exists():
-            font_manager.fontManager.addfont(str(p))
-            fonts[key] = font_manager.FontProperties(fname=str(p))
+    fonts = _load_fonts(font_manager)
 
     if highlight_index is None:
         highlight_index = len(values) - 1
 
+    n = len(values)
+    vmax = max(values)
+    bar_w = 0.52
+    gap = bar_w * 0.7  # 실측: 막대폭:간격 ≈ 1:0.6~0.8
+    xs = [i * (bar_w + gap) for i in range(n)]
+
     fig, ax = plt.subplots(figsize=(16, 10), dpi=200)
     fig.patch.set_facecolor(pal["card_bg"])
     ax.set_facecolor(pal["card_bg"])
-    fig.subplots_adjust(left=0.06, right=0.96, top=0.80, bottom=0.10)
+    fig.subplots_adjust(left=0.08, right=0.92, top=0.78, bottom=0.16)
 
-    colors = [pal["point"] if i == highlight_index else pal["surface"]
-              for i in range(len(values))]
-    bars = ax.bar(categories, values, width=0.52, color=colors, zorder=2)
+    ax.set_xlim(-bar_w, xs[-1] + bar_w)
+    ax.set_ylim(0, vmax * 1.30)
 
-    vmax = max(values)
-    for i, (b, v) in enumerate(zip(bars, values)):
+    for i, (x, v) in enumerate(zip(xs, values)):
         hl = i == highlight_index
-        ax.annotate(value_fmt.format(v) + value_suffix,
-                    (b.get_x() + b.get_width() / 2, v + vmax * 0.025),
+        color = pal["point"] if hl else pal["surface"]
+        # 필(캡슐) 형태: rounding_size 를 막대 폭의 절반으로 — 위아래 모두 둥글게
+        h = max(v, vmax * 0.04)
+        patch = FancyBboxPatch(
+            (x - bar_w / 2, 0), bar_w, h,
+            boxstyle=f"round,pad=0,rounding_size={bar_w / 2}",
+            facecolor=color, edgecolor="none", zorder=2, mutation_aspect=1,
+        )
+        ax.add_patch(patch)
+        ax.annotate(value_fmt.format(v) + value_suffix, (x, v + vmax * 0.04),
                     ha="center", color="#FFFFFF" if hl else pal["text"],
                     fontsize=40 if hl else 30,
-                    fontproperties=fonts.get("med" if hl else "reg"))
+                    fontproperties=fonts.get("med" if hl else "reg"), zorder=3)
+        ax.annotate(categories[i], (x, -vmax * 0.09), ha="center", va="top",
+                    color=pal["text"], fontsize=24, fontproperties=fonts.get("reg"))
 
     if title:
-        ax.annotate(title, (0.0, 1.14), xycoords="axes fraction",
+        ax.annotate(title, (0.5, 1.16), xycoords="axes fraction", ha="center",
                     color=pal["text"], fontsize=32, fontproperties=fonts.get("reg"))
     if subtitle:
-        ax.annotate(subtitle, (0.0, 1.05), xycoords="axes fraction",
+        ax.annotate(subtitle, (0.5, 1.06), xycoords="axes fraction", ha="center",
                     color=pal["highlight"], fontsize=19, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source)
 
-    ax.set_ylim(0, vmax * 1.28)
+    ax.set_xticks([])
     ax.set_yticks([])
-    for lbl in ax.get_xticklabels():
-        lbl.set_fontproperties(fonts.get("reg"))
-        lbl.set_color(pal["text"])
-        lbl.set_fontsize(26)
     for sp in ax.spines.values():
         sp.set_visible(False)
-    ax.axhline(0, color=pal["text"], linewidth=1.4)
-    ax.tick_params(length=0)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["card_bg"])
     plt.close(fig)
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
+    return out
+
+
+def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
+                 label_filled: str = "", label_rest: str = "", source: str = "",
+                 config: dict | None = None) -> Path:
+    """비율(%) 필 막대 카드 — design_reference.md §8-5 "비율은 도식화 우선"
+    원칙에 따른 단일 퍼센트 시각화. 가로 캡슐 막대를 point색:surface색 비율로
+    채운다 (예: 매수가가 감정가의 85% 라면 85:15).
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    from matplotlib.patches import FancyBboxPatch
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    pct = max(0.0, min(100.0, percent))
+
+    fig, ax = plt.subplots(figsize=(16, 6), dpi=200)
+    fig.patch.set_facecolor(pal["card_bg"])
+    ax.set_facecolor(pal["card_bg"])
+    fig.subplots_adjust(left=0.08, right=0.92, top=0.62, bottom=0.30)
+
+    bar_h = 1.0
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, bar_h)
+    track = FancyBboxPatch((0, 0), 100, bar_h, boxstyle=f"round,pad=0,rounding_size={bar_h / 2}",
+                           facecolor=pal["surface"], edgecolor="none", zorder=1)
+    ax.add_patch(track)
+    if pct > 0:
+        fill = FancyBboxPatch((0, 0), pct, bar_h,
+                              boxstyle=f"round,pad=0,rounding_size={bar_h / 2}",
+                              facecolor=pal["point"], edgecolor="none", zorder=2)
+        ax.add_patch(fill)
+
+    ax.annotate(f"{pct:.0f}%", (pct, bar_h / 2), ha="center" if pct > 12 else "left",
+                va="center", color="#FFFFFF", fontsize=34,
+                fontproperties=fonts.get("med"), zorder=3,
+                xytext=(pct if pct > 12 else pct + 2, bar_h / 2), textcoords="data")
+
+    if title:
+        ax.annotate(title, (0.5, 1.42), xycoords="axes fraction", ha="center",
+                    color=pal["text"], fontsize=32, fontproperties=fonts.get("reg"))
+    if subtitle:
+        ax.annotate(subtitle, (0.5, 1.20), xycoords="axes fraction", ha="center",
+                    color=pal["highlight"], fontsize=19, fontproperties=fonts.get("light"))
+    if label_filled:
+        ax.annotate(label_filled, (0.0, -0.32), xycoords="axes fraction", ha="left",
+                    color=pal["point"], fontsize=20, fontproperties=fonts.get("reg"))
+    if label_rest:
+        ax.annotate(label_rest, (1.0, -0.32), xycoords="axes fraction", ha="right",
+                    color=pal["text"], fontsize=20, fontproperties=fonts.get("reg"))
+    _source_box(ax, pal, fonts, source)
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["card_bg"])
+    plt.close(fig)
+    log.info("퍼센트 막대 저장: %s (%.0f%%)", out.name, pct)
+    return out
+
+
+def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
+              value2: str = "", label2: str = "", arrow: bool = False,
+              source: str = "", config: dict | None = None) -> Path:
+    """빅넘버 스탯 카드 — design_reference.md §7-5.
+    라벨(작게) → 초대형 숫자 → 캡션(작게) 3단, 또는 화살표로 연결된
+    두 번째 수치(예: "캡레이트 4%" → "필요 NOI 52억")까지 지원.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    fig, ax = plt.subplots(figsize=(16, 9), dpi=200)
+    fig.patch.set_facecolor(pal["card_bg"])
+    ax.set_facecolor(pal["card_bg"])
+    ax.axis("off")
+
+    two = bool(value2)
+    cx1 = 0.30 if two else 0.5
+    if label:
+        ax.annotate(label, (cx1, 0.66), xycoords="axes fraction", ha="center",
+                    color=pal["highlight"], fontsize=26, fontproperties=fonts.get("reg"))
+    ax.annotate(value, (cx1, 0.46), xycoords="axes fraction", ha="center", va="center",
+                color="#FFFFFF", fontsize=88 if not two else 66,
+                fontproperties=fonts.get("med"))
+    if subtext:
+        ax.annotate(subtext, (cx1, 0.26), xycoords="axes fraction", ha="center",
+                    color=pal["text"], fontsize=24, fontproperties=fonts.get("reg"))
+
+    if two:
+        if arrow:
+            ax.annotate("", xy=(0.62, 0.46), xytext=(0.42, 0.46),
+                        xycoords="axes fraction", textcoords="axes fraction",
+                        arrowprops=dict(arrowstyle="-|>", color=pal["text"],
+                                        lw=2.5, mutation_scale=30))
+        cx2 = 0.78
+        if label2:
+            ax.annotate(label2, (cx2, 0.66), xycoords="axes fraction", ha="center",
+                        color=pal["highlight"], fontsize=26, fontproperties=fonts.get("reg"))
+        ax.annotate(value2, (cx2, 0.46), xycoords="axes fraction", ha="center", va="center",
+                    color=pal["point"], fontsize=66, fontproperties=fonts.get("med"))
+
+    _source_box(ax, pal, fonts, source, y=0.06)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["card_bg"])
+    plt.close(fig)
+    log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
     return out
 
 
