@@ -225,8 +225,10 @@ def split_long_cues(cues: list[dict], segments: list[dict],
                 pieces.append(chunk)
             prev = cut
 
+        # Whisper 단어는 선행 공백 포함("" join), 외부 정렬 transcript 는 미포함(" " join)
+        joiner = "" if any(w["word"] != w["word"].lstrip() for w in words) else " "
         for i, chunk in enumerate(pieces):
-            text = "".join(w["word"] for w in chunk).strip()
+            text = joiner.join(w["word"] for w in chunk).strip()
             emphasis = [e for e in c.get("emphasis", []) if e in text]
             out.append({**c,
                         "id": c["id"] if i == 0 else f"{c['id']}.{i}",
