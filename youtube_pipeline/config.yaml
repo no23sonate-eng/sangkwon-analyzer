@@ -71,8 +71,8 @@ subtitle:
   font_family_large: "A2Z 3 Light"
   # 크기(px, 1080p 기준): AI가 문장별로 normal/large 중 선택
   # 채널 레퍼런스 실측 반영 — 얇고 작게, 화면에 떠 있는 느낌
-  size_normal: 46
-  size_large: 60
+  size_normal: 40
+  size_large: 46
   # 기본 본문색 / 강조색 — 강조는 채널 시그니처 레몬 옐로 (기존 영상 실측값)
   base_color: "#FFFFFF"
   accent_color: "#FAFF2E"
@@ -84,14 +84,25 @@ subtitle:
   displays_enabled: true
   # headline: 질문/핵심 구문 — 초대형 얇은 화이트
   display_headline_family: "A2Z 1 Thin"
-  display_headline_size: 120
+  display_headline_size: 84
   # concept: 외국어 개념어·수치 — 볼드 옐로
   display_concept_family: "A2Z 5 Medium"
-  display_concept_size: 88
+  display_concept_size: 64
   # 하단 안전영역: 화면 아래에서 이만큼 띄움 (px, 1080p 기준)
   margin_bottom: 110
   # 검토 표 서버 포트
   review_port: 8788
+
+# ── 자료 사진 프레임 연출 (render.py) — 셜록현준/조승연 스타일 ──
+photo_frame:
+  enabled: true
+  # 카드 높이 = 화면 높이 x 비율
+  card_ratio: 0.74
+  # 배경색: 자료 밝기에 따라 자동 선택
+  bg_light: "#EFEAE3"   # 밝은 자료 → 웜 페이퍼
+  bg_dark: "#16181D"    # 어두운 자료 → 딥 차콜
+  # 얇은 흰 테두리(px, 1080p 기준)
+  border: 6
 
 # ── 로컬 웹앱 (app.py) ────────────────────────────────────
 web:

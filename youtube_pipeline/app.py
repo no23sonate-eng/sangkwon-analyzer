@@ -295,7 +295,8 @@ def save_subtitle(name):
     common.write_json(plan_path, plan)
     transcript = common.read_json(project.transcript_path)
     subtitle_mod.build_ass(CONFIG, plan["cues"], project.path / subtitle_mod.ASS_FILE,
-                           segments=transcript.get("segments"), displays=plan["displays"])
+                           segments=transcript.get("segments"),
+                           displays=subtitle_mod.displays_for_render(project, plan["displays"]))
     return jsonify({"ok": True, "feedback_added": added})
 
 

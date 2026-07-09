@@ -235,6 +235,32 @@ def split_long_cues(cues: list[dict], segments: list[dict],
     return out
 
 
+def displays_for_render(project: common.Project, displays: list[dict]) -> list[dict]:
+    """자료 사진(프레임 연출) 구간과 겹치는 대형 타이포는 굽지 않는다.
+
+    레퍼런스(셜록현준·조승연): 대형 타이포는 얼굴샷 위에만 — 자료화면과
+    겹치면 서로 죽는다. 검토 표의 enabled 값과 별개로 렌더 시점에만 거른다.
+    """
+    sel_path = project.path / "selections.json"
+    if not sel_path.exists():
+        return displays
+    photo_spans = []
+    for sec in common.read_json(sel_path).get("sections", []):
+        ch = sec.get("choice")
+        if isinstance(ch, dict) and ch.get("type") == "photo":
+            photo_spans.append((float(sec["start"]), float(sec["end"])))
+    if not photo_spans:
+        return displays
+    out = []
+    for d in displays:
+        overlap = any(d["start"] < e and d["end"] > s0 for s0, e in photo_spans)
+        if overlap:
+            log.info("타이포 #%s \"%s\" — 사진 프레임 구간과 겹쳐 렌더에서 제외", d["id"], d["text"])
+            continue
+        out.append(d)
+    return out
+
+
 # ══════════════════════════════════════════════════════════
 # 5. ASS 변환 — Pretendard Bold, 2줄 제한, 하단 중앙
 # ══════════════════════════════════════════════════════════
@@ -304,10 +330,10 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Normal,{fam_n},{size_n},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
-Style: Large,{fam_l},{size_l},{base},{base},&H78000000,&HB4000000,0,0,0,0,100,100,0,0,1,1.5,0.5,2,60,60,{margin_v},1
-Style: Headline,{fam_h},{size_h},{base},{base},&H82000000,&HC8000000,0,0,0,0,100,100,1,0,1,1,1,5,60,60,0,1
-Style: Concept,{fam_c},{size_c},{accent},{accent},&H82000000,&HC8000000,0,0,0,0,100,100,1,0,1,1.5,1,5,60,60,0,1
+Style: Normal,{fam_n},{size_n},{base},{base},&H50000000,&HB4000000,0,0,0,0,100,100,0,0,1,2,0.8,2,60,60,{margin_v},1
+Style: Large,{fam_l},{size_l},{base},{base},&H50000000,&HB4000000,0,0,0,0,100,100,0,0,1,2,0.8,2,60,60,{margin_v},1
+Style: Headline,{fam_h},{size_h},{base},{base},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2.5,1.5,5,60,60,0,1
+Style: Concept,{fam_c},{size_c},{accent},{accent},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2.5,1.5,5,60,60,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -582,7 +608,7 @@ def serve_review(project: common.Project, config: dict, port: int) -> None:
             transcript = common.read_json(project.transcript_path)
             build_ass(config, plan["cues"], project.path / ASS_FILE,
                       segments=transcript.get("segments"),
-                      displays=plan["displays"])
+                      displays=displays_for_render(project, plan["displays"]))
             body = json.dumps({"ok": True, "feedback_added": added}).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -638,7 +664,7 @@ def run(project: common.Project, config: dict, mock: bool = False) -> dict:
     build_review_html(project, plan, config)
     build_ass(config, cues, project.path / ASS_FILE,
               segments=transcript.get("segments"),
-              displays=displays)  # 초안 ASS (확정 저장 시 재생성)
+              displays=displays_for_render(project, displays))  # 초안 ASS
     return plan
 
 

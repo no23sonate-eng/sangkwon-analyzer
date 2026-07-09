@@ -62,7 +62,19 @@ def _picked_brolls(project: common.Project) -> list[dict]:
     return sorted(picked, key=lambda b: b["start"])
 
 
-def _broll_chain(idx: int, b: dict, w: int, h: int, fps: int) -> str:
+def _photo_brightness(path: str) -> float:
+    """사진 평균 밝기(0~255) — 프레임 배경색 자동 선택용."""
+    try:
+        from PIL import Image
+        im = Image.open(path).convert("L").resize((64, 64))
+        pixels = list(im.getdata())
+        return sum(pixels) / len(pixels)
+    except Exception:
+        return 128.0
+
+
+def _broll_chain(idx: int, b: dict, w: int, h: int, fps: int,
+                 frame_conf: dict | None = None) -> str:
     """B-roll 입력 하나를 오버레이용 스트림으로 가공하는 필터 체인."""
     dur = b["end"] - b["start"]
     fade_out_st = max(dur - XFADE, 0)
@@ -73,8 +85,27 @@ def _broll_chain(idx: int, b: dict, w: int, h: int, fps: int) -> str:
         f"setpts=PTS-STARTPTS+{b['start']:.3f}/TB[b{idx}]"
     )
     if b["type"] == "photo":
-        # Ken Burns: 크게 스케일 후 중앙 기준 느린 줌인
         frames = max(int(round(dur * fps)), 2)
+        fc = frame_conf or {}
+        if fc.get("enabled", True):
+            # 프레임 연출: 배경색 캔버스 + 얇은 흰 테두리 카드 + 카드 내부만 느린 줌
+            # (style_guide ④ — 셜록현준/조승연 스타일, 풀블리드 금지)
+            bright = _photo_brightness(b["file"])
+            bg = fc.get("bg_light", "#EFEAE3") if bright >= 90 else fc.get("bg_dark", "#16181D")
+            card_h = int(h * float(fc.get("card_ratio", 0.74)))
+            border = int(fc.get("border", 6) * h / 1080)
+            log.info("  사진 프레임: 밝기 %.0f → 배경 %s", bright, bg)
+            return (
+                # 카드: 줌(내부) → 테두리 → 배경 캔버스 중앙 배치
+                f"[{idx + 1}:v]scale=3840:-2,"
+                f"zoompan=z='1+{KEN_BURNS_ZOOM}*on/{frames}'"
+                f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+                f":d={frames}:s={int(card_h * w / h)}x{card_h}:fps={fps},"
+                f"pad=iw+{border * 2}:ih+{border * 2}:{border}:{border}:white,"
+                f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:{bg.replace('#', '0x')},setsar=1,"
+                + common_tail
+            )
+        # 프레임 연출 끔: 기존 풀화면 Ken Burns
         return (
             f"[{idx + 1}:v]scale=3840:-2,"
             f"zoompan=z='1+{KEN_BURNS_ZOOM}*on/{frames}'"
@@ -112,7 +143,7 @@ def build_command(project: common.Project, config: dict, use_subtitle: bool = Tr
     ]
     cur = "base0"
     for i, b in enumerate(brolls):
-        parts.append(_broll_chain(i, b, w, h, fps))
+        parts.append(_broll_chain(i, b, w, h, fps, config.get("photo_frame")))
         nxt = f"base{i + 1}"
         parts.append(f"[{cur}][b{i}]overlay=eof_action=pass[{nxt}]")
         cur = nxt
