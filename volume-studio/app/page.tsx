@@ -21,7 +21,7 @@ import type { MassFloor } from "@/components/MassingViewer";
 const MassingViewer = dynamic(() => import("@/components/MassingViewer"), { ssr: false });
 
 const USE_LABELS: Record<UseKey, string> = { residential: "주거", office: "오피스", retail: "리테일", hotel: "호텔" };
-const USE_COLORS: Record<UseKey, string> = { residential: "#6366f1", office: "#0ea5e9", retail: "#f59e0b", hotel: "#ec4899" };
+const USE_COLORS: Record<UseKey, string> = { residential: "#5b6bf5", office: "#1466ff", retail: "#ffa92e", hotel: "#ff5c8a" };
 const USE_KEYS: UseKey[] = ["residential", "office", "retail", "hotel"];
 const py = (m2: number) => Math.round(m2 / 3.3058).toLocaleString();
 const n0 = (v: number) => Math.round(v).toLocaleString();

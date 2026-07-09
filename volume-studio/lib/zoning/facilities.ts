@@ -38,7 +38,7 @@ export interface FacilityDef {
 export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   apt: {
     key: "apt", label: "공동주택(아파트·다세대)", law: "주택법·건축법 별표1 2호",
-    rentGroup: "residential", color: "#6366f1",
+    rentGroup: "residential", color: "#5b6bf5",
     efficiency: 0.75, coreRatio: 0.13, floorHeight: 2.9, stackOrder: 6,
     parkingBasis: "unit", unitLabel: "세대", defaultUnitPy: 18,
     notes: [
@@ -49,7 +49,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   urban_house: {
     key: "urban_house", label: "도시형생활주택(소형)", law: "주택법 §2·시행령 §10",
-    rentGroup: "residential", color: "#818cf8",
+    rentGroup: "residential", color: "#8b93f8",
     efficiency: 0.72, coreRatio: 0.14, floorHeight: 2.9, stackOrder: 5,
     parkingBasis: "unit", parkingPerUnit: 0.5, unitLabel: "세대", defaultUnitPy: 9,
     notes: [
@@ -60,7 +60,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   officetel: {
     key: "officetel", label: "오피스텔", law: "건축법 별표1 14호(업무시설)·오피스텔 건축기준(국토부 고시)",
-    rentGroup: "office", color: "#38bdf8",
+    rentGroup: "office", color: "#22b8d6",
     efficiency: 0.55, coreRatio: 0.16, floorHeight: 3.0, stackOrder: 4,
     parkingBasis: "unit", parkingPerUnit: 0.8, unitLabel: "실", defaultUnitPy: 8,
     notes: [
@@ -71,14 +71,14 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   office: {
     key: "office", label: "업무시설(오피스)", law: "건축법 별표1 14호",
-    rentGroup: "office", color: "#0ea5e9",
+    rentGroup: "office", color: "#1466ff",
     efficiency: 0.72, coreRatio: 0.16, floorHeight: 4.0, stackOrder: 3,
     parkingBasis: "area", parkingUnitM2: 100, unitLabel: "구획", defaultUnitPy: 50,
     notes: ["시설면적 100㎡당 1대(서울조례)", "일반업무시설 3천㎡ 초과 시 교통유발부담금·교통영향평가 검토"],
   },
   retail1: {
     key: "retail1", label: "제1종 근린생활시설", law: "건축법 별표1 3호",
-    rentGroup: "retail", color: "#fbbf24",
+    rentGroup: "retail", color: "#ffa92e",
     efficiency: 0.80, coreRatio: 0.10, floorHeight: 4.5, stackOrder: 1,
     parkingBasis: "area", parkingUnitM2: 134, unitLabel: "호", defaultUnitPy: 20,
     notes: [
@@ -88,7 +88,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   retail2: {
     key: "retail2", label: "제2종 근린생활시설", law: "건축법 별표1 4호",
-    rentGroup: "retail", color: "#f59e0b",
+    rentGroup: "retail", color: "#ff8a1e",
     efficiency: 0.80, coreRatio: 0.10, floorHeight: 4.5, stackOrder: 2,
     parkingBasis: "area", parkingUnitM2: 134, unitLabel: "호", defaultUnitPy: 30,
     notes: [
@@ -98,7 +98,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   sales: {
     key: "sales", label: "판매시설", law: "건축법 별표1 7호·유통산업발전법",
-    rentGroup: "retail", color: "#ea580c",
+    rentGroup: "retail", color: "#ff6a3d",
     efficiency: 0.78, coreRatio: 0.12, floorHeight: 5.0, stackOrder: 1,
     parkingBasis: "area", parkingUnitM2: 100, unitLabel: "구획", defaultUnitPy: 100,
     notes: [
@@ -108,7 +108,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   tourist_hotel: {
     key: "tourist_hotel", label: "관광호텔", law: "관광진흥법 §4·건축법 별표1 15호",
-    rentGroup: "hotel", color: "#ec4899",
+    rentGroup: "hotel", color: "#ff5c8a",
     efficiency: 0.65, coreRatio: 0.15, floorHeight: 3.3, stackOrder: 3,
     parkingBasis: "area", parkingUnitM2: 200, unitLabel: "객실", defaultUnitPy: 8,
     notes: [
@@ -119,7 +119,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   stay_hotel: {
     key: "stay_hotel", label: "일반·생활숙박시설", law: "공중위생관리법 §2·건축법 별표1 15호",
-    rentGroup: "hotel", color: "#f472b6",
+    rentGroup: "hotel", color: "#ff7fa6",
     efficiency: 0.65, coreRatio: 0.15, floorHeight: 3.1, stackOrder: 3,
     parkingBasis: "area", parkingUnitM2: 200, unitLabel: "객실", defaultUnitPy: 7,
     notes: [
@@ -130,7 +130,7 @@ export const FACILITIES: Record<FacilityKey, FacilityDef> = {
   },
   sports: {
     key: "sports", label: "운동시설(체육시설)", law: "체육시설법·건축법 별표1 13호",
-    rentGroup: "retail", color: "#10b981",
+    rentGroup: "retail", color: "#12b886",
     efficiency: 0.80, coreRatio: 0.10, floorHeight: 5.5, stackOrder: 2,
     parkingBasis: "area", parkingUnitM2: 100, unitLabel: "면", defaultUnitPy: 150,
     notes: [
