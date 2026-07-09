@@ -112,6 +112,16 @@ def _broll_chain(idx: int, b: dict, w: int, h: int, fps: int,
             zoom_expr = f"min(1+{zoom_amt},1+{zoom_amt}*on/{ramp})"
         else:
             zoom_expr = f"1+{KEN_BURNS_ZOOM}*on/{frames}"
+        if b["type"] == "graphic":
+            # Cleo Abram 스타일(design_reference.md §11) 그래픽 카드는 이미
+            # 완성된 풀블리드 디자인(순블랙 캔버스)이므로 흰 테두리 액자로
+            # 다시 감싸지 않는다 — 화면 전체를 그대로 채운다.
+            return (
+                f"[{idx + 1}:v]scale=3840:-2:flags=lanczos,"
+                f"zoompan=z='{zoom_expr}'"
+                f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+                f":d={frames}:s={w}x{h}:fps={fps},setsar=1," + common_tail
+            )
         if fc.get("enabled", True):
             # 프레임 연출: 배경색 캔버스 + 얇은 흰 테두리 카드 + 카드 내부만 줌
             # (style_guide ④ — 셜록현준/조승연 스타일, 풀블리드 금지)

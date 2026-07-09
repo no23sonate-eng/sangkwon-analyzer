@@ -332,28 +332,48 @@ def _load_fonts(font_manager, keys=("light", "reg", "med")):
 
 
 def _source_box(ax, pal, fonts, text: str, y: float = -0.16) -> None:
-    """카드 맨 아래 출처 캡션(흰 필박스) — 그래프/카드 공통 표준 요소.
+    """카드 맨 아래 출처 캡션 — 작은 뮤트그레이 텍스트, 박스 없음.
 
+    Cleo Abram 스타일(design_reference.md §11)은 화면에 흰 박스·테두리를
+    두지 않고 여백만으로 정보 위계를 만든다 — 출처도 작은 텍스트로 조용히.
     y: axes-fraction 기준 위치. subplots_adjust 로 하단 여백을 둔 카드는
-    음수(-0.16 등)로 여백 안에 배치하고, 여백이 없는 카드(ax.axis('off')
-    로 전체를 캔버스로 쓰는 stat_card 등)는 0~0.1 사이 값을 넘겨 캔버스
-    안쪽에 그려야 잘려나가지 않는다.
+    음수로 여백 안에, 여백이 없는 카드(stat_card 등)는 0~0.1 사이 값을
+    넘겨야 잘려나가지 않는다.
     """
     if not text:
         return
     ax.annotate(text, (0.5, y), xycoords="axes fraction", ha="center",
-                color="#222222", fontsize=15, fontproperties=fonts.get("reg"),
-                bbox=dict(boxstyle="round,pad=0.5", facecolor="#FFFFFF",
-                          edgecolor="none", alpha=0.92))
+                color=pal["surface"], fontsize=15, fontproperties=fonts.get("reg"))
+
+
+def _add_glow(path: Path, color: str, blur_radius: int = 22, intensity: float = 0.65) -> None:
+    """네온 발광(bloom) 후처리 — Cleo Abram 채널의 시그니처 텍스처
+    (design_reference.md §11-1). accent 색에 가까운 픽셀만 골라 크게
+    블러한 레이어를 원본 위에 스크린 합성해 은은하게 번지는 효과를 낸다.
+    """
+    from PIL import Image, ImageFilter, ImageChops
+    import numpy as np
+
+    im = Image.open(path).convert("RGB")
+    r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+    arr = np.asarray(im).astype(int)
+    dist = np.sqrt(((arr - np.array([r, g, b])) ** 2).sum(axis=2))
+    mask = (dist < 70).astype("uint8") * 255
+    mask_im = Image.fromarray(mask, mode="L")
+    solid = Image.new("RGB", im.size, (r, g, b))
+    glow = Image.composite(solid, Image.new("RGB", im.size, (0, 0, 0)), mask_im)
+    glow = glow.filter(ImageFilter.GaussianBlur(blur_radius))
+    glow = glow.point(lambda p: int(p * intensity))
+    ImageChops.screen(im, glow).save(path)
 
 
 def bar_chart(categories: list[str], values: list[float], out: Path,
               title: str = "", subtitle: str = "", value_suffix: str = "",
               highlight_index: int | None = None, value_fmt: str = "{:.0f}",
               source: str = "", config: dict | None = None) -> Path:
-    """막대그래프 카드 PNG — 셜록현준 채널 고해상도 스토리보드 재확인 스펙
-    (design_reference.md §7-1): 위아래 둥근 필(pill) 막대, 제목 중앙정렬,
-    수치 라벨은 막대 위, 카테고리 라벨은 막대 아래, 강조는 임의 index.
+    """막대그래프 카드 PNG — Cleo Abram 채널 스타일 (design_reference.md §11):
+    순블랙 풀블리드, 가는 가로 그리드선, 강조 막대만 네온 라임 + 발광,
+    제목/부제는 좌상단, 수치 라벨은 막대 위, 카테고리 라벨은 막대 아래.
 
     렌더 단계에서 업스케일하지 않도록 dpi 200 으로 고정 저장한다.
     """
@@ -372,41 +392,45 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     n = len(values)
     vmax = max(values)
     bar_w = 0.52
-    gap = bar_w * 0.7  # 실측: 막대폭:간격 ≈ 1:0.6~0.8
+    gap = bar_w * 0.9  # Cleo 차트는 여백이 넉넉 — 막대폭:간격 ≈ 1:0.9
     xs = [i * (bar_w + gap) for i in range(n)]
 
     fig, ax = plt.subplots(figsize=(16, 10), dpi=200)
     fig.patch.set_facecolor(pal["card_bg"])
     ax.set_facecolor(pal["card_bg"])
-    fig.subplots_adjust(left=0.08, right=0.92, top=0.78, bottom=0.16)
+    fig.subplots_adjust(left=0.08, right=0.94, top=0.80, bottom=0.14)
 
     ax.set_xlim(-bar_w, xs[-1] + bar_w)
     ax.set_ylim(0, vmax * 1.30)
 
+    # 가는 가로 그리드선 4개 — 데이터 잉크 최소화, 큰 여백 (§11-2)
+    for gy in [vmax * f for f in (0.25, 0.5, 0.75, 1.0)]:
+        ax.axhline(gy, color=pal["surface"], linewidth=0.8, alpha=0.35, zorder=1)
+
+    round_r = bar_w * 0.08  # 살짝만 둥글게 — 캡슐이 아니라 미니멀 사각
     for i, (x, v) in enumerate(zip(xs, values)):
         hl = i == highlight_index
         color = pal["point"] if hl else pal["surface"]
-        # 필(캡슐) 형태: rounding_size 를 막대 폭의 절반으로 — 위아래 모두 둥글게
         h = max(v, vmax * 0.04)
         patch = FancyBboxPatch(
             (x - bar_w / 2, 0), bar_w, h,
-            boxstyle=f"round,pad=0,rounding_size={bar_w / 2}",
+            boxstyle=f"round,pad=0,rounding_size={round_r}",
             facecolor=color, edgecolor="none", zorder=2, mutation_aspect=1,
         )
         ax.add_patch(patch)
         ax.annotate(value_fmt.format(v) + value_suffix, (x, v + vmax * 0.04),
-                    ha="center", color="#FFFFFF" if hl else pal["text"],
-                    fontsize=40 if hl else 30,
+                    ha="center", color=pal["point"] if hl else pal["text"],
+                    fontsize=40 if hl else 28,
                     fontproperties=fonts.get("med" if hl else "reg"), zorder=3)
         ax.annotate(categories[i], (x, -vmax * 0.09), ha="center", va="top",
-                    color=pal["text"], fontsize=24, fontproperties=fonts.get("reg"))
+                    color=pal["surface"], fontsize=22, fontproperties=fonts.get("reg"))
 
     if title:
-        ax.annotate(title, (0.5, 1.16), xycoords="axes fraction", ha="center",
+        ax.annotate(title, (0.0, 1.16), xycoords="axes fraction", ha="left",
                     color=pal["text"], fontsize=32, fontproperties=fonts.get("reg"))
     if subtitle:
-        ax.annotate(subtitle, (0.5, 1.06), xycoords="axes fraction", ha="center",
-                    color=pal["highlight"], fontsize=19, fontproperties=fonts.get("light"))
+        ax.annotate(subtitle, (0.0, 1.06), xycoords="axes fraction", ha="left",
+                    color=pal["surface"], fontsize=18, fontproperties=fonts.get("light"))
     _source_box(ax, pal, fonts, source)
 
     ax.set_xticks([])
@@ -417,6 +441,7 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["card_bg"])
     plt.close(fig)
+    _add_glow(out, pal["point"])
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
 
@@ -424,9 +449,9 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
 def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
                  label_filled: str = "", label_rest: str = "", source: str = "",
                  config: dict | None = None) -> Path:
-    """비율(%) 필 막대 카드 — design_reference.md §8-5 "비율은 도식화 우선"
-    원칙에 따른 단일 퍼센트 시각화. 가로 캡슐 막대를 point색:surface색 비율로
-    채운다 (예: 매수가가 감정가의 85% 라면 85:15).
+    """비율(%) 막대 카드 (design_reference.md §11) — 순블랙, 가는 막대,
+    강조 구간만 네온 라임 + 발광. §8-5 "비율은 도식화 우선" 원칙에 따른
+    단일 퍼센트 시각화 (예: 매수가가 감정가의 85% 라면 85:15).
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -443,35 +468,38 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
     ax.set_facecolor(pal["card_bg"])
     fig.subplots_adjust(left=0.08, right=0.92, top=0.62, bottom=0.30)
 
-    bar_h = 1.0
+    bar_h = 0.42  # 얇은 막대 — 두꺼운 캡슐 대신 미니멀 라인 형태
     ax.set_xlim(0, 100)
-    ax.set_ylim(0, bar_h)
-    track = FancyBboxPatch((0, 0), 100, bar_h, boxstyle=f"round,pad=0,rounding_size={bar_h / 2}",
-                           facecolor=pal["surface"], edgecolor="none", zorder=1)
+    ax.set_ylim(0, 1.0)
+    y0 = (1.0 - bar_h) / 2
+    r = bar_h * 0.15
+    track = FancyBboxPatch((0, y0), 100, bar_h, boxstyle=f"round,pad=0,rounding_size={r}",
+                           facecolor=pal["surface"], edgecolor="none", zorder=1, alpha=0.5)
     ax.add_patch(track)
     if pct > 0:
-        fill = FancyBboxPatch((0, 0), pct, bar_h,
-                              boxstyle=f"round,pad=0,rounding_size={bar_h / 2}",
+        fill = FancyBboxPatch((0, y0), pct, bar_h,
+                              boxstyle=f"round,pad=0,rounding_size={r}",
                               facecolor=pal["point"], edgecolor="none", zorder=2)
         ax.add_patch(fill)
 
-    ax.annotate(f"{pct:.0f}%", (pct, bar_h / 2), ha="center" if pct > 12 else "left",
-                va="center", color="#FFFFFF", fontsize=34,
-                fontproperties=fonts.get("med"), zorder=3,
-                xytext=(pct if pct > 12 else pct + 2, bar_h / 2), textcoords="data")
+    # 라벨은 막대 위쪽(bar_chart 의 수치라벨 관례와 동일)에 둔다 — 막대
+    # 안에 넣으면 네온 라임 글자가 같은 색 막대 위에서 안 보이는 문제 방지.
+    ha, tx = ("right", min(pct, 97)) if pct > 90 else ("center", pct)
+    ax.annotate(f"{pct:.0f}%", (tx, y0 + bar_h + 0.12), ha=ha, va="bottom",
+                color=pal["point"], fontsize=34, fontproperties=fonts.get("med"), zorder=3)
 
     if title:
-        ax.annotate(title, (0.5, 1.42), xycoords="axes fraction", ha="center",
+        ax.annotate(title, (0.0, 1.42), xycoords="axes fraction", ha="left",
                     color=pal["text"], fontsize=32, fontproperties=fonts.get("reg"))
     if subtitle:
-        ax.annotate(subtitle, (0.5, 1.20), xycoords="axes fraction", ha="center",
-                    color=pal["highlight"], fontsize=19, fontproperties=fonts.get("light"))
+        ax.annotate(subtitle, (0.0, 1.20), xycoords="axes fraction", ha="left",
+                    color=pal["surface"], fontsize=18, fontproperties=fonts.get("light"))
     if label_filled:
         ax.annotate(label_filled, (0.0, -0.32), xycoords="axes fraction", ha="left",
                     color=pal["point"], fontsize=20, fontproperties=fonts.get("reg"))
     if label_rest:
         ax.annotate(label_rest, (1.0, -0.32), xycoords="axes fraction", ha="right",
-                    color=pal["text"], fontsize=20, fontproperties=fonts.get("reg"))
+                    color=pal["surface"], fontsize=20, fontproperties=fonts.get("reg"))
     _source_box(ax, pal, fonts, source)
 
     ax.set_xticks([])
@@ -482,6 +510,7 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["card_bg"])
     plt.close(fig)
+    _add_glow(out, pal["point"])
     log.info("퍼센트 막대 저장: %s (%.0f%%)", out.name, pct)
     return out
 
@@ -489,9 +518,11 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
 def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
               value2: str = "", label2: str = "", arrow: bool = False,
               source: str = "", config: dict | None = None) -> Path:
-    """빅넘버 스탯 카드 — design_reference.md §7-5.
-    라벨(작게) → 초대형 숫자 → 캡션(작게) 3단, 또는 화살표로 연결된
-    두 번째 수치(예: "캡레이트 4%" → "필요 NOI 52억")까지 지원.
+    """빅넘버 스탯 카드 — design_reference.md §11 (Cleo Abram 스타일).
+    순블랙 배경, 핵심 숫자는 네온 라임 + 발광(그녀의 "1 METER" 식 측정
+    라벨과 동일한 문법). 라벨/캡션은 화이트·뮤트그레이로 절제.
+    화살표로 연결된 두 번째 수치(예: "캡레이트 4%" → "필요 NOI 52억")도 지원 —
+    이 경우 입력값은 화이트, 결과값만 네온 라임으로 강조.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -510,24 +541,24 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     cx1 = 0.30 if two else 0.5
     if label:
         ax.annotate(label, (cx1, 0.66), xycoords="axes fraction", ha="center",
-                    color=pal["highlight"], fontsize=26, fontproperties=fonts.get("reg"))
+                    color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
     ax.annotate(value, (cx1, 0.46), xycoords="axes fraction", ha="center", va="center",
-                color="#FFFFFF", fontsize=88 if not two else 66,
+                color=pal["text"] if two else pal["point"], fontsize=88 if not two else 66,
                 fontproperties=fonts.get("med"))
     if subtext:
         ax.annotate(subtext, (cx1, 0.26), xycoords="axes fraction", ha="center",
-                    color=pal["text"], fontsize=24, fontproperties=fonts.get("reg"))
+                    color=pal["surface"], fontsize=24, fontproperties=fonts.get("reg"))
 
     if two:
         if arrow:
             ax.annotate("", xy=(0.62, 0.46), xytext=(0.42, 0.46),
                         xycoords="axes fraction", textcoords="axes fraction",
-                        arrowprops=dict(arrowstyle="-|>", color=pal["text"],
+                        arrowprops=dict(arrowstyle="-|>", color=pal["surface"],
                                         lw=2.5, mutation_scale=30))
         cx2 = 0.78
         if label2:
             ax.annotate(label2, (cx2, 0.66), xycoords="axes fraction", ha="center",
-                        color=pal["highlight"], fontsize=26, fontproperties=fonts.get("reg"))
+                        color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
         ax.annotate(value2, (cx2, 0.46), xycoords="axes fraction", ha="center", va="center",
                     color=pal["point"], fontsize=66, fontproperties=fonts.get("med"))
 
@@ -536,6 +567,7 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["card_bg"])
     plt.close(fig)
+    _add_glow(out, pal["point"])
     log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
     return out
 

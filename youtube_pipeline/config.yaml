@@ -106,13 +106,14 @@ photo_frame:
   # 얇은 흰 테두리(px, 1080p 기준)
   border: 6
 
-# ── 인포그래픽 팔레트 (design_reference.md §2 — 그래프/카드 제작용) ──
+# ── 인포그래픽 팔레트 (design_reference.md §11 — Cleo Abram 스타일, 2026-07 교체) ──
+# 그래프/차트/스탯카드 전용 — 자료화면 프레임(§4, render.py photo_frame)과는 별개.
 infographic:
-  card_bg: "#104030"      # 딥 포레스트 그린 (대안: #16181D 차콜)
-  surface: "#307060"      # 지도/면 요소 뮤트 민트그린
-  point: "#C0392B"        # 포인트 벽돌 레드 (본인 채널은 #FAFF2E 치환 가능)
-  highlight: "#7FD8C0"    # 문서 인용 하이라이트 민트
-  text: "#EDEDE4"
+  card_bg: "#0A0A0A"      # 거의 순수 블랙 — 카드 테두리 없이 풀블리드
+  surface: "#4A4A4A"      # 비강조 데이터·보조선 뮤트 그레이 (구 뮤트민트 대체)
+  point: "#C6FF3D"        # 시그니처 네온 라임 — 강조색은 이 한 가지만 (근사값, §9 참고)
+  highlight: "#5AC8FA"    # 보조 액센트(과학/개념 배지 등에 드물게) — 뮤트민트 대체
+  text: "#F5F5F0"
 
 # ── 로컬 웹앱 (app.py) ────────────────────────────────────
 web:
