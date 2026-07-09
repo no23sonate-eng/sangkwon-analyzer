@@ -334,9 +334,9 @@ ScaledBorderAndShadow: yes
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Normal,{fam_n},{size_n},{base},{base},{cap_outline_color},&HB4000000,0,0,0,0,100,100,0,0,{cap_border},2,60,60,{margin_v},1
 Style: Large,{fam_l},{size_l},{base},{base},{cap_outline_color},&HB4000000,0,0,0,0,100,100,0,0,{cap_border},2,60,60,{margin_v},1
-Style: Headline,{fam_h},{size_h},{base},{base},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2.5,1.5,5,60,60,0,1
-Style: Concept,{fam_c},{size_c},{accent},{accent},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2.5,1.5,5,60,60,0,1
-Style: ConceptSub,{fam_n},{size_cs},{base},{base},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2,1,5,60,60,0,1
+Style: Headline,{fam_h},{size_h},{base},{base},&H00000000,&H1E000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
+Style: Concept,{fam_c},{size_c},{accent},{accent},&H00000000,&H1E000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
+Style: ConceptSub,{fam_n},{size_cs},{base},{base},&H00000000,&H1E000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -363,14 +363,15 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             # 메인은 중앙 약간 위, 한국어 설명은 그 아래 소형 (조승연 패턴)
             main_pos = f"\\pos({w // 2},{round(h * 0.46)})"
             sub_pos = f"\\pos({w // 2},{round(h * 0.57)})"
+            # \blur: \uB531\uB531\uD55C \uADF8\uB9BC\uC790 \uB300\uC2E0 \uBD80\uB4DC\uB7FD\uAC8C \uBC88\uC9C0\uB294 \uADF8\uB9BC\uC790 (\uAC80\uC815 \uD14C\uB450\uB9AC \uB300\uCCB4)
             lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
-                         f"{{\\fad(250,250){main_pos}}}{d['text']}")
+                         f"{{\\fad(250,250)\\blur2{main_pos}}}{d['text']}")
             lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},ConceptSub,,0,0,0,,"
-                         f"{{\\fad(250,250){sub_pos}}}\u201C{sub}\u201D")
+                         f"{{\\fad(250,250)\\blur1.5{sub_pos}}}\u201C{sub}\u201D")
             n_disp += 1
         else:
             lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
-                         f"{{\\fad(250,250)}}{d['text']}")
+                         f"{{\\fad(250,250)\\blur2}}{d['text']}")
             n_disp += 1
 
     out_path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")

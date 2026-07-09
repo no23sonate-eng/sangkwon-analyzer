@@ -62,6 +62,15 @@ def _picked_brolls(project: common.Project) -> list[dict]:
     return sorted(picked, key=lambda b: b["start"])
 
 
+def _probe_duration(path) -> float:
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of",
+         "default=noprint_wrappers=1:nokey=1", str(path)],
+        capture_output=True, text=True, check=True,
+    )
+    return float(out.stdout.strip())
+
+
 def _photo_brightness(path: str) -> float:
     """사진 평균 밝기(0~255) — 프레임 배경색 자동 선택용."""
     try:
@@ -74,16 +83,23 @@ def _photo_brightness(path: str) -> float:
 
 
 def _broll_chain(idx: int, b: dict, w: int, h: int, fps: int,
-                 frame_conf: dict | None = None) -> str:
-    """B-roll 입력 하나를 오버레이용 스트림으로 가공하는 필터 체인."""
+                 frame_conf: dict | None = None,
+                 fade_in: bool = True, fade_out: bool = True) -> str:
+    """B-roll 입력 하나를 오버레이용 스트림으로 가공하는 필터 체인.
+
+    fade_in/fade_out=False: 영상 전체의 맨 처음/맨 끝에 걸린 구간은 페이드를
+    걸지 않는다 — 그 순간 크로스페이드를 걸면 아직 안 보여야 할 원본(베이스)
+    레이어가 잠깐 비쳐 보인다 (얼굴 미촬영 모드에서 특히 눈에 띄는 문제).
+    """
     dur = b["end"] - b["start"]
     fade_out_st = max(dur - XFADE, 0)
-    common_tail = (
-        f"format=yuva420p,"
-        f"fade=t=in:st=0:d={XFADE}:alpha=1,"
-        f"fade=t=out:st={fade_out_st:.3f}:d={XFADE}:alpha=1,"
-        f"setpts=PTS-STARTPTS+{b['start']:.3f}/TB[b{idx}]"
-    )
+    steps = ["format=yuva420p"]
+    if fade_in:
+        steps.append(f"fade=t=in:st=0:d={XFADE}:alpha=1")
+    if fade_out:
+        steps.append(f"fade=t=out:st={fade_out_st:.3f}:d={XFADE}:alpha=1")
+    steps.append(f"setpts=PTS-STARTPTS+{b['start']:.3f}/TB[b{idx}]")
+    common_tail = ",".join(steps)
     if b["type"] in ("photo", "graphic"):
         frames = max(int(round(dur * fps)), 2)
         fc = frame_conf or {}
@@ -137,11 +153,12 @@ def build_command(project: common.Project, config: dict, use_subtitle: bool = Tr
 
     source = project.find_source_media()
     brolls = _picked_brolls(project)
+    duration = _probe_duration(source)
 
     # 입력들
     cmd = ["ffmpeg", "-y", "-loglevel", "warning", "-stats", "-i", str(source)]
     for b in brolls:
-        if b["type"] == "photo":
+        if b["type"] in ("photo", "graphic"):
             cmd += ["-loop", "1", "-t", f"{b['end'] - b['start'] + 1:.3f}", "-i", b["file"]]
         else:
             cmd += ["-i", b["file"]]
@@ -153,7 +170,12 @@ def build_command(project: common.Project, config: dict, use_subtitle: bool = Tr
     ]
     cur = "base0"
     for i, b in enumerate(brolls):
-        parts.append(_broll_chain(i, b, w, h, fps, config.get("photo_frame")))
+        # 영상 전체의 맨 처음/맨 끝에 걸리는 구간은 페이드를 걸지 않는다 —
+        # 그 순간 크로스페이드를 걸면 아직 안 보여야 할 원본(베이스)이 잠깐 비친다.
+        fade_in = b["start"] > 0.05
+        fade_out = b["end"] < duration - 0.05
+        parts.append(_broll_chain(i, b, w, h, fps, config.get("photo_frame"),
+                                  fade_in=fade_in, fade_out=fade_out))
         nxt = f"base{i + 1}"
         parts.append(f"[{cur}][b{i}]overlay=eof_action=pass[{nxt}]")
         cur = nxt
