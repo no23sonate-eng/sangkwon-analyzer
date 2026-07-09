@@ -83,6 +83,7 @@ def plan_ai(config: dict, sentences: list[dict]) -> list[dict]:
         "- sentence_id: 타이포를 띄울 문장 번호\n"
         "- text: 화면을 채울 짧은 구문 (10자 이내, 질문형/핵심 개념)\n"
         "- style: 질문·핵심 구문 = \"headline\", 외국어 개념어·수치 = \"concept\"\n"
+        "- subtext: concept 인 경우 한국어 짧은 설명(15자 이내), 그 외 빈 문자열\n"
         "- reason: 판단 이유 한 줄\n\n"
         "아래 JSON 형식으로만 답하라 (설명 금지):\n"
         '{"cues": [{"id": 0, "size": "normal", "color": "#FAFF2E", "emphasis": [], "reason": "..."}],\n'
@@ -151,6 +152,7 @@ def _make_displays(raw: list[dict], sentences: list[dict]) -> list[dict]:
             "start": round(start, 3),
             "end": round(min(sent["end"], start + 3.0), 3),
             "text": str(d["text"])[:14],
+            "subtext": str(d.get("subtext", ""))[:20],
             "style": d.get("style", "headline"),
             "enabled": True,
             "reason": d.get("reason", ""),
@@ -266,18 +268,8 @@ def displays_for_render(project: common.Project, displays: list[dict]) -> list[d
 # ══════════════════════════════════════════════════════════
 
 def _break_lines(text: str, max_chars: int) -> str:
-    """공백 기준 줄바꿈, 최대 2줄. 한 줄이면 그대로."""
-    if len(text) <= max_chars:
-        return text
-    words = text.split(" ")
-    # 두 줄 길이 균형이 가장 좋은 분할점 탐색
-    best, best_score = None, None
-    for i in range(1, len(words)):
-        l1, l2 = " ".join(words[:i]), " ".join(words[i:])
-        score = abs(len(l1) - len(l2)) + (100 if max(len(l1), len(l2)) > max_chars * 1.4 else 0)
-        if best_score is None or score < best_score:
-            best, best_score = (l1, l2), score
-    return best[0] + r"\N" + best[1] if best else text
+    """자막은 항상 한 줄 — 줄바꿈을 넣지 않는다 (긴 문장 분할은 split_long_cues 담당)."""
+    return text
 
 
 def _hex_to_ass(color: str) -> str:
@@ -317,8 +309,16 @@ def build_ass(config: dict, cues: list[dict], out_path: Path,
     maxc = int(sconf.get("max_chars_per_line", 20))
     fam_h = sconf.get("display_headline_family", "A2Z 1 Thin")
     fam_c = sconf.get("display_concept_family", "A2Z 5 Medium")
-    size_h = round(int(sconf.get("display_headline_size", 120)) * scale)
-    size_c = round(int(sconf.get("display_concept_size", 88)) * scale)
+    size_h = round(int(sconf.get("display_headline_size", 84)) * scale)
+    size_c = round(int(sconf.get("display_concept_size", 64)) * scale)
+    size_cs = round(34 * scale)  # concept 한국어 소형 설명
+    # 본문 자막: 타이트 다크 박스(BorderStyle=3) 또는 떠있는 스타일(BorderStyle=1)
+    if sconf.get("caption_box", True):
+        cap_border = f"3,{round(7 * scale)},0"     # 박스 패딩 7px, 그림자 없음
+        cap_outline_color = "&H46101010"           # 박스색: ~73% 불투명 블랙
+    else:
+        cap_border = "1,2,0.8"
+        cap_outline_color = "&H50000000"
 
     # Alignment 2 = 하단 중앙. Outline+Shadow 로 가독성 확보(반투명 검정 테두리).
     header = f"""[Script Info]
@@ -330,10 +330,11 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Normal,{fam_n},{size_n},{base},{base},&H50000000,&HB4000000,0,0,0,0,100,100,0,0,1,2,0.8,2,60,60,{margin_v},1
-Style: Large,{fam_l},{size_l},{base},{base},&H50000000,&HB4000000,0,0,0,0,100,100,0,0,1,2,0.8,2,60,60,{margin_v},1
+Style: Normal,{fam_n},{size_n},{base},{base},{cap_outline_color},&HB4000000,0,0,0,0,100,100,0,0,{cap_border},2,60,60,{margin_v},1
+Style: Large,{fam_l},{size_l},{base},{base},{cap_outline_color},&HB4000000,0,0,0,0,100,100,0,0,{cap_border},2,60,60,{margin_v},1
 Style: Headline,{fam_h},{size_h},{base},{base},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2.5,1.5,5,60,60,0,1
 Style: Concept,{fam_c},{size_c},{accent},{accent},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2.5,1.5,5,60,60,0,1
+Style: ConceptSub,{fam_n},{size_cs},{base},{base},&H46000000,&HB4000000,0,0,0,0,100,100,1,0,1,2,1,5,60,60,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -355,9 +356,20 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         if not d.get("enabled", True):
             continue
         style = "Concept" if d.get("style") == "concept" else "Headline"
-        lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
-                     f"{{\\fad(250,250)}}{d['text']}")
-        n_disp += 1
+        sub = (d.get("subtext") or "").strip()
+        if sub:
+            # 메인은 중앙 약간 위, 한국어 설명은 그 아래 소형 (조승연 패턴)
+            main_pos = f"\\pos({w // 2},{round(h * 0.46)})"
+            sub_pos = f"\\pos({w // 2},{round(h * 0.57)})"
+            lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
+                         f"{{\\fad(250,250){main_pos}}}{d['text']}")
+            lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},ConceptSub,,0,0,0,,"
+                         f"{{\\fad(250,250){sub_pos}}}\u201C{sub}\u201D")
+            n_disp += 1
+        else:
+            lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
+                         f"{{\\fad(250,250)}}{d['text']}")
+            n_disp += 1
 
     out_path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")
     log.info("ASS 생성: %s (자막 %d개 + 타이포 %d개)", out_path, len(lines) - n_disp, n_disp)
@@ -409,7 +421,7 @@ subtitle_plan.json 이 갱신되고 <b>subtitle.ass 가 재생성</b>되며, 수
 <h2 style="font-size:16px;margin-top:28px">대형 키워드 타이포 (화면 중앙 디스플레이)</h2>
 <div class="sub">채널 시그니처 — 핵심 순간에 화면을 채우는 타이포. 텍스트/스타일 수정, 체크 해제로 제외.</div>
 <table><thead><tr>
-  <th>사용</th><th>문장</th><th>타이포 텍스트</th><th>스타일</th><th>미리보기</th><th>AI 판단 이유</th>
+  <th>사용</th><th>문장</th><th>타이포 텍스트</th><th>한글 설명(선택)</th><th>스타일</th><th>미리보기</th><th>AI 판단 이유</th>
 </tr></thead><tbody id="drows"></tbody></table>
 <div id="savebar"><button id="save">확정 저장 (plan + ASS 재생성)</button><span id="status"></span></div>
 <script>
@@ -473,6 +485,7 @@ for (const d of displays) {
     <td><input type="checkbox" data-f="enabled" ${d.enabled ? 'checked' : ''}></td>
     <td style="max-width:200px">${esc(sent ? sent.text : '#'+d.sentence_id)}</td>
     <td><input type="text" data-f="text" value="${esc(d.text)}" maxlength="14"></td>
+    <td><input type="text" data-f="subtext" value="${esc(d.subtext||'')}" maxlength="20" style="width:110px"></td>
     <td><select data-f="style">
         <option value="headline" ${d.style==='headline'?'selected':''}>headline (얇은 화이트)</option>
         <option value="concept" ${d.style==='concept'?'selected':''}>concept (볼드 옐로)</option></select></td>
@@ -482,6 +495,7 @@ for (const d of displays) {
     const f = e.target.dataset.f;
     if (f === 'enabled') d.enabled = e.target.checked;
     if (f === 'text') d.text = e.target.value;
+    if (f === 'subtext') d.subtext = e.target.value;
     if (f === 'style') d.style = e.target.value;
     document.getElementById('dpv'+d.id).innerHTML = dPreview(d);
   });
@@ -554,7 +568,7 @@ def _append_display_feedback(project: common.Project, old: list[dict], new: list
         if not o:
             continue
         changed = {k: {"ai": o.get(k), "user": d.get(k)}
-                   for k in ("text", "style", "enabled") if o.get(k) != d.get(k)}
+                   for k in ("text", "subtext", "style", "enabled") if o.get(k) != d.get(k)}
         if not changed:
             continue
         feedback.append({

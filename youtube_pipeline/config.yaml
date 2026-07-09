@@ -88,6 +88,8 @@ subtitle:
   # concept: 외국어 개념어·수치 — 볼드 옐로
   display_concept_family: "A2Z 5 Medium"
   display_concept_size: 64
+  # 타이트 다크 박스 (레퍼런스 채널 공통 가독성 장치) — false 면 떠있는 스타일
+  caption_box: true
   # 하단 안전영역: 화면 아래에서 이만큼 띄움 (px, 1080p 기준)
   margin_bottom: 110
   # 검토 표 서버 포트
@@ -103,6 +105,14 @@ photo_frame:
   bg_dark: "#16181D"    # 어두운 자료 → 딥 차콜
   # 얇은 흰 테두리(px, 1080p 기준)
   border: 6
+
+# ── 인포그래픽 팔레트 (design_reference.md §2 — 그래프/카드 제작용) ──
+infographic:
+  card_bg: "#104030"      # 딥 포레스트 그린 (대안: #16181D 차콜)
+  surface: "#307060"      # 지도/면 요소 뮤트 민트그린
+  point: "#C0392B"        # 포인트 벽돌 레드 (본인 채널은 #FAFF2E 치환 가능)
+  highlight: "#7FD8C0"    # 문서 인용 하이라이트 민트
+  text: "#EDEDE4"
 
 # ── 로컬 웹앱 (app.py) ────────────────────────────────────
 web:
