@@ -10,3 +10,8 @@ kiwipiepy>=0.18.0
 
 # 로컬 웹앱 (app.py)
 flask>=3.0
+
+# 소스 라이브러리 (assets_lib.py — 픽토그램/지도)
+cairosvg>=2.7
+matplotlib>=3.8
+Pillow>=10.0

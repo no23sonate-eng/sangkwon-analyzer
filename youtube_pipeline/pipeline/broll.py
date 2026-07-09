@@ -35,6 +35,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common  # noqa: E402
+import assets_lib  # noqa: E402
 
 log = common.get_logger("broll")
 
@@ -367,6 +368,7 @@ def gather_candidates(keywords: list[str], n: int, orientation: str) -> list[dic
         lambda q: search_pexels_videos(q, n, orientation),
         lambda q: search_pixabay_videos(q, n),
         lambda q: search_pexels_photos(q, n, orientation),
+        lambda q: assets_lib.wikimedia_images(q, n),   # 고유명사·실존 장소에 강함
         lambda q: search_pixabay_photos(q, n),
     ]
     for search in searchers:
