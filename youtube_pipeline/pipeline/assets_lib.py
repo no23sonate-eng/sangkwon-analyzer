@@ -332,6 +332,61 @@ def _load_fonts(font_manager, keys=("light", "reg", "med")):
     return fonts
 
 
+def _hex_to_rgb(h: str) -> tuple[int, int, int]:
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def _lighten(hex_color: str, amount: float = 0.15) -> str:
+    r, g, b = _hex_to_rgb(hex_color)
+    r = int(r + (255 - r) * amount)
+    g = int(g + (255 - g) * amount)
+    b = int(b + (255 - b) * amount)
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
+def _add_canvas_grid(fig, pal: dict, nx: int = 16, ny: int = 9,
+                     lw: float = 0.7, alpha: float = 0.4):
+    """네이비 캔버스 전체에 얇은 블루프린트 격자선을 깐다 — 플랫 단색 배경은
+    디테일이 없어 허전하다는 피드백에 따라 "블루프린트" 컨셉(design_reference.md
+    §12-1)을 실제 격자 무늬로 구체화. 콘텐츠는 이 위에 facecolor="none" 인
+    투명 축을 별도로 얹어 그린다.
+    """
+    bg = fig.add_axes((0, 0, 1, 1))
+    bg.set_facecolor(pal["canvas_bg"])
+    grid_color = _lighten(pal["canvas_bg"], 0.22)
+    for i in range(1, nx):
+        bg.axvline(i / nx, color=grid_color, lw=lw, alpha=alpha, zorder=0)
+    for j in range(1, ny):
+        bg.axhline(j / ny, color=grid_color, lw=lw, alpha=alpha, zorder=0)
+    bg.set_xlim(0, 1)
+    bg.set_ylim(0, 1)
+    bg.set_xticks([])
+    bg.set_yticks([])
+    for sp in bg.spines.values():
+        sp.set_visible(False)
+    return bg
+
+
+def _rounded_top_bar(ax, x0: float, y0: float, width: float, height: float,
+                     color: str, radius: float = 0.012, zorder: int = 2) -> None:
+    """위쪽 모서리만 둥근 막대 — 레퍼런스 실측(세로 막대그래프)은 전체
+    라운드가 아니라 상단만 둥글다. FancyBboxPatch 는 네 모서리를 동시에
+    둥글리므로, 전체 라운드 패치 위에 아랫부분을 덮는 직각 사각형을 한 장
+    더 올려 아래쪽 모서리를 가린다.
+    """
+    from matplotlib.patches import FancyBboxPatch, Rectangle
+    if height <= 0:
+        return
+    box = FancyBboxPatch((x0, y0), width, height,
+                         boxstyle=f"round,pad=0,rounding_size={radius}",
+                         facecolor=color, edgecolor="none", zorder=zorder)
+    ax.add_patch(box)
+    if height > radius:
+        ax.add_patch(Rectangle((x0, y0), width, height - radius,
+                               facecolor=color, edgecolor="none", zorder=zorder + 0.1))
+
+
 def _source_box(ax, pal, fonts, text: str, y: float = -0.16) -> None:
     """카드 맨 아래 출처 캡션 — 종이 위 뮤트 올리브그레이 텍스트, 박스 없음.
 
@@ -394,14 +449,14 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
               title: str = "", subtitle: str = "", value_suffix: str = "",
               highlight_index: int | None = None, value_fmt: str = "{:.0f}",
               source: str = "", icon: str = "", config: dict | None = None) -> Path:
-    """가로 막대 "레이스" 카드 PNG — The B1M 채널 스타일 (design_reference.md
-    §12): 네이비 블루프린트 캔버스 위 빈티지 페이퍼 카드, 블루(비교)/
-    레드(강조) 가로 막대가 막대 끝에 수치 라벨을 달고 나란히 경쟁하는 구도
-    (건물 높이 경쟁 그래픽에서 실측). 카테고리 라벨은 막대 왼쪽.
+    """세로 막대 비교 카드 PNG (design_reference.md §12-7 갱신) — 격자
+    블루프린트 캔버스 위에 막대가 별도 카드 없이 직접 서는 구도. 상단만
+    둥근 막대, 막대 위 수치 라벨, 막대 아래 카테고리 라벨 — 실제 채널
+    레퍼런스(세로 막대그래프 스크린샷) 실측 비율 반영: 폰트는 크게
+    부풀리지 않고, 막대 폭 대비 간격도 실측 비율을 따른다.
 
     icon: 주제를 나타내는 픽토그램 검색어(예: "office building", "land
-    plot") — 텍스트/막대만 있으면 어색하다는 피드백(§12-6)에 따라 카드
-    우상단에 개념 아이콘을 함께 넣는다. 비워두면 아이콘 없이 기존과 동일.
+    plot") — 막대가 닿지 않는 우상단 여백에 배치.
 
     렌더 단계에서 업스케일하지 않도록 dpi 200 으로 고정 저장한다.
     """
@@ -418,55 +473,61 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
 
     n = len(values)
     vmax = max(values)
-    bar_h = 0.5
-    gap = bar_h * 1.3
-    # 위에서 아래로 나열 (첫 항목이 맨 위)
-    ys = [-(i * (bar_h + gap)) for i in range(n)]
 
-    fig, ax = plt.subplots(figsize=(16, 9), dpi=200)
-    fig.patch.set_facecolor(pal["canvas_bg"])
-    fig.subplots_adjust(left=0.24, right=0.88, top=0.76, bottom=0.14)
-    ax.set_facecolor(pal["card_bg"])  # 캔버스 안의 종이 카드 — 여백이 네이비로 남음
-
-    ax.set_xlim(0, vmax * 1.42)
-    ax.set_ylim(ys[-1] - bar_h * 1.6, ys[0] + bar_h * 1.6)
-
-    for i, (y, v) in enumerate(zip(ys, values)):
-        hl = i == highlight_index
-        color = pal["point"] if hl else pal["surface"]
-        ax.barh(y, v, height=bar_h, color=color, zorder=2)
-        ax.annotate(value_fmt.format(v) + value_suffix, (v + vmax * 0.035, y),
-                    va="center", ha="left", color=color,
-                    fontsize=34 if hl else 28,
-                    fontproperties=fonts.get("med"), zorder=3)
-        ax.annotate(categories[i], (-vmax * 0.03, y), va="center", ha="right",
-                    color=pal["text"], fontsize=23, fontproperties=fonts.get("reg"))
-
-    # 제목/부제는 카드 밖 네이비 캔버스 영역에 걸리므로 canvas_text(밝은 톤) 사용
-    if title:
-        ax.annotate(title, (0.0, 1.22), xycoords="axes fraction", ha="left",
-                    color=pal["canvas_text"], fontsize=32, fontproperties=fonts.get("med"))
-    if subtitle:
-        ax.annotate(subtitle, (0.0, 1.08), xycoords="axes fraction", ha="left",
-                    color=pal["canvas_text"], fontsize=18, fontproperties=fonts.get("light"), alpha=0.75)
-    _source_box(ax, pal, fonts, source)
-
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_grid(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
     ax.set_xticks([])
     ax.set_yticks([])
     for sp in ax.spines.values():
         sp.set_visible(False)
 
+    # 막대 레이아웃 — 실측 레퍼런스 비율(막대 폭 : 간격 ≈ 1.8 : 1), 바닥선에서
+    # 위로 자란다. 폰트는 카드 전체를 지배하지 않는 절제된 크기로 고정.
+    baseline = 0.15
+    top_max = 0.70
+    content_w = 0.66
+    content_x0 = 0.17
+    bar_w = content_w / (1.55 * n + 0.55)
+    gap = bar_w * 0.55
+    x = content_x0 + gap
+
+    ax.axhline(baseline, color=_lighten(pal["canvas_bg"], 0.3), lw=1.3, zorder=1)
+
+    for i, v in enumerate(values):
+        hl = i == highlight_index
+        color = pal["point"] if hl else pal["surface"]
+        h = (v / vmax) * (top_max - baseline)
+        _rounded_top_bar(ax, x, baseline, bar_w, h, color,
+                         radius=min(bar_w * 0.3, 0.018), zorder=2)
+        ax.annotate(value_fmt.format(v) + value_suffix, (x + bar_w / 2, baseline + h + 0.022),
+                    ha="center", va="bottom", color=color,
+                    fontsize=25 if hl else 21,
+                    fontproperties=fonts.get("med"), zorder=4)
+        ax.annotate(categories[i], (x + bar_w / 2, baseline - 0.03),
+                    ha="center", va="top", color=pal["canvas_text"],
+                    fontsize=19, fontproperties=fonts.get("med"), zorder=4)
+        x += bar_w + gap
+
+    if title:
+        ax.annotate(title, (0.06, 0.90), ha="left", va="top",
+                    color=pal["canvas_text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.06, 0.845), ha="left", va="top",
+                    color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+    _source_box(ax, pal, fonts, source, y=0.045)
+
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
     if icon:
-        # 카드(종이) 영역은 fig 기준 x:[0.24,0.88] y:[0.14,0.76](matplotlib,
-        # 아래가 0) → PIL 기준(위가 0) y 는 뒤집혀 [0.24,0.86]. 우상단에
-        # 두면 막대 끝 수치 라벨(값이 vmax 에 가까운 막대일 때 카드 우측
-        # 끝까지 뻗음)과 겹치는 버그가 있었다 — 라벨은 항상 막대 오른쪽에서
-        # 시작하므로, 막대가 하나도 없는 카드 좌상단(첫 막대 위 여백)에
-        # 배치해 라벨 위치와 무관하게 항상 안전하도록 고정.
-        _place_icon(out, icon, config, color="text", pos=(0.275, 0.245), size_frac=0.055)
+        # 막대는 바닥선 위로만 자라므로 우상단 여백은 항상 비어 있다 —
+        # 이전엔 카드 안쪽 좌표를 따로 계산해야 했지만 이제 카드=캔버스
+        # 전체라 pos 가 곧 이미지 전체 기준 비율이라 계산이 단순해졌다.
+        _place_icon(out, icon, config, color="canvas_text", pos=(0.83, 0.06), size_frac=0.09)
     _add_grain(out)
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
@@ -475,9 +536,9 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
 def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
                  label_filled: str = "", label_rest: str = "", source: str = "",
                  config: dict | None = None) -> Path:
-    """비율(%) 막대 카드 — The B1M 스타일 (design_reference.md §12): 네이비
-    캔버스 위 페이퍼 카드, 레드(강조 구간)/블루(나머지) 가로 막대. §8-5
-    "비율은 도식화 우선" 원칙에 따른 단일 퍼센트 시각화
+    """비율(%) 막대 카드 — 격자 블루프린트 캔버스에 캡슐형 막대가 직접
+    놓이는 구도(design_reference.md §12-7 갱신, 별도 페이퍼 카드 없음).
+    §8-5 "비율은 도식화 우선" 원칙에 따른 단일 퍼센트 시각화
     (예: 매수가가 감정가의 85% 라면 85:15).
     """
     import matplotlib
@@ -490,47 +551,49 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
     fonts = _load_fonts(font_manager)
     pct = max(0.0, min(100.0, percent))
 
-    fig, ax = plt.subplots(figsize=(16, 6), dpi=200)
-    fig.patch.set_facecolor(pal["canvas_bg"])
-    fig.subplots_adjust(left=0.08, right=0.92, top=0.60, bottom=0.32)
-    ax.set_facecolor(pal["card_bg"])
-
-    bar_h = 0.42
-    ax.set_xlim(0, 100)
-    ax.set_ylim(0, 1.0)
-    y0 = (1.0 - bar_h) / 2
-    r = bar_h * 0.1
-    track = FancyBboxPatch((0, y0), 100, bar_h, boxstyle=f"round,pad=0,rounding_size={r}",
-                           facecolor=pal["surface"], edgecolor="none", zorder=1, alpha=0.45)
-    ax.add_patch(track)
-    if pct > 0:
-        fill = FancyBboxPatch((0, y0), pct, bar_h,
-                              boxstyle=f"round,pad=0,rounding_size={r}",
-                              facecolor=pal["point"], edgecolor="none", zorder=2)
-        ax.add_patch(fill)
-
-    ha, tx = ("right", min(pct, 97)) if pct > 90 else ("center", pct)
-    ax.annotate(f"{pct:.0f}%", (tx, y0 + bar_h + 0.12), ha=ha, va="bottom",
-                color=pal["point"], fontsize=34, fontproperties=fonts.get("med"), zorder=3)
-
-    if title:
-        ax.annotate(title, (0.0, 1.46), xycoords="axes fraction", ha="left",
-                    color=pal["canvas_text"], fontsize=32, fontproperties=fonts.get("med"))
-    if subtitle:
-        ax.annotate(subtitle, (0.0, 1.22), xycoords="axes fraction", ha="left",
-                    color=pal["canvas_text"], fontsize=18, fontproperties=fonts.get("light"), alpha=0.75)
-    if label_filled:
-        ax.annotate(label_filled, (0.0, -0.32), xycoords="axes fraction", ha="left",
-                    color=pal["point"], fontsize=20, fontproperties=fonts.get("reg"))
-    if label_rest:
-        ax.annotate(label_rest, (1.0, -0.32), xycoords="axes fraction", ha="right",
-                    color=pal["surface"], fontsize=20, fontproperties=fonts.get("reg"))
-    _source_box(ax, pal, fonts, source)
-
+    fig = plt.figure(figsize=(16, 6), dpi=200)
+    _add_canvas_grid(fig, pal, ny=6)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
     ax.set_xticks([])
     ax.set_yticks([])
     for sp in ax.spines.values():
         sp.set_visible(False)
+
+    bar_h = 0.16
+    bar_x0, bar_w = 0.08, 0.84
+    y0 = 0.40
+    r = bar_h * 0.14
+    track = FancyBboxPatch((bar_x0, y0), bar_w, bar_h, boxstyle=f"round,pad=0,rounding_size={r}",
+                           facecolor=pal["surface"], edgecolor="none", zorder=1, alpha=0.45)
+    ax.add_patch(track)
+    fill_w = bar_w * pct / 100
+    if fill_w > 0:
+        fill = FancyBboxPatch((bar_x0, y0), fill_w, bar_h,
+                              boxstyle=f"round,pad=0,rounding_size={r}",
+                              facecolor=pal["point"], edgecolor="none", zorder=2)
+        ax.add_patch(fill)
+
+    ha, tx = ("right", min(bar_x0 + fill_w, bar_x0 + bar_w - 0.02)) if pct > 90 else \
+             ("center", bar_x0 + fill_w)
+    ax.annotate(f"{pct:.0f}%", (tx, y0 + bar_h + 0.05), ha=ha, va="bottom",
+                color=pal["point"], fontsize=27, fontproperties=fonts.get("med"), zorder=3)
+
+    if title:
+        ax.annotate(title, (0.08, 0.86), ha="left", va="top",
+                    color=pal["canvas_text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.08, 0.79), ha="left", va="top",
+                    color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+    if label_filled:
+        ax.annotate(label_filled, (bar_x0, y0 - 0.06), ha="left", va="top",
+                    color=pal["point"], fontsize=17, fontproperties=fonts.get("reg"))
+    if label_rest:
+        ax.annotate(label_rest, (bar_x0 + bar_w, y0 - 0.06), ha="right", va="top",
+                    color=pal["surface"], fontsize=17, fontproperties=fonts.get("reg"))
+    _source_box(ax, pal, fonts, source, y=0.06)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
@@ -560,9 +623,9 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     pal = _palette(config)
     fonts = _load_fonts(font_manager)
 
-    fig, ax = plt.subplots(figsize=(16, 9), dpi=200)
-    fig.patch.set_facecolor(pal["canvas_bg"])
-    fig.subplots_adjust(left=0.06, right=0.94, top=0.94, bottom=0.06)
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_grid(fig, pal)  # 카드 바깥 네이비 여백에도 격자 디테일
+    ax = fig.add_axes((0.06, 0.06, 0.88, 0.88))
     ax.set_facecolor(pal["card_bg"])
     # 주의: ax.axis('off') 는 틱/스파인뿐 아니라 축 patch(카드 배경색)까지
     # 지워버려 네이비 캔버스만 보이는 버그가 있었다 — 틱/스파인만 개별로 끔.
@@ -577,7 +640,7 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
         ax.annotate(label, (cx1, 0.66), xycoords="axes fraction", ha="center",
                     color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
     ax.annotate(value, (cx1, 0.46), xycoords="axes fraction", ha="center", va="center",
-                color=pal["surface"] if two else pal["point"], fontsize=88 if not two else 66,
+                color=pal["surface"] if two else pal["point"], fontsize=80 if not two else 60,
                 fontproperties=fonts.get("med"))
     if subtext:
         ax.annotate(subtext, (cx1, 0.26), xycoords="axes fraction", ha="center",
@@ -594,7 +657,7 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
             ax.annotate(label2, (cx2, 0.66), xycoords="axes fraction", ha="center",
                         color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
         ax.annotate(value2, (cx2, 0.46), xycoords="axes fraction", ha="center", va="center",
-                    color=pal["point"], fontsize=66, fontproperties=fonts.get("med"))
+                    color=pal["point"], fontsize=60, fontproperties=fonts.get("med"))
 
     _source_box(ax, pal, fonts, source, y=0.06)
 
@@ -605,6 +668,200 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
         _place_icon(out, icon, config, pos=(0.09, 0.10), size_frac=0.14)
     _add_grain(out)
     log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
+    return out
+
+
+# ══════════════════════════════════════════════════════════
+# 4. 출처 인용 애니메이션 클립 — 기사 화면 + 하이라이트 강조
+# ══════════════════════════════════════════════════════════
+
+def _wrap_text(draw, text: str, font, max_width: int) -> list[str]:
+    words = text.split()
+    lines: list[str] = []
+    cur = ""
+    for w in words:
+        trial = f"{cur} {w}".strip()
+        if draw.textlength(trial, font=font) <= max_width or not cur:
+            cur = trial
+        else:
+            lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def _ease_out_cubic(x: float) -> float:
+    x = max(0.0, min(1.0, x))
+    return 1 - (1 - x) ** 3
+
+
+def render_source_citation(headline: str, quote: str, out: Path,
+                           tag: str = "출처 기사", body_lines: int = 3,
+                           config: dict | None = None, width: int = 1920,
+                           height: int = 1080, fps: int = 30,
+                           duration: float = 3.0, highlight_sec: float = 0.7) -> Path:
+    """출처 기사 인용 애니메이션 클립(mp4) — "출처를 그냥 텍스트 캡션으로만
+    올리지 말고 기사 화면에 약간의 애니메이션(하이라이트 강조)을 써서
+    보여달라"는 피드백 반영. 실제 기사 스크린샷이 없으므로 브라우저/문서
+    형태를 도식화한 카드를 그려 재현한다 — 실제 화면이 아님을 카드 안에
+    작게 명시(레퍼런스 채널도 예시 그래프에 "FOR ILLUSTRATIVE PURPOSES
+    ONLY" 를 작게 표기하는 관례를 따름).
+
+    headline: 기사 제목(1~2줄로 자동 줄바꿈)
+    quote: 강조해서 보여줄 한 줄(예: "평당 4억 5천만원") — 애니메이션으로
+    하이라이트 박스가 뒤에서 자라나며 강조된다.
+    body_lines: quote 외에 채워 넣을 회색 더미 본문 줄 수(문서 느낌용).
+
+    프레임을 PIL 로 직접 그려(그래프용 matplotlib 대신 — 텍스트/도형 위주라
+    더 빠르고 애니메이션 프레임 반복에 유리) ffmpeg 로 인코딩한다.
+    """
+    import shutil
+    import subprocess
+    import tempfile
+
+    from PIL import Image, ImageDraw, ImageFont
+
+    pal = _palette(config)
+    font_dir = common.ROOT_DIR / "assets" / "fonts"
+    f_head = ImageFont.truetype(str(font_dir / "A2Z-5Medium.ttf"), int(height * 0.042))
+    f_quote = ImageFont.truetype(str(font_dir / "A2Z-4Regular.ttf"), int(height * 0.032))
+    f_tag = ImageFont.truetype(str(font_dir / "A2Z-5Medium.ttf"), int(height * 0.02))
+    f_cap = ImageFont.truetype(str(font_dir / "A2Z-3Light.ttf"), int(height * 0.014))
+
+    zoom_max = 1.05
+    bw, bh = int(width * zoom_max), int(height * zoom_max)
+
+    # ── 배경(격자 블루프린트 캔버스) ──
+    base = Image.new("RGB", (bw, bh), pal["canvas_bg"])
+    bd = ImageDraw.Draw(base)
+    grid_color = _lighten(pal["canvas_bg"], 0.22)
+    nx, ny = 16, 9
+    for i in range(1, nx):
+        x = int(bw * i / nx)
+        bd.line([(x, 0), (x, bh)], fill=grid_color, width=1)
+    for j in range(1, ny):
+        y = int(bh * j / ny)
+        bd.line([(0, y), (bw, y)], fill=grid_color, width=1)
+
+    # ── 기사 카드(문서/브라우저 도식) ──
+    card_w, card_h = int(bw * 0.58), int(bh * 0.58)
+    card_x0, card_y0 = (bw - card_w) // 2, (bh - card_h) // 2
+    card_x1, card_y1 = card_x0 + card_w, card_y0 + card_h
+    shadow = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shadow)
+    sd.rounded_rectangle((card_x0 + 10, card_y0 + 14, card_x1 + 10, card_y1 + 14),
+                        radius=int(card_h * 0.03), fill=(0, 0, 0, 90))
+    base = Image.alpha_composite(base.convert("RGBA"), shadow)
+    bd = ImageDraw.Draw(base)
+    bd.rounded_rectangle((card_x0, card_y0, card_x1, card_y1),
+                        radius=int(card_h * 0.03), fill=pal["card_bg"])
+
+    # 브라우저 크롬 바(상단) — 신호점 3개 + URL 필 플레이스홀더 (카드와 같은
+    # 종이색 위에 구분선만 그어 상단 라운드 모서리를 그대로 살린다)
+    chrome_h = int(card_h * 0.10)
+    bd.line([(card_x0, card_y0 + chrome_h), (card_x1, card_y0 + chrome_h)],
+           fill=_lighten(pal["text"], 0.7), width=1)
+    dot_r = int(chrome_h * 0.14)
+    dot_cy = card_y0 + chrome_h // 2
+    for k, dc in enumerate([pal["point"], pal["highlight"], pal["surface"]]):
+        dot_cx = card_x0 + int(card_w * 0.035) + k * dot_r * 3
+        bd.ellipse((dot_cx - dot_r, dot_cy - dot_r, dot_cx + dot_r, dot_cy + dot_r), fill=dc)
+    pill_x0 = card_x0 + int(card_w * 0.20)
+    pill_x1 = card_x0 + int(card_w * 0.62)
+    pill_h = int(chrome_h * 0.42)
+    bd.rounded_rectangle((pill_x0, dot_cy - pill_h // 2, pill_x1, dot_cy + pill_h // 2),
+                        radius=pill_h // 2, fill=_lighten(pal["text"], 0.82))
+
+    # 작은 출처 태그 배지(캔버스 위, 카드 좌상단 바깥)
+    tag_pad_x, tag_pad_y = int(width * 0.012), int(height * 0.01)
+    tag_w = int(bd.textlength(tag, font=f_tag)) + tag_pad_x * 2
+    tag_h = int(height * 0.045)
+    tag_x0, tag_y0 = card_x0, card_y0 - tag_h - int(height * 0.018)
+    bd.rounded_rectangle((tag_x0, tag_y0, tag_x0 + tag_w, tag_y0 + tag_h),
+                        radius=tag_h // 2, fill=pal["point"])
+    bd.text((tag_x0 + tag_pad_x, tag_y0 + tag_h // 2), tag, font=f_tag,
+           fill=pal["canvas_text"], anchor="lm")
+
+    # 헤드라인
+    content_x0 = card_x0 + int(card_w * 0.07)
+    content_x1 = card_x1 - int(card_w * 0.07)
+    max_text_w = content_x1 - content_x0
+    head_lines = _wrap_text(bd, headline, f_head, max_text_w)[:2]
+    y = card_y0 + chrome_h + int(card_h * 0.09)
+    line_gap = int(f_head.size * 1.28)
+    for ln in head_lines:
+        bd.text((content_x0, y), ln, font=f_head, fill=pal["text"])
+        y += line_gap
+
+    # 더미 본문 줄(회색 바) + 인용 줄(실제 텍스트) 위치 계산
+    y += int(card_h * 0.03)
+    body_gap = int(card_h * 0.085)
+    dummy_widths = [0.92, 0.78, 0.85]
+    quote_box = None
+    quote_line_index = min(1, body_lines - 1) if body_lines > 0 else 0
+    for i in range(body_lines):
+        if i == quote_line_index:
+            quote_box = (content_x0, y - int(card_h * 0.018),
+                        content_x0 + int(bd.textlength(quote, font=f_quote)) + int(card_w * 0.03),
+                        y + int(f_quote.size * 1.15))
+        else:
+            frac = dummy_widths[i % len(dummy_widths)]
+            bar_h = int(f_quote.size * 0.62)
+            bd.rounded_rectangle((content_x0, y, content_x0 + int(max_text_w * frac), y + bar_h),
+                                radius=bar_h // 2, fill=_lighten(pal["text"], 0.72))
+        y += body_gap
+
+    # 하단 캡션(예시 이미지 안내 — 레퍼런스 채널의 "FOR ILLUSTRATIVE PURPOSES
+    # ONLY" 관례와 동일한 취지)
+    bd.text((card_x1 - int(card_w * 0.03), card_y1 - int(card_h * 0.045)),
+           "예시 이미지 · 실제 화면 아님", font=f_cap, fill=_lighten(pal["text"], 0.5), anchor="rm")
+
+    background_img = base  # 인용 텍스트 없이(하이라이트가 뒤에 깔릴 것이므로)
+
+    quote_layer = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+    ql = ImageDraw.Draw(quote_layer)
+    if quote_box:
+        qx0, qy0, qx1, qy1 = quote_box
+        ql.text((qx0 + int(card_w * 0.015), qy0 + (qy1 - qy0) // 2), quote,
+               font=f_quote, fill=pal["text"], anchor="lm")
+
+    total_frames = max(int(round(duration * fps)), 2)
+    hl_frames = max(int(round(highlight_sec * fps)), 1)
+
+    tmp_dir = Path(tempfile.mkdtemp(prefix="citation_"))
+    try:
+        for i in range(total_frames):
+            t = i / (total_frames - 1)
+            frame = background_img.convert("RGBA").copy()
+            if quote_box:
+                p = _ease_out_cubic(min(i / hl_frames, 1.0))
+                qx0, qy0, qx1, qy1 = quote_box
+                cur_x1 = qx0 + (qx1 - qx0) * p
+                hl_layer = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+                hd = ImageDraw.Draw(hl_layer)
+                hr, hg, hb = _hex_to_rgb(pal["point"])
+                hd.rounded_rectangle((qx0, qy0, cur_x1, qy1), radius=(qy1 - qy0) * 0.25,
+                                    fill=(hr, hg, hb, 70))
+                frame = Image.alpha_composite(frame, hl_layer)
+            frame = Image.alpha_composite(frame, quote_layer)
+
+            zoom = 1 + (zoom_max - 1) * t
+            cw, ch = bw / zoom, bh / zoom
+            cx, cy = (bw - cw) / 2, (bh - ch) / 2
+            frame = frame.convert("RGB").crop((int(cx), int(cy), int(cx + cw), int(cy + ch)))
+            frame = frame.resize((width, height), Image.LANCZOS)
+            frame.save(tmp_dir / f"f{i:05d}.png")
+
+        out.parent.mkdir(parents=True, exist_ok=True)
+        cmd = ["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(fps),
+              "-i", str(tmp_dir / "f%05d.png"), "-c:v", "libx264", "-pix_fmt", "yuv420p",
+              "-crf", "18", str(out)]
+        subprocess.run(cmd, check=True)
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    log.info("출처 인용 클립 저장: %s (%.1fs, %d프레임)", out.name, duration, total_frames)
     return out
 
 
