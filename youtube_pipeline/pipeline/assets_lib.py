@@ -1281,6 +1281,157 @@ def trend_line(labels: list[str], values: list[float], out: Path, title: str = "
     return out
 
 
+def lollipop_chart(categories: list[str], values: list[float], out: Path,
+                   title: str = "", subtitle: str = "", value_suffix: str = "",
+                   highlight_index: int | None = None, value_fmt: str = "{:.0f}",
+                   source: str = "", config: dict | None = None) -> Path:
+    """그래프 유형 D: 로리팝(막대 대신 얇은 선+원) 비교 — 실측 레퍼런스가
+    두꺼운 막대보다 훨씬 자주 쓰는 미니멀 비교 표현. `bar_chart()`(굵은
+    막대)보다 가볍고 절제된 느낌이 필요할 때, 특히 항목이 3개 이상이라
+    막대가 답답해 보일 때 쓴다.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    if highlight_index is None:
+        highlight_index = len(values) - 1
+
+    n = len(values)
+    vmax = max(values)
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    baseline = 0.16
+    top_max = 0.72
+    content_x0, content_x1 = 0.14, 0.90
+    xs = [content_x0 + (content_x1 - content_x0) * i / max(n - 1, 1) for i in range(n)] \
+        if n > 1 else [(content_x0 + content_x1) / 2]
+
+    ax.axhline(baseline, color=_lighten(pal["text"], 0.8), lw=1.2, zorder=1)
+
+    for i, (x, v) in enumerate(zip(xs, values)):
+        hl = i == highlight_index
+        color = pal["surface"] if hl else pal["point"]
+        h = (v / vmax) * (top_max - baseline)
+        ax.plot([x, x], [baseline, baseline + h], color=color, lw=4.5,
+               solid_capstyle="round", zorder=2)
+        ax.scatter([x], [baseline + h], s=420 if hl else 320, color=color,
+                  zorder=3, edgecolors=pal["canvas_bg"], linewidths=3)
+        ax.annotate(value_fmt.format(v) + value_suffix, (x, baseline + h + 0.055),
+                    ha="center", va="bottom", color=color, fontsize=23 if hl else 19,
+                    fontproperties=fonts.get("med"), zorder=4)
+        ax.annotate(categories[i], (x, baseline - 0.035), ha="center", va="top",
+                    color=pal["text"], fontsize=18, fontproperties=fonts.get("med"), zorder=4)
+
+    if title:
+        ax.annotate(title, (0.06, 0.90), ha="left", va="top",
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.06, 0.845), ha="left", va="top",
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    log.info("로리팝 차트 저장: %s (강조 index=%d)", out.name, highlight_index)
+    return out
+
+
+def spectrum_diagram(left_label: str, right_label: str, position: float, out: Path,
+                     title: str = "", subtitle: str = "", left_icon: str = "",
+                     right_icon: str = "", source: str = "",
+                     config: dict | None = None) -> Path:
+    """그래프 유형 E: 스펙트럼/연속선 다이어그램 — 두 극단(예: "유동적" ↔
+    "비유동적", "저위험" ↔ "고위험") 사이 어딘가에 위치한다는 걸 보여줄 때.
+    막대·숫자로 딱 떨어지지 않는 정성적 비교에 적합 — bar_chart/
+    lollipop_chart(정량 비교)와 상호 보완적인 도구.
+
+    position: 0(왼쪽 끝, left_label 쪽)~1(오른쪽 끝, right_label 쪽) 사이 값.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import FancyBboxPatch, Ellipse
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    pos = max(0.0, min(1.0, position))
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    # 이 axes 는 0~1 정사각 좌표계이지만 실제 저장 캔버스는 16:9 라, Circle
+    # (x/y 반지름이 데이터 단위로 같음)을 그대로 쓰면 최종 이미지에서 가로로
+    # 눌린 타원이 된다 — 진짜 원으로 보이려면 세로 반지름을 16/9 배로 키운다.
+    aspect = 16 / 9
+
+    def _circle(cx, cy, r, **kw):
+        ax.add_patch(Ellipse((cx, cy), width=2 * r, height=2 * r * aspect, **kw))
+
+    track_x0, track_x1 = 0.20, 0.80
+    track_y = 0.48
+    track_h = 0.05
+    ax.add_patch(FancyBboxPatch((track_x0, track_y - track_h / 2), track_x1 - track_x0, track_h,
+                               boxstyle=f"round,pad=0,rounding_size={track_h / 2}",
+                               facecolor=_lighten(pal["text"], 0.85), edgecolor="none", zorder=1))
+
+    mx = track_x0 + (track_x1 - track_x0) * pos
+    for r, alpha in [(0.052, 0.16), (0.036, 0.30)]:
+        _circle(mx, track_y, r, facecolor=pal["point"], alpha=alpha, zorder=2, linewidth=0)
+    _circle(mx, track_y, 0.020, facecolor=pal["point"], zorder=3)
+
+    anchor_r = 0.052
+    for x, label, icon in [(track_x0, left_label, left_icon), (track_x1, right_label, right_icon)]:
+        _circle(x, track_y, anchor_r, facecolor=pal["card_bg"],
+               edgecolor=pal["text"], linewidth=1.4, zorder=3)
+        ax.annotate(label, (x, track_y - anchor_r * aspect - 0.05), ha="center", va="top",
+                    color=pal["text"], fontsize=20, fontproperties=fonts.get("med"), zorder=4)
+
+    if title:
+        ax.annotate(title, (0.06, 0.90), ha="left", va="top",
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.06, 0.845), ha="left", va="top",
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source, y=0.10)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    icon_side = 0.064
+    icon_top = 0.52 - (icon_side * aspect) / 2  # 앵커 원 중심에 정렬(PIL 상하 반전 보정)
+    if left_icon:
+        _place_icon(out, left_icon, config, color="text", pos=(0.20 - icon_side / 2, icon_top), size_frac=icon_side)
+    if right_icon:
+        _place_icon(out, right_icon, config, color="text", pos=(0.80 - icon_side / 2, icon_top), size_frac=icon_side)
+    log.info("스펙트럼 다이어그램 저장: %s (position=%.2f)", out.name, pos)
+    return out
+
+
 # ══════════════════════════════════════════════════════════
 # 7. 배경 3가지 톤앤매너 (이미지 제작 가이드 §5)
 # ══════════════════════════════════════════════════════════
