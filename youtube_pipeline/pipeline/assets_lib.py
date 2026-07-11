@@ -345,6 +345,17 @@ def _lighten(hex_color: str, amount: float = 0.15) -> str:
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
+def _track_latin(text: str, space: str = " ") -> str:
+    """짧은 영문 약어(단독 라벨용, 2~5자, 예: "NOI", "IRR", "B1M")의 글자
+    사이에 얇은 유니코드 공백을 넣어 트래킹한다 — 이미지 제작 가이드 §4
+    "국영문 혼용" 규칙: 국문 글자 사이 시각적 밀도에 맞춰 영문 대문자
+    약어가 단독으로(문장에 섞이지 않고) 쓰일 때만 적용한다. 문장 중간에
+    섞인 영문(예: "필요 순영업이익(NOI)")에는 절대 적용하지 않는다 —
+    문장 흐름이 끊겨 보인다.
+    """
+    return space.join(list(text))
+
+
 def _add_canvas_grid(fig, pal: dict, nx: int = 16, ny: int = 9,
                      lw: float = 0.7, alpha: float = 0.4):
     """네이비 캔버스 전체에 얇은 블루프린트 격자선을 깐다 — 플랫 단색 배경은
@@ -863,6 +874,434 @@ def render_source_citation(headline: str, quote: str, out: Path,
 
     log.info("출처 인용 클립 저장: %s (%.1fs, %d프레임)", out.name, duration, total_frames)
     return out
+
+
+def render_source_capture(image_path: Path, out: Path, tag: str = "출처 기사",
+                          highlight_box: tuple[float, float, float, float] | None = None,
+                          source_caption: str = "", config: dict | None = None,
+                          width: int = 1920, height: int = 1080, fps: int = 30,
+                          duration: float = 2.6) -> Path:
+    """실제 기사 캡쳐 이미지 1장을 받아 보여주는 애니메이션 클립 — 이미지
+    제작 가이드 §1 의 두 변형을 하나의 함수로 제공한다.
+
+    - highlight_box 를 안 주면 **변형 A "줌"**: 캡쳐 이미지 전체에 은은한
+      Ken Burns 줌만 적용. 캡쳐 자체가 이미 핵심을 보여줄 때(제목 기사,
+      표 전체 등) 사용.
+    - highlight_box=(x0,y0,x1,y1)(원본 이미지 기준 0~1 비율)를 주면
+      **변형 B "하이라이트"**: 줌 + 지정 영역 위로 하이라이트 박스가
+      자라나는 애니메이션. 캡쳐 중 특정 문장/숫자 한 곳을 짚어줘야 할 때
+      사용(예: 가격 부분, 헤드라인 핵심 문구).
+
+    두 변형 모두 네이비 격자 캔버스 위 페이퍼 테두리 카드에 캡쳐 이미지를
+    "contain" 방식(잘리지 않게 비율 유지)으로 앉힌다 — 실제 캡쳐를
+    자르면 문맥이 잘려 오해를 부를 수 있어 항상 전체를 보여준다.
+    """
+    import shutil
+    import subprocess
+    import tempfile
+
+    from PIL import Image, ImageDraw, ImageFont
+
+    pal = _palette(config)
+    font_dir = common.ROOT_DIR / "assets" / "fonts"
+    f_tag = ImageFont.truetype(str(font_dir / "A2Z-5Medium.ttf"), int(height * 0.02))
+    f_cap = ImageFont.truetype(str(font_dir / "A2Z-3Light.ttf"), int(height * 0.016))
+
+    zoom_max = 1.06
+    bw, bh = int(width * zoom_max), int(height * zoom_max)
+
+    base = Image.new("RGB", (bw, bh), pal["canvas_bg"])
+    bd = ImageDraw.Draw(base)
+    grid_color = _lighten(pal["canvas_bg"], 0.22)
+    for i in range(1, 16):
+        x = int(bw * i / 16)
+        bd.line([(x, 0), (x, bh)], fill=grid_color, width=1)
+    for j in range(1, 9):
+        y = int(bh * j / 9)
+        bd.line([(0, y), (bw, y)], fill=grid_color, width=1)
+
+    card_w, card_h = int(bw * 0.62), int(bh * 0.62)
+    card_x0, card_y0 = (bw - card_w) // 2, (bh - card_h) // 2
+    card_x1, card_y1 = card_x0 + card_w, card_y0 + card_h
+
+    shadow = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shadow)
+    sd.rounded_rectangle((card_x0 + 10, card_y0 + 14, card_x1 + 10, card_y1 + 14),
+                        radius=int(card_h * 0.025), fill=(0, 0, 0, 90))
+    base = Image.alpha_composite(base.convert("RGBA"), shadow).convert("RGB")
+    bd = ImageDraw.Draw(base)
+    pad = int(card_h * 0.035)
+    bd.rounded_rectangle((card_x0, card_y0, card_x1, card_y1),
+                        radius=int(card_h * 0.025), fill=pal["card_bg"])
+
+    # 캡쳐 이미지를 카드 안쪽에 "contain" 배치(잘림 없음)
+    cap = Image.open(image_path).convert("RGB")
+    inner_w, inner_h = card_w - pad * 2, card_h - pad * 2
+    scale = min(inner_w / cap.width, inner_h / cap.height)
+    disp_w, disp_h = int(cap.width * scale), int(cap.height * scale)
+    cap_resized = cap.resize((disp_w, disp_h), Image.LANCZOS)
+    img_x0 = card_x0 + pad + (inner_w - disp_w) // 2
+    img_y0 = card_y0 + pad + (inner_h - disp_h) // 2
+    base.paste(cap_resized, (img_x0, img_y0))
+
+    # 태그 배지
+    tag_pad_x = int(width * 0.012)
+    tag_w = int(bd.textlength(tag, font=f_tag)) + tag_pad_x * 2
+    tag_h = int(height * 0.045)
+    tag_x0, tag_y0 = card_x0, card_y0 - tag_h - int(height * 0.018)
+    bd.rounded_rectangle((tag_x0, tag_y0, tag_x0 + tag_w, tag_y0 + tag_h),
+                        radius=tag_h // 2, fill=pal["point"])
+    bd.text((tag_x0 + tag_pad_x, tag_y0 + tag_h // 2), tag, font=f_tag,
+           fill=pal["canvas_text"], anchor="lm")
+    if source_caption:
+        bd.text((card_x1, card_y1 + int(height * 0.028)), source_caption, font=f_cap,
+               fill=_lighten(pal["canvas_bg"], 0.55), anchor="ra")
+
+    background_img = base
+
+    # 하이라이트 박스(변형 B) — 원본 이미지 비율 좌표를 표시 좌표로 환산
+    hl_box_px = None
+    if highlight_box:
+        hx0, hy0, hx1, hy1 = highlight_box
+        hl_box_px = (img_x0 + hx0 * disp_w, img_y0 + hy0 * disp_h,
+                    img_x0 + hx1 * disp_w, img_y0 + hy1 * disp_h)
+
+    total_frames = max(int(round(duration * fps)), 2)
+    hl_frames = max(int(round(0.6 * fps)), 1)
+
+    tmp_dir = Path(tempfile.mkdtemp(prefix="capture_"))
+    try:
+        for i in range(total_frames):
+            t = i / (total_frames - 1)
+            frame = background_img.convert("RGBA").copy()
+            if hl_box_px:
+                p = _ease_out_cubic(min(i / hl_frames, 1.0))
+                qx0, qy0, qx1, qy1 = hl_box_px
+                cur_x1 = qx0 + (qx1 - qx0) * p
+                hl_layer = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+                hd = ImageDraw.Draw(hl_layer)
+                hr, hg, hb = _hex_to_rgb(pal["point"])
+                hd.rounded_rectangle((qx0, qy0, cur_x1, qy1), radius=(qy1 - qy0) * 0.12,
+                                    outline=(hr, hg, hb, 235), width=max(int(height * 0.005), 2))
+                frame = Image.alpha_composite(frame, hl_layer)
+
+            zoom = 1 + (zoom_max - 1) * t
+            cw, ch = bw / zoom, bh / zoom
+            cx, cy = (bw - cw) / 2, (bh - ch) / 2
+            frame = frame.convert("RGB").crop((int(cx), int(cy), int(cx + cw), int(cy + ch)))
+            frame = frame.resize((width, height), Image.LANCZOS)
+            frame.save(tmp_dir / f"f{i:05d}.png")
+
+        out.parent.mkdir(parents=True, exist_ok=True)
+        cmd = ["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(fps),
+              "-i", str(tmp_dir / "f%05d.png"), "-c:v", "libx264", "-pix_fmt", "yuv420p",
+              "-crf", "18", str(out)]
+        subprocess.run(cmd, check=True)
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    variant = "하이라이트" if highlight_box else "줌"
+    log.info("기사 캡쳐 클립 저장: %s (변형=%s, %.1fs)", out.name, variant, duration)
+    return out
+
+
+# ══════════════════════════════════════════════════════════
+# 5. 지도 — 3가지 톤앤매너 (이미지 제작 가이드 §2)
+# ══════════════════════════════════════════════════════════
+
+def map_pin_blueprint(label: str, out: Path, sublabel: str = "",
+                      config: dict | None = None) -> Path:
+    """지도 톤앤매너 B: "블루프린트 핀"— 실제 지리 데이터 없이, 네이비 격자
+    캔버스 위에 도식화한 街(가구/블록) 선과 펄스 핀 마커만으로 "정확히
+    이 지점" 을 가리킨다. flat_map()(톤앤매너 A, 국가·지역 실루엣)보다
+    스케일이 작은 대상(건물·필지 단위)에 적합 — 실제 지도 데이터가
+    없어도(또는 필요 이상으로 정밀하지 않아도) 빠르게 만들 수 있다.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_grid(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    # 도식화된 街 블록(사실적 지도가 아니라 "도면" 느낌) — 얇은 크림색 선
+    block_color = _lighten(pal["canvas_bg"], 0.4)
+    for i in range(3):
+        y = 0.30 + i * 0.22
+        ax.plot([0.2, 0.8], [y, y], color=block_color, lw=1.4, alpha=0.7, zorder=1)
+    for i in range(4):
+        x = 0.25 + i * 0.18
+        ax.plot([x, x], [0.18, 0.82], color=block_color, lw=1.4, alpha=0.7, zorder=1)
+
+    cx, cy = 0.5, 0.52
+    for radius_pt, alpha in [(70, 0.10), (46, 0.22), (22, 0.9)]:
+        ax.scatter([cx], [cy], s=radius_pt ** 2, color=pal["point"], alpha=alpha,
+                  zorder=3, linewidths=0)
+    ax.scatter([cx], [cy], s=22 ** 2 * 0.28, color=pal["canvas_bg"], zorder=4, linewidths=0)
+
+    ax.annotate(label, (cx, cy - 0.14), ha="center", va="top",
+                color=pal["canvas_text"], fontsize=30, fontproperties=fonts.get("med"), zorder=5)
+    if sublabel:
+        ax.annotate(sublabel, (cx, cy - 0.19), ha="center", va="top",
+                    color=pal["canvas_text"], fontsize=17, fontproperties=fonts.get("light"),
+                    alpha=0.75, zorder=5)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_grain(out)
+    log.info("블루프린트 핀 지도 저장: %s (%s)", out.name, label)
+    return out
+
+
+def map_aerial_highlight(photo_path: Path, out: Path, label: str = "",
+                         box_frac: tuple[float, float, float, float] = (0.3, 0.3, 0.7, 0.7),
+                         source: str = "", config: dict | None = None) -> Path:
+    """지도 톤앤매너 C: "항공사진 + 권역 오버레이" — 실제 항공/위성 사진
+    위에 반투명 색 블록으로 대상 권역을 표시. 가장 사실적이라 "이 건물/
+    이 블록" 처럼 실제감이 필요할 때 적합(레퍼런스 채널 실측: 항공사진+
+    컬러 사각형 하이라이트).
+
+    photo_path: 항공/위성 사진(로컬 파일). box_frac: 강조할 영역을 사진
+    비율(0~1, 좌상단 기준)로 지정.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    pal = _palette(config)
+    font_dir = common.ROOT_DIR / "assets" / "fonts"
+    f_label = ImageFont.truetype(str(font_dir / "A2Z-5Medium.ttf"), 46)
+
+    width, height = 1920, 1080
+    canvas = Image.new("RGB", (width, height), pal["canvas_bg"])
+    cd = ImageDraw.Draw(canvas)
+    grid_color = _lighten(pal["canvas_bg"], 0.22)
+    for i in range(1, 16):
+        x = int(width * i / 16)
+        cd.line([(x, 0), (x, height)], fill=grid_color, width=1)
+    for j in range(1, 9):
+        y = int(height * j / 9)
+        cd.line([(0, y), (width, y)], fill=grid_color, width=1)
+
+    card_w, card_h = int(width * 0.64), int(height * 0.72)
+    card_x0, card_y0 = (width - card_w) // 2, (height - card_h) // 2
+    border = 10
+    photo = Image.open(photo_path).convert("RGB")
+    scale = max(card_w / photo.width, card_h / photo.height)
+    photo = photo.resize((int(photo.width * scale), int(photo.height * scale)), Image.LANCZOS)
+    px0, py0 = (photo.width - card_w) // 2, (photo.height - card_h) // 2
+    photo = photo.crop((px0, py0, px0 + card_w, py0 + card_h))
+    canvas.paste(photo, (card_x0, card_y0))
+    cd.rectangle((card_x0 - border, card_y0 - border, card_x0 + card_w + border,
+                 card_y0 + card_h + border), outline=pal["card_bg"], width=border)
+
+    bx0 = card_x0 + int(card_w * box_frac[0])
+    by0 = card_y0 + int(card_h * box_frac[1])
+    bx1 = card_x0 + int(card_w * box_frac[2])
+    by1 = card_y0 + int(card_h * box_frac[3])
+    overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    od = ImageDraw.Draw(overlay)
+    pr, pg, pb = _hex_to_rgb(pal["point"])
+    od.rectangle((bx0, by0, bx1, by1), fill=(pr, pg, pb, 80), outline=(pr, pg, pb, 255), width=4)
+    canvas = Image.alpha_composite(canvas.convert("RGBA"), overlay).convert("RGB")
+    cd = ImageDraw.Draw(canvas)
+
+    if label:
+        lx, ly = bx1 + 14, by0
+        cd.rectangle((lx, ly, lx + int(cd.textlength(label, font=f_label)) + 28, ly + 56),
+                    fill=pal["point"])
+        cd.text((lx + 14, ly + 28), label, font=f_label, fill=pal["canvas_text"], anchor="lm")
+    if source:
+        f_cap = ImageFont.truetype(str(font_dir / "A2Z-3Light.ttf"), 22)
+        cd.text((width / 2, card_y0 + card_h + border + 26), source, font=f_cap,
+               fill=pal["highlight"], anchor="ma")
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(out)
+    log.info("항공사진 오버레이 지도 저장: %s (%s)", out.name, label or "-")
+    return out
+
+
+# ══════════════════════════════════════════════════════════
+# 6. 그래프 추가 유형 — 도넛/게이지, 추이선 (이미지 제작 가이드 §3)
+# ══════════════════════════════════════════════════════════
+
+def donut_gauge(percent: float, out: Path, label: str = "", subtitle: str = "",
+                source: str = "", config: dict | None = None) -> Path:
+    """그래프 유형 B: 도넛/게이지 — 단일 퍼센트를 링 형태로. percent_bar()
+    (직선 캡슐 막대)와 같은 데이터를 다루지만 리듬 변화를 위한 대안 —
+    같은 영상에 비율 그래픽이 연달아 나올 때 percent_bar 와 번갈아 쓴다.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    pct = max(0.0, min(100.0, percent))
+
+    # 16:9 고정 — B-roll 합성 단계(render.py)가 항상 1920x1080 으로 스케일
+    # 하므로, 정사각형으로 만들면 링이 타원으로 눌린다(실제로 발견한 버그).
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_grid(fig, pal)
+    txt_ax = fig.add_axes((0, 0, 1, 1))
+    txt_ax.set_facecolor("none")
+    txt_ax.set_xlim(0, 1)
+    txt_ax.set_ylim(0, 1)
+    txt_ax.set_xticks([])
+    txt_ax.set_yticks([])
+    for sp in txt_ax.spines.values():
+        sp.set_visible(False)
+
+    # 링 전용 정사각 인셋 axes — figsize(16,9) 안에서 실제로 정원이 되도록
+    # 가로/세로 인치가 같은 박스로 명시 배치.
+    ring_h_frac = 0.62
+    ring_w_frac = ring_h_frac * 9 / 16
+    pie_ax = fig.add_axes(((1 - ring_w_frac) / 2, 0.16, ring_w_frac, ring_h_frac))
+    pie_ax.set_facecolor("none")
+    pie_ax.set_xticks([])
+    pie_ax.set_yticks([])
+    for sp in pie_ax.spines.values():
+        sp.set_visible(False)
+
+    ring_w = 0.16
+    pie_ax.pie([100], radius=1.0, colors=[pal["surface"]], startangle=90,
+              wedgeprops=dict(width=ring_w, alpha=0.35, edgecolor="none"))
+    pie_ax.pie([pct, 100 - pct], radius=1.0, colors=[pal["point"], (0, 0, 0, 0)],
+              startangle=90, counterclock=False, wedgeprops=dict(width=ring_w, edgecolor="none"))
+    pie_ax.annotate(f"{pct:.0f}%", (0, 0.06), ha="center", va="center",
+                    color=pal["point"], fontsize=52, fontproperties=fonts.get("med"))
+    if label:
+        pie_ax.annotate(label, (0, -0.24), ha="center", va="center",
+                        color=pal["canvas_text"], fontsize=19, fontproperties=fonts.get("reg"))
+
+    if subtitle:
+        txt_ax.annotate(subtitle, (0.5, 0.90), ha="center", va="top",
+                        color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+    _source_box(txt_ax, pal, fonts, source, y=0.05)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_grain(out)
+    log.info("도넛 게이지 저장: %s (%.0f%%)", out.name, pct)
+    return out
+
+
+def trend_line(labels: list[str], values: list[float], out: Path, title: str = "",
+               subtitle: str = "", value_suffix: str = "", source: str = "",
+               config: dict | None = None) -> Path:
+    """그래프 유형 C: 추이선 — 시간에 따른 변화(예: 지가 상승 추이)처럼
+    비교가 아니라 "흐름" 이 핵심인 데이터에 적합. bar_chart(비교)·
+    donut_gauge/percent_bar(비율) 와 함께 3종 세트.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    n = len(values)
+    vmax, vmin = max(values), min(values)
+    span = (vmax - vmin) or 1
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_grid(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    x0, x1 = 0.14, 0.90
+    y0, y1 = 0.22, 0.66
+    xs = [x0 + (x1 - x0) * i / max(n - 1, 1) for i in range(n)]
+    ys = [y0 + (y1 - y0) * (v - vmin) / span for v in values]
+
+    ax.plot(xs, ys, color=pal["point"], lw=3.4, zorder=2, solid_capstyle="round")
+    ax.fill_between(xs, ys, y0 - 0.02, color=pal["point"], alpha=0.12, zorder=1)
+    for x, y, v, lb in zip(xs, ys, values, labels):
+        ax.scatter([x], [y], s=170, color=pal["point"], zorder=3, edgecolors=pal["canvas_bg"], linewidths=2)
+        ax.annotate(f"{v:.0f}{value_suffix}", (x, y + 0.05), ha="center", va="bottom",
+                    color=pal["point"], fontsize=20, fontproperties=fonts.get("med"), zorder=4)
+        ax.annotate(lb, (x, y0 - 0.05), ha="center", va="top",
+                    color=pal["canvas_text"], fontsize=17, fontproperties=fonts.get("med"), zorder=4)
+
+    if title:
+        ax.annotate(title, (0.06, 0.90), ha="left", va="top",
+                    color=pal["canvas_text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.06, 0.845), ha="left", va="top",
+                    color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+    _source_box(ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_grain(out)
+    log.info("추이선 저장: %s (%d개 지점)", out.name, n)
+    return out
+
+
+# ══════════════════════════════════════════════════════════
+# 7. 배경 3가지 톤앤매너 (이미지 제작 가이드 §5)
+# ══════════════════════════════════════════════════════════
+
+def _add_canvas_paper(fig, pal: dict) -> None:
+    """배경 톤앤매너 B: "풀블리드 페이퍼" — 격자 캔버스+카드의 이중 구조
+    없이 빈티지 페이퍼 한 장이 화면 전체를 채운다. 격자형보다 부드럽고
+    따뜻한 톤이 필요할 때(인트로, 인용구, 여백이 많은 한 줄 카피 등)."""
+    bg = fig.add_axes((0, 0, 1, 1))
+    bg.set_facecolor(pal["card_bg"])
+    bg.set_xticks([])
+    bg.set_yticks([])
+    for sp in bg.spines.values():
+        sp.set_visible(False)
+
+
+def _add_canvas_photo(fig, pal: dict, photo_path: Path, darken: float = 0.55) -> None:
+    """배경 톤앤매너 C: "사진 블러 배경" — 실제 관련 사진(예: 대상 건물
+    항공사진)을 흐리게+어둡게 깔아 장면에 사실적 무게감을 준다.
+    카드/텍스트는 이 위에 그대로 얹으면 된다(canvas_text 색 사용 권장)."""
+    from PIL import Image, ImageFilter, ImageEnhance
+    import numpy as np
+
+    im = Image.open(photo_path).convert("RGB")
+    target_ratio = 16 / 9
+    w, h = im.size
+    if w / h > target_ratio:
+        new_w = int(h * target_ratio)
+        im = im.crop(((w - new_w) // 2, 0, (w - new_w) // 2 + new_w, h))
+    else:
+        new_h = int(w / target_ratio)
+        im = im.crop((0, (h - new_h) // 2, w, (h - new_h) // 2 + new_h))
+    im = im.resize((1920, 1080), Image.LANCZOS)
+    im = im.filter(ImageFilter.GaussianBlur(18))
+    im = ImageEnhance.Brightness(im).enhance(1 - darken)
+    bg = fig.add_axes((0, 0, 1, 1))
+    bg.imshow(np.asarray(im), extent=[0, 1, 0, 1], aspect="auto", zorder=0)
+    bg.set_xlim(0, 1)
+    bg.set_ylim(0, 1)
+    bg.set_xticks([])
+    bg.set_yticks([])
+    for sp in bg.spines.values():
+        sp.set_visible(False)
 
 
 # ══════════════════════════════════════════════════════════
