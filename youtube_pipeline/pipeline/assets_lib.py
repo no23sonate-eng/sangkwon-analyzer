@@ -43,9 +43,9 @@ GEO_KOREA = ("https://raw.githubusercontent.com/southkorea/southkorea-maps/maste
 def _palette(config: dict | None = None) -> dict:
     config = config or common.load_config()
     return config.get("infographic", {
-        "card_bg": "#EDE3CC", "canvas_bg": "#16233A", "surface": "#4A6FA5",
-        "point": "#B33A3A", "highlight": "#8A8064", "text": "#2A2417",
-        "canvas_text": "#E8E3D3"})
+        "card_bg": "#FFFFFF", "canvas_bg": "#EEF1F6", "surface": "#2E9E6B",
+        "point": "#3D5A96", "highlight": "#7C8592", "text": "#1C2A38",
+        "canvas_text": "#EDEFF4", "blueprint_bg": "#16233A", "blueprint_text": "#EDEFF4"})
 
 
 # ══════════════════════════════════════════════════════════
@@ -358,14 +358,15 @@ def _track_latin(text: str, space: str = " ") -> str:
 
 def _add_canvas_grid(fig, pal: dict, nx: int = 16, ny: int = 9,
                      lw: float = 0.7, alpha: float = 0.4):
-    """네이비 캔버스 전체에 얇은 블루프린트 격자선을 깐다 — 플랫 단색 배경은
-    디테일이 없어 허전하다는 피드백에 따라 "블루프린트" 컨셉(design_reference.md
-    §12-1)을 실제 격자 무늬로 구체화. 콘텐츠는 이 위에 facecolor="none" 인
-    투명 축을 별도로 얹어 그린다.
+    """네이비 블루프린트 캔버스 전체에 얇은 격자선을 깐다 — 지도류 함수
+    (map_pin_blueprint/map_data_markers) 전용 배경. §15 팔레트 교체로
+    canvas_bg 자체가 밝은 색이 됐으므로, 이 함수는 반드시 별도 키인
+    `blueprint_bg`(짙은 네이비)를 쓴다 — canvas_bg 를 썼다가 밝은 배경에
+    밝은 텍스트가 얹혀 안 보이는 회귀가 실제로 있었다.
     """
     bg = fig.add_axes((0, 0, 1, 1))
-    bg.set_facecolor(pal["canvas_bg"])
-    grid_color = _lighten(pal["canvas_bg"], 0.22)
+    bg.set_facecolor(pal["blueprint_bg"])
+    grid_color = _lighten(pal["blueprint_bg"], 0.22)
     for i in range(1, nx):
         bg.axvline(i / nx, color=grid_color, lw=lw, alpha=alpha, zorder=0)
     for j in range(1, ny):
@@ -380,11 +381,11 @@ def _add_canvas_grid(fig, pal: dict, nx: int = 16, ny: int = 9,
 
 
 def _add_canvas_light(fig, pal: dict):
-    """라이트 오프화이트 캔버스 (design_reference.md §15) — 격자 블루프린트
-    (§12-7, `_add_canvas_grid`)를 기본값에서 대체. 실측 레퍼런스는 카드
-    바깥 여백에 무늬 없는 단색 오프화이트를 쓴다 — 디테일은 격자가 아니라
-    옅은 그림자/타일 레이어에서 나온다. 콘텐츠는 이 위에 facecolor="none"
-    인 투명 축을 별도로 얹어 그린다(그리드 버전과 동일한 레이어 분리 패턴).
+    """라이트 오프화이트 캔버스 (design_reference.md §15) — 완전 무지 단색은
+    "밋밋하다"는 피드백(§15-5)에 따라 아주 옅은 노이즈 텍스처를 얹는다 —
+    확대해야 겨우 보이는 수준(격자처럼 눈에 띄는 무늬가 아니라 종이 질감에
+    가까운 디테일). 콘텐츠는 이 위에 facecolor="none" 인 투명 축을 별도로
+    얹어 그린다.
     """
     bg = fig.add_axes((0, 0, 1, 1))
     bg.set_facecolor(pal["canvas_bg"])
@@ -395,6 +396,21 @@ def _add_canvas_light(fig, pal: dict):
     for sp in bg.spines.values():
         sp.set_visible(False)
     return bg
+
+
+def _add_subtle_texture(path: Path, amount: int = 4) -> None:
+    """완전 무지 배경이 밋밋하다는 피드백 — 아주 옅은(±4/255) 랜덤 노이즈를
+    얹어 종이 질감에 가까운 미세한 디테일을 준다. 격자·그레인처럼 눈에 띄는
+    무늬가 아니라 확대해야 겨우 보이는 수준으로 절제한다.
+    """
+    from PIL import Image
+    import numpy as np
+
+    im = Image.open(path).convert("RGB")
+    arr = np.asarray(im).astype(int)
+    noise = np.random.randint(-amount, amount + 1, size=arr.shape[:2] + (1,))
+    arr = np.clip(arr + noise, 0, 255).astype("uint8")
+    Image.fromarray(arr).save(path)
 
 
 def _rounded_top_bar(ax, x0: float, y0: float, width: float, height: float,
@@ -458,6 +474,102 @@ def _place_icon(card_path: Path, icon_query: str, config: dict | None = None,
         log.warning("아이콘 합성 실패(%s) — 카드는 아이콘 없이 유지: %s", icon_query, e)
     finally:
         tmp.unlink(missing_ok=True)
+
+
+def _place_isometric_icon(card_path: Path, config: dict | None = None, color: str = "point",
+                          pos: tuple[float, float] = (0.06, 0.06), size_frac: float = 0.16,
+                          floors: int = 5) -> None:
+    """카드에 아이소메트릭 빌딩 아이콘을 합성한다 — Iconify 외부 픽토그램
+    대신 팔레트와 완전히 일치하는 원본 아이콘을 쓰고 싶을 때 _place_icon()
+    대신 사용(예: "건물/사물 아이콘 표현" 요청 — 병원/부동산처럼 건물이
+    핵심 대상인 경우)."""
+    import tempfile
+    from PIL import Image
+
+    tmp = Path(tempfile.mktemp(suffix=".png"))
+    try:
+        isometric_building_icon(tmp, config=config, color=color, floors=floors)
+        card = Image.open(card_path).convert("RGBA")
+        icon = Image.open(tmp).convert("RGBA")
+        side = int(card.width * size_frac)
+        icon = icon.resize((side, side), Image.LANCZOS)
+        x, y = int(card.width * pos[0]), int(card.height * pos[1])
+        card.alpha_composite(icon, (x, y))
+        card.convert("RGB").save(card_path)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def isometric_building_icon(out: Path, config: dict | None = None, color: str = "point",
+                            floors: int = 5, transparent: bool = True) -> Path:
+    """아이소메트릭(등각투상) 빌딩/타워 아이콘 — 표준 제도 기법(2:1 등각
+    격자)으로 직접 그린 3면 박스. Iconify 에서 검색해 오는 범용 아이콘
+    (가늘고 검은 선 아이콘)이 카드 톤과 안 맞아 "이상하다"는 지적을 받은
+    적이 있어, 팔레트 색을 그대로 쓰는 자체 아이콘으로 대체 가능하게
+    만들었다. `_place_icon()` 자리에 이 함수로 만든 PNG를 대신 합성하면
+    된다.
+
+    등각 정육면체 원리: 윗면은 마름모(rhombus), 좌/우 측면은 평행사변형
+    — 세 면에 명도 차(윗면 밝게, 우측면 기본색, 좌측면 어둡게)를 줘서
+    입체감을 낸다. floors 만큼 우측면에 얇은 가로줄(창/층 구분)을 넣어
+    "건물"임을 분명히 한다.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Polygon
+
+    pal = _palette(config)
+    base_hex = pal.get(color, color if color.startswith("#") else "#" + color)
+    top_hex = _lighten(base_hex, 0.45)
+    left_hex = _lighten(base_hex, -0.30)
+
+    fig = plt.figure(figsize=(6, 6), dpi=200)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(-1.1, 1.1)
+    ax.set_ylim(-1.3, 1.1)
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    hw = 0.55       # 밑변 반폭
+    k = 0.5         # 등각 비율(2:1)
+    height = 1.7    # 건물 높이
+    top_y = 0.35    # 지붕(마름모) 중심 y
+
+    apex = (0, top_y + hw * k)
+    right = (hw, top_y)
+    front = (0, top_y - hw * k)
+    left = (-hw, top_y)
+
+    # 지붕
+    ax.add_patch(Polygon([apex, right, front, left], closed=True,
+                        facecolor=top_hex, edgecolor="none", zorder=3))
+    # 우측면(정면 기준 밝은 쪽) — 기본색
+    ax.add_patch(Polygon([front, right, (right[0], right[1] - height),
+                         (front[0], front[1] - height)], closed=True,
+                        facecolor=base_hex, edgecolor="none", zorder=2))
+    # 좌측면(그늘) — 어두운 톤
+    ax.add_patch(Polygon([front, left, (left[0], left[1] - height),
+                         (front[0], front[1] - height)], closed=True,
+                        facecolor=left_hex, edgecolor="none", zorder=2))
+
+    # 우측면에 층 구분선(창) — 건물임을 분명히
+    for i in range(1, floors):
+        t = i / floors
+        y0 = front[1] * (1 - t) + (front[1] - height) * t
+        y1 = right[1] * (1 - t) + (right[1] - height) * t
+        ax.plot([front[0], right[0]], [y0, y1], color=_lighten(base_hex, 0.25),
+                lw=1.2, alpha=0.55, zorder=3)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, transparent=transparent)
+    plt.close(fig)
+    log.info("아이소메트릭 빌딩 아이콘 저장: %s", out.name)
+    return out
 
 
 def _add_grain(path: Path, amount: int = 9) -> None:
@@ -558,6 +670,7 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
         # 이전엔 카드 안쪽 좌표를 따로 계산해야 했지만 이제 카드=캔버스
         # 전체라 pos 가 곧 이미지 전체 기준 비율이라 계산이 단순해졌다.
         _place_icon(out, icon, config, color="point", pos=(0.83, 0.06), size_frac=0.09)
+    _add_subtle_texture(out)
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
 
@@ -627,13 +740,15 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
+    _add_subtle_texture(out)
     log.info("퍼센트 막대 저장: %s (%.0f%%)", out.name, pct)
     return out
 
 
 def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
               value2: str = "", label2: str = "", arrow: bool = False,
-              source: str = "", icon: str = "", config: dict | None = None) -> Path:
+              source: str = "", icon: str = "", icon_building: bool = False,
+              config: dict | None = None) -> Path:
     """빅넘버 스탯 카드 — The B1M 스타일 (design_reference.md §12). 네이비
     블루프린트 캔버스 위 빈티지 페이퍼 카드, 핵심 숫자는 브릭 레드
     (건물 높이 라벨 문법과 동일), 라벨/캡션은 다크 차콜·올리브그레이.
@@ -642,6 +757,9 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
 
     icon: 주제 픽토그램 검색어 — 숫자만 덩그러니 있으면 어색하다는 피드백
     (§12-6)에 따라 카드 좌상단에 개념 아이콘을 함께 넣는다.
+    icon_building: True 면 Iconify 검색 대신 원본 아이소메트릭 빌딩
+    아이콘(isometric_building_icon)을 쓴다 — 병원/부동산처럼 "건물"이
+    핵심 대상이면서 팔레트와 완전히 일치하는 톤이 필요할 때.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -693,11 +811,16 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
-    if icon:
+    if icon_building:
+        side = 0.075
+        _place_isometric_icon(out, config, color="point",
+                              pos=(cx1 - side / 2, icon_y - side), size_frac=side)
+    elif icon:
         # 레퍼런스의 "아이콘+라벨" 태그 문법 — 크고 장식적인 코너 배지가
         # 아니라 라벨 바로 위에 작게, 라벨과 같은 강조색으로 붙인다.
         side = 0.075
         _place_icon(out, icon, config, color="point", pos=(cx1 - side / 2, icon_y - side), size_frac=side)
+    _add_subtle_texture(out)
     log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
     return out
 
@@ -1057,7 +1180,7 @@ def map_pin_blueprint(label: str, out: Path, sublabel: str = "",
         sp.set_visible(False)
 
     # 도식화된 街 블록(사실적 지도가 아니라 "도면" 느낌) — 얇은 크림색 선
-    block_color = _lighten(pal["canvas_bg"], 0.4)
+    block_color = _lighten(pal["blueprint_bg"], 0.4)
     for i in range(3):
         y = 0.30 + i * 0.22
         ax.plot([0.2, 0.8], [y, y], color=block_color, lw=1.4, alpha=0.7, zorder=1)
@@ -1069,20 +1192,91 @@ def map_pin_blueprint(label: str, out: Path, sublabel: str = "",
     for radius_pt, alpha in [(70, 0.10), (46, 0.22), (22, 0.9)]:
         ax.scatter([cx], [cy], s=radius_pt ** 2, color=pal["point"], alpha=alpha,
                   zorder=3, linewidths=0)
-    ax.scatter([cx], [cy], s=22 ** 2 * 0.28, color=pal["canvas_bg"], zorder=4, linewidths=0)
+    ax.scatter([cx], [cy], s=22 ** 2 * 0.28, color=pal["blueprint_bg"], zorder=4, linewidths=0)
 
     ax.annotate(label, (cx, cy - 0.14), ha="center", va="top",
-                color=pal["canvas_text"], fontsize=30, fontproperties=fonts.get("med"), zorder=5)
+                color=pal["blueprint_text"], fontsize=30, fontproperties=fonts.get("med"), zorder=5)
     if sublabel:
         ax.annotate(sublabel, (cx, cy - 0.19), ha="center", va="top",
-                    color=pal["canvas_text"], fontsize=17, fontproperties=fonts.get("light"),
+                    color=pal["blueprint_text"], fontsize=17, fontproperties=fonts.get("light"),
                     alpha=0.75, zorder=5)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, facecolor=pal["canvas_bg"])
+    fig.savefig(out, facecolor=pal["blueprint_bg"])
     plt.close(fig)
     _add_grain(out)
     log.info("블루프린트 핀 지도 저장: %s (%s)", out.name, label)
+    return out
+
+
+def map_data_markers(points: list[dict], out: Path, title: str = "", subtitle: str = "",
+                     source: str = "", config: dict | None = None) -> Path:
+    """지도 톤앤매너 D: "지도 위 데이터 시각화" — 지도(또는 도식화한 블록
+    배치) 위 여러 지점에서 값에 비례한 막대가 위로 솟아오르는 구도. 여러
+    지역/지점의 수치를 한 화면에서 비교하면서 동시에 "어디에 있는지"도
+    보여줘야 할 때 flat_map(지역 하이라이트만)이나 stat_card(위치 정보
+    없음)보다 적합 — 지도(map_pin_blueprint 의 블루프린트 톤)와 그래프
+    (lollipop_chart 의 선+점 문법)를 합친 네 번째 지도 유형.
+
+    points: [{"x": 0~1, "y": 0~1, "value": float, "label": str}, ...]
+    x/y 는 캔버스 기준 위치 비율(좌상단이 0,0).
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    vmax = max(p["value"] for p in points) or 1
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_grid(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    # 도식화된 街 블록(map_pin_blueprint 와 동일한 "도면" 느낌) — 지점들이
+    # 실제 지도 위가 아니라 추상 배치 위에 있어도 위치 정보로 읽히게 한다.
+    block_color = _lighten(pal["blueprint_bg"], 0.35)
+    for i in range(4):
+        yy = 0.16 + i * 0.22
+        ax.plot([0.08, 0.92], [yy, yy], color=block_color, lw=1.1, alpha=0.6, zorder=0)
+    for i in range(6):
+        xx = 0.12 + i * 0.152
+        ax.plot([xx, xx], [0.10, 0.86], color=block_color, lw=1.1, alpha=0.6, zorder=0)
+
+    max_bar_h = 0.30
+    for p in points:
+        px, py, val = p["x"], 1 - p["y"], p["value"]
+        h = max_bar_h * (val / vmax)
+        ax.plot([px, px], [py, py + h], color=pal["point"], lw=6,
+               solid_capstyle="round", zorder=2)
+        ax.scatter([px], [py], s=90, color=pal["blueprint_text"], zorder=3,
+                  edgecolors=pal["point"], linewidths=2)
+        ax.annotate(f"{val:.0f}", (px, py + h + 0.035), ha="center", va="bottom",
+                    color=pal["point"], fontsize=20, fontproperties=fonts.get("med"), zorder=4)
+        ax.annotate(p.get("label", ""), (px, py - 0.03), ha="center", va="top",
+                    color=pal["blueprint_text"], fontsize=15, fontproperties=fonts.get("reg"), zorder=4)
+
+    if title:
+        ax.annotate(title, (0.06, 0.94), ha="left", va="top",
+                    color=pal["blueprint_text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.06, 0.895), ha="left", va="top",
+                    color=pal["blueprint_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+    _source_box(ax, pal, fonts, source, y=0.03)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["blueprint_bg"])
+    plt.close(fig)
+    _add_grain(out)
+    log.info("지도 데이터 마커 저장: %s (%d개 지점)", out.name, len(points))
     return out
 
 
@@ -1104,9 +1298,9 @@ def map_aerial_highlight(photo_path: Path, out: Path, label: str = "",
     f_label = ImageFont.truetype(str(font_dir / "A2Z-5Medium.ttf"), 46)
 
     width, height = 1920, 1080
-    canvas = Image.new("RGB", (width, height), pal["canvas_bg"])
+    canvas = Image.new("RGB", (width, height), pal["blueprint_bg"])
     cd = ImageDraw.Draw(canvas)
-    grid_color = _lighten(pal["canvas_bg"], 0.22)
+    grid_color = _lighten(pal["blueprint_bg"], 0.22)
     for i in range(1, 16):
         x = int(width * i / 16)
         cd.line([(x, 0), (x, height)], fill=grid_color, width=1)
@@ -1141,7 +1335,7 @@ def map_aerial_highlight(photo_path: Path, out: Path, label: str = "",
         lx, ly = bx1 + 14, by0
         cd.rectangle((lx, ly, lx + int(cd.textlength(label, font=f_label)) + 28, ly + 56),
                     fill=pal["point"])
-        cd.text((lx + 14, ly + 28), label, font=f_label, fill=pal["canvas_text"], anchor="lm")
+        cd.text((lx + 14, ly + 28), label, font=f_label, fill=pal["blueprint_text"], anchor="lm")
     if source:
         f_cap = ImageFont.truetype(str(font_dir / "A2Z-3Light.ttf"), 22)
         cd.text((width / 2, card_y0 + card_h + border + 26), source, font=f_cap,
@@ -1215,6 +1409,7 @@ def donut_gauge(percent: float, out: Path, label: str = "", subtitle: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
+    _add_subtle_texture(out)
     log.info("도넛 게이지 저장: %s (%.0f%%)", out.name, pct)
     return out
 
@@ -1277,6 +1472,7 @@ def trend_line(labels: list[str], values: list[float], out: Path, title: str = "
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
+    _add_subtle_texture(out)
     log.info("추이선 저장: %s (%d개 지점)", out.name, n)
     return out
 
@@ -1348,6 +1544,7 @@ def lollipop_chart(categories: list[str], values: list[float], out: Path,
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
+    _add_subtle_texture(out)
     log.info("로리팝 차트 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
 
@@ -1428,6 +1625,7 @@ def spectrum_diagram(left_label: str, right_label: str, position: float, out: Pa
         _place_icon(out, left_icon, config, color="text", pos=(0.20 - icon_side / 2, icon_top), size_frac=icon_side)
     if right_icon:
         _place_icon(out, right_icon, config, color="text", pos=(0.80 - icon_side / 2, icon_top), size_frac=icon_side)
+    _add_subtle_texture(out)
     log.info("스펙트럼 다이어그램 저장: %s (position=%.2f)", out.name, pos)
     return out
 
