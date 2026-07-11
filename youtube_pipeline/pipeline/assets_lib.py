@@ -379,6 +379,24 @@ def _add_canvas_grid(fig, pal: dict, nx: int = 16, ny: int = 9,
     return bg
 
 
+def _add_canvas_light(fig, pal: dict):
+    """라이트 오프화이트 캔버스 (design_reference.md §15) — 격자 블루프린트
+    (§12-7, `_add_canvas_grid`)를 기본값에서 대체. 실측 레퍼런스는 카드
+    바깥 여백에 무늬 없는 단색 오프화이트를 쓴다 — 디테일은 격자가 아니라
+    옅은 그림자/타일 레이어에서 나온다. 콘텐츠는 이 위에 facecolor="none"
+    인 투명 축을 별도로 얹어 그린다(그리드 버전과 동일한 레이어 분리 패턴).
+    """
+    bg = fig.add_axes((0, 0, 1, 1))
+    bg.set_facecolor(pal["canvas_bg"])
+    bg.set_xlim(0, 1)
+    bg.set_ylim(0, 1)
+    bg.set_xticks([])
+    bg.set_yticks([])
+    for sp in bg.spines.values():
+        sp.set_visible(False)
+    return bg
+
+
 def _rounded_top_bar(ax, x0: float, y0: float, width: float, height: float,
                      color: str, radius: float = 0.012, zorder: int = 2) -> None:
     """위쪽 모서리만 둥근 막대 — 레퍼런스 실측(세로 막대그래프)은 전체
@@ -486,7 +504,7 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     vmax = max(values)
 
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_grid(fig, pal)
+    _add_canvas_light(fig, pal)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_facecolor("none")
     ax.set_xlim(0, 1)
@@ -507,11 +525,11 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     gap = (content_w - bar_w * n) / (n + 1)
     x = content_x0 + gap
 
-    ax.axhline(baseline, color=_lighten(pal["canvas_bg"], 0.3), lw=1.3, zorder=1)
+    ax.axhline(baseline, color=_lighten(pal["text"], 0.75), lw=1.3, zorder=1)
 
     for i, v in enumerate(values):
         hl = i == highlight_index
-        color = pal["point"] if hl else pal["surface"]
+        color = pal["surface"] if hl else pal["point"]
         h = (v / vmax) * (top_max - baseline)
         _rounded_top_bar(ax, x, baseline, bar_w, h, color,
                          radius=min(bar_w * 0.3, 0.018), zorder=2)
@@ -520,16 +538,16 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
                     fontsize=25 if hl else 21,
                     fontproperties=fonts.get("med"), zorder=4)
         ax.annotate(categories[i], (x + bar_w / 2, baseline - 0.03),
-                    ha="center", va="top", color=pal["canvas_text"],
+                    ha="center", va="top", color=pal["text"],
                     fontsize=19, fontproperties=fonts.get("med"), zorder=4)
         x += bar_w + gap
 
     if title:
         ax.annotate(title, (0.06, 0.90), ha="left", va="top",
-                    color=pal["canvas_text"], fontsize=28, fontproperties=fonts.get("med"))
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
     if subtitle:
         ax.annotate(subtitle, (0.06, 0.845), ha="left", va="top",
-                    color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
     _source_box(ax, pal, fonts, source, y=0.045)
 
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -539,8 +557,7 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
         # 막대는 바닥선 위로만 자라므로 우상단 여백은 항상 비어 있다 —
         # 이전엔 카드 안쪽 좌표를 따로 계산해야 했지만 이제 카드=캔버스
         # 전체라 pos 가 곧 이미지 전체 기준 비율이라 계산이 단순해졌다.
-        _place_icon(out, icon, config, color="canvas_text", pos=(0.83, 0.06), size_frac=0.09)
-    _add_grain(out)
+        _place_icon(out, icon, config, color="point", pos=(0.83, 0.06), size_frac=0.09)
     log.info("그래프 저장: %s (강조 index=%d)", out.name, highlight_index)
     return out
 
@@ -564,7 +581,7 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
     pct = max(0.0, min(100.0, percent))
 
     fig = plt.figure(figsize=(16, 6), dpi=200)
-    _add_canvas_grid(fig, pal, ny=6)
+    _add_canvas_light(fig, pal)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_facecolor("none")
     ax.set_xlim(0, 1)
@@ -579,7 +596,7 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
     y0 = 0.40
     r = bar_h * 0.14
     track = FancyBboxPatch((bar_x0, y0), bar_w, bar_h, boxstyle=f"round,pad=0,rounding_size={r}",
-                           facecolor=pal["surface"], edgecolor="none", zorder=1, alpha=0.45)
+                           facecolor=pal["text"], edgecolor="none", zorder=1, alpha=0.12)
     ax.add_patch(track)
     fill_w = bar_w * pct / 100
     if fill_w > 0:
@@ -595,22 +612,21 @@ def percent_bar(percent: float, out: Path, title: str = "", subtitle: str = "",
 
     if title:
         ax.annotate(title, (0.08, 0.86), ha="left", va="top",
-                    color=pal["canvas_text"], fontsize=28, fontproperties=fonts.get("med"))
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
     if subtitle:
         ax.annotate(subtitle, (0.08, 0.79), ha="left", va="top",
-                    color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
     if label_filled:
         ax.annotate(label_filled, (bar_x0, y0 - 0.06), ha="left", va="top",
                     color=pal["point"], fontsize=17, fontproperties=fonts.get("reg"))
     if label_rest:
         ax.annotate(label_rest, (bar_x0 + bar_w, y0 - 0.06), ha="right", va="top",
-                    color=pal["surface"], fontsize=17, fontproperties=fonts.get("reg"))
+                    color=pal["highlight"], fontsize=17, fontproperties=fonts.get("reg"))
     _source_box(ax, pal, fonts, source, y=0.06)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
-    _add_grain(out)
     log.info("퍼센트 막대 저장: %s (%.0f%%)", out.name, pct)
     return out
 
@@ -636,11 +652,11 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     fonts = _load_fonts(font_manager)
 
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_grid(fig, pal)  # 카드 바깥 네이비 여백에도 격자 디테일
+    _add_canvas_light(fig, pal)
     ax = fig.add_axes((0.06, 0.06, 0.88, 0.88))
     ax.set_facecolor(pal["card_bg"])
     # 주의: ax.axis('off') 는 틱/스파인뿐 아니라 축 patch(카드 배경색)까지
-    # 지워버려 네이비 캔버스만 보이는 버그가 있었다 — 틱/스파인만 개별로 끔.
+    # 지워버려 배경만 남는 버그가 있었다 — 틱/스파인만 개별로 끔.
     ax.set_xticks([])
     ax.set_yticks([])
     for sp in ax.spines.values():
@@ -648,11 +664,12 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
 
     two = bool(value2)
     cx1 = 0.30 if two else 0.5
+    icon_y = 0.78 if (label or not two) else 0.66
     if label:
         ax.annotate(label, (cx1, 0.66), xycoords="axes fraction", ha="center",
                     color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
     ax.annotate(value, (cx1, 0.46), xycoords="axes fraction", ha="center", va="center",
-                color=pal["surface"] if two else pal["point"], fontsize=80 if not two else 60,
+                color=pal["point"] if two else pal["point"], fontsize=80 if not two else 60,
                 fontproperties=fonts.get("med"))
     if subtext:
         ax.annotate(subtext, (cx1, 0.26), xycoords="axes fraction", ha="center",
@@ -662,14 +679,14 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
         if arrow:
             ax.annotate("", xy=(0.62, 0.46), xytext=(0.42, 0.46),
                         xycoords="axes fraction", textcoords="axes fraction",
-                        arrowprops=dict(arrowstyle="-|>", color=pal["text"],
+                        arrowprops=dict(arrowstyle="-|>", color=pal["highlight"],
                                         lw=2.5, mutation_scale=30))
         cx2 = 0.78
         if label2:
             ax.annotate(label2, (cx2, 0.66), xycoords="axes fraction", ha="center",
                         color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
         ax.annotate(value2, (cx2, 0.46), xycoords="axes fraction", ha="center", va="center",
-                    color=pal["point"], fontsize=60, fontproperties=fonts.get("med"))
+                    color=pal["surface"], fontsize=60, fontproperties=fonts.get("med"))
 
     _source_box(ax, pal, fonts, source, y=0.06)
 
@@ -677,8 +694,10 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
     if icon:
-        _place_icon(out, icon, config, pos=(0.09, 0.10), size_frac=0.14)
-    _add_grain(out)
+        # 레퍼런스의 "아이콘+라벨" 태그 문법 — 크고 장식적인 코너 배지가
+        # 아니라 라벨 바로 위에 작게, 라벨과 같은 강조색으로 붙인다.
+        side = 0.075
+        _place_icon(out, icon, config, color="point", pos=(cx1 - side / 2, icon_y - side), size_frac=side)
     log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
     return out
 
@@ -1156,7 +1175,7 @@ def donut_gauge(percent: float, out: Path, label: str = "", subtitle: str = "",
     # 16:9 고정 — B-roll 합성 단계(render.py)가 항상 1920x1080 으로 스케일
     # 하므로, 정사각형으로 만들면 링이 타원으로 눌린다(실제로 발견한 버그).
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_grid(fig, pal)
+    _add_canvas_light(fig, pal)
     txt_ax = fig.add_axes((0, 0, 1, 1))
     txt_ax.set_facecolor("none")
     txt_ax.set_xlim(0, 1)
@@ -1178,25 +1197,24 @@ def donut_gauge(percent: float, out: Path, label: str = "", subtitle: str = "",
         sp.set_visible(False)
 
     ring_w = 0.16
-    pie_ax.pie([100], radius=1.0, colors=[pal["surface"]], startangle=90,
-              wedgeprops=dict(width=ring_w, alpha=0.35, edgecolor="none"))
+    pie_ax.pie([100], radius=1.0, colors=[pal["text"]], startangle=90,
+              wedgeprops=dict(width=ring_w, alpha=0.10, edgecolor="none"))
     pie_ax.pie([pct, 100 - pct], radius=1.0, colors=[pal["point"], (0, 0, 0, 0)],
               startangle=90, counterclock=False, wedgeprops=dict(width=ring_w, edgecolor="none"))
     pie_ax.annotate(f"{pct:.0f}%", (0, 0.06), ha="center", va="center",
                     color=pal["point"], fontsize=52, fontproperties=fonts.get("med"))
     if label:
         pie_ax.annotate(label, (0, -0.24), ha="center", va="center",
-                        color=pal["canvas_text"], fontsize=19, fontproperties=fonts.get("reg"))
+                        color=pal["text"], fontsize=19, fontproperties=fonts.get("reg"))
 
     if subtitle:
         txt_ax.annotate(subtitle, (0.5, 0.90), ha="center", va="top",
-                        color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+                        color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
     _source_box(txt_ax, pal, fonts, source, y=0.05)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
-    _add_grain(out)
     log.info("도넛 게이지 저장: %s (%.0f%%)", out.name, pct)
     return out
 
@@ -1220,7 +1238,7 @@ def trend_line(labels: list[str], values: list[float], out: Path, title: str = "
     span = (vmax - vmin) or 1
 
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_grid(fig, pal)
+    _add_canvas_light(fig, pal)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_facecolor("none")
     ax.set_xlim(0, 1)
@@ -1236,26 +1254,29 @@ def trend_line(labels: list[str], values: list[float], out: Path, title: str = "
     ys = [y0 + (y1 - y0) * (v - vmin) / span for v in values]
 
     ax.plot(xs, ys, color=pal["point"], lw=3.4, zorder=2, solid_capstyle="round")
-    ax.fill_between(xs, ys, y0 - 0.02, color=pal["point"], alpha=0.12, zorder=1)
-    for x, y, v, lb in zip(xs, ys, values, labels):
-        ax.scatter([x], [y], s=170, color=pal["point"], zorder=3, edgecolors=pal["canvas_bg"], linewidths=2)
+    ax.fill_between(xs, ys, y0 - 0.02, color=pal["point"], alpha=0.08, zorder=1)
+    # 마지막(최신) 지점만 강조색(그린)으로 — 레퍼런스의 "최신값만 별도
+    # 강조" 리듬을 따른다.
+    for i, (x, y, v, lb) in enumerate(zip(xs, ys, values, labels)):
+        last = i == n - 1
+        pcolor = pal["surface"] if last else pal["point"]
+        ax.scatter([x], [y], s=170, color=pcolor, zorder=3, edgecolors=pal["canvas_bg"], linewidths=2)
         ax.annotate(f"{v:.0f}{value_suffix}", (x, y + 0.05), ha="center", va="bottom",
-                    color=pal["point"], fontsize=20, fontproperties=fonts.get("med"), zorder=4)
+                    color=pcolor, fontsize=20, fontproperties=fonts.get("med"), zorder=4)
         ax.annotate(lb, (x, y0 - 0.05), ha="center", va="top",
-                    color=pal["canvas_text"], fontsize=17, fontproperties=fonts.get("med"), zorder=4)
+                    color=pal["text"], fontsize=17, fontproperties=fonts.get("med"), zorder=4)
 
     if title:
         ax.annotate(title, (0.06, 0.90), ha="left", va="top",
-                    color=pal["canvas_text"], fontsize=28, fontproperties=fonts.get("med"))
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
     if subtitle:
         ax.annotate(subtitle, (0.06, 0.845), ha="left", va="top",
-                    color=pal["canvas_text"], fontsize=16, fontproperties=fonts.get("light"), alpha=0.75)
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
     _source_box(ax, pal, fonts, source, y=0.045)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
-    _add_grain(out)
     log.info("추이선 저장: %s (%d개 지점)", out.name, n)
     return out
 
