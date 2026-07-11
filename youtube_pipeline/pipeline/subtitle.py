@@ -322,13 +322,14 @@ def build_ass(config: dict, cues: list[dict], out_path: Path,
         cap_border = "1,2,0.8"
         cap_outline_color = "&H50000000"
 
-    # Alignment 2 = 하단 중앙. Outline+Shadow 로 가독성 확보(반투명 검정 테두리).
-    # display 타이포(Headline/Concept)는 그래픽 카드(어두운 단색)뿐 아니라 실사
-    # 영상 위에도 얹힌다 — Outline=0(스트로크 없음)이던 이전 버전은 밝고
-    # 복잡한 실사 배경 위에서 글자가 흐릿하게 묻히는 문제가 있었다. 배경 종류와
-    # 무관하게 항상 또렷하도록 실제 스트로크(Outline)를 준다.
-    disp_outline = max(round(3 * scale), 2)
-    disp_shadow = max(round(2 * scale), 1)
+    # Alignment 2 = 하단 중앙.
+    # display 타이포(Headline/Concept)는 그래픽 카드뿐 아니라 실사 영상 위에도
+    # 얹힌다. 글자에 검정 스트로크(Outline)를 두르는 건 절대 금지 — 만화처럼
+    # 보인다는 피드백. 대신 Outline=0 을 유지하고 또렷한(흐림 없는) 짙은
+    # 그림자(Shadow)만으로 대비를 준다 — 예전 버전이 흐릿했던 원인은
+    # Outline=0 자체가 아니라 인라인 \blur 태그였다(아래에서 제거).
+    disp_outline = 0
+    disp_shadow = max(round(3 * scale), 2)
     header = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {w}

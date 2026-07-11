@@ -1327,10 +1327,10 @@ def lollipop_chart(categories: list[str], values: list[float], out: Path,
         hl = i == highlight_index
         color = pal["surface"] if hl else pal["point"]
         h = (v / vmax) * (top_max - baseline)
-        ax.plot([x, x], [baseline, baseline + h], color=color, lw=4.5,
+        ax.plot([x, x], [baseline, baseline + h], color=color, lw=8,
                solid_capstyle="round", zorder=2)
-        ax.scatter([x], [baseline + h], s=420 if hl else 320, color=color,
-                  zorder=3, edgecolors=pal["canvas_bg"], linewidths=3)
+        ax.scatter([x], [baseline + h], s=650 if hl else 480, color=color,
+                  zorder=3, edgecolors=pal["canvas_bg"], linewidths=4)
         ax.annotate(value_fmt.format(v) + value_suffix, (x, baseline + h + 0.055),
                     ha="center", va="bottom", color=color, fontsize=23 if hl else 19,
                     fontproperties=fonts.get("med"), zorder=4)
