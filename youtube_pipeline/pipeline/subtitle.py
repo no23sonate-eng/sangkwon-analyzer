@@ -323,6 +323,12 @@ def build_ass(config: dict, cues: list[dict], out_path: Path,
         cap_outline_color = "&H50000000"
 
     # Alignment 2 = 하단 중앙. Outline+Shadow 로 가독성 확보(반투명 검정 테두리).
+    # display 타이포(Headline/Concept)는 그래픽 카드(어두운 단색)뿐 아니라 실사
+    # 영상 위에도 얹힌다 — Outline=0(스트로크 없음)이던 이전 버전은 밝고
+    # 복잡한 실사 배경 위에서 글자가 흐릿하게 묻히는 문제가 있었다. 배경 종류와
+    # 무관하게 항상 또렷하도록 실제 스트로크(Outline)를 준다.
+    disp_outline = max(round(3 * scale), 2)
+    disp_shadow = max(round(2 * scale), 1)
     header = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {w}
@@ -334,9 +340,9 @@ ScaledBorderAndShadow: yes
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Normal,{fam_n},{size_n},{base},{base},{cap_outline_color},&HB4000000,0,0,0,0,100,100,0,0,{cap_border},2,60,60,{margin_v},1
 Style: Large,{fam_l},{size_l},{base},{base},{cap_outline_color},&HB4000000,0,0,0,0,100,100,0,0,{cap_border},2,60,60,{margin_v},1
-Style: Headline,{fam_h},{size_h},{base},{base},&H00000000,&H1E000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
-Style: Concept,{fam_c},{size_c},{accent},{accent},&H00000000,&H1E000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
-Style: ConceptSub,{fam_n},{size_cs},{base},{base},&H00000000,&H1E000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
+Style: Headline,{fam_h},{size_h},{base},{base},&H00000000,&H20000000,0,0,0,0,100,100,1,0,1,{disp_outline},{disp_shadow},5,60,60,0,1
+Style: Concept,{fam_c},{size_c},{accent},{accent},&H00000000,&H20000000,0,0,0,0,100,100,1,0,1,{disp_outline},{disp_shadow},5,60,60,0,1
+Style: ConceptSub,{fam_n},{size_cs},{base},{base},&H00000000,&H20000000,0,0,0,0,100,100,1,0,1,{disp_outline},{disp_shadow},5,60,60,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -363,15 +369,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             # 메인은 중앙 약간 위, 한국어 설명은 그 아래 소형 (조승연 패턴)
             main_pos = f"\\pos({w // 2},{round(h * 0.46)})"
             sub_pos = f"\\pos({w // 2},{round(h * 0.57)})"
-            # \blur: \uB531\uB531\uD55C \uADF8\uB9BC\uC790 \uB300\uC2E0 \uBD80\uB4DC\uB7FD\uAC8C \uBC88\uC9C0\uB294 \uADF8\uB9BC\uC790 (\uAC80\uC815 \uD14C\uB450\uB9AC \uB300\uCCB4)
+            # \uC2E4\uC0AC \uC601\uC0C1 \uC704\uC5D0 \uC5B9\uD790 \uB54C\uB3C4 \uB610\uB837\uD574\uC57C \uD55C\uB2E4\uB294 \uD53C\uB4DC\uBC31 \u2014 \uC608\uC804\uC5D4 \uC2A4\uD2B8\uB85C\uD06C
+            # \uC5C6\uC774 \blur \uB85C\uB9CC \uC724\uACFD\uC744 \uC7A1\uC544 \uBC1D\uACE0 \uBCF5\uC7A1\uD55C \uC2E4\uC0AC \uBC30\uACBD\uC5D0\uC11C \uAE00\uC790\uAC00
+            # \uBB3B\uD614\uB2E4. \uC774\uC81C \uC2A4\uD0C0\uC77C \uC790\uCCB4\uC5D0 \uC2E4\uC81C Outline \uC744 \uC8FC\uBBC0\uB85C(\uC704 \uCC38\uACE0) \uC5EC\uAE30
+            # \blur \uB294 \uC81C\uAC70\uD558\uACE0 \uB610\uB837\uD55C \uC2A4\uD2B8\uB85C\uD06C\uB9CC \uB0A8\uAE34\uB2E4.
             lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
-                         f"{{\\fad(250,250)\\blur2{main_pos}}}{d['text']}")
+                         f"{{\\fad(250,250){main_pos}}}{d['text']}")
             lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},ConceptSub,,0,0,0,,"
-                         f"{{\\fad(250,250)\\blur1.5{sub_pos}}}\u201C{sub}\u201D")
+                         f"{{\\fad(250,250){sub_pos}}}\u201C{sub}\u201D")
             n_disp += 1
         else:
             lines.append(f"Dialogue: 1,{_ts(d['start'])},{_ts(d['end'])},{style},,0,0,0,,"
-                         f"{{\\fad(250,250)\\blur2}}{d['text']}")
+                         f"{{\\fad(250,250)}}{d['text']}")
             n_disp += 1
 
     out_path.write_text(header + "\n".join(lines) + "\n", encoding="utf-8")

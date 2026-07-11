@@ -503,7 +503,8 @@ def bar_chart(categories: list[str], values: list[float], out: Path,
     content_w = 0.66
     content_x0 = 0.17
     bar_w = content_w / (1.55 * n + 0.55)
-    gap = bar_w * 0.55
+    bar_w *= 0.75  # 막대가 투박하다는 피드백 — 폭을 조금 더 얄상하게
+    gap = (content_w - bar_w * n) / (n + 1)
     x = content_x0 + gap
 
     ax.axhline(baseline, color=_lighten(pal["canvas_bg"], 0.3), lw=1.3, zorder=1)
