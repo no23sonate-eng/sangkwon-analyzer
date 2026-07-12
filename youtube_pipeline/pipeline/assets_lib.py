@@ -339,9 +339,9 @@ def _hex_to_rgb(h: str) -> tuple[int, int, int]:
 
 def _lighten(hex_color: str, amount: float = 0.15) -> str:
     r, g, b = _hex_to_rgb(hex_color)
-    r = int(r + (255 - r) * amount)
-    g = int(g + (255 - g) * amount)
-    b = int(b + (255 - b) * amount)
+    r = max(0, min(255, int(r + (255 - r) * amount)))
+    g = max(0, min(255, int(g + (255 - g) * amount)))
+    b = max(0, min(255, int(b + (255 - b) * amount)))
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
@@ -1673,6 +1673,389 @@ def _add_canvas_photo(fig, pal: dict, photo_path: Path, darken: float = 0.55) ->
     bg.set_yticks([])
     for sp in bg.spines.values():
         sp.set_visible(False)
+
+
+# ══════════════════════════════════════════════════════════
+# 8. B1M 정밀 재스터디로 습득한 신규 문법 (design_reference.md §17, 2026-07-12)
+# ══════════════════════════════════════════════════════════
+
+def _tower_silhouette(shape: str, cx: float, base_y: float, half_w: float, h: float) -> list[tuple[float, float]]:
+    """비교 막대용 건물 매싱 아키타입(범용 건축 유형 이름 — 특정 건물의
+    윤곽을 베낀 게 아니다): 니들/테이퍼드/스텝(웨딩케이크)/펜슬/슬래브.
+    실루엣 자체가 값을 담는 막대가 되도록 한다."""
+    if shape == "needle":
+        body_h = h * 0.72
+        pts = [(-half_w, 0), (-half_w, body_h), (0, h), (half_w, body_h), (half_w, 0)]
+    elif shape == "tapered":
+        top_w = half_w * 0.42
+        pts = [(-half_w, 0), (-top_w, h), (top_w, h), (half_w, 0)]
+    elif shape == "stepped":
+        w1, w2, w3 = half_w, half_w * 0.68, half_w * 0.42
+        h1, h2 = h * 0.55, h * 0.80
+        pts = [(-w1, 0), (-w1, h1), (-w2, h1), (-w2, h2), (-w3, h2), (-w3, h),
+               (w3, h), (w3, h2), (w2, h2), (w2, h1), (w1, h1), (w1, 0)]
+    elif shape == "pencil":
+        pw = half_w * 0.55
+        pts = [(-pw, 0), (-pw, h), (pw, h), (pw, 0)]
+    else:  # "slab" 기본값
+        pts = [(-half_w, 0), (-half_w, h), (half_w, h), (half_w, 0)]
+    return [(cx + x, base_y + y) for x, y in pts]
+
+
+def silhouette_bar_chart(categories: list[str], values: list[float], out: Path,
+                         shapes: list[str] | None = None, title: str = "", subtitle: str = "",
+                         value_suffix: str = "", highlight_index: int | None = None,
+                         value_fmt: str = "{:.0f}", source: str = "", config: dict | None = None) -> Path:
+    """그래프 유형 E: 실루엣 비교바 — B1M 정밀 재스터디(2026-07-12)로 새로
+    잡아낸 이 채널의 핵심 시그니처. 막대가 사각형이 아니라 건물 매싱
+    아키타입(니들/테이퍼드/스텝/펜슬/슬래브) 윤곽선 자체다. `bar_chart()`
+    (사각 막대)·`lollipop_chart()`(선+점)에 이은 세 번째 "높이/규모 비교"
+    문법 — 스카이라인·건물 높이 비교처럼 "건물다움"이 핵심일 때 쓴다.
+
+    shapes: 카테고리별 매싱 유형(예: ["needle","slab"]). 생략하면
+    needle/tapered/stepped/slab/pencil 순서로 자동 순환.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Polygon
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    n = len(categories)
+    vmax = max(values) or 1
+    cycle = shapes or ["needle", "tapered", "stepped", "slab", "pencil"]
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    base_y = 0.16
+    max_h = 0.58
+    half_w = min(0.30 / n, 0.05)
+    xs = [(i + 0.5) / n for i in range(n)]
+
+    for i, (cat, val) in enumerate(zip(categories, values)):
+        h = max_h * (val / vmax)
+        shape = cycle[i % len(cycle)]
+        color = pal["surface"] if highlight_index == i else pal["point"]
+        pts = _tower_silhouette(shape, xs[i], base_y, half_w, h)
+        ax.add_patch(Polygon(pts, closed=True, facecolor=color, edgecolor="none", zorder=2))
+        label = value_fmt.format(val) + (f" {value_suffix}" if value_suffix else "")
+        ax.annotate(label, (xs[i], base_y + h + 0.03), ha="center", va="bottom",
+                    color=color, fontsize=22, fontproperties=fonts.get("med"), zorder=3)
+        ax.annotate(cat, (xs[i], base_y - 0.03), ha="center", va="top",
+                    color=pal["text"], fontsize=17, fontproperties=fonts.get("reg"), zorder=3)
+
+    ax.plot([0.04, 0.96], [base_y, base_y], color=pal["text"], lw=1, alpha=0.25, zorder=1)
+
+    if title:
+        ax.annotate(title, (0.5, 0.90), ha="center", va="top",
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.5, 0.845), ha="center", va="top",
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_subtle_texture(out)
+    log.info("실루엣 비교바 저장: %s (%d개 항목)", out.name, n)
+    return out
+
+
+def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str = "",
+                       cols: int = 7, rows: int = 15, source: str = "",
+                       config: dict | None = None) -> Path:
+    """그래프 유형 F: 유닛그리드 퍼센트(와플차트) — B1M 정밀 재스터디로
+    잡아낸 문법. 퍼센트를 건물 파사드처럼 촘촘한 격자 타일로 채워
+    표현하고, 위/아래에 지붕/베이스 캡을 둬서 "건물"로 읽히게 한다.
+    `donut_gauge()`/`percent_bar()`(연속형 비율)와 달리 "실제 세대/유닛
+    수"가 감각적으로 와닿아야 할 때(공실률, 입주율 등) 쓴다.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Rectangle
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    grid_w = 0.16
+    cell_w = grid_w / cols
+    cell_h = cell_w * (16 / 9)   # 16:9 캔버스 보정 — 물리적으로 정사각 타일
+    grid_h = rows * cell_h
+    gx0 = 0.5 - grid_w / 2
+    gy0 = 0.29
+    gap = cell_w * 0.14
+
+    total_cells = cols * rows
+    fill_cells = round(total_cells * percent / 100)
+    fill_color = pal["point"]
+    empty_color = _lighten(pal["highlight"], 0.35)
+    for r in range(rows):
+        for c in range(cols):
+            idx = r * cols + c   # 아래에서부터 채움(0=맨 아래 줄)
+            color = fill_color if idx < fill_cells else empty_color
+            x0 = gx0 + c * cell_w + gap / 2
+            y0 = gy0 + r * cell_h + gap / 2
+            ax.add_patch(Rectangle((x0, y0), cell_w - gap, cell_h - gap,
+                                   facecolor=color, edgecolor="none", zorder=2))
+
+    cap_h = cell_h * 0.55
+    ax.add_patch(Rectangle((gx0 - cell_w * 0.2, gy0 + grid_h), grid_w + cell_w * 0.4, cap_h,
+                           facecolor=pal["point"], edgecolor="none", zorder=3))
+    ax.add_patch(Rectangle((gx0 - cell_w * 0.2, gy0 - cap_h), grid_w + cell_w * 0.4, cap_h,
+                           facecolor=pal["point"], edgecolor="none", zorder=3))
+
+    ax.annotate(f"{percent:.0f}%", (0.5, gy0 - cap_h - 0.05), ha="center", va="top",
+                color=pal["point"], fontsize=56, fontproperties=fonts.get("med"))
+    if label:
+        ax.annotate(label, (0.5, gy0 - cap_h - 0.14), ha="center", va="top",
+                    color=pal["text"], fontsize=22, fontproperties=fonts.get("reg"))
+    if subtitle:
+        ax.annotate(subtitle, (0.5, gy0 + grid_h + cap_h + 0.03), ha="center", va="bottom",
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source, y=0.03)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_subtle_texture(out)
+    log.info("유닛그리드 빌딩 저장: %s (%.0f%%)", out.name, percent)
+    return out
+
+
+def donut_compare(value_a: float, value_b: float, out: Path, label_a: str = "", label_b: str = "",
+                  unit: str = "", subtitle: str = "", source: str = "",
+                  config: dict | None = None) -> Path:
+    """그래프 유형 G: 두 항목 실비교 도넛 — B1M 정밀 재스터디로 바로잡은
+    문법. `donut_gauge()`(단일 값 + 회색 잔여 트랙, 게이지 느낌)와 달리
+    이건 두 실제 항목을 나란히 비교하는 진짜 도넛/파이다 — 두 조각 다
+    각자의 실측값+라벨을 바깥에 표기한다. "A vs B" 실비교가 주제일 때
+    쓴다(예: 입주 세대 vs 공실 세대).
+    """
+    import math
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    total = (value_a + value_b) or 1
+    pct_a = 100 * value_a / total
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    txt_ax = fig.add_axes((0, 0, 1, 1))
+    txt_ax.set_facecolor("none")
+    txt_ax.set_xlim(0, 1)
+    txt_ax.set_ylim(0, 1)
+    txt_ax.set_xticks([])
+    txt_ax.set_yticks([])
+    for sp in txt_ax.spines.values():
+        sp.set_visible(False)
+
+    ring_h_frac = 0.58
+    ring_w_frac = ring_h_frac * 9 / 16
+    pie_ax = fig.add_axes(((1 - ring_w_frac) / 2, 0.20, ring_w_frac, ring_h_frac))
+    pie_ax.set_facecolor("none")
+    pie_ax.set_xticks([])
+    pie_ax.set_yticks([])
+    for sp in pie_ax.spines.values():
+        sp.set_visible(False)
+
+    color_a = pal["point"]
+    color_b = _lighten(pal["point"], 0.42)
+    ring_w = 0.42  # 레퍼런스처럼 두툼한 링 — donut_gauge 보다 훨씬 두껍다
+    wedges = pie_ax.pie([value_a, value_b], radius=1.0, colors=[color_a, color_b],
+                       startangle=90, counterclock=False,
+                       wedgeprops=dict(width=ring_w, edgecolor=pal["canvas_bg"], linewidth=3))[0]
+    pie_ax.set_xlim(-1.6, 1.6)
+    pie_ax.set_ylim(-1.6, 1.6)
+    pie_ax.set_aspect("equal")
+    pie_ax.annotate(f"{pct_a:.0f}%", (0, 0), ha="center", va="center",
+                    color=color_a, fontsize=50, fontproperties=fonts.get("med"))
+
+    for wedge, val, lbl, color in [(wedges[0], value_a, label_a, color_a),
+                                   (wedges[1], value_b, label_b, color_b)]:
+        mid = math.radians((wedge.theta1 + wedge.theta2) / 2)
+        lx, ly = 1.32 * math.cos(mid), 1.32 * math.sin(mid)
+        pie_ax.annotate(f"{val:.0f}{unit}", (lx, ly + 0.10), ha="center", va="center",
+                        color=pal["text"], fontsize=24, fontproperties=fonts.get("med"))
+        if lbl:
+            pie_ax.annotate(lbl, (lx, ly - 0.10), ha="center", va="center",
+                            color=pal["highlight"], fontsize=15, fontproperties=fonts.get("reg"))
+
+    if subtitle:
+        txt_ax.annotate(subtitle, (0.5, 0.90), ha="center", va="top",
+                        color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(txt_ax, pal, fonts, source, y=0.05)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_subtle_texture(out)
+    log.info("실비교 도넛 저장: %s (%.0f vs %.0f)", out.name, value_a, value_b)
+    return out
+
+
+def isometric_block_diagram(footprint: list[tuple[int, int]], out: Path,
+                            highlight: tuple[int, int] | None = None,
+                            title: str = "", source: str = "", config: dict | None = None) -> Path:
+    """그래프 유형 H: 아이소메트릭 블록 다이어그램 — B1M 정밀 재스터디로
+    잡아낸 문법. 여러 필지/유닛 블록을 아이소메트릭으로 쌓아 "부지
+    조합/선정" 같은 맥락을 보여주고 그중 하나를 그린으로 강조한다.
+    `isometric_building_icon()`(단일 타워 아이콘)과 달리 여러 블록의
+    평면 배치 자체가 정보다.
+
+    footprint: 점유된 (col, row) 정수 좌표 리스트 — 예: 3x3 사각형이면
+    [(c, r) for c in range(3) for r in range(3)].
+    highlight: 강조할 (col, row) 좌표 — pal["surface"](그린)로 칠해짐.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Polygon
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    txt_ax = fig.add_axes((0, 0, 1, 1))
+    txt_ax.set_facecolor("none")
+    txt_ax.set_xlim(0, 1)
+    txt_ax.set_ylim(0, 1)
+    txt_ax.set_xticks([])
+    txt_ax.set_yticks([])
+    for sp in txt_ax.spines.values():
+        sp.set_visible(False)
+
+    ax = fig.add_axes((0.28, 0.10, 0.44, 0.75))
+    ax.set_aspect("equal")   # 실제 2:1 아이소 비율 보장(눌리지 않게) — §16-1 교훈
+    ax.set_facecolor("none")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    dx, dy, H = 0.5, 0.25, 0.55
+    base_hex = pal["point"]
+    top_hex, right_hex, left_hex = _lighten(base_hex, 0.30), base_hex, _lighten(base_hex, -0.30)
+    hi_hex = pal["surface"]
+    hi_top, hi_right, hi_left = _lighten(hi_hex, 0.30), hi_hex, _lighten(hi_hex, -0.30)
+
+    max_cr = max(c + r for c, r in footprint)
+    xs_all, ys_all = [], []
+    for c, r in footprint:
+        cx = (c - r) * dx
+        y0 = (c + r) * dy
+        is_hi = highlight is not None and (c, r) == tuple(highlight)
+        fc_top, fc_right, fc_left = (hi_top, hi_right, hi_left) if is_hi else (top_hex, right_hex, left_hex)
+        zbase = (max_cr - (c + r)) * 10  # 앞쪽(가까운) 블록일수록 큰 값 → 항상 뒤 블록을 덮는다
+
+        top = [(cx, y0 + H + dy), (cx + dx, y0 + H), (cx, y0 + H - dy), (cx - dx, y0 + H)]
+        right = [(cx + dx, y0 + H), (cx, y0 + H - dy), (cx, y0 - dy), (cx + dx, y0)]
+        left = [(cx - dx, y0 + H), (cx, y0 + H - dy), (cx, y0 - dy), (cx - dx, y0)]
+        ax.add_patch(Polygon(top, closed=True, facecolor=fc_top, edgecolor="none", zorder=zbase + 3))
+        ax.add_patch(Polygon(right, closed=True, facecolor=fc_right, edgecolor="none", zorder=zbase + 2))
+        ax.add_patch(Polygon(left, closed=True, facecolor=fc_left, edgecolor="none", zorder=zbase + 2))
+        for poly in (top, right, left):
+            for x, y in poly:
+                xs_all.append(x)
+                ys_all.append(y)
+
+    pad = 0.3
+    ax.set_xlim(min(xs_all) - pad, max(xs_all) + pad)
+    ax.set_ylim(min(ys_all) - pad, max(ys_all) + pad)
+
+    if title:
+        txt_ax.annotate(title, (0.5, 0.92), ha="center", va="top",
+                        color=pal["text"], fontsize=26, fontproperties=fonts.get("med"))
+    _source_box(txt_ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+    _add_subtle_texture(out)
+    log.info("아이소메트릭 블록 다이어그램 저장: %s (%d개 블록)", out.name, len(footprint))
+    return out
+
+
+def tag_badge(text: str, out: Path, config: dict | None = None, color: str = "point",
+             text_color: str = "canvas_bg", font_key: str = "med", fontsize: int = 54,
+             pad_frac: float = 0.35) -> Path:
+    """실사 영상 위에 얹는 단색 태그 배지 — B1M 정밀 재스터디로 잡아낸
+    문법. 흰 카드/테두리 없이 팔레트 색 사각형 하나에 굵은 글자만 얹어
+    영상 위에 직접 합성한다(예: "$65,600,000" 처럼 — 레퍼런스가 실제로
+    쓴 방식). render.py 의 B-roll 오버레이 자리에 이 투명 배경 PNG를
+    얹으면 된다. 카드형 문법(stat_card 등)과는 별개의, 영상-직접-오버레이
+    전용 축.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import FancyBboxPatch
+    from matplotlib import font_manager
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    bg_hex = pal.get(color, color if color.startswith("#") else "#" + color)
+    fg_hex = pal.get(text_color, text_color if text_color.startswith("#") else "#" + text_color)
+
+    fig = plt.figure(figsize=(8, 2), dpi=200)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    t = ax.text(0.5, 0.5, text, ha="center", va="center", color=fg_hex,
+               fontsize=fontsize, fontproperties=fonts.get(font_key), zorder=2)
+
+    fig.canvas.draw()
+    bbox = t.get_window_extent(renderer=fig.canvas.get_renderer())
+    bbox_ax = bbox.transformed(ax.transAxes.inverted())
+    pad_x = (bbox_ax.x1 - bbox_ax.x0) * pad_frac
+    pad_y = (bbox_ax.y1 - bbox_ax.y0) * pad_frac
+    ax.add_patch(FancyBboxPatch((bbox_ax.x0 - pad_x, bbox_ax.y0 - pad_y),
+                               (bbox_ax.x1 - bbox_ax.x0) + 2 * pad_x,
+                               (bbox_ax.y1 - bbox_ax.y0) + 2 * pad_y,
+                               boxstyle="square,pad=0", facecolor=bg_hex,
+                               edgecolor="none", zorder=1))
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, transparent=True)
+    plt.close(fig)
+    log.info("태그 배지 저장: %s (%s)", out.name, text)
+    return out
 
 
 # ══════════════════════════════════════════════════════════
