@@ -2062,6 +2062,152 @@ def tag_badge(text: str, out: Path, config: dict | None = None, color: str = "po
     return out
 
 
+def logo_arrow_card(logo_left: Path, logo_right: Path, out: Path, icon_pictogram: bool = False,
+                    title: str = "", subtext: str = "", source: str = "",
+                    config: dict | None = None) -> Path:
+    """실제 회사 로고 두 개를 화살표로 연결하는 카드 — 인수·이전처럼
+    두 실제 법인 사이에서 일어난 일을 다룰 때, 로고 자체가 팩트라 새로
+    그리지 않고 실제 로고 이미지를 그대로 쓴다(뉴스·다큐멘터리의 관행적
+    팩트 표기 — 로고 원본 흰 여백은 자동 크롭 후 배치).
+
+    icon_pictogram: True 면 두 로고 사이 위쪽에 아이소메트릭 빌딩
+    아이콘을 얹는다("운영권/자산이 넘어가는 대상"을 시각적으로 표시).
+    """
+    import tempfile
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    from PIL import Image
+    import numpy as np
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    def _autocrop(path: Path) -> Image.Image:
+        im = Image.open(path).convert("RGBA")
+        gray = np.asarray(im.convert("L"))
+        mask = gray < 245
+        if not mask.any():
+            return im
+        ys, xs = np.where(mask)
+        pad = 4
+        x0, x1 = max(int(xs.min()) - pad, 0), min(int(xs.max()) + pad, gray.shape[1])
+        y0, y1 = max(int(ys.min()) - pad, 0), min(int(ys.max()) + pad, gray.shape[0])
+        return im.crop((x0, y0, x1, y1))
+
+    left_im = _autocrop(logo_left)
+    right_im = _autocrop(logo_right)
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    ax.annotate("", xy=(0.60, 0.46), xytext=(0.40, 0.46),
+                xycoords="axes fraction", textcoords="axes fraction",
+                arrowprops=dict(arrowstyle="-|>", color=pal["highlight"],
+                                lw=2.5, mutation_scale=30))
+
+    if title:
+        ax.annotate(title, (0.5, 0.90), ha="center", va="top",
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtext:
+        ax.annotate(subtext, (0.5, 0.15), ha="center", va="top",
+                    color=pal["highlight"], fontsize=20, fontproperties=fonts.get("reg"))
+    _source_box(ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+
+    card = Image.open(out).convert("RGBA")
+    W, H = card.size
+    target_h = int(H * 0.13)
+
+    def _fit(im: Image.Image, target_h: int) -> Image.Image:
+        w = max(int(im.width * target_h / im.height), 1)
+        return im.resize((w, target_h), Image.LANCZOS)
+
+    left_r = _fit(left_im, target_h)
+    right_r = _fit(right_im, target_h)
+    cy = int(H * 0.54)
+    lx = int(W * 0.24 - left_r.width / 2)
+    rx = int(W * 0.76 - right_r.width / 2)
+    card.alpha_composite(left_r, (lx, cy - left_r.height // 2))
+    card.alpha_composite(right_r, (rx, cy - right_r.height // 2))
+
+    if icon_pictogram:
+        side = int(W * 0.085)
+        icon_tmp = Path(tempfile.mktemp(suffix=".png"))
+        isometric_building_icon(icon_tmp, config=config, color="point")
+        icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
+        card.alpha_composite(icon_im, (int(W / 2 - side / 2), int(H * 0.22 - side / 2)))
+        icon_tmp.unlink(missing_ok=True)
+
+    card.convert("RGB").save(out)
+    _add_subtle_texture(out)
+    log.info("로고 화살표 카드 저장: %s", out.name)
+    return out
+
+
+def photo_headline_card(photo_path: Path, out: Path, headline: str, source_label: str = "",
+                        config: dict | None = None) -> Path:
+    """실제 인물·사물 사진 + 사진 아래 헤드라인 타이포 — 사진 자체가
+    팩트를 전달할 때(예: 실제 구매자 사진, 반드시 출처 있는 사진만) 쓴다.
+    사진 위에 글자를 얹지 않고 사진/텍스트 영역을 분리해 둘 다 온전하게
+    읽히게 한다. source_label: 사진 우측 상단에 작게 넣는 출처 표기
+    (예: "Source: Wikipedia").
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    pal = _palette(config)
+    font_dir = common.ROOT_DIR / "assets" / "fonts"
+    f_headline = ImageFont.truetype(str(font_dir / "A2Z-1Thin.ttf"), 76)
+    f_source = ImageFont.truetype(str(font_dir / "A2Z-4Regular.ttf"), 20)
+
+    W, H = 1920, 1080
+    canvas = Image.new("RGB", (W, H), pal["canvas_bg"])
+
+    photo = Image.open(photo_path).convert("RGB")
+    photo_h = int(H * 0.60)
+    photo_w = min(int(photo.width * photo_h / photo.height), int(W * 0.40))
+    scale = max(photo_w / photo.width, photo_h / photo.height)
+    photo_r = photo.resize((max(int(photo.width * scale), 1), max(int(photo.height * scale), 1)),
+                           Image.LANCZOS)
+    px0 = (photo_r.width - photo_w) // 2
+    py0 = (photo_r.height - photo_h) // 2
+    photo_r = photo_r.crop((px0, py0, px0 + photo_w, py0 + photo_h))
+
+    px = (W - photo_w) // 2
+    py = int(H * 0.09)
+    canvas.paste(photo_r, (px, py))
+
+    cd = ImageDraw.Draw(canvas)
+    border = 4
+    cd.rectangle((px - border, py - border, px + photo_w + border, py + photo_h + border),
+                outline=pal["card_bg"], width=border)
+
+    if source_label:
+        cd.text((px + photo_w - 16, py + 16), source_label, font=f_source,
+                fill=(255, 255, 255), anchor="ra")
+
+    hy = py + photo_h + int(H * 0.07)
+    cd.text((W / 2, hy), headline, font=f_headline, fill=pal["text"], anchor="ma")
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(out)
+    _add_subtle_texture(out)
+    log.info("사진+헤드라인 카드 저장: %s (%s)", out.name, headline)
+    return out
+
+
 # ══════════════════════════════════════════════════════════
 # CLI
 # ══════════════════════════════════════════════════════════
