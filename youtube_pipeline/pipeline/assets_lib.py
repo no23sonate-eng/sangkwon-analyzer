@@ -1811,7 +1811,7 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
     cell_h = cell_w * (16 / 9)   # 16:9 캔버스 보정 — 물리적으로 정사각 타일
     grid_h = rows * cell_h
     gx0 = 0.5 - grid_w / 2
-    gy0 = 0.36
+    gy0 = 0.38
     gap = cell_w * 0.14
 
     total_cells = cols * rows
@@ -1836,7 +1836,7 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
     ax.annotate(f"{percent:.0f}%", (0.5, gy0 - cap_h - 0.05), ha="center", va="top",
                 color=pal["point"], fontsize=56, fontproperties=fonts.get("med"))
     if label:
-        ax.annotate(label, (0.5, gy0 - cap_h - 0.12), ha="center", va="top",
+        ax.annotate(label, (0.5, gy0 - cap_h - 0.21), ha="center", va="top",
                     color=pal["text"], fontsize=22, fontproperties=fonts.get("reg"))
     if subtitle:
         ax.annotate(subtitle, (0.5, gy0 + grid_h + cap_h + 0.03), ha="center", va="bottom",
@@ -2099,8 +2099,16 @@ def logo_arrow_card(logo_left: Path, logo_right: Path, out: Path, icon_pictogram
     left_im = _autocrop(logo_left)
     right_im = _autocrop(logo_right)
 
+    # 로고 원본이 흰 배경 JPEG라 캔버스가 조금이라도 다른 톤이면 로고가
+    # "네모 박스"로 도드라져 보인다(실측 피드백) — 이 카드만 순백 배경으로
+    # 통일해 로고 여백과 캔버스가 이어지게 한다.
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_light(fig, pal)
+    bg = fig.add_axes((0, 0, 1, 1))
+    bg.set_facecolor("#FFFFFF")
+    bg.set_xticks([])
+    bg.set_yticks([])
+    for sp in bg.spines.values():
+        sp.set_visible(False)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_facecolor("none")
     ax.set_xlim(0, 1)
@@ -2124,7 +2132,7 @@ def logo_arrow_card(logo_left: Path, logo_right: Path, out: Path, icon_pictogram
     _source_box(ax, pal, fonts, source, y=0.045)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, facecolor=pal["canvas_bg"])
+    fig.savefig(out, facecolor="#FFFFFF")
     plt.close(fig)
 
     card = Image.open(out).convert("RGBA")
