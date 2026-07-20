@@ -164,25 +164,33 @@ def build_premiere_xml(config: dict, project: common.Project, out: Path) -> int:
 def build_guide(plan: dict, typos: list[dict], n_cues: int, n_broll: int, out: Path) -> None:
     def ts(sec):
         return f"{int(sec // 60)}:{sec % 60:05.2f}"
-    lines = [
-        "■ 프리미어 프로",
-        "1. premiere.xml 을 프리미어로 드래그 (또는 파일→가져오기)",
-        "   → V1 원본 + V2 에 B-roll 이 배치된 시퀀스가 생성됩니다",
-        "   ※ '미디어 연결' 창이 뜨면 이 폴더 상위의 원본/broll_candidates 파일을 지정",
-        f"2. subtitle.srt 를 가져와 캡션 트랙에 ({n_cues}개, 한 줄 규칙 적용됨)",
-        "   → 캡션 스타일에서 폰트를 '에이투지'로 지정하면 자동 렌더와 동일",
-        "3. typo/ 의 PNG 를 V3 에 드래그 — 아래 타임코드 참고",
-        "",
-        "■ 캡컷",
-        "1. 원본 영상 + broll_candidates 의 선택 클립을 타임라인에 배치",
-        "2. 텍스트 → 자막 가져오기 → subtitle.srt",
-        "3. typo/ PNG 를 오버레이 트랙에",
-        "",
-        f"■ 대형 타이포 타임코드 ({len(typos)}개)",
-    ]
-    for t in typos:
-        lines.append(f"  {ts(t['start'])} ~ {ts(t['end'])}  [{t['style']}] {t['text']}  → typo/{t['file']}")
+
+    # 자막/타이포가 아예 없는 영상(예: 그래픽 카드에 텍스트가 이미 다
+    # 구워져 있는 경우)은 관련 단계를 안내에서 아예 뺀다 — 빈 파일을
+    # 가져오라는 무의미한 지시를 남기지 않는다.
+    prem_steps = ["1. premiere.xml 을 프리미어로 드래그 (또는 파일→가져오기)",
+                 "   → V1 원본 + V2 에 B-roll 이 배치된 시퀀스가 생성됩니다",
+                 "   ※ '미디어 연결' 창이 뜨면 이 폴더 상위의 원본/broll_candidates 파일을 지정"]
+    capcut_steps = ["1. 원본 영상 + broll_candidates 의 선택 클립을 타임라인에 배치"]
+    step = 2
+    if n_cues:
+        prem_steps.append(f"{step}. subtitle.srt 를 가져와 캡션 트랙에 ({n_cues}개, 한 줄 규칙 적용됨)")
+        prem_steps.append("   → 캡션 스타일에서 폰트를 '에이투지'로 지정하면 자동 렌더와 동일")
+        capcut_steps.append("2. 텍스트 → 자막 가져오기 → subtitle.srt")
+        step += 1
+    if typos:
+        prem_steps.append(f"{step}. typo/ 의 PNG 를 V3 에 드래그 — 아래 타임코드 참고")
+        capcut_steps.append("3. typo/ PNG 를 오버레이 트랙에")
+
+    lines = ["■ 프리미어 프로", *prem_steps, "", "■ 캡컷", *capcut_steps]
+    if typos:
+        lines += ["", f"■ 대형 타이포 타임코드 ({len(typos)}개)"]
+        for t in typos:
+            lines.append(f"  {ts(t['start'])} ~ {ts(t['end'])}  [{t['style']}] {t['text']}  → typo/{t['file']}")
     lines += ["", f"■ B-roll {n_broll}개는 premiere.xml V2 트랙에 자동 배치되어 있습니다."]
+    if not n_cues and not typos:
+        lines += ["", "※ 이 영상은 자막/타이포 없이 그래픽 카드 안에 텍스트가 이미 구워져 있습니다",
+                 "  — subtitle.srt/typo/ 는 비어 있어 가져올 필요 없습니다."]
     out.write_text("\n".join(lines), encoding="utf-8")
 
 
