@@ -782,7 +782,6 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
 
     two = bool(value2)
     cx1 = 0.30 if two else 0.5
-    icon_y = 0.78 if (label or not two) else 0.66
     if label:
         ax.annotate(label, (cx1, 0.66), xycoords="axes fraction", ha="center",
                     color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
@@ -811,15 +810,20 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, facecolor=pal["canvas_bg"])
     plt.close(fig)
-    if icon_building:
-        side = 0.075
-        _place_isometric_icon(out, config, color="point",
-                              pos=(cx1 - side / 2, icon_y - side), size_frac=side)
-    elif icon:
-        # 레퍼런스의 "아이콘+라벨" 태그 문법 — 크고 장식적인 코너 배지가
-        # 아니라 라벨 바로 위에 작게, 라벨과 같은 강조색으로 붙인다.
-        side = 0.075
-        _place_icon(out, icon, config, color="point", pos=(cx1 - side / 2, icon_y - side), size_frac=side)
+    if icon_building or icon:
+        # 아이콘은 값(0.46)과 서브텍스트(0.26) 사이 여백에 둔다 — 라벨/서브텍스트
+        # 유무와 무관하게 항상 비어 있는 공간이라, 자막 캡션 박스(하단)나
+        # 서브텍스트 줄과 겹치는 회귀가 없다. side 는 카드 "폭" 기준 비율이라
+        # 16:9 카드에서 세로 크기로 환산하면 side*(16/9)로 더 커지므로 실측 보정.
+        side = 0.05
+        icon_h = side * (16 / 9)
+        icon_center_ax = (0.46 + 0.26) / 2
+        icon_center_pil = 0.94 - 0.88 * icon_center_ax
+        pos = (cx1 - side / 2, icon_center_pil - icon_h / 2)
+        if icon_building:
+            _place_isometric_icon(out, config, color="point", pos=pos, size_frac=side)
+        else:
+            _place_icon(out, icon, config, color="point", pos=pos, size_frac=side)
     _add_subtle_texture(out)
     log.info("스탯 카드 저장: %s (%s%s)", out.name, value, f" → {value2}" if two else "")
     return out
@@ -1774,7 +1778,7 @@ def silhouette_bar_chart(categories: list[str], values: list[float], out: Path,
 
 
 def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str = "",
-                       cols: int = 7, rows: int = 15, source: str = "",
+                       cols: int = 7, rows: int = 12, source: str = "",
                        config: dict | None = None) -> Path:
     """그래프 유형 F: 유닛그리드 퍼센트(와플차트) — B1M 정밀 재스터디로
     잡아낸 문법. 퍼센트를 건물 파사드처럼 촘촘한 격자 타일로 채워
@@ -1807,7 +1811,7 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
     cell_h = cell_w * (16 / 9)   # 16:9 캔버스 보정 — 물리적으로 정사각 타일
     grid_h = rows * cell_h
     gx0 = 0.5 - grid_w / 2
-    gy0 = 0.29
+    gy0 = 0.36
     gap = cell_w * 0.14
 
     total_cells = cols * rows
@@ -1832,7 +1836,7 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
     ax.annotate(f"{percent:.0f}%", (0.5, gy0 - cap_h - 0.05), ha="center", va="top",
                 color=pal["point"], fontsize=56, fontproperties=fonts.get("med"))
     if label:
-        ax.annotate(label, (0.5, gy0 - cap_h - 0.14), ha="center", va="top",
+        ax.annotate(label, (0.5, gy0 - cap_h - 0.12), ha="center", va="top",
                     color=pal["text"], fontsize=22, fontproperties=fonts.get("reg"))
     if subtitle:
         ax.annotate(subtitle, (0.5, gy0 + grid_h + cap_h + 0.03), ha="center", va="bottom",
