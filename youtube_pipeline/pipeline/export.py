@@ -87,13 +87,18 @@ def build_typo_pngs(config: dict, plan: dict, out_dir: Path) -> list[dict]:
 
 def _clipitem(cid: str, name: str, path: Path, fid: str, tb: int,
               in_f: int, out_f: int, start_f: int, end_f: int,
-              w: int, h: int, media: str = "video", new_file: bool = True) -> str:
+              w: int, h: int, media: str = "video", new_file: bool = True,
+              has_audio: bool = True) -> str:
+    """has_audio=False 로 PNG/사진처럼 오디오 트랙이 아예 없는 소스를
+    표시 — <media> 에 <audio> 를 넣으면 프리미어 '미디어 연결'이 오디오
+    없는 파일을 "형식 불일치"로 거부한다(실제로 겪은 버그)."""
     pathurl = "file://localhost" + sx.escape(str(path.resolve()).replace(os.sep, "/"))
+    audio_el = '<audio><channelcount>2</channelcount></audio>' if has_audio else ''
     file_el = (f'<file id="{fid}"><name>{sx.escape(path.name)}</name>'
                f'<pathurl>{pathurl}</pathurl>'
                f'<rate><timebase>{tb}</timebase><ntsc>FALSE</ntsc></rate>'
                f'<media><video><samplecharacteristics><width>{w}</width><height>{h}</height>'
-               f'</samplecharacteristics></video><audio><channelcount>2</channelcount></audio></media>'
+               f'</samplecharacteristics></video>{audio_el}</media>'
                f'</file>') if new_file else f'<file id="{fid}"/>'
     return (f'<clipitem id="{cid}"><name>{sx.escape(name)}</name>'
             f'<rate><timebase>{tb}</timebase><ntsc>FALSE</ntsc></rate>'
@@ -125,8 +130,9 @@ def build_premiere_xml(config: dict, project: common.Project, out: Path) -> int:
                 continue
             n_broll += 1
             dur_f = F(s["end"]) - F(s["start"])
+            has_audio = ch.get("type") == "video"  # 그래픽/사진은 오디오 트랙이 없다
             v2.append(_clipitem(f"broll-{n_broll}", f.name, f, f"file-b{n_broll}", tb,
-                                0, dur_f, F(s["start"]), F(s["end"]), w, h))
+                                0, dur_f, F(s["start"]), F(s["end"]), w, h, has_audio=has_audio))
 
     v1 = _clipitem("main-v", source.name, source, "file-main", tb, 0, total_f, 0, total_f, w, h)
     a1 = _clipitem("main-a", source.name, source, "file-main", tb, 0, total_f, 0, total_f, w, h,
