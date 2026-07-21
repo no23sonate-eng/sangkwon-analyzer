@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import subprocess
 import sys
 import xml.sax.saxutils as sx
 from pathlib import Path
@@ -85,6 +86,22 @@ def build_typo_pngs(config: dict, plan: dict, out_dir: Path) -> list[dict]:
 
 # ── 프리미어 시퀀스 (FCP7 XML) ─────────────────────────────
 
+def _has_audio_stream(path: Path) -> bool:
+    """실제로 오디오 스트림이 있는지 ffprobe 로 직접 확인한다 — type이
+    "video"라고 오디오가 있다는 뜻은 아니다(Pexels/Pixabay 스톡 영상은
+    무음인 경우가 흔하다, 실제로 겪은 버그). PNG 등은 애초에 ffprobe가
+    오디오 스트림을 못 찾으므로 자동으로 False."""
+    try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "a",
+             "-show_entries", "stream=codec_type", "-of", "csv=p=0", str(path)],
+            capture_output=True, text=True, timeout=10,
+        )
+        return bool(out.stdout.strip())
+    except Exception:
+        return False
+
+
 def _clipitem(cid: str, name: str, path: Path, fid: str, tb: int,
               in_f: int, out_f: int, start_f: int, end_f: int,
               w: int, h: int, media: str = "video", new_file: bool = True,
@@ -130,9 +147,9 @@ def build_premiere_xml(config: dict, project: common.Project, out: Path) -> int:
                 continue
             n_broll += 1
             dur_f = F(s["end"]) - F(s["start"])
-            has_audio = ch.get("type") == "video"  # 그래픽/사진은 오디오 트랙이 없다
             v2.append(_clipitem(f"broll-{n_broll}", f.name, f, f"file-b{n_broll}", tb,
-                                0, dur_f, F(s["start"]), F(s["end"]), w, h, has_audio=has_audio))
+                                0, dur_f, F(s["start"]), F(s["end"]), w, h,
+                                has_audio=_has_audio_stream(f)))
 
     v1 = _clipitem("main-v", source.name, source, "file-main", tb, 0, total_f, 0, total_f, w, h)
     a1 = _clipitem("main-a", source.name, source, "file-main", tb, 0, total_f, 0, total_f, w, h,
