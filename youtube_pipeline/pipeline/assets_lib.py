@@ -1814,9 +1814,11 @@ def silhouette_bar_chart(categories: list[str], values: list[float], out: Path,
         shape = cycle[i % len(cycle)]
         color = pal["surface"] if highlight_index == i else pal["point"]
         pts = _tower_silhouette(shape, xs[i], base_y, half_w, h)
-        ax.add_patch(Polygon(pts, closed=True, facecolor=color, edgecolor="none", zorder=2))
+        tower = Polygon(pts, closed=True, facecolor=color, edgecolor="none", zorder=2)
+        tower.set_path_effects(_shadow_fx(alpha=0.16))
+        ax.add_patch(tower)
         label = value_fmt.format(val) + (f" {value_suffix}" if value_suffix else "")
-        ax.annotate(label, (xs[i], base_y + h + 0.03), ha="center", va="bottom",
+        ax.annotate(_track_display(label), (xs[i], base_y + h + 0.03), ha="center", va="bottom",
                     color=color, fontsize=22, fontproperties=fonts.get("med"), zorder=3)
         ax.annotate(cat, (xs[i], base_y - 0.03), ha="center", va="top",
                     color=pal["text"], fontsize=17, fontproperties=fonts.get("reg"), zorder=3)
