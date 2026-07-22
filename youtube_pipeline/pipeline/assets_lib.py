@@ -2352,7 +2352,14 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
 
     card = Image.open(out).convert("RGBA")
     W, H = card.size
-    side = int(W * icon_scale)
+    # 라벨/값이 둘 다 없는 "아이콘만" 모드는 화면 중앙에 자막/헤드라인
+    # 오버레이(ASS Alignment=5, 정중앙)가 나중에 얹힐 걸 가정한다 —
+    # 아이콘을 화면 상단으로 올리고 작게 줄여 겹치지 않게 한다
+    # (실제로 겪은 버그: 문 아이콘과 헤드라인 텍스트가 정중앙에서 충돌).
+    bare = not value and not label
+    eff_scale = min(icon_scale, 0.18) if bare else icon_scale
+    icon_cy_frac = 0.28 if bare else (0.48 if value else 0.50)
+    side = int(W * eff_scale)
     icon_tmp = Path(tempfile.mktemp(suffix=".png"))
     try:
         if building_icon:
@@ -2360,7 +2367,7 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
         else:
             icon_png(icon, icon_tmp, color=color, size=512, config=config)
         icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
-        icon_cy = int(H * 0.48) if value else int(H * 0.50)
+        icon_cy = int(H * icon_cy_frac)
         pos = (int(W / 2 - side / 2), int(icon_cy - side / 2))
         _paste_with_shadow(card, icon_im, pos, blur=16, alpha=35, offset=(0, 5))
     except Exception as e:
