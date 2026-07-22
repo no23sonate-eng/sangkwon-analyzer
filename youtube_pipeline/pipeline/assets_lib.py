@@ -2299,6 +2299,161 @@ def photo_headline_card(photo_path: Path, out: Path, headline: str, source_label
     return out
 
 
+def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subtitle: str = "",
+                   color: str = "point", icon_scale: float = 0.30, source: str = "",
+                   building_icon: bool = False, building_floors: int = 6,
+                   config: dict | None = None) -> Path:
+    """아이콘이 주인공인 카드 — 개념 하나(입장·비용·기간 등)를 큰 픽토그램
+    하나로 전달하고, 숫자/텍스트는 작게 보조로만 붙인다(2026-07-22 디자인
+    피드백: "숫자만 크게 있지 말고 이모티콘/이미지를 중앙에, 글은 작게").
+    `stat_card()`(숫자가 주인공)와 정반대 위계 — 개념 자체가 핵심일 때
+    (예: "진입장벽 제거", "초기비용 부담/가벼움") 쓴다.
+
+    building_icon: True 면 Iconify 검색 대신 원본 아이소메트릭 빌딩을
+    큰 히어로 이미지로 쓴다 — "건물 자체가 주제"일 때(예: 한 동당 객실
+    수 범위)."""
+    import tempfile
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    from PIL import Image
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    if label:
+        ax.annotate(label, (0.5, 0.90), ha="center", va="top",
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+    if value:
+        val_txt = ax.annotate(_track_display(value), (0.5, 0.09), ha="center", va="center",
+                              color=pal.get(color, color), fontsize=34,
+                              fontproperties=fonts.get("med"))
+        val_txt.set_path_effects(_shadow_fx(alpha=0.12, offset=(1.2, -1.2)))
+    if subtitle:
+        ax.annotate(subtitle, (0.5, 0.90 - (0.06 if label else 0)), ha="center", va="top",
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+
+    card = Image.open(out).convert("RGBA")
+    W, H = card.size
+    side = int(W * icon_scale)
+    icon_tmp = Path(tempfile.mktemp(suffix=".png"))
+    try:
+        if building_icon:
+            isometric_building_icon(icon_tmp, config=config, color=color, floors=building_floors)
+        else:
+            icon_png(icon, icon_tmp, color=color, size=512, config=config)
+        icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
+        icon_cy = int(H * 0.48) if value else int(H * 0.50)
+        pos = (int(W / 2 - side / 2), int(icon_cy - side / 2))
+        _paste_with_shadow(card, icon_im, pos, blur=16, alpha=35, offset=(0, 5))
+    except Exception as e:
+        log.warning("아이콘 히어로 카드 아이콘 합성 실패(%s): %s", icon, e)
+    finally:
+        icon_tmp.unlink(missing_ok=True)
+
+    card.convert("RGB").save(out)
+    _add_subtle_texture(out)
+    log.info("아이콘 히어로 카드 저장: %s (%s)", out.name, icon)
+    return out
+
+
+def icon_amenity_row(items: list[dict], out: Path, title: str = "", subtitle: str = "",
+                     source: str = "", config: dict | None = None) -> Path:
+    """공용부·어매니티처럼 여러 개념을 나란히 아이콘+라벨로 보여주는 열
+    (row) — 항목마다 다른 색을 줘서 "컬러감 있게"(2026-07-22 피드백)
+    구성한다. items: [{"icon": <iconify 검색어>, "label": str,
+    "color": <옵션, hex 또는 팔레트 키>}, ...] (3~5개 권장).
+    """
+    import tempfile
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    from PIL import Image
+
+    pal = _palette(config)
+    fonts = _load_fonts(font_manager)
+    # 브랜드 팔레트와 어울리는 절제된 톤의 보조 컬러 세트 — 네온 아님,
+    # 기존 point/surface 와 같은 채도·명도대로 맞춘 확장 팔레트.
+    accent_cycle = [pal["point"], pal["surface"], "#C98A3E", "#B0618F", "#3E9AA6"]
+
+    fig = plt.figure(figsize=(16, 9), dpi=200)
+    _add_canvas_light(fig, pal)
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_facecolor("none")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    if title:
+        ax.annotate(title, (0.5, 0.90), ha="center", va="top",
+                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+    if subtitle:
+        ax.annotate(subtitle, (0.5, 0.845), ha="center", va="top",
+                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+    _source_box(ax, pal, fonts, source, y=0.045)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, facecolor=pal["canvas_bg"])
+    plt.close(fig)
+
+    card = Image.open(out).convert("RGBA")
+    W, H = card.size
+    n = len(items)
+    side = int(W * min(0.16, 0.72 / n))
+    xs = [(i + 0.5) / n for i in range(n)]
+    cy = int(H * 0.48)
+
+    fonts_for_pil = font_manager
+    from PIL import ImageDraw, ImageFont
+    font_dir = common.ROOT_DIR / "assets" / "fonts"
+    f_label = ImageFont.truetype(str(font_dir / "A2Z-4Regular.ttf"), 34)
+    cd = ImageDraw.Draw(card)
+
+    for i, item in enumerate(items):
+        color = item.get("color") or accent_cycle[i % len(accent_cycle)]
+        color = pal.get(color, color)
+        icon_tmp = Path(tempfile.mktemp(suffix=".png"))
+        try:
+            icon_png(item["icon"], icon_tmp, color=color, size=512, config=config)
+            icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
+            cx = int(W * xs[i])
+            pos = (cx - side // 2, cy - side // 2)
+            _paste_with_shadow(card, icon_im, pos, blur=14, alpha=35, offset=(0, 4))
+            label = item.get("label", "")
+            if label:
+                cd.text((cx, cy + side // 2 + 30), label, font=f_label, fill=color, anchor="ma")
+        except Exception as e:
+            log.warning("어매니티 아이콘 합성 실패(%s): %s", item.get("icon"), e)
+        finally:
+            icon_tmp.unlink(missing_ok=True)
+
+    card.convert("RGB").save(out)
+    _add_subtle_texture(out)
+    log.info("어매니티 아이콘 행 저장: %s (%d개)", out.name, n)
+    return out
+
+
 # ══════════════════════════════════════════════════════════
 # CLI
 # ══════════════════════════════════════════════════════════
