@@ -389,6 +389,51 @@ def _paste_with_shadow(canvas, im, pos: tuple[int, int], blur: int = 18,
     canvas.alpha_composite(im, pos)
 
 
+def _radial_gradient(w: int, h: int, inner_hex: str, outer_hex: str,
+                     cx: float = 0.5, cy: float = 0.42, radius: float = 0.95):
+    """중심이 밝고 가장자리로 갈수록 짙어지는 방사형 그라디언트 배열
+    (2026-07-22 "아이폰처럼 고급스럽게" 피드백) — 애플 발표 영상 특유의
+    다크 스포트라이트 배경에 쓴다. 저해상도로 만들고 imshow 보간으로
+    확대해야 밴딩 없이 부드럽다."""
+    import numpy as np
+    yy, xx = np.mgrid[0:h, 0:w].astype(float)
+    xx = xx / w - cx
+    yy = yy / h - cy
+    d = np.sqrt(xx ** 2 + (yy * (w / h)) ** 2) / radius
+    t = np.clip(d, 0, 1)[..., None]
+    inner = np.array(_hex_to_rgb(inner_hex))
+    outer = np.array(_hex_to_rgb(outer_hex))
+    return (inner * (1 - t) + outer * t).astype("uint8")
+
+
+def _add_canvas_premium(fig, inner: str = "#1C2740", outer: str = "#05070C"):
+    """애플 발표 영상풍 다크 스포트라이트 배경 — 중앙이 밝고 가장자리로
+    갈수록 짙어지는 방사형 그라디언트. icon_hero_card(dark=True) 전용."""
+    bg = fig.add_axes((0, 0, 1, 1))
+    bg.set_xlim(0, 1); bg.set_ylim(0, 1)
+    bg.set_xticks([]); bg.set_yticks([])
+    for sp in bg.spines.values():
+        sp.set_visible(False)
+    grad = _radial_gradient(192, 108, inner, outer)
+    bg.imshow(grad, extent=(0, 1, 0, 1), aspect="auto", zorder=0, interpolation="bicubic")
+    return bg
+
+
+def _glow_behind(canvas, center: tuple[int, int], radius: int, color_hex: str,
+                 alpha: int = 130, blur: int = 70) -> None:
+    """아이콘 뒤에 컬러 글로우(부드러운 방사형 빛)를 깔아 '백라이트'
+    프리미엄 느낌을 준다 — 애플 제품 스포트라이트 연출."""
+    from PIL import Image, ImageDraw, ImageFilter
+
+    glow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(glow)
+    r, g, b = _hex_to_rgb(color_hex)
+    draw.ellipse((center[0] - radius, center[1] - radius,
+                 center[0] + radius, center[1] + radius), fill=(r, g, b, alpha))
+    glow = glow.filter(ImageFilter.GaussianBlur(blur))
+    canvas.alpha_composite(glow)
+
+
 def _track_latin(text: str, space: str = " ") -> str:
     """짧은 영문 약어(단독 라벨용, 2~5자, 예: "NOI", "IRR", "B1M")의 글자
     사이에 얇은 유니코드 공백을 넣어 트래킹한다 — 이미지 제작 가이드 §4
@@ -2302,7 +2347,7 @@ def photo_headline_card(photo_path: Path, out: Path, headline: str, source_label
 def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subtitle: str = "",
                    color: str = "point", icon_scale: float = 0.30, source: str = "",
                    building_icon: bool = False, building_floors: int = 6,
-                   config: dict | None = None) -> Path:
+                   dark: bool = False, config: dict | None = None) -> Path:
     """아이콘이 주인공인 카드 — 개념 하나(입장·비용·기간 등)를 큰 픽토그램
     하나로 전달하고, 숫자/텍스트는 작게 보조로만 붙인다(2026-07-22 디자인
     피드백: "숫자만 크게 있지 말고 이모티콘/이미지를 중앙에, 글은 작게").
@@ -2311,7 +2356,11 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
 
     building_icon: True 면 Iconify 검색 대신 원본 아이소메트릭 빌딩을
     큰 히어로 이미지로 쓴다 — "건물 자체가 주제"일 때(예: 한 동당 객실
-    수 범위)."""
+    수 범위).
+
+    dark: True 면 라이트 오프화이트 카드 대신 애플 발표 영상풍 다크
+    스포트라이트 배경 + 화이트 아이콘 + 컬러 백라이트 글로우로 렌더링한다
+    (2026-07-22 "아이폰처럼 좀 고급스럽게" 피드백)."""
     import tempfile
     import matplotlib
     matplotlib.use("Agg")
@@ -2321,9 +2370,13 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
 
     pal = _palette(config)
     fonts = _load_fonts(font_manager)
+    accent_hex = pal.get(color, color if str(color).startswith("#") else "#" + str(color))
 
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_light(fig, pal)
+    if dark:
+        _add_canvas_premium(fig)
+    else:
+        _add_canvas_light(fig, pal)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_facecolor("none")
     ax.set_xlim(0, 1)
@@ -2333,21 +2386,25 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
     for sp in ax.spines.values():
         sp.set_visible(False)
 
+    label_color = "#EEF2FA" if dark else pal["text"]
+    subtitle_color = "#8D96A8" if dark else pal["highlight"]
+    value_color = _lighten(accent_hex, 0.45) if dark else accent_hex
+
     if label:
         ax.annotate(label, (0.5, 0.90), ha="center", va="top",
-                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+                    color=label_color, fontsize=28, fontproperties=fonts.get("med"))
     if value:
         val_txt = ax.annotate(_track_display(value), (0.5, 0.09), ha="center", va="center",
-                              color=pal.get(color, color), fontsize=34,
+                              color=value_color, fontsize=34,
                               fontproperties=fonts.get("med"))
-        val_txt.set_path_effects(_shadow_fx(alpha=0.12, offset=(1.2, -1.2)))
+        val_txt.set_path_effects(_shadow_fx(alpha=0.35 if dark else 0.12, offset=(1.2, -1.2)))
     if subtitle:
         ax.annotate(subtitle, (0.5, 0.90 - (0.06 if label else 0)), ha="center", va="top",
-                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+                    color=subtitle_color, fontsize=16, fontproperties=fonts.get("light"))
     _source_box(ax, pal, fonts, source, y=0.045)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, facecolor=pal["canvas_bg"])
+    fig.savefig(out, facecolor=("#05070C" if dark else pal["canvas_bg"]))
     plt.close(fig)
 
     card = Image.open(out).convert("RGBA")
@@ -2362,14 +2419,25 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
     side = int(W * eff_scale)
     icon_tmp = Path(tempfile.mktemp(suffix=".png"))
     try:
-        if building_icon:
-            isometric_building_icon(icon_tmp, config=config, color=color, floors=building_floors)
+        if dark:
+            # 아이소메트릭 빌딩은 순백을 주면 (255-r)이 거의 0이라 명암
+            # 대비가 안 생겨(면 구분이 안 보임) 옅은 틴트를 대신 쓴다.
+            icon_color = _lighten(accent_hex, 0.55) if building_icon else "#FBFCFF"
         else:
-            icon_png(icon, icon_tmp, color=color, size=512, config=config)
+            icon_color = color
+        if building_icon:
+            isometric_building_icon(icon_tmp, config=config, color=icon_color, floors=building_floors)
+        else:
+            icon_png(icon, icon_tmp, color=icon_color, size=512, config=config)
         icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
         icon_cy = int(H * icon_cy_frac)
         pos = (int(W / 2 - side / 2), int(icon_cy - side / 2))
-        _paste_with_shadow(card, icon_im, pos, blur=16, alpha=35, offset=(0, 5))
+        if dark:
+            _glow_behind(card, (int(W / 2), icon_cy), int(side * 0.72), accent_hex,
+                        alpha=140, blur=int(side * 0.22))
+            card.alpha_composite(icon_im, pos)
+        else:
+            _paste_with_shadow(card, icon_im, pos, blur=16, alpha=35, offset=(0, 5))
     except Exception as e:
         log.warning("아이콘 히어로 카드 아이콘 합성 실패(%s): %s", icon, e)
     finally:
@@ -2377,7 +2445,7 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
 
     card.convert("RGB").save(out)
     _add_subtle_texture(out)
-    log.info("아이콘 히어로 카드 저장: %s (%s)", out.name, icon)
+    log.info("아이콘 히어로 카드 저장: %s (%s, dark=%s)", out.name, icon, dark)
     return out
 
 
