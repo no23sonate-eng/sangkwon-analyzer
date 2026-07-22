@@ -345,6 +345,50 @@ def _lighten(hex_color: str, amount: float = 0.15) -> str:
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
+def _shadow_fx(alpha: float = 0.22, offset: tuple[float, float] = (2.2, -2.2)):
+    """평면 도형에 드롭섀도를 얹어 입체감을 준다(2026-07-21 디자인 정제
+    피드백: 애프터이펙트 효과 말고 디자인 자체가 더 정제되길 원함).
+    Rectangle/Polygon/Wedge 등 어떤 Patch 에도
+    patch.set_path_effects(_shadow_fx()) 로 바로 물릴 수 있다."""
+    import matplotlib.patheffects as pe
+    return [pe.SimplePatchShadow(offset=offset, alpha=alpha, shadow_rgbFace="#1C2A38"),
+            pe.Normal()]
+
+
+def _track_display(text: str, amount: str = " ") -> str:
+    """대형 타이틀용 자간 확보 — 글자 사이 얇은 공백을 끼워 흉내낸다.
+    작은 본문 텍스트에는 쓰지 말 것."""
+    return amount.join(text)
+
+
+def _round_corners(im, radius_frac: float = 0.03):
+    """PIL 합성 이미지(로고/사진 카드)의 네 모서리를 둥글게 마스킹."""
+    from PIL import Image, ImageDraw
+
+    w, h = im.size
+    radius = int(min(w, h) * radius_frac)
+    mask = Image.new("L", (w, h), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.rounded_rectangle((0, 0, w - 1, h - 1), radius=radius, fill=255)
+    out = im.convert("RGBA")
+    out.putalpha(mask)
+    return out
+
+
+def _paste_with_shadow(canvas, im, pos: tuple[int, int], blur: int = 18,
+                       alpha: int = 60, offset: tuple[int, int] = (0, 6)) -> None:
+    """카드/사진/로고 아래 부드러운 블러 섀도를 깔아 입체감을 준다."""
+    from PIL import Image, ImageFilter
+
+    shadow_shape = Image.new("RGBA", im.size, (20, 26, 36, 255))
+    shadow_shape.putalpha(im.split()[-1].point(lambda a: alpha if a > 0 else 0))
+    shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    shadow.paste(shadow_shape, (pos[0] + offset[0], pos[1] + offset[1]), shadow_shape)
+    shadow = shadow.filter(ImageFilter.GaussianBlur(blur))
+    canvas.alpha_composite(shadow)
+    canvas.alpha_composite(im, pos)
+
+
 def _track_latin(text: str, space: str = " ") -> str:
     """짧은 영문 약어(단독 라벨용, 2~5자, 예: "NOI", "IRR", "B1M")의 글자
     사이에 얇은 유니코드 공백을 넣어 트래킹한다 — 이미지 제작 가이드 §4
@@ -494,7 +538,7 @@ def _place_isometric_icon(card_path: Path, config: dict | None = None, color: st
         side = int(card.width * size_frac)
         icon = icon.resize((side, side), Image.LANCZOS)
         x, y = int(card.width * pos[0]), int(card.height * pos[1])
-        card.alpha_composite(icon, (x, y))
+        _paste_with_shadow(card, icon, (x, y), blur=10, alpha=40, offset=(0, 3))
         card.convert("RGB").save(card_path)
     finally:
         tmp.unlink(missing_ok=True)
@@ -1789,7 +1833,7 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib.patches import Rectangle
+    from matplotlib.patches import FancyBboxPatch
     from matplotlib import font_manager
 
     pal = _palette(config)
@@ -1813,6 +1857,7 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
     gx0 = 0.5 - grid_w / 2
     gy0 = 0.38
     gap = cell_w * 0.14
+    cell_round = cell_w * 0.06  # 각진 타일 대신 살짝 둥근 모서리 — 정제된 인상
 
     total_cells = cols * rows
     fill_cells = round(total_cells * percent / 100)
@@ -1824,14 +1869,20 @@ def unit_grid_building(percent: float, out: Path, label: str = "", subtitle: str
             color = fill_color if idx < fill_cells else empty_color
             x0 = gx0 + c * cell_w + gap / 2
             y0 = gy0 + r * cell_h + gap / 2
-            ax.add_patch(Rectangle((x0, y0), cell_w - gap, cell_h - gap,
-                                   facecolor=color, edgecolor="none", zorder=2))
+            ax.add_patch(FancyBboxPatch((x0, y0), cell_w - gap, cell_h - gap,
+                                       boxstyle=f"round,pad=0,rounding_size={cell_round}",
+                                       facecolor=color, edgecolor="none", zorder=2,
+                                       mutation_aspect=1))
 
     cap_h = cell_h * 0.55
-    ax.add_patch(Rectangle((gx0 - cell_w * 0.2, gy0 + grid_h), grid_w + cell_w * 0.4, cap_h,
-                           facecolor=pal["point"], edgecolor="none", zorder=3))
-    ax.add_patch(Rectangle((gx0 - cell_w * 0.2, gy0 - cap_h), grid_w + cell_w * 0.4, cap_h,
-                           facecolor=pal["point"], edgecolor="none", zorder=3))
+    cap_round = cap_h * 0.35
+    for cap_y in (gy0 + grid_h, gy0 - cap_h):
+        cap = FancyBboxPatch((gx0 - cell_w * 0.2, cap_y), grid_w + cell_w * 0.4, cap_h,
+                             boxstyle=f"round,pad=0,rounding_size={cap_round}",
+                             facecolor=pal["point"], edgecolor="none", zorder=3,
+                             mutation_aspect=(9 / 16))
+        cap.set_path_effects(_shadow_fx(alpha=0.18))
+        ax.add_patch(cap)
 
     ax.annotate(f"{percent:.0f}%", (0.5, gy0 - cap_h - 0.05), ha="center", va="top",
                 color=pal["point"], fontsize=56, fontproperties=fonts.get("med"))
@@ -1897,6 +1948,8 @@ def donut_compare(value_a: float, value_b: float, out: Path, label_a: str = "", 
     wedges = pie_ax.pie([value_a, value_b], radius=1.0, colors=[color_a, color_b],
                        startangle=90, counterclock=False,
                        wedgeprops=dict(width=ring_w, edgecolor=pal["canvas_bg"], linewidth=3))[0]
+    for wedge in wedges:
+        wedge.set_path_effects(_shadow_fx(alpha=0.16))
     pie_ax.set_xlim(-1.6, 1.6)
     pie_ax.set_ylim(-1.6, 1.6)
     pie_ax.set_aspect("equal")
@@ -1992,6 +2045,16 @@ def isometric_block_diagram(footprint: list[tuple[int, int]], out: Path,
             for x, y in poly:
                 xs_all.append(x)
                 ys_all.append(y)
+
+    # 블록 전체 아래 옅은 그림자 타원 — 바닥에 붕 뜨지 않고 놓여 있는
+    # 느낌(2026-07-21 디자인 정제: 애프터이펙트 없이도 입체감).
+    from matplotlib.patches import Ellipse
+    gx = sum(xs_all) / len(xs_all)
+    gw = (max(xs_all) - min(xs_all)) * 0.72
+    gy_ground = min(y0 for _, y0 in [((c - r) * dx, (c + r) * dy) for c, r in footprint])
+    ground = Ellipse((gx, gy_ground - 0.05), gw, gw * 0.28,
+                     facecolor=pal["text"], alpha=0.14, edgecolor="none", zorder=0)
+    ax.add_patch(ground)
 
     pad = 0.3
     ax.set_xlim(min(xs_all) - pad, max(xs_all) + pad)
@@ -2143,20 +2206,21 @@ def logo_arrow_card(logo_left: Path, logo_right: Path, out: Path, icon_pictogram
         w = max(int(im.width * target_h / im.height), 1)
         return im.resize((w, target_h), Image.LANCZOS)
 
-    left_r = _fit(left_im, target_h)
-    right_r = _fit(right_im, target_h)
+    left_r = _round_corners(_fit(left_im, target_h))
+    right_r = _round_corners(_fit(right_im, target_h))
     cy = int(H * 0.54)
     lx = int(W * 0.24 - left_r.width / 2)
     rx = int(W * 0.76 - right_r.width / 2)
-    card.alpha_composite(left_r, (lx, cy - left_r.height // 2))
-    card.alpha_composite(right_r, (rx, cy - right_r.height // 2))
+    _paste_with_shadow(card, left_r, (lx, cy - left_r.height // 2))
+    _paste_with_shadow(card, right_r, (rx, cy - right_r.height // 2))
 
     if icon_pictogram:
         side = int(W * 0.085)
         icon_tmp = Path(tempfile.mktemp(suffix=".png"))
         isometric_building_icon(icon_tmp, config=config, color="point")
         icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
-        card.alpha_composite(icon_im, (int(W / 2 - side / 2), int(H * 0.22 - side / 2)))
+        _paste_with_shadow(card, icon_im, (int(W / 2 - side / 2), int(H * 0.22 - side / 2)),
+                          blur=14, alpha=45)
         icon_tmp.unlink(missing_ok=True)
 
     card.convert("RGB").save(out)
@@ -2181,7 +2245,7 @@ def photo_headline_card(photo_path: Path, out: Path, headline: str, source_label
     f_source = ImageFont.truetype(str(font_dir / "A2Z-4Regular.ttf"), 20)
 
     W, H = 1920, 1080
-    canvas = Image.new("RGB", (W, H), pal["canvas_bg"])
+    canvas = Image.new("RGBA", (W, H), pal["canvas_bg"] + "FF")
 
     photo = Image.open(photo_path).convert("RGB")
     photo_h = int(H * 0.60)
@@ -2195,22 +2259,21 @@ def photo_headline_card(photo_path: Path, out: Path, headline: str, source_label
 
     px = (W - photo_w) // 2
     py = int(H * 0.09)
-    canvas.paste(photo_r, (px, py))
+    # 각진 흰 테두리 대신 둥근 모서리 + 부드러운 섀도 — 직각 프레임보다
+    # 붕 뜬 카드처럼 보여 "정제된" 인상을 준다(2026-07-21 디자인 정제).
+    photo_rounded = _round_corners(photo_r.convert("RGBA"), radius_frac=0.025)
+    _paste_with_shadow(canvas, photo_rounded, (px, py), blur=26, alpha=70, offset=(0, 10))
 
     cd = ImageDraw.Draw(canvas)
-    border = 4
-    cd.rectangle((px - border, py - border, px + photo_w + border, py + photo_h + border),
-                outline=pal["card_bg"], width=border)
-
     if source_label:
         cd.text((px + photo_w - 16, py + 16), source_label, font=f_source,
                 fill=(255, 255, 255), anchor="ra")
 
     hy = py + photo_h + int(H * 0.07)
-    cd.text((W / 2, hy), headline, font=f_headline, fill=pal["text"], anchor="ma")
+    cd.text((W / 2, hy), _track_display(headline), font=f_headline, fill=pal["text"], anchor="ma")
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    canvas.save(out)
+    canvas.convert("RGB").save(out)
     _add_subtle_texture(out)
     log.info("사진+헤드라인 카드 저장: %s (%s)", out.name, headline)
     return out
