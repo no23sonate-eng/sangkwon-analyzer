@@ -808,6 +808,7 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib.patches import FancyBboxPatch
     from matplotlib import font_manager
 
     pal = _palette(config)
@@ -826,12 +827,26 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
 
     two = bool(value2)
     cx1 = 0.30 if two else 0.5
+
+    def _accent_rule(cx: float, color: str) -> None:
+        # 큰 숫자 바로 아래 짧은 둥근 액센트 바 — 숫자와 서브텍스트 사이
+        # 시각적 구획을 주는 디테일(2026-07-22 디자인 정제 피드백).
+        w, h = 0.05, 0.008
+        ax.add_patch(FancyBboxPatch((cx - w / 2, 0.365), w, h,
+                                    boxstyle=f"round,pad=0,rounding_size={h/2}",
+                                    facecolor=color, edgecolor="none", zorder=4))
+
     if label:
-        ax.annotate(label, (cx1, 0.66), xycoords="axes fraction", ha="center",
-                    color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
-    ax.annotate(value, (cx1, 0.46), xycoords="axes fraction", ha="center", va="center",
-                color=pal["point"] if two else pal["point"], fontsize=80 if not two else 60,
-                fontproperties=fonts.get("med"))
+        ax.annotate(label, (cx1, 0.66), xycoords="axes fraction",
+                    ha="center", color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
+    value_txt = ax.annotate(_track_display(value), (cx1, 0.46), xycoords="axes fraction",
+                            ha="center", va="center", color=pal["point"],
+                            fontsize=80 if not two else 60, fontproperties=fonts.get("med"))
+    value_txt.set_path_effects(_shadow_fx(alpha=0.14, offset=(1.6, -1.6)))
+    if not (icon_building or icon):
+        # 아이콘이 이 자리(값-서브텍스트 사이 여백)를 이미 쓰고 있으면
+        # 액센트 바를 겹쳐 그리지 않는다 — 실제로 겹쳐서 깨져 보였다.
+        _accent_rule(cx1, pal["point"])
     if subtext:
         ax.annotate(subtext, (cx1, 0.26), xycoords="axes fraction", ha="center",
                     color=pal["highlight"], fontsize=24, fontproperties=fonts.get("reg"))
@@ -844,10 +859,13 @@ def stat_card(value: str, out: Path, label: str = "", subtext: str = "",
                                         lw=2.5, mutation_scale=30))
         cx2 = 0.78
         if label2:
-            ax.annotate(label2, (cx2, 0.66), xycoords="axes fraction", ha="center",
-                        color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
-        ax.annotate(value2, (cx2, 0.46), xycoords="axes fraction", ha="center", va="center",
-                    color=pal["surface"], fontsize=60, fontproperties=fonts.get("med"))
+            ax.annotate(label2, (cx2, 0.66), xycoords="axes fraction",
+                        ha="center", color=pal["text"], fontsize=26, fontproperties=fonts.get("reg"))
+        value2_txt = ax.annotate(_track_display(value2), (cx2, 0.46), xycoords="axes fraction",
+                                 ha="center", va="center", color=pal["surface"], fontsize=60,
+                                 fontproperties=fonts.get("med"))
+        value2_txt.set_path_effects(_shadow_fx(alpha=0.14, offset=(1.6, -1.6)))
+        _accent_rule(cx2, pal["surface"])
 
     _source_box(ax, pal, fonts, source, y=0.06)
 
