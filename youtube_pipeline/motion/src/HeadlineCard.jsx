@@ -23,7 +23,10 @@ export const HeadlineCard = ({
   const line2Opacity = interpolate(frame, [16, 34], [0, 1], {extrapolateRight: 'clamp'});
 
   const line1Color = light ? '#0A0B0D' : '#EDEFF3';
-  const line2Color = light ? '#000000' : accent;
+  // 실사 배경 위에서는 accent(무채색 회색)가 너무 흐려 잘 안 보여서
+  // 더 밝은 톤을 쓴다 — 차콜 배경 전용으로 설계된 색이라 사진 위에서는
+  // 대비가 부족했다(2026-07-29 legibility 점검).
+  const line2Color = light ? '#000000' : (hasMedia ? '#D7DAE0' : accent);
 
   return (
     <AbsoluteFill style={hasMedia ? {backgroundColor: '#05070a'} : (light ? {background: '#F4F1EC'} : BG_STYLE)}>
