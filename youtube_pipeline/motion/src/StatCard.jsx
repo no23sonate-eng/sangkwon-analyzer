@@ -25,6 +25,7 @@ export const StatCard = ({
   bgImage = '',
   bgVideoStart = 0,
   bgInset = false,
+  framed = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -56,7 +57,7 @@ export const StatCard = ({
     <AbsoluteFill style={hasMedia ? {backgroundColor: '#05070a'} : BG_STYLE}>
       {hasMedia ? (
         <div style={{opacity: bgInset ? insetOpacity : 1}}>
-          <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} inset={bgInset} overlay={!bgInset} />
+          <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} inset={bgInset} overlay={!bgInset} framed={framed} />
         </div>
       ) : (
         <GridBg />
@@ -64,7 +65,8 @@ export const StatCard = ({
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, transform: `translateY(${titleY}px)`, ...TEXT.title,
+          fontSize: 34, opacity: titleOpacity, transform: `translateY(${titleY}px)`,
+          ...TEXT.title, color: framed ? '#1B1E22' : TEXT.title.color,
         }}
       >
         {title}

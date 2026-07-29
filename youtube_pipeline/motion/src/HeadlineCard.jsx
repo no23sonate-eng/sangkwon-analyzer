@@ -13,6 +13,7 @@ export const HeadlineCard = ({
   line1 = '', line2 = '', accent = ACCENT,
   bgVideo = '', bgImage = '', bgVideoStart = 0,
   light = false,
+  framed = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -31,7 +32,7 @@ export const HeadlineCard = ({
   return (
     <AbsoluteFill style={hasMedia ? {backgroundColor: '#05070a'} : (light ? {background: '#F4F1EC'} : BG_STYLE)}>
       {hasMedia ? (
-        <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} />
+        <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} framed={framed} />
       ) : !light ? (
         <GridBg />
       ) : null}

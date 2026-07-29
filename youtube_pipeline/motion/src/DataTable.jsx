@@ -18,11 +18,15 @@ import {OrgDiagram} from './LogoOrgCard';
 //
 // tableTop: 표 블록 시작 y — 아래로 내려 화면 중앙쪽으로 옮길 때 사용.
 // light=true: 흰(질감있는) 배경 + 검정 글자 + 실선 테두리 표(#10 피드백).
+// boxed=true: 다크 테마에서도 외곽 테두리 + 세로 구분선을 그려 "표"로
+// 더 또렷하게 읽히게 한다(2026-07-29 "#2 표로 깔끔하게" 피드백).
 export const DataTable = ({
   title = '', rows = [], source = '', closingLine = '',
   tableTop = 260,
+  titleSize = 34,
   intro = null, introFrames = 0,
   light = false,
+  boxed = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -76,7 +80,7 @@ export const DataTable = ({
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, color: titleColor, fontFamily: 'A2Z Light, sans-serif',
+          fontSize: titleSize, opacity: titleOpacity, color: titleColor, fontFamily: 'A2Z Light, sans-serif',
           letterSpacing: '0.02em',
         }}
       >
@@ -86,11 +90,19 @@ export const DataTable = ({
       <div
         style={{
           position: 'absolute', top: TABLE_TOP, left: LEFT, width: TABLE_W,
-          border: light ? `1px solid ${borderStrong}` : 'none',
-          borderRadius: light ? 6 : 0,
-          padding: light ? '0 28px' : 0,
+          border: (light || boxed) ? `1px solid ${borderStrong}` : 'none',
+          borderRadius: (light || boxed) ? 6 : 0,
+          padding: (light || boxed) ? '0 28px' : 0,
         }}
       >
+        {boxed ? (
+          <div
+            style={{
+              position: 'absolute', top: 0, left: '58%', width: 1,
+              height: rows.length * ROW_H, background: borderSoft,
+            }}
+          />
+        ) : null}
         <div style={{borderBottom: `1px solid ${borderStrong}`, paddingBottom: 14}} />
         {rows.map((row, i) => {
           const rowOpacity = interpolate(tableFrame, [20 + i * 8, 32 + i * 8], [0, 1], {

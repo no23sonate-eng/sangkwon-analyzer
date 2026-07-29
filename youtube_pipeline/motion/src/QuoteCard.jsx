@@ -30,7 +30,7 @@ export const QuoteCard = ({quote = '', name = '', role = '', accent = ACCENT, ph
       {hasPhoto ? (
         <div
           style={{
-            position: 'absolute', top: 140, right: -60, width: 460, height: 700,
+            position: 'absolute', top: 140, right: 140, width: 460, height: 700,
             opacity: photoOpacity, transform: `translateX(${photoX}px)`,
             WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, black 22%)',
             maskImage: 'linear-gradient(90deg, transparent 0%, black 22%)',

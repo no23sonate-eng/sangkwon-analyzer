@@ -9,6 +9,7 @@ import {NewsHeadlineCard} from './NewsHeadlineCard';
 import {CompareCard} from './CompareCard';
 import {IconRowCard} from './IconRowCard';
 import {LogoOrgCard} from './LogoOrgCard';
+import {BarChartCard} from './BarChartCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -136,6 +137,16 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', subtitle: '', parentLogo: '', parentLabel: '', children: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="BarChartCard"
+        component={BarChartCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{title: '', bars: [], source: '', closingLine: ''}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>

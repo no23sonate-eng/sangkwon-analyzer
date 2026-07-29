@@ -13,6 +13,7 @@ import {BG_STYLE, GridBg, TEXT, MediaBg} from './shared';
 export const IconRowCard = ({
   title = '', subtitle = '', items = [],
   bgVideo = '', bgImage = '', bgVideoStart = 0,
+  framed = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -20,6 +21,8 @@ export const IconRowCard = ({
   const hasMedia = Boolean(bgVideo || bgImage);
 
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
+  const titleColor = framed ? '#1B1E22' : TEXT.title.color;
+  const subtitleColor = framed ? '#3A3E44' : TEXT.label.color;
   const n = items.length || 1;
   const side = Math.min(220, Math.round(760 / n));
   const gap = (1920 - side * n) / (n + 1);
@@ -27,14 +30,14 @@ export const IconRowCard = ({
   return (
     <AbsoluteFill style={hasMedia ? {backgroundColor: '#05070a'} : BG_STYLE}>
       {hasMedia ? (
-        <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} />
+        <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} framed={framed} />
       ) : (
         <GridBg />
       )}
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, ...TEXT.title,
+          fontSize: 34, opacity: titleOpacity, ...TEXT.title, color: titleColor,
         }}
       >
         {title}
@@ -42,8 +45,8 @@ export const IconRowCard = ({
       {subtitle ? (
         <div
           style={{
-            position: 'absolute', top: 150, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 20, opacity: titleOpacity, ...TEXT.label,
+            position: 'absolute', top: framed ? 128 : 150, left: 0, width: '100%', textAlign: 'center',
+            fontSize: 20, opacity: titleOpacity, ...TEXT.label, color: subtitleColor,
           }}
         >
           {subtitle}
