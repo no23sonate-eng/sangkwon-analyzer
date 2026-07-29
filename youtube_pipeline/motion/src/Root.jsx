@@ -7,6 +7,7 @@ import {QuoteCard} from './QuoteCard';
 import {HeadlineCard} from './HeadlineCard';
 import {NewsHeadlineCard} from './NewsHeadlineCard';
 import {CompareCard} from './CompareCard';
+import {IconRowCard} from './IconRowCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -112,8 +113,18 @@ export const RemotionRoot = () => {
         defaultProps={{
           title: '', leftTitle: '', leftLines: [],
           rightTitle: '', rightLines: [], rightEmpty: false, emptyLabel: '확인되지 않음',
-          caption: '',
+          leftValue: '', rightValue: '', caption: '',
         }}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="IconRowCard"
+        component={IconRowCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{title: '', subtitle: '', items: []}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>

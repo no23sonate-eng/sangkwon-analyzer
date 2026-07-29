@@ -15,6 +15,8 @@ export const CompareCard = ({
   rightLines = [],
   rightEmpty = false,
   emptyLabel = '확인되지 않음',
+  leftValue = '',
+  rightValue = '',
   caption = '',
   accent = ACCENT,
 }) => {
@@ -54,6 +56,9 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: LEFT_X, width: COL_W, opacity: leftOpacity}}>
         <div style={{fontSize: 26, marginBottom: 24, ...TEXT.label}}>{leftTitle}</div>
+        {leftValue ? (
+          <div style={{fontSize: 80, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif'}}>{leftValue}</div>
+        ) : null}
         {leftLines.map((line, i) => (
           <div
             key={i}
@@ -69,6 +74,9 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: RIGHT_X, width: COL_W, opacity: rightOpacity}}>
         <div style={{fontSize: 26, marginBottom: 24, ...TEXT.label}}>{rightTitle}</div>
+        {rightValue ? (
+          <div style={{fontSize: 80, color: accent, fontFamily: 'A2Z Regular, sans-serif'}}>{rightValue}</div>
+        ) : null}
         {rightEmpty ? (
           <div>
             <div style={{fontSize: 56, color: '#4A4F57', fontFamily: 'A2Z Light, sans-serif'}}>—</div>
