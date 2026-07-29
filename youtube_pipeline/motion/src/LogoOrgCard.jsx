@@ -26,6 +26,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], frame: frame
   const PARENT_TOP = 260;
   const CHILD_TOP = 560;
   const CHILD_GAP = 300;
+  const BRANCH_Y = PARENT_TOP + PARENT_H + 55; // 부모-자식 사이 분기점(465)
 
   const chip = {
     background: '#F4F1EC', borderRadius: 14,
@@ -36,8 +37,12 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], frame: frame
   return (
     <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity}}>
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: lineOpacity}}>
+        {/* 부모→분기점→자식 순서로 내려가야 하는데 가로선을 자식 박스
+            상단(CHILD_TOP)에 그려서 자식과 겹쳐 보이던 버그(2026-07-29
+            "가로 획 라인이 아래로 내려가 있어" 피드백) — 분기점(BRANCH_Y)에서
+            가로로 갈라진 뒤 그 아래로 내려가야 자연스럽다. */}
         <path
-          d={`M ${CX} ${PARENT_TOP + PARENT_H} V ${PARENT_TOP + PARENT_H + 55} M ${CX - CHILD_GAP} ${CHILD_TOP} H ${CX + CHILD_GAP} M ${CX - CHILD_GAP} ${CHILD_TOP} V ${PARENT_TOP + PARENT_H + 55} M ${CX + CHILD_GAP} ${CHILD_TOP} V ${PARENT_TOP + PARENT_H + 55}`}
+          d={`M ${CX} ${PARENT_TOP + PARENT_H} V ${BRANCH_Y} M ${CX - CHILD_GAP} ${BRANCH_Y} H ${CX + CHILD_GAP} M ${CX - CHILD_GAP} ${BRANCH_Y} V ${CHILD_TOP} M ${CX + CHILD_GAP} ${BRANCH_Y} V ${CHILD_TOP}`}
           stroke="rgba(255,255,255,0.28)" strokeWidth={2} fill="none"
         />
       </svg>

@@ -57,7 +57,7 @@ export const StatCard = ({
     <AbsoluteFill style={hasMedia ? {backgroundColor: '#05070a'} : BG_STYLE}>
       {hasMedia ? (
         <div style={{opacity: bgInset ? insetOpacity : 1}}>
-          <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} inset={bgInset} overlay={!bgInset} framed={framed} />
+          <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} inset={bgInset} overlay framed={framed} />
         </div>
       ) : (
         <GridBg />

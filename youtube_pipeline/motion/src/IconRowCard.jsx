@@ -13,7 +13,7 @@ import {BG_STYLE, GridBg, TEXT, MediaBg} from './shared';
 export const IconRowCard = ({
   title = '', subtitle = '', items = [],
   bgVideo = '', bgImage = '', bgVideoStart = 0,
-  framed = false,
+  framed = false, innerGap = null,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -25,7 +25,12 @@ export const IconRowCard = ({
   const subtitleColor = framed ? '#3A3E44' : TEXT.label.color;
   const n = items.length || 1;
   const side = Math.min(220, Math.round(760 / n));
-  const gap = (1920 - side * n) / (n + 1);
+  const autoGap = (1920 - side * n) / (n + 1);
+  // innerGap: 항목이 적을 때(2개) 기본 배치는 화면 가장자리 쪽으로 퍼지는데,
+  // 값을 주면 아이콘 사이 간격만 좁혀 그룹을 화면 중앙으로 모은다
+  // (2026-07-29 "#7 픽토그램 2개 중간으로 좀 더" 피드백).
+  const gap = innerGap != null ? innerGap : autoGap;
+  const startX = innerGap != null ? (1920 - (side * n + gap * (n - 1))) / 2 : autoGap;
 
   return (
     <AbsoluteFill style={hasMedia ? {backgroundColor: '#05070a'} : BG_STYLE}>
@@ -58,7 +63,7 @@ export const IconRowCard = ({
         const pop = spring({frame: Math.max(0, frame - startDelay - i * 8), fps, config: {damping: 13, mass: 0.6}, durationInFrames: 20});
         const scale = interpolate(pop, [0, 1], [0.6, 1]);
         const opacity = interpolate(pop, [0, 1], [0, 1]);
-        const x = gap * (i + 1) + side * i;
+        const x = startX + i * (side + gap);
         return (
           <div key={i} style={{position: 'absolute', top: 420, left: x, width: side, textAlign: 'center'}}>
             {hasMedia ? (

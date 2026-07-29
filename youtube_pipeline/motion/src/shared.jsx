@@ -110,6 +110,18 @@ export const MediaBg = ({video = '', image = '', videoStart = 0, inset = false, 
           }}
         />
       ) : null}
+      {overlay && inset ? (
+        // inset 박스 위에 얹히는 텍스트(값/서브타이틀)가 원본 영상과 바로
+        // 겹치면 잘 안 보여서, 박스와 정확히 같은 크기/모서리로 어둡게
+        // 덮는다(2026-07-29 "#9 배경 영상을 조금 더 어둡게" 피드백).
+        <div
+          style={{
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+            width: 860, height: 484, borderRadius: 14,
+            background: 'rgba(5,7,10,0.55)',
+          }}
+        />
+      ) : null}
     </>
   );
 };
