@@ -36,7 +36,7 @@ export const IconRowCard = ({
       )}
       <div
         style={{
-          position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
+          position: 'absolute', top: framed ? 52 : 90, left: 0, width: '100%', textAlign: 'center',
           fontSize: 34, opacity: titleOpacity, ...TEXT.title, color: titleColor,
         }}
       >
@@ -45,7 +45,7 @@ export const IconRowCard = ({
       {subtitle ? (
         <div
           style={{
-            position: 'absolute', top: framed ? 128 : 150, left: 0, width: '100%', textAlign: 'center',
+            position: 'absolute', top: framed ? 100 : 150, left: 0, width: '100%', textAlign: 'center',
             fontSize: 20, opacity: titleOpacity, ...TEXT.label, color: subtitleColor,
           }}
         >
