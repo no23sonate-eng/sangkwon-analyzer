@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
+import {OrgDiagram} from './LogoOrgCard';
 
 // 세로 막대 그래프 카드 — 수치 나열(표)보다 비교가 바로 눈에 들어와야 할
 // 때(2026-07-29 "#16/#18/#19 그래프로 만들어줘, 비교가 잘 되게" 피드백).
@@ -9,17 +10,29 @@ import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 // displayValue 는 막대 위에 표시할 텍스트(단위 포함, 생략 시 value 표시).
 // light=true: #10/#19 계열 화이트 톤. 항목이 2~3개일 때도 항상 화면
 // 가운데에 그룹으로 정렬된다(#18 "가운데 정렬" 피드백).
+//
+// intro: DataTable 과 동일한 로고 조직도 인트로 — 그래프가 뜨기 전에
+// introFrames 프레임 동안 조직도를 먼저 보여주고 크로스페이드로 넘어간다
+// (2026-07-29 "#2도 그래픽으로, 도표 만들어줘" 피드백 — 조직도는 유지하고
+// 수치 부분만 표에서 그래프로 전환).
 const PALETTE = ['#C98A9E', '#8FAD8B', '#7B9BC2', '#C9A86A'];
 
 export const BarChartCard = ({
   title = '', bars = [], source = '', closingLine = '',
   light = false, accent = ACCENT,
+  intro = null, introFrames = 0,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const {fps, durationInFrames} = useVideoConfig();
 
-  const titleOpacity = interpolate(frame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
+  const hasIntro = Boolean(intro);
+  const introOpacity = hasIntro
+    ? interpolate(frame, [introFrames - 6, introFrames + 14], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+    : 0;
+  const chartFrame = hasIntro ? Math.max(0, frame - introFrames) : frame;
+
+  const titleOpacity = interpolate(chartFrame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
   const titleColor = light ? '#1B1E22' : TEXT.title.color;
   const labelColor = light ? '#3A3E44' : TEXT.label.color;
   const valueColor = light ? '#0A0B0D' : TEXT.value.color;
@@ -52,6 +65,15 @@ export const BarChartCard = ({
         <GridBg />
       )}
 
+      {hasIntro ? (
+        <OrgDiagram
+          parentLogo={intro.parentLogo}
+          parentLabel={intro.parentLabel}
+          children={intro.children}
+          opacity={introOpacity}
+        />
+      ) : null}
+
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
@@ -66,7 +88,7 @@ export const BarChartCard = ({
 
       {bars.map((bar, i) => {
         const delay = 18 + i * 10;
-        const grow = spring({frame: Math.max(0, frame - delay), fps, config: {damping: 16, mass: 0.8}, durationInFrames: 26});
+        const grow = spring({frame: Math.max(0, chartFrame - delay), fps, config: {damping: 16, mass: 0.8}, durationInFrames: 26});
         const ratio = (Math.abs(bar.value) || 0) / maxValue;
         const barH = Math.round(MAX_BAR_H * ratio * grow);
         const opacity = interpolate(grow, [0, 1], [0, 1]);
@@ -107,7 +129,7 @@ export const BarChartCard = ({
           style={{
             position: 'absolute', top: BASELINE + 90, left: startX,
             fontSize: 20, color: light ? '#7A7F86' : '#565C64', fontFamily: 'A2Z Light, sans-serif', fontStyle: 'italic',
-            opacity: interpolate(frame, [40, 55], [0, 1], {extrapolateRight: 'clamp'}),
+            opacity: interpolate(chartFrame, [40, 55], [0, 1], {extrapolateRight: 'clamp'}),
           }}
         >
           {source}
