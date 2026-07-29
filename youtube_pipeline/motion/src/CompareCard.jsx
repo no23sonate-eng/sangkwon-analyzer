@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, interpolate} from 'remotion';
+import {AbsoluteFill, useCurrentFrame, interpolate, Img, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 
@@ -7,6 +7,11 @@ import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 // "확인되지 않음"류 공백일 때 비대칭이 시각적으로 드러난다(예: 하남시
 // 설명 vs 스피어 측 공식 입장 미확인). leftLines/rightLines: string[].
 // rightEmpty=true 면 오른쪽에 옅은 대시(—)와 emptyLabel 만 표시.
+//
+// leftImage/rightImage: 각 절반을 실사 배경으로 채우고(다크 오버레이)
+// 그 위에 텍스트를 얹는다(2026-07-29 "미국은 이미지 위에, 런던도 이미지
+// 얹어서 무산됐다는걸로" 피드백) — 화면을 절반씩 실제 사진으로 나눠
+// 대비가 더 뚜렷해지게.
 export const CompareCard = ({
   title = '',
   leftTitle = '',
@@ -19,6 +24,8 @@ export const CompareCard = ({
   rightValue = '',
   caption = '',
   accent = ACCENT,
+  leftImage = '',
+  rightImage = '',
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -27,6 +34,7 @@ export const CompareCard = ({
   const leftOpacity = interpolate(frame, [16, 30], [0, 1], {extrapolateRight: 'clamp'});
   const rightOpacity = interpolate(frame, [34, 48], [0, 1], {extrapolateRight: 'clamp'});
   const captionOpacity = interpolate(frame, [40, 55], [0, 1], {extrapolateRight: 'clamp'});
+  const imageOpacity = interpolate(frame, [0, 24], [0, 1], {extrapolateRight: 'clamp'});
 
   const COL_TOP = 320;
   const COL_W = 760;
@@ -34,9 +42,26 @@ export const CompareCard = ({
   const LEFT_X = 1920 / 2 - GAP / 2 - COL_W;
   const RIGHT_X = 1920 / 2 + GAP / 2;
 
+  const overlayStyle = {
+    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+    background: 'linear-gradient(180deg, rgba(5,7,10,.5) 0%, rgba(5,7,10,.62) 55%, rgba(5,7,10,.85) 100%)',
+  };
+
   return (
     <AbsoluteFill style={BG_STYLE}>
-      <GridBg />
+      {!leftImage && !rightImage ? <GridBg /> : null}
+      {leftImage ? (
+        <div style={{position: 'absolute', top: 0, left: 0, width: 960, height: 1080, opacity: imageOpacity, overflow: 'hidden'}}>
+          <Img src={staticFile(leftImage)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+          <div style={overlayStyle} />
+        </div>
+      ) : null}
+      {rightImage ? (
+        <div style={{position: 'absolute', top: 0, left: 960, width: 960, height: 1080, opacity: imageOpacity, overflow: 'hidden'}}>
+          <Img src={staticFile(rightImage)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+          <div style={overlayStyle} />
+        </div>
+      ) : null}
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
