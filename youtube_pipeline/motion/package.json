@@ -1,0 +1,15 @@
+{
+  "name": "youtube-pipeline-motion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Remotion 기반 모션그래픽 카드 렌더러 — assets_lib.py(matplotlib)로는 안 되는 진짜 애니메이션(스프링, 카운트업, 이징)이 필요한 그래픽 B-roll용.",
+  "scripts": {
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "remotion": "^4.0.500",
+    "@remotion/cli": "^4.0.500",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}
