@@ -6,6 +6,7 @@ import {
   spring,
   interpolate,
 } from 'remotion';
+import {useA2ZFonts} from './Fonts';
 
 // B1M 실측 레퍼런스(2026-07-29, 다크 그리드 + 3D 건물 비교 장면) 분석 결과:
 // 화려한 글로우/네온이 아니라 "제도 도면" 톤 — 짙은 차콜 배경에 옅은 격자,
@@ -92,6 +93,7 @@ export const BuildingCard = ({
   floors = 8,
   accent = '#A9C6FF',
 }) => {
+  useA2ZFonts();
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -112,14 +114,14 @@ export const BuildingCard = ({
     <AbsoluteFill
       style={{
         background: 'linear-gradient(180deg, #15171b 0%, #0a0b0d 100%)',
-        fontFamily: 'A2Z Medium, sans-serif',
       }}
     >
       <GridBg />
       <div
         style={{
           position: 'absolute', top: 96, left: 0, width: '100%', textAlign: 'center',
-          color: '#C7CBD3', fontSize: 36, opacity: titleOpacity,
+          color: '#C7CBD3', fontSize: 34, fontFamily: 'A2Z Light, sans-serif',
+          letterSpacing: '0.02em', opacity: titleOpacity,
           transform: `translateY(${titleY}px)`,
         }}
       >
@@ -143,12 +145,13 @@ export const BuildingCard = ({
       >
         <div
           style={{
-            display: 'inline-block', color: '#EDEFF3', fontSize: 46, letterSpacing: '0.06em',
+            display: 'inline-block', color: '#EDEFF3', fontSize: 44,
+            fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.045em',
           }}
         >
           {valuePrefix}{count}{valueSuffix}
         </div>
-        <div style={{width: 64, height: 2, background: accent, margin: '14px auto 0'}} />
+        <div style={{width: 64, height: 2, background: accent, margin: '16px auto 0'}} />
       </div>
     </AbsoluteFill>
   );
