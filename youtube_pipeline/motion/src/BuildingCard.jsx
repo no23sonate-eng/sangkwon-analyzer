@@ -139,7 +139,7 @@ export const BuildingCard = ({
 
       <div
         style={{
-          position: 'absolute', top: 890, left: 0, width: '100%', textAlign: 'center',
+          position: 'absolute', top: 950, left: 0, width: '100%', textAlign: 'center',
           opacity: valueOpacity,
         }}
       >
