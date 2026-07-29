@@ -5,6 +5,8 @@ import {StatCard} from './StatCard';
 import {DataTable} from './DataTable';
 import {QuoteCard} from './QuoteCard';
 import {HeadlineCard} from './HeadlineCard';
+import {NewsHeadlineCard} from './NewsHeadlineCard';
+import {CompareCard} from './CompareCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -84,6 +86,33 @@ export const RemotionRoot = () => {
         defaultProps={{
           line1: '',
           line2: '',
+        }}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="NewsHeadlineCard"
+        component={NewsHeadlineCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{
+          outlet: '', date: '', headline: '',
+          outlet2: '', date2: '', headline2: '',
+        }}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="CompareCard"
+        component={CompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{
+          title: '', leftTitle: '', leftLines: [],
+          rightTitle: '', rightLines: [], rightEmpty: false, emptyLabel: '확인되지 않음',
+          caption: '',
         }}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
