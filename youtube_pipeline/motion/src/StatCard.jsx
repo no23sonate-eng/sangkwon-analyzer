@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate} from 'remotion';
+import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate, OffthreadVideo, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 
@@ -7,6 +7,14 @@ import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 // 문장이 길어(카드 지속시간이 김) 사실이 두 단계로 나뉠 때는
 // value2/subtitle2 를 주면 전체 길이의 절반 지점 즈음에 2단계로
 // 전환되어, 긴 시간 동안 화면이 죽어있지 않게 한다.
+//
+// bgVideo: motion/public/ 기준 상대경로(예: "videos/tokyo.mp4")를 주면
+// 합성 배경(그리드+그라디언트) 대신 실제 영상을 배경으로 깔고 그 위에
+// 다크 오버레이 + 통계를 얹는다(B1M 레퍼런스처럼 차트가 실사 위에 바로
+// 얹히는 연출, 2026-07-29 "#0 영상을 #1 배경으로" 피드백). Remotion은
+// 원격/절대경로를 직접 못 읽어서(webpack 번들 서버가 public/ 기준으로만
+// 서빙) 반드시 public/ 아래로 파일을 복사해와야 한다. bgVideoStart 로
+// 배경 영상의 시작 지점(초)을 지정할 수 있다.
 export const StatCard = ({
   title = '',
   value = '',
@@ -15,6 +23,8 @@ export const StatCard = ({
   value2 = '',
   subtitle2 = '',
   accent = ACCENT,
+  bgVideo = '',
+  bgVideoStart = 0,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -41,8 +51,24 @@ export const StatCard = ({
   const stage2Scale = interpolate(stage2Opacity, [0, 1], [0.94, 1]);
 
   return (
-    <AbsoluteFill style={BG_STYLE}>
-      <GridBg />
+    <AbsoluteFill style={bgVideo ? {backgroundColor: '#05070a'} : BG_STYLE}>
+      {bgVideo ? (
+        <>
+          <OffthreadVideo
+            src={staticFile(bgVideo)}
+            startFrom={Math.round(bgVideoStart * fps)}
+            style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover'}}
+          />
+          <div
+            style={{
+              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+              background: 'linear-gradient(180deg, rgba(5,7,10,.72) 0%, rgba(5,7,10,.55) 45%, rgba(5,7,10,.82) 100%)',
+            }}
+          />
+        </>
+      ) : (
+        <GridBg />
+      )}
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
