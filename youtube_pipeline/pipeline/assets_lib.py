@@ -2450,12 +2450,16 @@ def icon_hero_card(icon: str, out: Path, value: str = "", label: str = "", subti
 
 
 def icon_amenity_row(items: list[dict], out: Path, title: str = "", subtitle: str = "",
-                     source: str = "", config: dict | None = None) -> Path:
+                     source: str = "", dark: bool = False, config: dict | None = None) -> Path:
     """공용부·어매니티처럼 여러 개념을 나란히 아이콘+라벨로 보여주는 열
     (row) — 항목마다 다른 색을 줘서 "컬러감 있게"(2026-07-22 피드백)
     구성한다. items: [{"icon": <iconify 검색어>, "label": str,
     "color": <옵션, hex 또는 팔레트 키>}, ...] (3~5개 권장).
-    """
+
+    dark: True 면 icon_hero_card(dark=True) 와 같은 애플 발표 영상풍
+    다크 스포트라이트 배경으로 렌더링한다 — 아이콘은 화이트로, 항목별
+    색은 아이콘 뒤 백라이트 글로우와 라벨 텍스트 색으로 옮겨 "컬러감"을
+    유지한다(2026-07-22 "아이폰처럼 좀 고급스럽게" 피드백)."""
     import tempfile
     import matplotlib
     matplotlib.use("Agg")
@@ -2470,7 +2474,10 @@ def icon_amenity_row(items: list[dict], out: Path, title: str = "", subtitle: st
     accent_cycle = [pal["point"], pal["surface"], "#C98A3E", "#B0618F", "#3E9AA6"]
 
     fig = plt.figure(figsize=(16, 9), dpi=200)
-    _add_canvas_light(fig, pal)
+    if dark:
+        _add_canvas_premium(fig)
+    else:
+        _add_canvas_light(fig, pal)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_facecolor("none")
     ax.set_xlim(0, 1)
@@ -2480,16 +2487,18 @@ def icon_amenity_row(items: list[dict], out: Path, title: str = "", subtitle: st
     for sp in ax.spines.values():
         sp.set_visible(False)
 
+    title_color = "#EEF2FA" if dark else pal["text"]
+    subtitle_color = "#8D96A8" if dark else pal["highlight"]
     if title:
         ax.annotate(title, (0.5, 0.90), ha="center", va="top",
-                    color=pal["text"], fontsize=28, fontproperties=fonts.get("med"))
+                    color=title_color, fontsize=28, fontproperties=fonts.get("med"))
     if subtitle:
         ax.annotate(subtitle, (0.5, 0.845), ha="center", va="top",
-                    color=pal["highlight"], fontsize=16, fontproperties=fonts.get("light"))
+                    color=subtitle_color, fontsize=16, fontproperties=fonts.get("light"))
     _source_box(ax, pal, fonts, source, y=0.045)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, facecolor=pal["canvas_bg"])
+    fig.savefig(out, facecolor=("#05070C" if dark else pal["canvas_bg"]))
     plt.close(fig)
 
     card = Image.open(out).convert("RGBA")
@@ -2510,14 +2519,22 @@ def icon_amenity_row(items: list[dict], out: Path, title: str = "", subtitle: st
         color = pal.get(color, color)
         icon_tmp = Path(tempfile.mktemp(suffix=".png"))
         try:
-            icon_png(item["icon"], icon_tmp, color=color, size=512, config=config)
+            icon_png(item["icon"], icon_tmp, color=("#FBFCFF" if dark else color),
+                    size=512, config=config)
             icon_im = Image.open(icon_tmp).convert("RGBA").resize((side, side), Image.LANCZOS)
             cx = int(W * xs[i])
             pos = (cx - side // 2, cy - side // 2)
-            _paste_with_shadow(card, icon_im, pos, blur=14, alpha=35, offset=(0, 4))
+            if dark:
+                _glow_behind(card, (cx, cy), int(side * 0.75), color,
+                            alpha=145, blur=int(side * 0.24))
+                card.alpha_composite(icon_im, pos)
+            else:
+                _paste_with_shadow(card, icon_im, pos, blur=14, alpha=35, offset=(0, 4))
             label = item.get("label", "")
             if label:
-                cd.text((cx, cy + side // 2 + 30), label, font=f_label, fill=color, anchor="ma")
+                label_color = _lighten(color, 0.45) if dark else color
+                cd.text((cx, cy + side // 2 + 30), label, font=f_label,
+                       fill=label_color, anchor="ma")
         except Exception as e:
             log.warning("어매니티 아이콘 합성 실패(%s): %s", item.get("icon"), e)
         finally:
@@ -2525,7 +2542,7 @@ def icon_amenity_row(items: list[dict], out: Path, title: str = "", subtitle: st
 
     card.convert("RGB").save(out)
     _add_subtle_texture(out)
-    log.info("어매니티 아이콘 행 저장: %s (%d개)", out.name, n)
+    log.info("어매니티 아이콘 행 저장: %s (%d개, dark=%s)", out.name, n, dark)
     return out
 
 
