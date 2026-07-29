@@ -8,6 +8,12 @@ import {
 } from 'remotion';
 import {useA2ZFonts} from './Fonts';
 
+// ⚠️ 고정 규칙(2026-07-29 사용자 지시, 항상 지킬 것): 자막은 사용자가
+// 직접 나중에 얹는다. 그래픽 콘텐츠(제목/도형/값)를 화면 하단까지 채우지
+// 말고 중앙 쪽으로 모아서, 화면 하단 SUBTITLE_SAFE_BOTTOM px 는 항상
+// 비워둬야 한다. 새 카드/컴포넌트를 만들 때도 이 여백을 그대로 적용할 것.
+const SUBTITLE_SAFE_BOTTOM = 260;
+
 // B1M 실측 레퍼런스(2026-07-29, 다크 그리드 + 3D 건물 비교 장면) 분석 결과:
 // 화려한 글로우/네온이 아니라 "제도 도면" 톤 — 짙은 차콜 배경에 옅은 격자,
 // 채도 낮은(desaturated) 회색조 매스, 그림자도 아주 은은하게만. 배경에
@@ -53,8 +59,8 @@ const Building = ({scale, opacity, floors}) => {
   }
   return (
     <svg
-      width={420}
-      height={520}
+      width={360}
+      height={446}
       viewBox="0 0 420 520"
       style={{
         filter: 'drop-shadow(0 18px 22px rgba(0,0,0,0.4))',
@@ -119,7 +125,7 @@ export const BuildingCard = ({
       <GridBg />
       <div
         style={{
-          position: 'absolute', top: 96, left: 0, width: '100%', textAlign: 'center',
+          position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
           color: '#C7CBD3', fontSize: 34, fontFamily: 'A2Z Light, sans-serif',
           letterSpacing: '0.02em', opacity: titleOpacity,
           transform: `translateY(${titleY}px)`,
@@ -130,7 +136,7 @@ export const BuildingCard = ({
 
       <div
         style={{
-          position: 'absolute', top: 380, left: 0, width: '100%',
+          position: 'absolute', top: 260, left: 0, width: '100%',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}
       >
@@ -139,7 +145,7 @@ export const BuildingCard = ({
 
       <div
         style={{
-          position: 'absolute', top: 950, left: 0, width: '100%', textAlign: 'center',
+          position: 'absolute', top: 740, left: 0, width: '100%', textAlign: 'center',
           opacity: valueOpacity,
         }}
       >
