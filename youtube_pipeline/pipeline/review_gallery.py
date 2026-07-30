@@ -142,71 +142,99 @@ def build(project: common.Project) -> Path:
 {_font_face_css()}
 *{{box-sizing:border-box;margin:0;padding:0;}}
 :root{{
-  --bg:#101317; --panel:#191c21; --panel-hover:#20242a; --border:rgba(255,255,255,.09);
-  --text:#edeff3; --text-dim:#8d96a0; --text-faint:#5c636b;
+  --bg:#101317; --bg-soft:#0c0e12; --panel:#191c21; --panel-hover:#212530; --border:rgba(255,255,255,.08);
+  --border-soft:rgba(255,255,255,.05); --border-strong:rgba(255,255,255,.16);
+  --text:#edeff3; --text-dim:#8d96a0; --text-faint:#5c636b; --text-ghost:#3e434b;
   --accent:#8e939d; --chip-graphic:#7b9bc2; --chip-photo:#c98a9e;
+  --radius:12px; --radius-sm:8px;
+  --ease:cubic-bezier(.2,.7,.3,1);
 }}
-html,body{{background:var(--bg);color:var(--text);font-family:'A2Z Regular',sans-serif;
-  font-variant-numeric:tabular-nums;min-height:100%;}}
-body{{padding:0 0 64px;}}
-header{{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--bg) 82%,transparent);
-  padding:28px 40px 20px;display:flex;flex-direction:column;gap:6px;}}
-h1{{font-family:'A2Z Medium',sans-serif;font-size:26px;font-weight:400;letter-spacing:.01em;text-wrap:balance;}}
-.sub{{color:var(--text-dim);font-size:14px;display:flex;gap:18px;flex-wrap:wrap;}}
-.hint{{color:var(--text-faint);font-size:13px;font-family:'A2Z Light',sans-serif;margin-top:4px;}}
+html{{background:var(--bg);}}
+html,body{{color:var(--text);font-family:'A2Z Regular',sans-serif;
+  font-variant-numeric:tabular-nums;min-height:100%;-webkit-font-smoothing:antialiased;}}
+body{{background:radial-gradient(ellipse 1200px 600px at 50% -10%,rgba(123,155,194,.05),transparent),var(--bg);
+  padding:0 0 96px;}}
+header{{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--bg) 74%,transparent);
+  padding:40px 48px 22px;display:flex;flex-direction:column;gap:10px;
+  border-bottom:1px solid transparent;}}
+h1{{font-family:'A2Z Medium',sans-serif;font-size:28px;font-weight:400;letter-spacing:.005em;text-wrap:balance;}}
+.sub{{color:var(--text-dim);font-size:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  letter-spacing:.01em;}}
+.sub .dot{{width:3px;height:3px;border-radius:50%;background:var(--text-ghost);}}
+.hint{{color:var(--text-faint);font-size:12.5px;font-family:'A2Z Light',sans-serif;margin-top:2px;
+  letter-spacing:.01em;padding-top:14px;border-top:1px solid var(--border-soft);}}
 .hint b{{color:var(--accent);font-family:'A2Z Regular',sans-serif;}}
-main{{padding:8px 40px 0;}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}}
-.tile{{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;
-  transition:background .15s ease;cursor:zoom-in;}}
-.tile:hover{{background:var(--panel-hover);}}
-.thumb{{position:relative;aspect-ratio:16/9;background:#05070a;overflow:hidden;}}
-.thumb img{{width:100%;height:100%;object-fit:cover;display:block;}}
+main{{padding:14px 48px 0;}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px 24px;}}
+.tile{{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease);
+  cursor:zoom-in;box-shadow:0 1px 2px rgba(0,0,0,.2);}}
+.tile:hover{{background:var(--panel-hover);border-color:var(--border-strong);
+  transform:translateY(-3px);box-shadow:0 16px 32px -12px rgba(0,0,0,.55);}}
+.tile:hover .thumb img{{transform:scale(1.035);}}
+.thumb{{position:relative;aspect-ratio:16/9;background:var(--bg-soft);overflow:hidden;}}
+.thumb img{{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .4s var(--ease);}}
+.thumb::after{{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(5,7,10,.32) 0%,transparent 22%,transparent 78%,rgba(5,7,10,.4) 100%);
+  pointer-events:none;}}
 .thumb-missing{{display:flex;align-items:center;justify-content:center;height:100%;
   color:var(--text-faint);font-size:13px;}}
-.badge{{position:absolute;top:10px;left:10px;background:rgba(10,12,14,.78);color:var(--text);
-  font-size:13px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);
-  font-variant-numeric:tabular-nums;}}
-.chip{{position:absolute;top:10px;right:10px;font-size:12px;padding:3px 10px;border-radius:20px;
-  color:#0c0e11;font-family:'A2Z Medium',sans-serif;}}
+.badge{{position:absolute;top:12px;left:12px;z-index:1;background:rgba(9,11,14,.82);color:var(--text);
+  font-size:12.5px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.14);
+  font-variant-numeric:tabular-nums;letter-spacing:.03em;backdrop-filter:blur(6px);
+  font-family:'A2Z Medium',sans-serif;}}
+.chip{{position:absolute;top:12px;right:12px;z-index:1;font-size:11px;padding:4px 11px;border-radius:20px;
+  color:#0c0e11;font-family:'A2Z Medium',sans-serif;letter-spacing:.04em;}}
 .chip-graphic{{background:var(--chip-graphic);}}
 .chip-photo{{background:var(--chip-photo);}}
-.meta{{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;}}
-.time{{font-size:13px;color:var(--text-dim);}}
-.time .dur{{color:var(--text-faint);}}
-.reason{{font-size:14.5px;color:var(--text);line-height:1.45;
+.meta{{padding:18px 18px 20px;display:flex;flex-direction:column;gap:9px;}}
+.time{{font-size:12.5px;color:var(--text-faint);letter-spacing:.04em;
+  display:flex;align-items:center;gap:8px;}}
+.time .dur{{color:var(--text-ghost);}}
+.reason{{font-size:15.5px;color:var(--text);line-height:1.5;font-family:'A2Z Regular',sans-serif;
+  letter-spacing:.002em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}}
+.text{{font-size:12.5px;color:var(--text-faint);font-family:'A2Z Light',sans-serif;line-height:1.55;
+  letter-spacing:.005em;padding-top:8px;border-top:1px solid var(--border-soft);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}}
-.text{{font-size:12.5px;color:var(--text-faint);font-family:'A2Z Light',sans-serif;line-height:1.4;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}}
-@media (max-width:600px){{header,main{{padding-left:20px;padding-right:20px;}}}}
+@media (max-width:600px){{header,main{{padding-left:22px;padding-right:22px;}}}}
 
 /* 라이트박스 — 클릭하면 실제 해상도로 확대해서 확인(2026-07-30
    "클릭하면 이미지 커져서 제대로 확인" 피드백). */
-.lightbox{{position:fixed;inset:0;z-index:50;background:rgba(5,6,8,.92);
-  display:none;align-items:center;justify-content:center;padding:40px;}}
+.lightbox{{position:fixed;inset:0;z-index:50;background:rgba(4,5,7,.94);backdrop-filter:blur(2px);
+  display:none;align-items:center;justify-content:center;padding:48px;
+  opacity:0;transition:opacity .2s var(--ease);}}
 .lightbox.open{{display:flex;}}
+.lightbox.show{{opacity:1;}}
 .lightbox-inner{{max-width:min(1400px,92vw);max-height:92vh;display:flex;flex-direction:column;
-  gap:14px;align-items:center;}}
-.lightbox-inner img{{max-width:100%;max-height:74vh;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.6);
-  object-fit:contain;background:#05070a;}}
-.lightbox-cap{{color:var(--text);font-size:15px;text-align:center;}}
-.lightbox-reason{{color:var(--text-dim);font-size:14px;text-align:center;max-width:900px;line-height:1.5;}}
+  gap:20px;align-items:center;transform:scale(.98);transition:transform .22s var(--ease);}}
+.lightbox.show .lightbox-inner{{transform:scale(1);}}
+.lightbox-inner img{{max-width:100%;max-height:72vh;border-radius:10px;box-shadow:0 40px 100px -20px rgba(0,0,0,.7);
+  object-fit:contain;background:#05070a;border:1px solid rgba(255,255,255,.08);}}
+.lightbox-cap{{color:var(--text);font-size:15px;text-align:center;letter-spacing:.02em;
+  font-family:'A2Z Medium',sans-serif;}}
+.lightbox-reason{{color:var(--text-dim);font-size:14.5px;text-align:center;max-width:900px;line-height:1.6;
+  margin-top:-8px;}}
 .lightbox-text{{color:var(--text-faint);font-size:13px;font-family:'A2Z Light',sans-serif;
-  text-align:center;max-width:900px;line-height:1.5;}}
-.lightbox-close{{position:absolute;top:24px;right:32px;width:44px;height:44px;border-radius:50%;
+  text-align:center;max-width:820px;line-height:1.65;padding-top:14px;border-top:1px solid var(--border-soft);}}
+.lightbox-close{{position:absolute;top:28px;right:36px;width:44px;height:44px;border-radius:50%;
   background:var(--panel);border:1px solid var(--border);color:var(--text);font-size:22px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;}}
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s var(--ease),border-color .15s var(--ease);}}
+.lightbox-close:hover{{background:var(--panel-hover);border-color:var(--border-strong);}}
 .lightbox-nav{{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;
   border-radius:50%;background:var(--panel);border:1px solid var(--border);color:var(--text);
-  font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;}}
-.lightbox-nav.prev{{left:24px;}}
-.lightbox-nav.next{{right:24px;}}
+  font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s var(--ease),border-color .15s var(--ease);}}
+.lightbox-nav:hover{{background:var(--panel-hover);border-color:var(--border-strong);}}
+.lightbox-nav.prev{{left:28px;}}
+.lightbox-nav.next{{right:28px;}}
 @media (max-width:700px){{.lightbox-nav{{display:none;}}}}
 </style>
 </head><body>
 <header>
   <h1>{project.name}</h1>
-  <div class="sub"><span>{len(cards)}개 구간</span><span>총 {_fmt_t(total_dur)}</span></div>
+  <div class="sub"><span>{len(cards)}개 구간</span><span class="dot"></span><span>총 {_fmt_t(total_dur)}</span></div>
   <div class="hint">번호(<b>#</b>)로 피드백 주시면 됩니다 — 예: "6번 카드 색 바꿔줘", "12번 다른 걸로" · 카드를 클릭하면 확대됩니다</div>
 </header>
 <main><div class="grid">
@@ -233,10 +261,14 @@ function openLightbox(id) {{
   currentIdx = CARDS.findIndex(c => c.id === id);
   if (currentIdx < 0) currentIdx = 0;
   renderLightbox();
-  document.getElementById('lightbox').classList.add('open');
+  const lb = document.getElementById('lightbox');
+  lb.classList.add('open');
+  requestAnimationFrame(() => requestAnimationFrame(() => lb.classList.add('show')));
 }}
 function closeLightbox() {{
-  document.getElementById('lightbox').classList.remove('open');
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('show');
+  setTimeout(() => lb.classList.remove('open'), 200);
 }}
 function navLightbox(delta) {{
   currentIdx = (currentIdx + delta + CARDS.length) % CARDS.length;
