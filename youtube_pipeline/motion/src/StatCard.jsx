@@ -85,6 +85,7 @@ export const StatCard = ({
         style={{
           position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
           fontSize: 34, opacity: subOpacity * stage1Opacity, ...TEXT.label,
+          ...(hasMedia && !bgInset && !framed ? {color: '#E9ECF0'} : {}),
         }}
       >
         {subtitle}
@@ -116,6 +117,7 @@ export const StatCard = ({
             style={{
               position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
               fontSize: 34, opacity: stage2Opacity, ...TEXT.label,
+              ...(hasMedia && !bgInset && !framed ? {color: '#E9ECF0'} : {}),
             }}
           >
             {subtitle2}
