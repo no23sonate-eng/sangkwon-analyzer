@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, interpolate, Img, staticFile} from 'remotion';
+import {AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, Img, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 
@@ -8,9 +8,14 @@ import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
 // 페이드) 일부만 걸치게 배치한다(2026-07-29 "기타오 요시타카 사진을
 // 자연스럽게 우측에 일부만" 피드백) — 실제 발언 당사자를 보여주는
 // 것이므로 "얼굴 노출 금지"(자료화면 필러용 스톡 얼굴) 규칙과는 별개.
-export const QuoteCard = ({quote = '', name = '', role = '', accent = ACCENT, photo = ''}) => {
+//
+// quote2: 같은 인물의 두 번째 인용문을 이어서 보여줄 때(카드 지속시간이
+// 길 때) 전체 길이의 절반 지점에 크로스페이드 — 이름/사진은 그대로,
+// 인용문 텍스트만 전환.
+export const QuoteCard = ({quote = '', quote2 = '', name = '', role = '', accent = ACCENT, photo = ''}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
 
   const markOpacity = interpolate(frame, [0, 12], [0, 1], {extrapolateRight: 'clamp'});
   const quoteOpacity = interpolate(frame, [10, 26], [0, 1], {extrapolateRight: 'clamp'});
@@ -18,6 +23,16 @@ export const QuoteCard = ({quote = '', name = '', role = '', accent = ACCENT, ph
   const attrOpacity = interpolate(frame, [30, 42], [0, 1], {extrapolateRight: 'clamp'});
   const photoOpacity = interpolate(frame, [18, 42], [0, 1], {extrapolateRight: 'clamp'});
   const photoX = interpolate(frame, [18, 42], [40, 0], {extrapolateRight: 'clamp'});
+
+  const hasStage2 = Boolean(quote2);
+  const stage2Start = Math.round(durationInFrames * 0.5);
+  const stage1Opacity = hasStage2
+    ? interpolate(frame, [stage2Start, stage2Start + 12], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+    : 1;
+  const stage2Opacity = hasStage2
+    ? interpolate(frame, [stage2Start + 6, stage2Start + 22], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+    : 0;
+  const stage2Y = interpolate(stage2Opacity, [0, 1], [14, 0]);
 
   const hasPhoto = Boolean(photo);
   const quoteWidth = hasPhoto ? 1120 : 1300;
@@ -59,11 +74,24 @@ export const QuoteCard = ({quote = '', name = '', role = '', accent = ACCENT, ph
           position: 'absolute', top: 400, left: quoteCenter, transform: `translateX(-50%) translateY(${quoteY}px)`,
           width: quoteWidth, textAlign: hasPhoto ? 'left' : 'center', fontSize: 46, lineHeight: 1.5,
           color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.01em',
-          opacity: quoteOpacity,
+          opacity: quoteOpacity * stage1Opacity,
         }}
       >
         {quote}
       </div>
+
+      {hasStage2 ? (
+        <div
+          style={{
+            position: 'absolute', top: 400, left: quoteCenter, transform: `translateX(-50%) translateY(${stage2Y}px)`,
+            width: quoteWidth, textAlign: hasPhoto ? 'left' : 'center', fontSize: 46, lineHeight: 1.5,
+            color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.01em',
+            opacity: stage2Opacity,
+          }}
+        >
+          {quote2}
+        </div>
+      ) : null}
 
       <div
         style={{
