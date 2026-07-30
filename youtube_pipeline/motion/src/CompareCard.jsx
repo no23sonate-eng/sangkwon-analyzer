@@ -37,7 +37,7 @@ export const CompareCard = ({
   const imageOpacity = interpolate(frame, [0, 24], [0, 1], {extrapolateRight: 'clamp'});
 
   const COL_TOP = 370;
-  const COL_W = 760;
+  const COL_W = 520;
   const GAP = 60;
   const LEFT_X = 1920 / 2 - GAP / 2 - COL_W;
   const RIGHT_X = 1920 / 2 + GAP / 2;

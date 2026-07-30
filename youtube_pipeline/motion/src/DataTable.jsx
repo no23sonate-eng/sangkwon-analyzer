@@ -92,7 +92,7 @@ export const DataTable = ({
           position: 'absolute', top: TABLE_TOP, left: LEFT, width: TABLE_W,
           border: (light || boxed) ? `1px solid ${borderStrong}` : 'none',
           borderRadius: (light || boxed) ? 6 : 0,
-          padding: (light || boxed) ? '0 28px' : 0,
+          padding: (light || boxed) ? '14px 28px' : 0,
         }}
       >
         {boxed ? (
@@ -103,7 +103,6 @@ export const DataTable = ({
             }}
           />
         ) : null}
-        <div style={{borderBottom: `1px solid ${borderStrong}`, paddingBottom: 14}} />
         {rows.map((row, i) => {
           const rowOpacity = interpolate(tableFrame, [20 + i * 8, 32 + i * 8], [0, 1], {
             extrapolateRight: 'clamp', extrapolateLeft: 'clamp',

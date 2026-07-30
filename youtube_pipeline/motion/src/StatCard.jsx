@@ -79,7 +79,6 @@ export const StatCard = ({
         }}
       >
         <div style={{fontSize: 96, ...TEXT.value}}>{value}</div>
-        <div style={{width: 84, height: 2, background: accent, margin: '22px auto 0'}} />
       </div>
 
       <div
@@ -112,7 +111,6 @@ export const StatCard = ({
             }}
           >
             <div style={{fontSize: 96, ...TEXT.value}}>{value2}</div>
-            <div style={{width: 84, height: 2, background: accent, margin: '22px auto 0'}} />
           </div>
           <div
             style={{

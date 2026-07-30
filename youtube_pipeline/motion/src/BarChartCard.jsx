@@ -104,12 +104,23 @@ export const BarChartCard = ({
             />
             <div
               style={{
-                position: 'absolute', top: BASELINE - barH - 46, left: x, width: side, textAlign: 'center',
-                fontSize: 32, color: valueColor, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em',
-                opacity,
+                position: 'absolute', top: BASELINE - barH - (bar.subValue ? 76 : 46), left: x, width: side,
+                textAlign: 'center', opacity,
               }}
             >
-              {bar.displayValue ?? bar.value}
+              <div style={{fontSize: 32, color: valueColor, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em'}}>
+                {bar.displayValue ?? bar.value}
+              </div>
+              {bar.subValue ? (
+                <div
+                  style={{
+                    fontSize: 20, marginTop: 4, color: labelColor,
+                    fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
+                  }}
+                >
+                  {bar.subValue}
+                </div>
+              ) : null}
             </div>
             <div
               style={{
