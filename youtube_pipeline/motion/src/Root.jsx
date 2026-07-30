@@ -10,6 +10,8 @@ import {CompareCard} from './CompareCard';
 import {IconRowCard} from './IconRowCard';
 import {LogoOrgCard} from './LogoOrgCard';
 import {BarChartCard} from './BarChartCard';
+import {SpecGridCard} from './SpecGridCard';
+import {TripleCompareCard} from './TripleCompareCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -147,6 +149,26 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', bars: [], source: '', closingLine: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="SpecGridCard"
+        component={SpecGridCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{title: '', items: [], source: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="TripleCompareCard"
+        component={TripleCompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{title: '', items: [], source: ''}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>
