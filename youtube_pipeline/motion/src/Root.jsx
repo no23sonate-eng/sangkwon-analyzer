@@ -12,6 +12,7 @@ import {LogoOrgCard} from './LogoOrgCard';
 import {BarChartCard} from './BarChartCard';
 import {SpecGridCard} from './SpecGridCard';
 import {TripleCompareCard} from './TripleCompareCard';
+import {CalendarCompareCard} from './CalendarCompareCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -169,6 +170,16 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', items: [], source: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="CalendarCompareCard"
+        component={CalendarCompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{title: '', closingLine: ''}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>
