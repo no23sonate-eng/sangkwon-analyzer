@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
+import {BG_STYLE, GridBg, TEXT, ACCENT, MediaBg} from './shared';
 
 // 실제 언론사 헤드라인을 인용하는 카드 — 스크린샷이 아니라 실측 헤드라인
 // 텍스트를 타이포로 재구성한다(출처 표기 필수). 좌측 세로 액센트 바 +
@@ -39,6 +39,9 @@ export const NewsHeadlineCard = ({
   date2 = '',
   headline2 = '',
   accent = ACCENT,
+  bgVideo = '',
+  bgImage = '',
+  bgVideoStart = 0,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -54,9 +57,10 @@ export const NewsHeadlineCard = ({
     ? interpolate(frame, [stage2Start + 6, stage2Start + 22], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
     : 0;
 
+  const hasMedia = Boolean(bgVideo || bgImage);
   return (
     <AbsoluteFill style={BG_STYLE}>
-      <GridBg />
+      {hasMedia ? <MediaBg video={bgVideo} image={bgImage} videoStart={bgVideoStart} /> : <GridBg />}
       <Block outlet={outlet} date={date} headline={headline} opacity={stage1Opacity} accent={accent} />
       {hasStage2 ? (
         <Block outlet={outlet2} date={date2} headline={headline2} opacity={stage2Opacity} accent={accent} />
