@@ -102,7 +102,7 @@ export const QuoteCard = ({quote = '', quote2 = '', name = '', role = '', accent
         <div style={{width: 48, height: 2, background: accent, margin: hasPhoto ? '0 0 20px' : '0 auto 20px'}} />
         <div style={{fontSize: 28, ...TEXT.value}}>{name}</div>
         {role ? (
-          <div style={{fontSize: 20, marginTop: 6, ...TEXT.label}}>{role}</div>
+          <div style={{fontSize: 24, marginTop: 6, ...TEXT.label}}>{role}</div>
         ) : null}
       </div>
     </AbsoluteFill>

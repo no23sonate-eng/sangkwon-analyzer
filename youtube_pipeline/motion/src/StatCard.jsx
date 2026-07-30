@@ -84,7 +84,7 @@ export const StatCard = ({
       <div
         style={{
           position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 30, opacity: subOpacity * stage1Opacity, ...TEXT.label,
+          fontSize: 34, opacity: subOpacity * stage1Opacity, ...TEXT.label,
         }}
       >
         {subtitle}
@@ -94,7 +94,7 @@ export const StatCard = ({
         <div
           style={{
             position: 'absolute', top: 670, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 22, color: '#5C636D', fontFamily: 'A2Z Light, sans-serif',
+            fontSize: 26, color: '#6B7280', fontFamily: 'A2Z Light, sans-serif',
             opacity: subOpacity * stage1Opacity,
           }}
         >
@@ -115,7 +115,7 @@ export const StatCard = ({
           <div
             style={{
               position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
-              fontSize: 30, opacity: stage2Opacity, ...TEXT.label,
+              fontSize: 34, opacity: stage2Opacity, ...TEXT.label,
             }}
           >
             {subtitle2}

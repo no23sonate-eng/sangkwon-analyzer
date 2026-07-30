@@ -83,14 +83,14 @@ export const TripleCompareCard = ({title = '', items = [], source = '', accent =
               />
             ) : null}
             <div style={{position: 'relative', width: 40, height: 4, background: color, margin: '0 auto 26px'}} />
-            <div style={{position: 'relative', fontSize: 28, textAlign: 'center', marginBottom: 30, ...TEXT.label, ...(labelColor ? {color: labelColor} : {})}}>
+            <div style={{position: 'relative', fontSize: 32, textAlign: 'center', marginBottom: 30, ...TEXT.label, ...(labelColor ? {color: labelColor} : {})}}>
               {item.name}
             </div>
             <div style={{position: 'relative', fontSize: 36, textAlign: 'center', lineHeight: 1.5, ...TEXT.value, ...(valueColor ? {color: valueColor} : {})}}>
               {item.value}
             </div>
             {item.note ? (
-              <div style={{position: 'relative', fontSize: 20, textAlign: 'center', marginTop: 16, color: noteColor, fontFamily: 'A2Z Light, sans-serif'}}>
+              <div style={{position: 'relative', fontSize: 26, textAlign: 'center', marginTop: 16, color: noteColor, fontFamily: 'A2Z Light, sans-serif'}}>
                 {item.note}
               </div>
             ) : null}

@@ -14,7 +14,7 @@ const Block = ({outlet, date, headline, opacity, accent}) => {
     <div style={{position: 'absolute', top: 400, left: 260, width: 1400, opacity, transform: `translateY(${y}px)`}}>
       <div style={{display: 'flex', alignItems: 'center', marginBottom: 28}}>
         <div style={{width: 5, height: 34, background: accent, marginRight: 18}} />
-        <div style={{fontSize: 26, ...TEXT.label}}>
+        <div style={{fontSize: 30, ...TEXT.label}}>
           {outlet}
           {date ? <span style={{color: '#565C64', marginLeft: 12}}>{date}</span> : null}
         </div>

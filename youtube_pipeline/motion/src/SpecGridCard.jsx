@@ -54,10 +54,10 @@ export const SpecGridCard = ({title = '', items = [], source = ''}) => {
                 opacity, transform: `translateY(${y}px)`,
               }}
             >
-              <div style={{fontSize: 24, marginBottom: 18, ...TEXT.label}}>{item.label}</div>
+              <div style={{fontSize: 28, marginBottom: 18, ...TEXT.label}}>{item.label}</div>
               <div style={{fontSize: 44, ...TEXT.value, textAlign: 'center'}}>{item.value}</div>
               {item.note ? (
-                <div style={{fontSize: 20, marginTop: 10, color: '#6B7078', fontFamily: 'A2Z Light, sans-serif'}}>
+                <div style={{fontSize: 26, marginTop: 10, color: '#8A9099', fontFamily: 'A2Z Light, sans-serif'}}>
                   {item.note}
                 </div>
               ) : null}

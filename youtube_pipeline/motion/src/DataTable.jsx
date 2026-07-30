@@ -87,22 +87,17 @@ export const DataTable = ({
         {title}
       </div>
 
+      {/* light/boxed: 셀 단위의 진짜 표 — 행 높이 균등, 가로줄은 행 경계와
+          정확히 일치, 세로줄은 값 셀의 borderLeft 로 그려 절대 어긋나지
+          않는다(2026-07-30 "#10 중간에 줄들이 하나도 안맞아" 피드백). */}
       <div
         style={{
           position: 'absolute', top: TABLE_TOP, left: LEFT, width: TABLE_W,
           border: (light || boxed) ? `1px solid ${borderStrong}` : 'none',
           borderRadius: (light || boxed) ? 6 : 0,
-          padding: (light || boxed) ? '14px 28px' : 0,
+          overflow: 'hidden',
         }}
       >
-        {boxed ? (
-          <div
-            style={{
-              position: 'absolute', top: 0, left: '58%', width: 1,
-              height: rows.length * ROW_H, background: borderSoft,
-            }}
-          />
-        ) : null}
         {rows.map((row, i) => {
           const rowOpacity = interpolate(tableFrame, [20 + i * 8, 32 + i * 8], [0, 1], {
             extrapolateRight: 'clamp', extrapolateLeft: 'clamp',
@@ -110,24 +105,37 @@ export const DataTable = ({
           const rowX = interpolate(tableFrame, [20 + i * 8, 32 + i * 8], [16, 0], {
             extrapolateRight: 'clamp', extrapolateLeft: 'clamp',
           });
+          const cellMode = light || boxed;
           return (
             <div
               key={i}
               style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                display: 'flex', alignItems: 'stretch',
                 height: ROW_H, borderBottom: i < rows.length - 1 ? `1px solid ${borderSoft}` : 'none',
                 opacity: rowOpacity, transform: `translateX(${rowX}px)`,
               }}
             >
-              <div style={{fontSize: 30, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em'}}>
+              <div
+                style={{
+                  width: cellMode ? '40%' : '50%', display: 'flex', alignItems: 'center',
+                  padding: cellMode ? '0 32px' : 0,
+                  fontSize: 34, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
+                }}
+              >
                 {row.label}
               </div>
-              <div style={{textAlign: 'right'}}>
+              <div
+                style={{
+                  width: cellMode ? '60%' : '50%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+                  padding: cellMode ? '0 32px' : 0,
+                  borderLeft: cellMode ? `1px solid ${borderSoft}` : 'none',
+                }}
+              >
                 <span style={{fontSize: 38, color: valueColor, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.045em'}}>
                   {row.value}
                 </span>
                 {row.note ? (
-                  <span style={{fontSize: 22, color: noteColor, marginLeft: 14, fontFamily: 'A2Z Light, sans-serif'}}>
+                  <span style={{fontSize: 26, color: noteColor, marginLeft: 14, fontFamily: 'A2Z Light, sans-serif'}}>
                     {row.note}
                   </span>
                 ) : null}

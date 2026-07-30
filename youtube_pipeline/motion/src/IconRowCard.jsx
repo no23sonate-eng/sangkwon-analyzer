@@ -51,7 +51,7 @@ export const IconRowCard = ({
         <div
           style={{
             position: 'absolute', top: framed ? 100 : 150, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 20, opacity: titleOpacity, ...TEXT.label, color: subtitleColor,
+            fontSize: 26, opacity: titleOpacity, ...TEXT.label, color: subtitleColor,
           }}
         >
           {subtitle}
@@ -80,7 +80,7 @@ export const IconRowCard = ({
               style={{width: side, height: side, opacity, transform: `scale(${scale})`, position: 'relative'}}
               dangerouslySetInnerHTML={{__html: item.svg}}
             />
-            <div style={{marginTop: 22, fontSize: 26, opacity, position: 'relative', ...TEXT.value}}>{item.label}</div>
+            <div style={{marginTop: 22, fontSize: 30, opacity, position: 'relative', ...TEXT.value}}>{item.label}</div>
           </div>
         );
       })}

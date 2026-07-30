@@ -51,7 +51,7 @@ export const CompareCard = ({
   // 그라디언트만으로는 부족해 텍스트 블록 뒤에 별도 받침 패널을 깐다.
   const textPanel = {
     position: 'absolute', top: -28, left: -30, width: COL_W + 60, height: 360,
-    borderRadius: 16, background: 'rgba(5,7,10,0.5)', backdropFilter: 'blur(1px)',
+    borderRadius: 16, background: 'rgba(5,7,10,0.62)', backdropFilter: 'blur(1px)',
   };
 
   return (
@@ -71,8 +71,8 @@ export const CompareCard = ({
       ) : null}
       <div
         style={{
-          position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, ...TEXT.title,
+          position: 'absolute', top: 80, left: 0, width: '100%', textAlign: 'center',
+          fontSize: 50, opacity: titleOpacity, ...TEXT.title,
         }}
       >
         {title}
@@ -88,7 +88,7 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: LEFT_X, width: COL_W, opacity: leftOpacity}}>
         {hasImage ? <div style={textPanel} /> : null}
-        <div style={{position: 'relative', fontSize: 26, marginBottom: 24, ...TEXT.label}}>{leftTitle}</div>
+        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, ...TEXT.label, color: hasImage ? '#D7DBE1' : TEXT.label.color}}>{leftTitle}</div>
         {leftValue ? (
           <div style={{position: 'relative', fontSize: 80, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif'}}>{leftValue}</div>
         ) : null}
@@ -96,7 +96,7 @@ export const CompareCard = ({
           <div
             key={i}
             style={{
-              position: 'relative', fontSize: 32, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif',
+              position: 'relative', fontSize: 34, color: '#FFFFFF', fontFamily: 'A2Z Regular, sans-serif',
               lineHeight: 1.6, marginBottom: 10,
             }}
           >
@@ -107,14 +107,14 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: RIGHT_X, width: COL_W, opacity: rightOpacity}}>
         {hasImage ? <div style={textPanel} /> : null}
-        <div style={{position: 'relative', fontSize: 26, marginBottom: 24, ...TEXT.label}}>{rightTitle}</div>
+        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, ...TEXT.label, color: hasImage ? '#D7DBE1' : TEXT.label.color}}>{rightTitle}</div>
         {rightValue ? (
           <div style={{position: 'relative', fontSize: 80, color: accent, fontFamily: 'A2Z Regular, sans-serif'}}>{rightValue}</div>
         ) : null}
         {rightEmpty ? (
           <div style={{position: 'relative'}}>
-            <div style={{fontSize: 56, color: '#4A4F57', fontFamily: 'A2Z Light, sans-serif'}}>—</div>
-            <div style={{fontSize: 28, color: '#5C636D', fontFamily: 'A2Z Light, sans-serif', marginTop: 14}}>
+            <div style={{fontSize: 56, color: hasImage ? '#B8BDC5' : '#4A4F57', fontFamily: 'A2Z Light, sans-serif'}}>—</div>
+            <div style={{fontSize: 34, color: hasImage ? '#FFFFFF' : '#5C636D', fontFamily: 'A2Z Regular, sans-serif', marginTop: 14}}>
               {emptyLabel}
             </div>
           </div>
@@ -123,7 +123,7 @@ export const CompareCard = ({
             <div
               key={i}
               style={{
-                position: 'relative', fontSize: 32, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif',
+                position: 'relative', fontSize: 34, color: '#FFFFFF', fontFamily: 'A2Z Regular, sans-serif',
                 lineHeight: 1.6, marginBottom: 10,
               }}
             >

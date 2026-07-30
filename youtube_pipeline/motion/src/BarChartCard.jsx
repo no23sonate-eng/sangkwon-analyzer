@@ -114,7 +114,7 @@ export const BarChartCard = ({
               {bar.subValue ? (
                 <div
                   style={{
-                    fontSize: 20, marginTop: 4, color: labelColor,
+                    fontSize: 26, marginTop: 4, color: labelColor,
                     fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
                   }}
                 >
@@ -125,7 +125,7 @@ export const BarChartCard = ({
             <div
               style={{
                 position: 'absolute', top: BASELINE + 22, left: x, width: side, textAlign: 'center',
-                fontSize: 24, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
+                fontSize: 28, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
                 opacity,
               }}
             >
