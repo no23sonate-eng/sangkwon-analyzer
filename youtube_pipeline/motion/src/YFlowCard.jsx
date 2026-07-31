@@ -21,9 +21,9 @@ export const YFlowCard = ({
   const enter = fadeIn(frame, 0, 14);
 
   const n = nodes.length || 1;
-  const nodeW = n >= 4 ? 340 : 400;
+  const nodeW = n >= 4 ? 340 : n === 3 ? 380 : 400;
   const nodeH = 250;
-  const arrowW = n >= 4 ? 110 : 150;
+  const arrowW = n >= 4 ? 110 : n === 3 ? 190 : 300;
   const totalW = nodeW * n + arrowW * (n - 1);
   const startX = (1920 - totalW) / 2;
   const nodeY = 400;

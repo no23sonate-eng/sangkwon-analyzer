@@ -19,7 +19,9 @@ export const YHeadlineCard = ({
   const {fps} = useVideoConfig();
   const enter = fadeIn(frame, 0, 14);
   const n = lines.length || 1;
-  const fontSize = n > 2 ? 110 : 150;
+  // 줄 길이에 맞춰 자동 축소 — 한 줄이 화면을 넘어 어중간하게 꺾이지 않게
+  const maxLen = Math.max(1, ...lines.map((segs) => segs.reduce((a, s) => a + s.t.length, 0)));
+  const fontSize = Math.min(n > 2 ? 110 : 150, Math.floor(1640 / maxLen));
   const totalH = n * fontSize * 1.28;
   const top = 470 - totalH / 2;
 

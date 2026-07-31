@@ -68,8 +68,9 @@ def build_montage(files, montage_dir, cols=3, rows=3, cell_w=640, cell_h=360):
             x, y = (i % cols) * cell_w, (i // cols) * cell_h
             sheet.paste(im, (x, y))
             label = os.path.basename(fp).split('_')[0]  # secNN
-            draw.rectangle([x + 8, y + 8, x + 96, y + 40], fill='#000000')
-            draw.text((x + 18, y + 14), f'#{int(label[3:])}', fill='#FAFF2E')
+            # 라벨은 좌하단 — 카드 킥커(좌상단)를 가리지 않게
+            draw.rectangle([x + 8, y + cell_h - 40, x + 96, y + cell_h - 8], fill='#000000')
+            draw.text((x + 18, y + cell_h - 34), f'#{int(label[3:])}', fill='#FAFF2E')
         out = os.path.join(montage_dir, f'sheet{s // per + 1}.png')
         sheet.save(out)
         sheets.append(out)
@@ -100,8 +101,11 @@ def main():
             rendered.append(out)
 
     print(f'done: {len(rendered)}/{len(scenes)}', flush=True)
-    if args.montage_dir and rendered:
-        build_montage(sorted(rendered), args.montage_dir)
+    if args.montage_dir:
+        # 몽타주는 이번에 렌더한 것만이 아니라 폴더의 전체 스틸 기준
+        import glob
+        all_stills = sorted(glob.glob(os.path.join(out_dir, 'sec*.png')))
+        build_montage(all_stills, args.montage_dir)
 
 
 if __name__ == '__main__':
