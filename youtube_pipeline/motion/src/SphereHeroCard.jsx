@@ -57,8 +57,8 @@ export const SphereHeroCard = ({
   const spin = frame / 240;
 
   // 구체 화면 좌표 (카메라 세팅과 손튜닝으로 맞춘 앵커)
-  const sphereCX = compare ? 560 : 700;
-  const sphereCY = 540;
+  const sphereCX = 477;
+  const sphereCY = 462;
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -73,16 +73,17 @@ export const SphereHeroCard = ({
         <ambientLight intensity={0.6} />
         {compare ? (
           <>
-            <group position={[-2.6, 0, 0]} scale={[grow, grow, grow]}>
-              <DotSphere radius={3} spin={spin} color="#9A9A9A" />
+            <group position={[-2.6, 0.9, 0]} scale={[grow, grow, grow]}>
+              <DotSphere radius={2.6} spin={spin} color="#9A9A9A" />
             </group>
-            <group position={[3.4, -3 * (1 - (compare.ratio ?? 0.63)), 0]} scale={[grow, grow, grow]}>
-              <DotSphere radius={3 * (compare.ratio ?? 0.63)} spin={spin} color="#FAFF2E" />
+            {/* 작은 구체는 큰 구체와 바닥 높이를 맞춘다 */}
+            <group position={[3.2, 0.9 - 2.6 * (1 - (compare.ratio ?? 0.63)), 0]} scale={[grow, grow, grow]}>
+              <DotSphere radius={2.6 * (compare.ratio ?? 0.63)} spin={spin} color="#FAFF2E" />
             </group>
           </>
         ) : (
-          <group position={[-1.6, -0.1, 0]} scale={[grow, grow, grow]}>
-            <DotSphere radius={3.1} spin={spin} color="#FAFF2E" />
+          <group position={[-3.4, 0.55, 0]} scale={[grow, grow, grow]}>
+            <DotSphere radius={2.2} spin={spin} color="#FAFF2E" />
           </group>
         )}
       </ThreeCanvas>
@@ -109,8 +110,8 @@ export const SphereHeroCard = ({
               const o = fadeIn(frame, 34 + i * 10);
               // 구체 가장자리 앵커 — 주석 높이에 맞춰 각도 분산
               const ang = -0.5 + i * 0.42;
-              const ax = sphereCX + Math.cos(ang) * 335;
-              const ay = sphereCY + Math.sin(ang) * 335 * 0.92;
+              const ax = sphereCX + Math.cos(ang) * 322;
+              const ay = sphereCY + Math.sin(ang) * 322 * 0.95;
               return (
                 <g key={i} opacity={o}>
                   <line x1={ax} y1={ay} x2={1280} y2={yLab + 22} stroke={a.hot ? YELLOW : '#4A4A4A'} strokeWidth={a.hot ? 2 : 1.4} />

@@ -17,7 +17,7 @@ export const TimelineBarsCard = ({
   const enter = fadeIn(frame, 0, 14);
 
   const maxM = Math.max(...bars.map((b) => b.months), 1);
-  const cellW = Math.min(34, Math.floor(1250 / maxM));
+  const cellW = Math.min(34, Math.floor(1080 / maxM)); // 우측 'NN개월' 라벨 공간 확보
   const cellH = 64;
   const gap = 5;
   const left = 420;

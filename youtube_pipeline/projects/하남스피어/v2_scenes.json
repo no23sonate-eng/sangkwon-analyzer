@@ -467,7 +467,8 @@
             "lat": 51.5,
             "label": "런던 — 무산",
             "sub": "2024.1 런던시장 반려",
-            "dead": true
+            "dead": true,
+            "labelLeft": true
           }
         ],
         "durationSec": 28.6
@@ -805,8 +806,8 @@
             "hot": true
           }
         ],
-        "caption": "대우건설 · 현대엔지니어링 · HDC · 한화 · 이지스 · 증권사",
-        "durationSec": 15.9
+        "durationSec": 15.9,
+        "sub": "대우건설 · 현대엔지니어링 · HDC · 한화 · 이지스 · 증권사"
       }
     },
     {
@@ -863,8 +864,8 @@
             "count": 18269
           }
         ],
-        "caption": "최대 2만 8천 명 · 2027년 3월 준공 목표",
-        "durationSec": 16.3
+        "durationSec": 16.3,
+        "sub": "최대 2만 8천 명 · 2027년 3월 준공 목표"
       }
     },
     {
@@ -877,8 +878,8 @@
           "total": 100,
           "filled": 17
         },
-        "caption": "공정률 17%에서 멈춤 — 완공은 2030년으로 지연",
-        "durationSec": 13.1
+        "durationSec": 13.1,
+        "sub": "공정률 17%에서 멈춤 — 완공은 2030년으로 지연"
       }
     },
     {
