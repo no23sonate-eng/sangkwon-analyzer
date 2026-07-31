@@ -74,6 +74,7 @@ export const QuoteCard = ({quote = '', quote2 = '', name = '', role = '', accent
           position: 'absolute', top: 400, left: quoteCenter, transform: `translateX(-50%) translateY(${quoteY}px)`,
           width: quoteWidth, textAlign: hasPhoto ? 'left' : 'center', fontSize: 46, lineHeight: 1.5,
           color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.01em',
+          whiteSpace: 'pre-line',
           opacity: quoteOpacity * stage1Opacity,
         }}
       >
@@ -86,6 +87,7 @@ export const QuoteCard = ({quote = '', quote2 = '', name = '', role = '', accent
             position: 'absolute', top: 400, left: quoteCenter, transform: `translateX(-50%) translateY(${stage2Y}px)`,
             width: quoteWidth, textAlign: hasPhoto ? 'left' : 'center', fontSize: 46, lineHeight: 1.5,
             color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.01em',
+            whiteSpace: 'pre-line',
             opacity: stage2Opacity,
           }}
         >
