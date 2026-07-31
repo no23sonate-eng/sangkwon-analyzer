@@ -1,0 +1,18 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Normal,A2Z 4 Regular,40,&H00FFFFFF,&H00FFFFFF,&H46101010,&HB4000000,0,0,0,0,100,100,0,0,3,7,0,2,60,60,110,1
+Style: Large,A2Z 3 Light,46,&H00FFFFFF,&H00FFFFFF,&H46101010,&HB4000000,0,0,0,0,100,100,0,0,3,7,0,2,60,60,110,1
+Style: Headline,A2Z 1 Thin,84,&H00FFFFFF,&H00FFFFFF,&H00000000,&H20000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
+Style: Concept,A2Z 5 Medium,64,&H002EFFFA,&H002EFFFA,&H00000000,&H20000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
+Style: ConceptSub,A2Z 4 Regular,34,&H00FFFFFF,&H00FFFFFF,&H00000000,&H20000000,0,0,0,0,100,100,1,0,1,0,3,5,60,60,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+
