@@ -59,7 +59,7 @@ export const TrendCard = ({
         const yEnd = y0 - rise;
         return (
           <div key={i} style={{position: 'absolute', left: x0 + len + 46, top: yEnd - 56, opacity: fadeIn(frame, 52)}}>
-            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: s.hot ? 92 : 64, letterSpacing: '0.01em', color: s.hot ? YELLOW : GRAY, textShadow: s.hot ? glow(0.8) : 'none', fontVariantNumeric: 'tabular-nums'}}>
+            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: s.hot ? 92 : 64, letterSpacing: '0.01em', color: s.hot ? WHITE : GRAY, fontVariantNumeric: 'tabular-nums'}}>
               {s.display}
             </div>
             <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.04em', color: s.hot ? WHITE : MUTE}}>

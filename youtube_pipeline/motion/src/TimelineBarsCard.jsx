@@ -70,7 +70,7 @@ export const TimelineBarsCard = ({
                 whiteSpace: 'nowrap',
               }}
             >
-              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, letterSpacing: '0.01em', color: hot ? YELLOW : GRAY, textShadow: hot ? glow(0.6) : 'none', fontVariantNumeric: 'tabular-nums'}}>
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, letterSpacing: '0.01em', color: hot ? WHITE : GRAY, fontVariantNumeric: 'tabular-nums'}}>
                 {b.months}개월
               </span>
             </div>

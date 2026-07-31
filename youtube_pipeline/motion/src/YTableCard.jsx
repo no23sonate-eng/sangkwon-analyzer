@@ -94,7 +94,7 @@ export const YTableCard = ({
             position: 'absolute', top: top + n * rowH + 52, left, width: tableW,
             textAlign: 'center',
             fontFamily: 'A2Z Regular, sans-serif', fontSize: 44,
-            letterSpacing: '0.04em', color: YELLOW, textShadow: glow(0.55),
+            letterSpacing: '0.04em', color: WHITE,
             opacity: closingIn,
           }}
         >

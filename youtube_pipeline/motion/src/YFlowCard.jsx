@@ -77,8 +77,7 @@ export const YFlowCard = ({
                   fontFamily: 'A2Z Medium, sans-serif',
                   fontSize: node.hot ? 74 : 58,
                   letterSpacing: '0.01em',
-                  color: node.hot ? YELLOW : WHITE,
-                  textShadow: node.hot ? glow(0.7) : 'none',
+                  color: WHITE,
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >

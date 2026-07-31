@@ -88,7 +88,7 @@ export const SeatDotsCard = ({
                 textAlign: 'center', opacity: fadeIn(frame, 30 + ai * 6),
               }}
             >
-              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, letterSpacing: '0.03em', color: hot ? YELLOW : WHITE, textShadow: hot ? glow(0.6) : 'none', fontVariantNumeric: 'tabular-nums'}}>
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, letterSpacing: '0.03em', color: WHITE, fontVariantNumeric: 'tabular-nums'}}>
                 {a.label}
               </span>
               {a.subLabel ? (

@@ -1,7 +1,7 @@
 {
   "project": "하남스피어",
   "design": "v2 (design_reference.md §19) — 순블랙 + 채널 옐로 #FAFF2E",
-  "note": "broll_plan.json v7의 44개 장면을 내용 변경 없이 v2 디자인으로 재매핑. id/타이밍은 broll_plan.json과 1:1.",
+  "note": "broll_plan.json v7의 44개 장면 재매핑. use_v7=true 장면은 실사(배경/인물/뉴스)라 v7 클립을 그대로 쓰고, 나머지는 v2 그래픽. 글씨 기본 화이트, 옐로는 그래픽·포인트 전용.",
   "scenes": [
     {
       "id": 0,
@@ -22,7 +22,9 @@
           ]
         ],
         "caption": "스피어 측 조건 — 2025년 착공 희망"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec0_news.mp4"
     },
     {
       "id": 1,
@@ -195,7 +197,9 @@
           }
         ],
         "durationSec": 7.5
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec7_tokyo.mp4"
     },
     {
       "id": 8,
@@ -305,7 +309,9 @@
         ],
         "caption": "ABU DHABI",
         "bgImage": "demo/yasbay.jpg"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec12_headline.mp4"
     },
     {
       "id": 13,
@@ -359,7 +365,9 @@
         ],
         "caption": "야스 마리나 서킷",
         "bgImage": "demo/yasmarina.jpg"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec15_f1_circuit.jpg"
     },
     {
       "id": 16,
@@ -507,11 +515,11 @@
           ],
           [
             {
-              "t": "라이선스만 제공",
+              "t": "라이선스",
               "hot": true
             },
             {
-              "t": "한다",
+              "t": "만 제공한다",
               "hot": false
             }
           ]
@@ -808,7 +816,9 @@
         ],
         "durationSec": 15.9,
         "sub": "대우건설 · 현대엔지니어링 · HDC · 한화 · 이지스 · 증권사"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec34_stat.mp4"
     },
     {
       "id": 35,
@@ -824,8 +834,12 @@
           ],
           [
             {
-              "t": "기회는 다시 있다",
+              "t": "기회",
               "hot": true
+            },
+            {
+              "t": "는 다시 있다",
+              "hot": false
             }
           ]
         ]
@@ -866,7 +880,9 @@
         ],
         "durationSec": 16.3,
         "sub": "최대 2만 8천 명 · 2027년 3월 준공 목표"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec37_stat.mp4"
     },
     {
       "id": 38,
@@ -880,7 +896,9 @@
         },
         "durationSec": 13.1,
         "sub": "공정률 17%에서 멈춤 — 완공은 2030년으로 지연"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec38_stat.mp4"
     },
     {
       "id": 39,
@@ -916,7 +934,9 @@
             }
           ]
         ]
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec40_headline.mp4"
     },
     {
       "id": 41,
@@ -975,7 +995,9 @@
         "quote2": "너무 멋진 일이라\n도전하게 됐다.",
         "name": "박진영",
         "role": "JYP엔터테인먼트"
-      }
+      },
+      "use_v7": true,
+      "v7_file": "broll_candidates/sec43_quote.mp4"
     }
   ]
 }

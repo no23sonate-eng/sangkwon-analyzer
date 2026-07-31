@@ -50,8 +50,7 @@ const Side = ({side, x, w, delay, frame, fps}) => {
                 fontFamily: 'A2Z Medium, sans-serif',
                 fontSize: 110, lineHeight: 1.1,
                 letterSpacing: '0.01em',
-                color: hot ? YELLOW : '#7A7A7A',
-                textShadow: hot ? glow(0.8) : 'none',
+                color: hot ? WHITE : '#7A7A7A',
                 fontVariantNumeric: 'tabular-nums',
               }}
             >

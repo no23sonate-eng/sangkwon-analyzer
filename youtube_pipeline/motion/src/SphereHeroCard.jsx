@@ -97,7 +97,7 @@ export const SphereHeroCard = ({
             {compare.mainSub ? <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: MUTE}}>{compare.mainSub}</div> : null}
           </div>
           <div style={{position: 'absolute', left: 1120, top: 800, width: 560, textAlign: 'center', opacity: fadeIn(frame, 44)}}>
-            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, color: YELLOW, textShadow: glow(0.6), letterSpacing: '0.03em'}}>{compare.smallLabel}</div>
+            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, color: WHITE, letterSpacing: '0.03em'}}>{compare.smallLabel}</div>
             {compare.smallSub ? <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: WHITE}}>{compare.smallSub}</div> : null}
           </div>
         </>
@@ -128,7 +128,7 @@ export const SphereHeroCard = ({
                 <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.08em', color: a.hot ? WHITE : MUTE}}>
                   {a.label}
                 </div>
-                <div style={{marginTop: 2, fontFamily: 'A2Z Medium, sans-serif', fontSize: a.hot ? 84 : 56, letterSpacing: '0.01em', color: a.hot ? YELLOW : GRAY, textShadow: a.hot ? glow(0.7) : 'none', fontVariantNumeric: 'tabular-nums'}}>
+                <div style={{marginTop: 2, fontFamily: 'A2Z Medium, sans-serif', fontSize: a.hot ? 84 : 56, letterSpacing: '0.01em', color: a.hot ? WHITE : GRAY, fontVariantNumeric: 'tabular-nums'}}>
                   {a.value}
                 </div>
               </div>

@@ -90,6 +90,11 @@ def main():
     if args.ids:
         want = {int(x) for x in args.ids.split(',')}
         scenes = [s for s in scenes if s['id'] in want]
+    # use_v7 장면(실사/뉴스)은 v7 클립을 그대로 쓰므로 렌더 제외
+    skipped = [s['id'] for s in scenes if s.get('use_v7')]
+    if skipped:
+        print(f"skip (v7 유지): {skipped}", flush=True)
+    scenes = [s for s in scenes if not s.get('use_v7')]
 
     out_dir = os.path.join(proj_dir, 'v2_stills')
     os.makedirs(out_dir, exist_ok=True)

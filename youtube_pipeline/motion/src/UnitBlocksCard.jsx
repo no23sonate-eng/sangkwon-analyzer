@@ -55,7 +55,7 @@ export const UnitBlocksCard = ({
           })}
         </svg>
         <div style={{position: 'absolute', left: 0, width: 1920, top: 250 + rows * (B + G) + 36, textAlign: 'center', opacity: fadeIn(frame, 50)}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 76, color: YELLOW, textShadow: glow(0.8), fontVariantNumeric: 'tabular-nums'}}>
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 76, color: WHITE, fontVariantNumeric: 'tabular-nums'}}>
             {progress.filled}
           </span>
           <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 44, color: WHITE, marginLeft: 8}}>
@@ -116,7 +116,7 @@ export const UnitBlocksCard = ({
               <line x1={x0 - 20} y1={baseY + 6} x2={x0 + cols * (B + G) + 12} y2={baseY + 6} stroke={LINE} strokeWidth={1.5} />
             </svg>
             <div style={{position: 'absolute', left: x0 - 65, top: baseY + 28, width: groupW, textAlign: 'center', opacity: fadeIn(frame, 34 + gi * 8)}}>
-              <div style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: 40, letterSpacing: '0.02em', color: hot ? YELLOW : WHITE, textShadow: hot ? glow(0.5) : 'none', fontVariantNumeric: 'tabular-nums'}}>
+              <div style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: 40, letterSpacing: '0.02em', color: WHITE, fontVariantNumeric: 'tabular-nums'}}>
                 {g.note}
               </div>
               <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.05em', color: hot ? WHITE : MUTE}}>

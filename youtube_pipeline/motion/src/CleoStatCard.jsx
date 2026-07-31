@@ -125,9 +125,8 @@ export const CleoStatCard = ({
             fontFamily: 'A2Z Medium, sans-serif',
             fontSize: valueText && valueText.length > 6 ? 190 : 290,
             lineHeight: 1.05,
-            color: NEON,
+            color: WHITE, // 기본 글씨 화이트 — 옐로는 포인트 전용 (2026-07-31 지시)
             letterSpacing: '0.01em',
-            textShadow: glow(1),
             fontVariantNumeric: 'tabular-nums',
             opacity: valueOpacity,
           }}

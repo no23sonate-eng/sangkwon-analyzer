@@ -122,8 +122,7 @@ export const GeoMapCard = ({
                   fontFamily: 'A2Z Medium, sans-serif',
                   fontSize: 44,
                   letterSpacing: '0.04em',
-                  color: col,
-                  textShadow: m.hot ? glow(0.7) : 'none',
+                  color: m.dead ? col : WHITE,
                 }}
               >
                 {m.label}
