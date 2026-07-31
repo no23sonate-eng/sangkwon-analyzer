@@ -23,11 +23,11 @@
       "text": "이를 돕기 위해 기획재정부 관계자는 이렇게 말합니다. 기업 측이 2025년 착공을 희망하는데 행정 절차에 장기간이 소요되니, 부처 협의로 기간을 42개월에서 21개월로 단축하기로 했다는 겁니다.",
       "choice": {
         "candidate_index": 0,
-        "file": "broll_candidates/sec1_stat.mp4",
+        "file": "broll_candidates/article_cite/sec1_fnnews_cite.mp4",
         "type": "video",
         "source": "remotion",
         "source_id": null,
-        "url": null,
+        "url": "https://www.fnnews.com/news/202311080730224695",
         "page": null
       }
     },
@@ -83,11 +83,11 @@
       "text": "그리고 결국 스피어 공연장 유치 협약은 더 진행되지 않았습니다.",
       "choice": {
         "candidate_index": 0,
-        "file": "broll_candidates/sec5_headline.mp4",
+        "file": "broll_candidates/article_cite/sec5_nfz_cite.mp4",
         "type": "video",
         "source": "remotion",
         "source_id": null,
-        "url": null,
+        "url": "https://www.newsfreezone.co.kr/news/articleView.html?idxno=653219",
         "page": null
       }
     },
