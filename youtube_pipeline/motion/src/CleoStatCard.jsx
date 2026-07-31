@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 
 // Cleo Abram(@CleoAbram) 스타일 테스트 카드 — design_reference.md §11 스펙.
@@ -55,15 +55,14 @@ const PerspectiveFloor = ({opacity}) => {
 export const CleoStatCard = ({
   kicker = '서울 자치구 1인당 종합소득',
   label = '용산구',
-  valueTarget = 1.3,
-  valueSuffix = '억',
-  caption = '전국 1위 — 강남·서초 추월',
-  bars = [
-    {name: '용산구', value: 1.3, display: '1.3억', hot: true},
-    {name: '강남구', value: 1.17, display: '1.17억'},
-    {name: '서초구', value: 1.09, display: '1.09억'},
-  ],
-  source = '자료: 국세청 2024',
+  valueTarget = 0,
+  valueSuffix = '',
+  valueText = '', // 주면 카운트업 대신 이 문자열을 그대로 표시 (비숫자 값용)
+  decimals = 1, // 카운트업 소수 자리 (0이면 정수 + 천단위 콤마)
+  caption = '',
+  bars = [],
+  source = '',
+  bgImage = '', // motion/public/ 상대경로 — 풀블리드 실사 + 다크 오버레이
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -74,16 +73,36 @@ export const CleoStatCard = ({
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const shown = countUp.toFixed(1);
+  const shown = valueText
+    ? valueText
+    : decimals === 0
+      ? Math.round(countUp).toLocaleString('en-US')
+      : countUp.toFixed(decimals);
+  const valueOpacity = valueText ? interpolate(frame, [8, 24], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}) : 1;
   const captionIn = interpolate(frame, [50, 68], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const maxVal = Math.max(...bars.map((b) => b.value));
+  const maxVal = bars.length ? Math.max(...bars.map((b) => b.value)) : 1;
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PerspectiveFloor opacity={enter} />
+      {bgImage ? (
+        <>
+          <Img
+            src={staticFile(bgImage)}
+            style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover'}}
+          />
+          <div
+            style={{
+              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+              background: 'linear-gradient(180deg, rgba(10,10,10,.84) 0%, rgba(10,10,10,.62) 45%, rgba(10,10,10,.88) 100%)',
+            }}
+          />
+        </>
+      ) : (
+        <PerspectiveFloor opacity={enter} />
+      )}
 
       {/* 좌상단 킥커 — §11-2 좌상단 정렬 */}
       <div style={{position: 'absolute', top: 96, left: 120, opacity: enter}}>
@@ -96,7 +115,7 @@ export const CleoStatCard = ({
       </div>
 
       {/* 좌측 빅넘버 3단: 라벨(화이트) → 숫자(네온+발광) → 캡션(그레이) */}
-      <div style={{position: 'absolute', top: 268, left: 120, width: 880}}>
+      <div style={{position: 'absolute', top: 268, left: 120, width: bars.length ? 880 : 1680}}>
         <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 54, color: WHITE, letterSpacing: '0.06em', opacity: enter}}>
           {label}
         </div>
@@ -104,15 +123,17 @@ export const CleoStatCard = ({
           style={{
             marginTop: 6,
             fontFamily: 'A2Z Medium, sans-serif',
-            fontSize: 290,
+            fontSize: valueText && valueText.length > 6 ? 190 : 290,
             lineHeight: 1.05,
             color: NEON,
             letterSpacing: '0.01em',
             textShadow: glow(1),
+            fontVariantNumeric: 'tabular-nums',
+            opacity: valueOpacity,
           }}
         >
           {shown}
-          <span style={{fontSize: 150, marginLeft: 10}}>{valueSuffix}</span>
+          <span style={{fontSize: valueText && valueText.length > 6 ? 110 : 150, marginLeft: 10}}>{valueSuffix}</span>
         </div>
         <div
           style={{
@@ -129,6 +150,7 @@ export const CleoStatCard = ({
       </div>
 
       {/* 우측 미니멀 막대 — 가로 그리드선만, 강조 1개만 네온 */}
+      {bars.length ? (
       <div style={{position: 'absolute', top: 250, left: 1080, width: 700, height: 470}}>
         <svg width={700} height={470}>
           {[0, 1, 2, 3, 4].map((i) => {
@@ -194,6 +216,7 @@ export const CleoStatCard = ({
           ))}
         </div>
       </div>
+      ) : null}
 
       {/* 좌하단 출처 — 뮤트그레이 소형 (우측은 막대 라벨과 겹쳐 좌측 배치) */}
       <div

@@ -922,8 +922,15 @@ depth 정렬은 `(col+row)` 기준 zorder 로 처리 — 블록 개수가 많아
 | `YHeadlineCard` | 대형 타이포 선언 | 문장 일부만 옐로 발광, 실사 풀블리드+다크 오버레이(`bgImage`) 지원 |
 | `YRankBarsCard` | 순위 비교 | 가로 막대, 1위만 옐로+발광, 순위 번호·증감 주석 |
 | `YFlowCard` | 사업 구조·계산 흐름 도식 | 노드+화살표, 결과 노드만 옐로(§11-3 시선 유도), 노드 태그 배지 |
-| `CleoStatCard` | 빅넘버+미니 세로 막대 | 카운트업, 강조 1개만 옐로 (옐로로 재도색됨) |
+| `CleoStatCard` | 빅넘버+미니 세로 막대 | 카운트업(`decimals:0`=정수 콤마), `valueText`(비숫자 값), `bars` 생략 가능, `bgImage` 실사 배경 |
+| `YTableCard` | 수치 여러 개 (실적·계약조건) | 얇은 구분선+우측정렬, hot 값만 옐로, `closingLine` 옐로 요약 |
+| `YQuoteCard` | 인물 인용 | 대형 옐로 따옴표, `\n` 수동 줄바꿈(pre-line), `quote2` 2단 전환 |
+| `YCompareCard` | 두 입장/두 수치 대조 | hot 쪽만 옐로 박스, `value` 빅넘버 모드·`lines` 불릿 모드·`empty` 미확인 상태 |
 | `Floor3DCard` | **3D 공간·구조 설명** | Three.js(`@remotion/three`) 실제 3D — 아래 19-3 |
+
+실전 매핑 예시: `projects/하남스피어/v2_scenes.json` (v7 44개 장면의 v2
+재매핑 — 내용 유지, 표현만 교체). 일괄 스틸 렌더는
+`python3 youtube_pipeline/scripts/render_v2_stills.py <프로젝트명>`.
 
 ### 19-3. 3D 파이프라인 (검증 완료)
 

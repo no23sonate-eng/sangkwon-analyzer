@@ -18,6 +18,9 @@ import {Floor3DCard} from './Floor3DCard';
 import {YHeadlineCard} from './YHeadlineCard';
 import {YRankBarsCard} from './YRankBarsCard';
 import {YFlowCard} from './YFlowCard';
+import {YTableCard} from './YTableCard';
+import {YQuoteCard} from './YQuoteCard';
+import {YCompareCard} from './YCompareCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -185,6 +188,36 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', closingLine: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YTableCard"
+        component={YTableCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{rows: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YQuoteCard"
+        component={YQuoteCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{quote: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YCompareCard"
+        component={YCompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{left: {}, right: {}}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
       <Composition
