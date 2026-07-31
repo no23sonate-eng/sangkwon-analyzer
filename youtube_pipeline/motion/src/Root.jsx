@@ -19,6 +19,12 @@ import {YHeadlineCard} from './YHeadlineCard';
 import {YRankBarsCard} from './YRankBarsCard';
 import {YFlowCard} from './YFlowCard';
 import {YTableCard} from './YTableCard';
+import {GeoMapCard} from './GeoMapCard';
+import {SeatDotsCard} from './SeatDotsCard';
+import {UnitBlocksCard} from './UnitBlocksCard';
+import {TrendCard} from './TrendCard';
+import {TimelineBarsCard} from './TimelineBarsCard';
+import {SphereHeroCard} from './SphereHeroCard';
 import {YQuoteCard} from './YQuoteCard';
 import {YCompareCard} from './YCompareCard';
 
@@ -190,6 +196,26 @@ export const RemotionRoot = () => {
         defaultProps={{title: '', closingLine: ''}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
+      {[
+        ['GeoMapCard', GeoMapCard, {markers: []}],
+        ['SeatDotsCard', SeatDotsCard, {arenas: []}],
+        ['UnitBlocksCard', UnitBlocksCard, {groups: []}],
+        ['TrendCard', TrendCard, {series: []}],
+        ['TimelineBarsCard', TimelineBarsCard, {bars: []}],
+        ['SphereHeroCard', SphereHeroCard, {annotations: []}],
+      ].map(([id, comp, defaults]) => (
+        <Composition
+          key={id}
+          id={id}
+          component={comp}
+          fps={FPS}
+          width={1920}
+          height={1080}
+          durationInFrames={300}
+          defaultProps={defaults}
+          calculateMetadata={async ({props}) => durationFromProps({props})}
+        />
+      ))}
       <Composition
         id="YTableCard"
         component={YTableCard}
