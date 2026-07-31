@@ -13,6 +13,7 @@ import {BarChartCard} from './BarChartCard';
 import {SpecGridCard} from './SpecGridCard';
 import {TripleCompareCard} from './TripleCompareCard';
 import {CalendarCompareCard} from './CalendarCompareCard';
+import {CleoStatCard} from './CleoStatCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -180,6 +181,16 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', closingLine: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="CleoStatCard"
+        component={CleoStatCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>
