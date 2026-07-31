@@ -15,6 +15,9 @@ import {TripleCompareCard} from './TripleCompareCard';
 import {CalendarCompareCard} from './CalendarCompareCard';
 import {CleoStatCard} from './CleoStatCard';
 import {Floor3DCard} from './Floor3DCard';
+import {YHeadlineCard} from './YHeadlineCard';
+import {YRankBarsCard} from './YRankBarsCard';
+import {YFlowCard} from './YFlowCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -182,6 +185,36 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', closingLine: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YHeadlineCard"
+        component={YHeadlineCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{lines: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YRankBarsCard"
+        component={YRankBarsCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{rows: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YFlowCard"
+        component={YFlowCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{nodes: [], arrows: []}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
       <Composition

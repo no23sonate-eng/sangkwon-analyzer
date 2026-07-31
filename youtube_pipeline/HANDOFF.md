@@ -16,6 +16,13 @@
   TTS 대역 나레이션으로 타이밍을 잡고, 세계지도(한국 하이라이트)·그래프 카드·
   Pexels 실사·대형 타이포 2종으로 29초 영상을 완성. 이 프로젝트 폴더가
   "완성 상태의 정답 예시"다 (계획 JSON들의 reason 필드에 판단 근거 기록됨).
+- **v2 디자인 확정 (2026-07-31)**: 새 프로젝트 그래픽 기본값은
+  **순블랙 + 채널 옐로 `#FAFF2E` + 발광** (`design_reference.md` §19,
+  토큰은 `motion/src/v2shared.jsx`). v2 카드: YHeadlineCard(대형 타이포
+  ·실사 오버레이) / YRankBarsCard(랭킹 그래프) / YFlowCard(구조 도식) /
+  CleoStatCard(빅넘버) / **Floor3DCard(Three.js 실제 3D — 렌더 시
+  `--gl=angle` 필수, `ThreeCanvas` 에 `flat` 필수)**. 기존 B1M 카드는
+  하남스피어 재렌더 호환용으로 그대로 둠.
 - **모션그래픽 백엔드 추가 (2026-07-29)**: `youtube_pipeline/motion/`
   (Remotion/React) — matplotlib+PIL 로는 안 되는 진짜 그라디언트·자간·
   블러·스프링 애니메이션·숫자 카운트업을 실제 브라우저 렌더링으로 구현.

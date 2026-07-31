@@ -6,7 +6,7 @@ import {useA2ZFonts} from './Fonts';
 // 순블랙 풀블리드 + 네온 라임 단일 강조(발광) + 화이트/뮤트그레이 2보조.
 // B1M 계열 카드(shared.jsx BG_STYLE)와 톤이 완전히 달라 배경/색을 자체 정의한다.
 const BLACK = '#0A0A0A';
-const NEON = '#C6FF3D';
+const NEON = '#FAFF2E'; // 채널 실측 옐로(style_guide.md)로 교체 (2026-07-31)
 const WHITE = '#F5F5F0';
 const MUTE = '#5A5A5A';
 const GRID = 'rgba(255,255,255,0.07)';
@@ -14,9 +14,9 @@ const GRID = 'rgba(255,255,255,0.07)';
 // 네온 발광(bloom) — 실측 시그니처. 텍스트/도형 공용.
 const glow = (strength = 1) =>
   [
-    `0 0 ${8 * strength}px rgba(198,255,61,0.85)`,
-    `0 0 ${24 * strength}px rgba(198,255,61,0.45)`,
-    `0 0 ${64 * strength}px rgba(198,255,61,0.22)`,
+    `0 0 ${8 * strength}px rgba(250,255,46,0.85)`,
+    `0 0 ${24 * strength}px rgba(250,255,46,0.45)`,
+    `0 0 ${64 * strength}px rgba(250,255,46,0.22)`,
   ].join(', ');
 
 // §11-4 그리드 바닥 — 원근 격자 라인만 뼈대로 흉내(하단 앰비언스, 매우 옅게).
@@ -35,7 +35,7 @@ const PerspectiveFloor = ({opacity}) => {
   }
   return (
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity}}>
-      <g stroke="rgba(198,255,61,0.10)" strokeWidth={1}>
+      <g stroke="rgba(250,255,46,0.10)" strokeWidth={1}>
         {rays}
         {rows}
       </g>
@@ -149,7 +149,7 @@ export const CleoStatCard = ({
                   x={x} y={y} width={barW} height={h}
                   rx={barW * 0.08}
                   fill={b.hot ? NEON : MUTE}
-                  style={b.hot ? {filter: 'drop-shadow(0 0 14px rgba(198,255,61,0.7))'} : undefined}
+                  style={b.hot ? {filter: 'drop-shadow(0 0 14px rgba(250,255,46,0.7))'} : undefined}
                 />
                 <text
                   x={x + barW / 2} y={y - 22} textAnchor="middle"
