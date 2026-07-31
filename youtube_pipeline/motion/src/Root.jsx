@@ -13,6 +13,20 @@ import {BarChartCard} from './BarChartCard';
 import {SpecGridCard} from './SpecGridCard';
 import {TripleCompareCard} from './TripleCompareCard';
 import {CalendarCompareCard} from './CalendarCompareCard';
+import {CleoStatCard} from './CleoStatCard';
+import {Floor3DCard} from './Floor3DCard';
+import {YHeadlineCard} from './YHeadlineCard';
+import {YRankBarsCard} from './YRankBarsCard';
+import {YFlowCard} from './YFlowCard';
+import {YTableCard} from './YTableCard';
+import {GeoMapCard} from './GeoMapCard';
+import {SeatDotsCard} from './SeatDotsCard';
+import {UnitBlocksCard} from './UnitBlocksCard';
+import {TrendCard} from './TrendCard';
+import {TimelineBarsCard} from './TimelineBarsCard';
+import {SphereHeroCard} from './SphereHeroCard';
+import {YQuoteCard} from './YQuoteCard';
+import {YCompareCard} from './YCompareCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -180,6 +194,106 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{title: '', closingLine: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      {[
+        ['GeoMapCard', GeoMapCard, {markers: []}],
+        ['SeatDotsCard', SeatDotsCard, {arenas: []}],
+        ['UnitBlocksCard', UnitBlocksCard, {groups: []}],
+        ['TrendCard', TrendCard, {series: []}],
+        ['TimelineBarsCard', TimelineBarsCard, {bars: []}],
+        ['SphereHeroCard', SphereHeroCard, {annotations: []}],
+      ].map(([id, comp, defaults]) => (
+        <Composition
+          key={id}
+          id={id}
+          component={comp}
+          fps={FPS}
+          width={1920}
+          height={1080}
+          durationInFrames={300}
+          defaultProps={defaults}
+          calculateMetadata={async ({props}) => durationFromProps({props})}
+        />
+      ))}
+      <Composition
+        id="YTableCard"
+        component={YTableCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{rows: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YQuoteCard"
+        component={YQuoteCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{quote: ''}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YCompareCard"
+        component={YCompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{left: {}, right: {}}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YHeadlineCard"
+        component={YHeadlineCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{lines: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YRankBarsCard"
+        component={YRankBarsCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{rows: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="YFlowCard"
+        component={YFlowCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{nodes: [], arrows: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="Floor3DCard"
+        component={Floor3DCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="CleoStatCard"
+        component={CleoStatCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>
