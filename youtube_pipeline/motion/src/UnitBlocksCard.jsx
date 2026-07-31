@@ -70,7 +70,8 @@ export const UnitBlocksCard = ({
   const groupW = cols * (B + G) + 130; // 블록 그리드 + 여백
   const totalW = groups.length * groupW;
   const startX = (1920 - totalW) / 2 + 65;
-  const baseY = 690;
+  // 그룹 라벨(baseY+28~+106)이 Footer(y≈744~)와 겹치지 않게 블록을 위로
+  const baseY = 610;
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
