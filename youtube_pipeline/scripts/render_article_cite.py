@@ -57,9 +57,13 @@ def render(shot_png, rects_json, out_mp4, frames,
         else:
             wp = smooth((t-T2)/(T3-T2))
             tipx, tipy = tip_at(wp)
-            tx = sent_cx*0.65 + tipx*0.35
+            # 마커 끝을 더 적극적으로 따라가고(0.55), 마커 앞쪽 320px이
+            # 항상 프레임 안에 들어오도록 룩어헤드 클램프 — 줄 오른쪽 끝
+            # 글자가 잘리지 않게 한다.
+            tx = sent_cx*0.45 + tipx*0.55
+            tx = max(tx, tipx + 320 - vw/2)
             ty = sent_cy*0.75 + tipy*0.25
-        cam_x += (tx-cam_x)*0.07; cam_y += (ty-cam_y)*0.07
+        cam_x += (tx-cam_x)*0.085; cam_y += (ty-cam_y)*0.085
         x0 = max(0, min(base.width-vw, cam_x-vw/2)); y0 = max(0, min(base.height-vh, cam_y-vh/2))
         frame = base_g.crop((int(x0), int(y0), int(x0+vw), int(y0+vh)))
         wp = smooth((t-T2)/(T3-T2))
