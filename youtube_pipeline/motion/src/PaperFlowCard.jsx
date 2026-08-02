@@ -95,7 +95,7 @@ const Party = ({cx, cy, node, o}) => (
       </svg>
     </div>
     <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
-      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 38, color: INK, lineHeight: 1.3}}>{node.label}</div>
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 38, color: INK, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
       {node.sub ? (
         <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, lineHeight: 1.35, color: INK_SOFT}}>{node.sub}</div>
       ) : null}
@@ -177,7 +177,7 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
               </svg>
             </div>
             {/* 라벨 — hot 은 옐로 하이라이트 바를 뒤에 깐다 */}
-            <div style={{position: 'absolute', left: cxN - BOX / 2 - 20, width: BOX + 40, top: cy + 26, textAlign: 'center', opacity: o}}>
+            <div style={{position: 'absolute', left: cxN - BOX / 2 - 50, width: BOX + 100, top: cy + 26, textAlign: 'center', opacity: o, wordBreak: 'keep-all'}}>
               <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: hot ? 38 : 33,
                             color: INK, lineHeight: 1.3, padding: '2px 10px',
                             background: hot ? 'rgba(250,255,46,0.75)' : 'none', boxDecorationBreak: 'clone'}}>
