@@ -30,11 +30,16 @@ export const GridBg = ({color = 'rgba(255,255,255,0.05)'}) => {
   );
 };
 
+// 2026-08-02 사용자 피드백: 실사/영상 위 글씨가 잘 안 보임 → 흰색 + 한 단계
+// 굵게. 미디어 배경 카드에는 TEXT_SHADOW 를 함께 얹어 가독성을 보장한다.
 export const TEXT = {
-  title: {color: '#C7CBD3', fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em'},
-  value: {color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.045em'},
-  label: {color: '#8D96A0', fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em'},
+  title: {color: '#FFFFFF', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em'},
+  value: {color: '#FFFFFF', fontFamily: 'A2Z Medium, sans-serif', letterSpacing: '0.04em'},
+  label: {color: '#CDD3DA', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em'},
 };
+
+// 이미지/영상 위 텍스트용 그림자 — 밝은 배경 프레임에서도 글자가 뜬다.
+export const TEXT_SHADOW = '0 2px 18px rgba(0,0,0,0.55), 0 1px 4px rgba(0,0,0,0.45)';
 
 export const ACCENT = '#8E939D';
 
