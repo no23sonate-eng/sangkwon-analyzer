@@ -44,7 +44,7 @@ export const HeadlineCard = ({
       >
         <div
           style={{
-            fontSize: 56, color: line1Color, fontFamily: 'A2Z Light, sans-serif',
+            fontSize: 64, color: line1Color, fontFamily: 'A2Z Light, sans-serif',
             letterSpacing: '0.01em', lineHeight: 1.4,
           }}
         >
@@ -53,7 +53,7 @@ export const HeadlineCard = ({
         {line2 ? (
           <div
             style={{
-              fontSize: 56, color: line2Color, fontFamily: 'A2Z Regular, sans-serif',
+              fontSize: 64, color: line2Color, fontFamily: 'A2Z Regular, sans-serif',
               letterSpacing: '0.01em', marginTop: 10, opacity: line2Opacity,
             }}
           >

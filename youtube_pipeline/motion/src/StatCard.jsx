@@ -65,7 +65,7 @@ export const StatCard = ({
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, transform: `translateY(${titleY}px)`,
+          fontSize: 44, opacity: titleOpacity, transform: `translateY(${titleY}px)`,
           ...TEXT.title, color: framed ? '#1B1E22' : TEXT.title.color,
         }}
       >
@@ -85,7 +85,7 @@ export const StatCard = ({
       <div
         style={{
           position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: subOpacity * stage1Opacity, ...TEXT.label,
+          fontSize: 46, opacity: subOpacity * stage1Opacity, ...TEXT.label,
           ...(hasMedia && !bgInset && !framed ? {color: '#FFFFFF', textShadow: TEXT_SHADOW} : {}),
         }}
       >
@@ -95,8 +95,8 @@ export const StatCard = ({
       {caption ? (
         <div
           style={{
-            position: 'absolute', top: 670, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 26, fontFamily: 'A2Z Regular, sans-serif',
+            position: 'absolute', top: 692, left: 0, width: '100%', textAlign: 'center',
+            fontSize: 34, fontFamily: 'A2Z Regular, sans-serif',
             ...(hasMedia && !bgInset && !framed ? {color: '#E4E8ED', textShadow: TEXT_SHADOW} : {color: '#6B7280'}),
             opacity: subOpacity * stage1Opacity,
           }}
@@ -119,7 +119,7 @@ export const StatCard = ({
           <div
             style={{
               position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
-              fontSize: 34, opacity: stage2Opacity, ...TEXT.label,
+              fontSize: 46, opacity: stage2Opacity, ...TEXT.label,
               ...(hasMedia && !bgInset && !framed ? {color: '#FFFFFF', textShadow: TEXT_SHADOW} : {}),
             }}
           >
