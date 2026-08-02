@@ -97,7 +97,7 @@ export const SkylineCompareCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const baseY = CONTENT_BOTTOM - 100;
+  const baseY = CONTENT_BOTTOM - 58; // 바닥선을 화면 아래쪽으로
   const n = buildings.length;
   const slot = Math.min(340, 1500 / Math.max(1, n));
   const startX = (1920 - slot * n) / 2 + slot / 2;
@@ -107,15 +107,15 @@ export const SkylineCompareCard = ({
       <PaperBg />
       <PaperTitle title={title} sub={sub} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        {/* 높이 가이드 점선 — 가장 큰 실루엣 꼭대기 */}
-        <line x1={startX - slot / 2 - 40} y1={baseY - maxH} x2={startX + slot * (n - 1) + slot / 2 + 40} y2={baseY - maxH}
-              stroke={INK} strokeWidth={1.2} strokeDasharray="3 7" opacity={0.35 * fadeIn(frame, 46)} />
         {buildings.map((b, i) => {
           const grow = spring({frame: frame - 8 - i * 6, fps, config: {damping: 200}, durationInFrames: 36});
           const hot = Boolean(b.hot);
           const fill = hot ? YELLOW : TONES[(b.tone ?? i) % TONES.length];
           return (
             <g key={i}>
+              {/* 접지 그림자 — 실루엣이 지면에 서 있다는 기준감 */}
+              <ellipse cx={startX + i * slot} cy={baseY + 2} rx={Math.min(190, slot * 0.62) * (b.shape === 'sphere' ? 0.72 : 0.55)} ry={7}
+                       fill={INK} opacity={0.13 * grow} />
               <Silhouette cx={startX + i * slot} baseY={baseY} W={Math.min(190, slot * 0.62)}
                           H={Math.max(50, maxH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill={fill} grow={grow} />
               {hot ? (
@@ -131,12 +131,18 @@ export const SkylineCompareCard = ({
         const cx = startX + i * slot;
         const hot = Boolean(b.hot);
         const o = fadeIn(frame, 24 + i * 6);
-        const topY = baseY - Math.max(50, maxH * (b.value ?? 0.5)) -
-          (b.shape === 'setback' || b.shape === 'taper' ? maxH * (b.value ?? 0.5) * 0.18 : b.shape === 'slender' ? maxH * (b.value ?? 0.5) * 0.2 : 0);
+        const bH = Math.max(50, maxH * (b.value ?? 0.5));
+        const bW = Math.min(190, slot * 0.62);
+        let topY = baseY - bH;
+        if (b.shape === 'sphere') {
+          const r = Math.min(bW * 0.78, bH / 1.72);
+          topY = baseY - r * 0.86 - r; // 구 꼭대기
+        } else if (b.shape === 'setback' || b.shape === 'taper') topY -= bH * 0.18;
+        else if (b.shape === 'slender') topY -= bH * 0.2;
         return (
           <React.Fragment key={i}>
             {b.note ? (
-              <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: topY - 60, textAlign: 'center', opacity: o,
+              <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: topY - 52, textAlign: 'center', opacity: o,
                            fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: 34, color: INK, fontVariantNumeric: 'tabular-nums'}}>
                 {b.note}
               </div>

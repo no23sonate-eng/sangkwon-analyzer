@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame, interpolate} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, Bracket, INK, INK_SOFT, CONTENT_BOTTOM, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 종이 위 이미지 프레임 카드 — B1M의 "자료 이미지를 흰 매트 액자로 종이에
 // 얹는" 문법. 이미지 위 오버라인 브래킷 + 볼드 타이틀, 아래 캡션.
@@ -32,14 +32,10 @@ export const PaperImageCard = ({
       <PaperBg />
       <PaperTitle title={title} sub={sub} />
       {imageTitle ? (
-        <>
-          <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: o}}>
-            <Bracket x={left} y={top - 46} w={W} />
-          </svg>
-          <div style={{position: 'absolute', left, top: top - 88, fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.06em', color: INK, opacity: o}}>
-            {imageTitle}
-          </div>
-        </>
+        <div style={{position: 'absolute', left, width: W, top: top - 52, textAlign: 'center',
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.06em', color: INK, opacity: o}}>
+          {imageTitle}
+        </div>
       ) : null}
       <div style={{position: 'absolute', left, top, width: W, height: H, background: '#FFFFFF',
                    boxShadow: '0 10px 34px rgba(35,38,43,0.22)', padding: MAT, opacity: o}}>
@@ -50,7 +46,7 @@ export const PaperImageCard = ({
         </div>
       </div>
       {caption ? (
-        <div style={{position: 'absolute', left: left + 4, width: W - 8, top: top + H + 20, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.04em', color: INK_SOFT, opacity: fadeIn(frame, 26), whiteSpace: 'nowrap', overflow: 'hidden'}}>
+        <div style={{position: 'absolute', left: left + 4, width: W - 8, top: top + H + 20, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.04em', color: INK_SOFT, opacity: fadeIn(frame, 26), whiteSpace: 'nowrap', overflow: 'hidden'}}>
           {caption}
         </div>
       ) : null}

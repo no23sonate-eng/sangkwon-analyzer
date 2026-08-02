@@ -84,7 +84,26 @@ const Icon = ({name, size = 74, stroke = INK}) => {
   }
 };
 
-export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], source = ''}) => {
+// exchange 모드 — 두 주체가 주고받는 구조를 명시 (선형 나열보다 계약 관계에 적합)
+// exchange: {left:{icon,label,sub}, right:{icon,label,sub}, give:'좌→우 라벨', get:'우→좌 라벨'}
+const Party = ({cx, cy, node, o}) => (
+  <>
+    <div style={{position: 'absolute', left: cx - 130, top: cy - 170, width: 260, height: 170, opacity: o,
+                 display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      <svg width={170} height={170} viewBox="-50 -50 100 100">
+        <Icon name={node.icon} stroke={INK} />
+      </svg>
+    </div>
+    <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
+      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 38, color: INK, lineHeight: 1.3}}>{node.label}</div>
+      {node.sub ? (
+        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, lineHeight: 1.35, color: INK_SOFT}}>{node.sub}</div>
+      ) : null}
+    </div>
+  </>
+);
+
+export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], exchange = null, source = ''}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const n = nodes.length;
@@ -93,6 +112,50 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], so
   const totalW = n * BOX + (n - 1) * gap;
   const startX = (1920 - totalW) / 2;
   const cy = 470;
+
+  if (exchange) {
+    const cy = 480;
+    const LX = 500, RX = 1420;
+    const AX0 = LX + 250, AX1 = RX - 250;
+    const oL = fadeIn(frame, 8), oR = fadeIn(frame, 16);
+    const oGive = fadeIn(frame, 30), oGet = fadeIn(frame, 46);
+    return (
+      <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+        <PaperBg />
+        <PaperTitle title={title} sub={sub} />
+        <Party cx={LX} cy={cy} node={exchange.left} o={oL} />
+        <Party cx={RX} cy={cy} node={exchange.right} o={oR} />
+        <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+          {/* 위 화살표: 좌 → 우 (주는 것) */}
+          <g opacity={oGive}>
+            <line x1={AX0} y1={cy - 96} x2={AX1 - 14} y2={cy - 96} stroke={INK} strokeWidth={2.6} />
+            <polygon points={`${AX1},${cy - 96} ${AX1 - 17},${cy - 104} ${AX1 - 17},${cy - 88}`} fill={INK} />
+          </g>
+          {/* 아래 화살표: 우 → 좌 (받는 것) */}
+          <g opacity={oGet}>
+            <line x1={AX1} y1={cy - 22} x2={AX0 + 14} y2={cy - 22} stroke={INK} strokeWidth={2.6} />
+            <polygon points={`${AX0},${cy - 22} ${AX0 + 17},${cy - 30} ${AX0 + 17},${cy - 14}`} fill={INK} />
+          </g>
+        </svg>
+        {exchange.give ? (
+          <div style={{position: 'absolute', left: AX0 - 60, width: AX1 - AX0 + 120, bottom: 1080 - (cy - 116), textAlign: 'center', opacity: oGive, lineHeight: 1.65}}>
+            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 29, color: INK, letterSpacing: '0.03em',
+                          background: 'rgba(250,255,46,0.75)', padding: '4px 14px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
+              {exchange.give}
+            </span>
+          </div>
+        ) : null}
+        {exchange.get ? (
+          <div style={{position: 'absolute', left: AX0, width: AX1 - AX0, top: cy + 6, textAlign: 'center', opacity: oGet}}>
+            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: INK_SOFT, letterSpacing: '0.03em'}}>
+              {exchange.get}
+            </span>
+          </div>
+        ) : null}
+        <PaperSource source={source} />
+      </AbsoluteFill>
+    );
+  }
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
