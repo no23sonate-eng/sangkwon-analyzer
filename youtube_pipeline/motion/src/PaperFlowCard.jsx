@@ -8,7 +8,7 @@ import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, fadeIn} from '.
 // arrows: ['화살표 위 라벨', ...] (nodes-1 개, 생략 가능)
 // icon: 'money' | 'building' | 'gov' | 'doc' | 'person' | 'globe' | 'key' | 'clock'
 const Icon = ({name, size = 74, stroke = INK}) => {
-  const s = size, sw = 3.4;
+  const s = size, sw = 2.8;
   const P = {stroke, strokeWidth: sw, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round'};
   switch (name) {
     case 'money':
@@ -100,34 +100,39 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], so
       <PaperTitle title={title} sub={sub} />
       {nodes.map((nd, i) => {
         const x = startX + i * (BOX + gap);
+        const cxN = x + BOX / 2;
         const hot = Boolean(nd.hot);
         const o = fadeIn(frame, 10 + i * 12);
+        const iconScale = hot ? 1.22 : 1;
         return (
           <React.Fragment key={i}>
-            <div style={{position: 'absolute', left: x, top: cy - BOX / 2, width: BOX, height: BOX, opacity: o,
-                         background: hot ? 'rgba(250,255,46,0.55)' : 'rgba(255,255,255,0.55)',
-                         border: `3px solid ${INK}`, borderRadius: 10,
-                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14}}>
-              <svg width={100} height={100} viewBox="-50 -50 100 100">
-                <Icon name={nd.icon} />
+            {/* 자유 배치 아이콘 (박스 없음 — 레퍼런스 문법) */}
+            <div style={{position: 'absolute', left: cxN - 80, top: cy - 150, width: 160, height: 160, opacity: o,
+                         display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <svg width={150} height={150} viewBox="-50 -50 100 100" style={{transform: `scale(${iconScale})`}}>
+                <Icon name={nd.icon} stroke={INK} />
               </svg>
-              <div style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: 32, color: INK, textAlign: 'center', lineHeight: 1.25, padding: '0 12px'}}>
-                {nd.label}
-              </div>
             </div>
-            {nd.sub ? (
-              <div style={{position: 'absolute', left: x - 40, width: BOX + 80, top: cy + BOX / 2 + 16, textAlign: 'center', opacity: o,
-                           fontFamily: 'A2Z Light, sans-serif', fontSize: 25, lineHeight: 1.35, color: INK_SOFT}}>
-                {nd.sub}
-              </div>
-            ) : null}
+            {/* 라벨 — hot 은 옐로 하이라이트 바를 뒤에 깐다 */}
+            <div style={{position: 'absolute', left: cxN - BOX / 2 - 20, width: BOX + 40, top: cy + 26, textAlign: 'center', opacity: o}}>
+              <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: hot ? 38 : 33,
+                            color: INK, lineHeight: 1.3, padding: '2px 10px',
+                            background: hot ? 'rgba(250,255,46,0.75)' : 'none', boxDecorationBreak: 'clone'}}>
+                {nd.label}
+              </span>
+              {nd.sub ? (
+                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, lineHeight: 1.35, color: INK_SOFT, letterSpacing: '0.02em'}}>
+                  {nd.sub}
+                </div>
+              ) : null}
+            </div>
             {i < n - 1 ? (
               <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: fadeIn(frame, 20 + i * 12)}}>
-                <line x1={x + BOX + 12} y1={cy} x2={x + BOX + gap - 20} y2={cy} stroke={INK} strokeWidth={3} />
-                <polygon points={`${x + BOX + gap - 8},${cy} ${x + BOX + gap - 26},${cy - 9} ${x + BOX + gap - 26},${cy + 9}`} fill={INK} />
+                <line x1={x + BOX - 6} y1={cy - 64} x2={x + BOX + gap + 4} y2={cy - 64} stroke={INK} strokeWidth={2.4} />
+                <polygon points={`${x + BOX + gap + 16},${cy - 64} ${x + BOX + gap + 1},${cy - 71} ${x + BOX + gap + 1},${cy - 57}`} fill={INK} />
                 {arrows[i] ? (
-                  <text x={x + BOX + gap / 2 - 4} y={cy - 20} textAnchor="middle"
-                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, fill: INK_SOFT, letterSpacing: '0.04em'}}>
+                  <text x={x + BOX + gap / 2} y={cy - 82} textAnchor="middle"
+                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 23, fill: INK_SOFT, letterSpacing: '0.06em'}}>
                     {arrows[i]}
                   </text>
                 ) : null}

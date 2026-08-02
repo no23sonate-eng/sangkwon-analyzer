@@ -30,6 +30,7 @@ import {YCompareCard} from './YCompareCard';
 import {SkylineCompareCard} from './SkylineCompareCard';
 import {TowerGaugeCard} from './TowerGaugeCard';
 import {PaperFlowCard} from './PaperFlowCard';
+import {PaperImageCard} from './PaperImageCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -327,6 +328,16 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{nodes: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="PaperImageCard"
+        component={PaperImageCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>

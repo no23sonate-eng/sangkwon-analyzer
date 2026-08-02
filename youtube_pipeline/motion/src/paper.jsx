@@ -15,6 +15,34 @@ export const PAPER_LINE = 'rgba(35,38,43,0.10)'; // 그리드선
 export const SUBTITLE_SAFE_BOTTOM = 260;
 export const CONTENT_BOTTOM = 1080 - SUBTITLE_SAFE_BOTTOM; // 820
 
+// 실루엣 톤 패밀리 (B1M의 5단계 블루 패밀리를 잉크 계열로 번역)
+// — 건물/막대마다 다른 톤을 순환시켜 단조로움을 없앤다. 옐로는 강조 전용.
+export const TONES = ['#B9BFC9', '#5C6470', '#8F97A3', '#3A414C', '#A8B0BC'];
+
+// 오버라인/언더라인 브래킷 (끝에 짧은 틱) — B1M 라벨·수치 묶음 문법
+export const Bracket = ({x, y, w, tick = 10, stroke = INK, strokeWidth = 2, opacity = 1, below = false}) => (
+  <g opacity={opacity} stroke={stroke} strokeWidth={strokeWidth}>
+    <line x1={x} y1={y} x2={x + w} y2={y} />
+    <line x1={x} y1={y} x2={x} y2={y + (below ? -tick : tick)} />
+    <line x1={x + w} y1={y} x2={x + w} y2={y + (below ? -tick : tick)} />
+  </g>
+);
+
+// 빅 스탯 타이포 블록 — 큰 볼드 수치 + 오른쪽 2줄 얇은 라벨 ("72% | Owner/occupied")
+export const BigStat = ({value, unit = '%', label = '', color = INK, size = 92, opacity = 1}) => (
+  <div style={{display: 'inline-flex', alignItems: 'baseline', gap: 16, opacity}}>
+    <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: size, color, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.01em'}}>
+      {value}
+      <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: size * 0.62}}>{unit}</span>
+    </span>
+    {label ? (
+      <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: size * 0.3, lineHeight: 1.22, color: INK_SOFT, whiteSpace: 'pre-line', letterSpacing: '0.04em'}}>
+        {label}
+      </span>
+    ) : null}
+  </div>
+);
+
 export const fadeIn = (frame, start, len = 14) => {
   const t = Math.max(0, Math.min(1, (frame - start) / len));
   return t * t * (3 - 2 * t);
