@@ -32,7 +32,7 @@ export const TowerGaugeCard = ({title = '', sub = '', items = [], source = ''}) 
           <React.Fragment key={i}>
             {/* 공연장 이름 — 돔 위 가운데 정렬 */}
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: baseY - DOME_H - 96, textAlign: 'center',
-                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.05em', color: INK, opacity: o}}>
+                         fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 34, letterSpacing: '0.01em', color: INK, opacity: o}}>
               {it.label}
             </div>
             <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: o}}>

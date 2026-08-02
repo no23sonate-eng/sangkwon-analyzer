@@ -76,12 +76,12 @@ export const PaperBg = () => (
 export const PaperTitle = ({title, sub = ''}) => {
   const frame = useCurrentFrame();
   return (
-    <div style={{position: 'absolute', top: 74, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-      <div style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 44, letterSpacing: '0.06em', color: INK}}>
+    <div style={{position: 'absolute', top: 70, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, letterSpacing: '-0.01em', color: INK}}>
         {title}
       </div>
       {sub ? (
-        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 26, letterSpacing: '0.08em', color: INK_SOFT}}>
+        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.08em', color: INK_SOFT}}>
           {sub}
         </div>
       ) : null}

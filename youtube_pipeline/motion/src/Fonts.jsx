@@ -12,6 +12,7 @@ const WEIGHTS = {
   'A2Z Light': 'A2Z-3Light.ttf',
   'A2Z Regular': 'A2Z-4Regular.ttf',
   'A2Z Medium': 'A2Z-5Medium.ttf',
+  'Pretendard Bold': 'Pretendard-Bold.otf',
 };
 
 let loaded = false;

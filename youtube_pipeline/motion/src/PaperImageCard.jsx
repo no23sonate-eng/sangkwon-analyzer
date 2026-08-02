@@ -33,7 +33,7 @@ export const PaperImageCard = ({
       <PaperTitle title={title} sub={sub} />
       {imageTitle ? (
         <div style={{position: 'absolute', left, width: W, top: top - 52, textAlign: 'center',
-                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.06em', color: INK, opacity: o}}>
+                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 32, letterSpacing: '0.01em', color: INK, opacity: o}}>
           {imageTitle}
         </div>
       ) : null}

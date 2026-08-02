@@ -111,10 +111,10 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
   const gap = Math.min(190, (1620 - n * BOX) / Math.max(1, n - 1) || 0);
   const totalW = n * BOX + (n - 1) * gap;
   const startX = (1920 - totalW) / 2;
-  const cy = 470;
+  const cy = 545; // 타이틀 아래~하단 사이 광학 중심
 
   if (exchange) {
-    const cy = 480;
+    const cy = 545;
     const LX = 500, RX = 1420;
     const AX0 = LX + 250, AX1 = RX - 250;
     const oL = fadeIn(frame, 8), oR = fadeIn(frame, 16);

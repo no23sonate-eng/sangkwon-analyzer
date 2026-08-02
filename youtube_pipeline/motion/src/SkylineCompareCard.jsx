@@ -143,12 +143,12 @@ export const SkylineCompareCard = ({
           <React.Fragment key={i}>
             {b.note ? (
               <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: topY - 52, textAlign: 'center', opacity: o,
-                           fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: 34, color: INK, fontVariantNumeric: 'tabular-nums'}}>
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 38, color: INK, fontVariantNumeric: 'tabular-nums'}}>
                 {b.note}
               </div>
             ) : null}
             <div style={{position: 'absolute', left: cx - slot / 2 + 8, width: slot - 16, top: baseY + 18, textAlign: 'center', opacity: o}}>
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, lineHeight: 1.4, color: hot ? INK : INK_SOFT, letterSpacing: '0.03em', whiteSpace: 'pre-line'}}>
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26, lineHeight: 1.4, color: hot ? INK : INK_SOFT, letterSpacing: '0.03em', whiteSpace: 'pre-line'}}>
                 {b.label}
               </div>
             </div>
