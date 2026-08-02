@@ -951,3 +951,24 @@ depth 정렬은 `(col+row)` 기준 zorder 로 처리 — 블록 개수가 많아
   (상 0.82 / 중 0.6 / 하 0.88 그라디언트)를 깔고 텍스트를 얹는다.
 - 출처는 Wikimedia 등 라이선스 명시 소스만, `credits.txt` 에 기록
   (`motion/public/demo/credits.txt` 참고).
+
+## 19. 종이 설명 그래픽 3종 — 로직/구조 설명 전용 (2026-08-02)
+
+> 레퍼런스: The B1M "Why New York's Billionaires' Row Is Half Empty"
+> (Wehsz38P74g) 스토리보드 분석. 이 채널이 개념·구조·비교를 "설명"할 때
+> 쓰는 밝은 종이+플랫 실루엣 문법을 채널 팔레트로 번역해 컴포넌트화.
+> 실사 B-roll 이나 다크 카드가 아니라 **"로직을 그림으로 설명해야 하는
+> 구간"** 에 적극 사용할 것 — 토큰은 `motion/src/paper.jsx`.
+
+- 팔레트: 종이 #EFEAE3(크림, 실사 액자와 동일) + 옅은 격자 / 잉크
+  #23262B / 비강조 #9AA0A8 / 강조 #FAFF2E (외곽선은 항상 잉크와 병용,
+  카드당 강조 1개 원칙 유지)
+- 공통: 상단 중앙 소형 타이틀(PaperTitle), 좌하단 출처(PaperSource),
+  자막 안전영역(y>820) 준수
+- `SkylineCompareCard` — 빌딩 실루엣 비교(높이=수치). 규모·순위 비교.
+  crown: flat/spire/antenna/dome. hot 실루엣만 옐로.
+- `TowerGaugeCard` — 빌딩 윤곽 안이 %만큼 차오르는 게이지 + 큰 숫자
+  카운트업. 공정률·점유율·달성률. (레퍼런스 "% Owner occupied" 문법)
+- `PaperFlowCard` — 격자 종이 위 아이콘 노드 플로우(화살표 라벨 지원).
+  구조·계약·돈의 흐름 설명. 아이콘: money/building/gov/doc/person/
+  globe/key/clock (내장 SVG 라인 아이콘).

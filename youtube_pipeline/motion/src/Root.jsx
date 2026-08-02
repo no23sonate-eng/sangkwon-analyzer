@@ -27,6 +27,9 @@ import {TimelineBarsCard} from './TimelineBarsCard';
 import {SphereHeroCard} from './SphereHeroCard';
 import {YQuoteCard} from './YQuoteCard';
 import {YCompareCard} from './YCompareCard';
+import {SkylineCompareCard} from './SkylineCompareCard';
+import {TowerGaugeCard} from './TowerGaugeCard';
+import {PaperFlowCard} from './PaperFlowCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -294,6 +297,36 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="SkylineCompareCard"
+        component={SkylineCompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{buildings: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="TowerGaugeCard"
+        component={TowerGaugeCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{items: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="PaperFlowCard"
+        component={PaperFlowCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{nodes: []}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>
