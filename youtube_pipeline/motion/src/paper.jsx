@@ -76,7 +76,7 @@ export const PaperBg = () => (
 export const PaperTitle = ({title, sub = ''}) => {
   const frame = useCurrentFrame();
   return (
-    <div style={{position: 'absolute', top: 70, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
+    <div style={{position: 'absolute', top: 138, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
       <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, letterSpacing: '-0.01em', color: INK}}>
         {title}
       </div>
