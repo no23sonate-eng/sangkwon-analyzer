@@ -1055,3 +1055,75 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
      스크롤 완료 → 완전 정지(0.8초) → 그다음 형광펜
   2. 형광펜은 ease-out, 줄마다 살짝 겹치는 텀 (사람이 긋는 리듬)
   3. 스크롤과 줌을 동시에 하지 않는다 (스크롤 먼저, 도착 후 살짝 줌)
+
+## 21. 그래픽 컴포넌트 전수 카탈로그 (2026-08-03 저장 · 이 절이 최종본)
+
+> "여기까지 방식은 저장해. 디자인 그래픽 모든 요소" — 아래가 현재 채널의
+> 그래픽 자산 **전부**다. 새 영상은 이 카탈로그에서 골라 쓰고, 없으면
+> §20 규칙(팔레트·타이포·모션)에 맞춰 새로 만든 뒤 여기에 추가한다.
+> 파일 위치: `youtube_pipeline/motion/src/*.jsx`, 렌더는 Remotion.
+
+### 21-1. 종이 설명 그래픽 — 로직·구조 설명 전용 (기본 톤: 크림 #EFEAE3)
+
+토큰: `paper.jsx` (PaperBg / PaperTitle / PaperSource / Bracket / BigStat / TONES)
+
+| 컴포넌트 | 쓰임 | 핵심 props |
+|---|---|---|
+| `SkylineCompareCard` | 규모 비교 (좌석·높이). 실루엣이 자라남 | `buildings:[{label,value,note,hot,shape,tone}]`, `maxH` |
+| `TowerGaugeCard` | 공연장 진행률. 돔 객석이 아래부터 점등 | `items:[{label,pct,sub,note}]` |
+| `PaperFlowCard` | 구조·흐름. 선형 3노드 또는 **exchange(주고받기)** | `nodes[]`+`arrows[]` / `exchange:{left,right,give,get}` |
+| `PaperImageCard` | 자료 사진을 흰 매트 액자로 종이에 얹음 | `image`, `imageTitle`, `caption`, `wide`, `kenBurns` |
+
+- 실루엣 `shape`: sphere(구형 공연장) / arena / slender / setback / taper / slab
+- 아이콘: money · building · gov · doc · person · globe · key · clock
+- 공통: 타이틀 top 138 Pretendard Bold 52 / 접지 그림자로 지면 기준감 /
+  강조는 옐로 1곳 / 브래킷(`[`) 표기는 **쓰지 않음**
+
+### 21-2. 기사 인용 (§20-6 참조)
+
+| 컴포넌트 | 쓰임 |
+|---|---|
+| `NewsQuoteCard` | 짧고 강한 인용(~10초). 기사 사진 위 헤드라인 2줄 |
+| `scripts/render_article_cite_v2.py` | 긴 인용(15초+). 지면 스크롤 → 정지 → 형광펜 |
+| `scripts/article_cite_shot.mjs` | 기사 로컬 재조판 + 강조 문구 줄 단위 rect 추출 |
+
+기사 수집: 브라우저 외부접속이 막히므로 `curl` 로 HTML·사진을 받아
+로컬에서 재조판(`file://`) 후 스크린샷. 사진은 `motion/public/news/`에
+출처(credits.txt)와 함께 보관.
+
+### 21-3. 실사 배경 카드 — 현장·사례 (토큰: `shared.jsx`)
+
+| 컴포넌트 | 쓰임 |
+|---|---|
+| `StatCard` | 큰 수치 1개(+2단 전환). 실사 배경/인셋/액자 지원 |
+| `HeadlineCard` | 문장 1~2줄. 얼굴샷·풀블리드 위 |
+| `IconRowCard` | 픽토그램 2~3개 + 라벨 |
+| `NewsHeadlineCard` | 기사 헤드라인 2건 나열 |
+| `CompareCard` · `TripleCompareCard` | 2열 / 3열 비교 (컬럼별 배경이미지 가능) |
+| `DataTable` · `SpecGridCard` | 표 / 2×2 스펙 그리드 |
+| `QuoteCard` | 인물 사진 + 인용 |
+| `BarChartCard` · `CalendarCompareCard` · `LogoOrgCard` · `BuildingCard` | 막대·기간비교·조직도·층수 |
+
+- 실사 위 텍스트는 **흰색 + TEXT_SHADOW** 필수 (`shared.jsx`)
+- 크기: 소제목 44 / 부제 46 / 캡션 34 / 아이콘 라벨 40 / 헤드라인 64 / 빅수치 96(미디어 104)
+
+### 21-4. v2 다크 카드 (순블랙 + 옐로, `v2shared.jsx`)
+
+`YHeadlineCard` `YTableCard` `YFlowCard` `YCompareCard` `YQuoteCard`
+`YRankBarsCard` `GeoMapCard` `SeatDotsCard` `UnitBlocksCard` `TrendCard`
+`TimelineBarsCard` `SphereHeroCard`(3D) `CleoStatCard` `Floor3DCard`
+
+> 하남스피어에서는 사용자 판단으로 미채택(v7 롤백). 자산은 보존 —
+> 다크 톤이 맞는 기획에서 재사용 가능.
+
+### 21-5. 후처리 (렌더 완료 클립에 적용)
+
+- **가독성 보정**: 사진 위 글씨가 묻힐 때 배경 중간톤만 눌러 흰 글씨를 띄운다.
+  `curves=all='0/0 0.35/0.20 0.6/0.47 0.85/0.86 1/1'`
+  → 차트·표·단색 카드·종이 그래픽에는 **적용 금지** (회색 글씨가 더 어두워짐)
+
+### 21-6. 미착수 아이디어 (B1M 레퍼런스에서 확인, 필요 시 제작)
+
+- 큰 원 1개로 비율 표현 (두 톤 + 링 아웃라인)
+- 막대 위 사람 아이콘 — "한 명당" 스케일 비교
+- 손글씨 화이트보드 모드 (빨간 취소선 → 정정)
