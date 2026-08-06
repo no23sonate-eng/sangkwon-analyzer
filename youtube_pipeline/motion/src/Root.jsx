@@ -32,6 +32,9 @@ import {TowerGaugeCard} from './TowerGaugeCard';
 import {PaperFlowCard} from './PaperFlowCard';
 import {PaperImageCard} from './PaperImageCard';
 import {NewsQuoteCard} from './NewsQuoteCard';
+import {SectionCard} from './SectionCard';
+import {RatioCard} from './RatioCard';
+import {SightlineCard} from './SightlineCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -341,6 +344,23 @@ export const RemotionRoot = () => {
         defaultProps={{}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
+      {[
+        ['SectionCard', SectionCard, {bands: []}],
+        ['RatioCard', RatioCard, {items: []}],
+        ['SightlineCard', SightlineCard, {}],
+      ].map(([id, comp, defaults]) => (
+        <Composition
+          key={id}
+          id={id}
+          component={comp}
+          fps={FPS}
+          width={1920}
+          height={1080}
+          durationInFrames={300}
+          defaultProps={defaults}
+          calculateMetadata={async ({props}) => durationFromProps({props})}
+        />
+      ))}
       <Composition
         id="NewsQuoteCard"
         component={NewsQuoteCard}
