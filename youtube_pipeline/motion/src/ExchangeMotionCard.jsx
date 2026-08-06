@@ -60,89 +60,99 @@ const Pict = ({name, size = 92, stroke = INK}) => {
 };
 
 // 좌우 당사자 — 로고(또는 워드마크) 위, 이름 아래.
-const LOGO_TOP = 262, LOGO_H = 156, LABEL_TOP = 436;
-const Party = ({cx, node, o}) => (
-  <>
-    <div style={{position: 'absolute', left: cx - 150, top: LOGO_TOP, width: 300, height: LOGO_H, opacity: o,
-                 display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      {node.logo ? (
-        <Img src={staticFile(node.logo)} style={{maxWidth: 280, maxHeight: LOGO_H, objectFit: 'contain'}} />
-      ) : (
-        <div style={{width: 236, height: 148, border: `4px solid ${INK}`, display: 'flex',
-                     alignItems: 'center', justifyContent: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 84,
-                     letterSpacing: '0.04em', color: INK}}>
-          {node.wordmark}
-        </div>
-      )}
-    </div>
-    <div style={{position: 'absolute', left: cx - 185, width: 370, top: LABEL_TOP, textAlign: 'center', opacity: o}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, color: INK,
-                   lineHeight: 1.2, wordBreak: 'keep-all'}}>{node.label}</div>
-      {node.sub ? (
-        <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT,
-                     wordBreak: 'keep-all'}}>{node.sub}</div>
-      ) : null}
-    </div>
-  </>
-);
+// 블록 전체가 화살표 레인과 **같은 세로 중심(CY)** 에 오도록 잡는다.
+const LOGO_H = 150, BLOCK_H = 272;
+const Party = ({cx, cy, node, o}) => {
+  const top = cy - BLOCK_H / 2;
+  return (
+    <>
+      <div style={{position: 'absolute', left: cx - 150, top, width: 300, height: LOGO_H, opacity: o,
+                   display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        {node.logo ? (
+          <Img src={staticFile(node.logo)} style={{maxWidth: 280, maxHeight: LOGO_H, objectFit: 'contain'}} />
+        ) : (
+          <div style={{width: 230, height: 142, border: `4px solid ${INK}`, display: 'flex',
+                       alignItems: 'center', justifyContent: 'center',
+                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 80,
+                       letterSpacing: '0.04em', color: INK}}>
+            {node.wordmark}
+          </div>
+        )}
+      </div>
+      <div style={{position: 'absolute', left: cx - 165, width: 330, top: top + LOGO_H + 14,
+                   textAlign: 'center', opacity: o}}>
+        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, color: INK,
+                     lineHeight: 1.2, wordBreak: 'keep-all'}}>{node.label}</div>
+        {node.sub ? (
+          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT,
+                       wordBreak: 'keep-all'}}>{node.sub}</div>
+        ) : null}
+      </div>
+    </>
+  );
+};
 
 export const ExchangeMotionCard = ({
   title = '', sub = '', left = {}, right = {}, give = {}, get: got = {}, source = '',
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
-  const LX = 300, RX = 1620;          // 당사자 중심
-  const AX0 = 520, AX1 = 1400;        // 화살표 구간 (당사자 사이)
-  const Y_GIVE = 600, Y_GET = 730;    // 위 = 주는 것 / 아래 = 받는 것
+  // 당사자와 화살표를 **같은 세로 중심**에 둔다 — 로고가 위, 화살표가 아래로
+  // 떨어져 있으면 "누가 무엇을 주는지"가 한 줄로 안 읽힌다.
+  const CY = 560;
+  const LX = 250, RX = 1670;          // 당사자 중심
+  const AX0 = 470, AX1 = 1450;        // 화살표 구간 (당사자 사이)
+  const Y_GIVE = CY - 82, Y_GET = CY + 82;   // 위 = 주는 것 / 아래 = 받는 것
 
-  // ① 좌→우 (18~66)  ② 우→좌 (86~134)
-  const t1 = interpolate(frame, [18, 66], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  const t2 = interpolate(frame, [86, 134], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const ease = (t) => t * t * (3 - 2 * t);
-  const e1 = ease(t1), e2 = ease(t2);
+  const seg = (a, b) => ease(interpolate(frame, [a, b], [0, 1],
+    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}));
 
   // 이동하는 물건은 [픽토그램 | 이름] 가로 칩. 세로를 적게 먹어야 두 레인이 겹치지 않는다.
-  // 화살촉이 앞서 그어지고 칩이 그 뒤를 따라온다 — 선은 칩 뒤로 숨는다.
   const textW = (s, px) => (s || '').split('').reduce(
     (a, c) => a + px * (c.charCodeAt(0) > 0x1100 ? 1.0 : 0.56), 0);
   const chipW = (item) => 92 + 16 + Math.max(textW(item.label, 46), textW(item.sub, 34)) + 28;
 
-  const Lane = ({y, from, to, t, item, delay, flip}) => {
-    const tip = from + (to - from) * t;
-    const dir = flip ? -1 : 1;
+  // ① 화살표가 먼저 그어지고 ② 그 위를 물건이 건너간다.
+  // (칩을 화살촉에 붙여 끌면 출발점에서 로고를 덮어버린다 — 두 단계로 나눈다.)
+  const Lane = ({y, from, to, tLine, tMove, item}) => {
+    const dir = to > from ? 1 : -1;
     const CW = chipW(item);
-    const cx = tip - dir * (CW / 2 + 26);
-    const on = t > 0.001;
+    const tip = from + (to - from) * tLine;
+    const c0 = from + dir * (CW / 2 + 14);
+    const c1 = to - dir * (CW / 2 + 14);
+    const cx = c0 + (c1 - c0) * tMove;
     return (
       <>
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-          {on ? (
+          {tLine > 0.001 ? (
             <>
               <line x1={from} y1={y} x2={tip} y2={y} stroke={INK} strokeWidth={3} />
               <polygon points={`${tip},${y} ${tip - dir * 22},${y - 11} ${tip - dir * 22},${y + 11}`} fill={INK} />
             </>
           ) : null}
         </svg>
-        <div style={{position: 'absolute', left: cx - CW / 2, top: y - 52, width: CW, height: 104,
-                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
-                     background: PAPER, opacity: fadeIn(frame, delay)}}>
-          <svg width={92} height={92} viewBox="-60 -60 120 120" style={{flex: '0 0 auto'}}>
-            <Pict name={item.icon} stroke={INK} />
-          </svg>
-          <div style={{textAlign: 'left'}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46,
-                         color: INK, lineHeight: 1.15, whiteSpace: 'nowrap'}}>
-              <span style={{background: item.hot ? YELLOW : 'none', padding: item.hot ? '2px 10px' : 0}}>
-                {item.label}
-              </span>
+        {tLine > 0.4 ? (
+          <div style={{position: 'absolute', left: cx - CW / 2, top: y - 52, width: CW, height: 104,
+                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
+                       background: PAPER}}>
+            <svg width={92} height={92} viewBox="-60 -60 120 120" style={{flex: '0 0 auto'}}>
+              <Pict name={item.icon} stroke={INK} />
+            </svg>
+            <div style={{textAlign: 'left'}}>
+              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46,
+                           color: INK, lineHeight: 1.15, whiteSpace: 'nowrap'}}>
+                <span style={{background: item.hot ? YELLOW : 'none', padding: item.hot ? '2px 10px' : 0}}>
+                  {item.label}
+                </span>
+              </div>
+              {item.sub ? (
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+                             color: INK_SOFT, whiteSpace: 'nowrap'}}>{item.sub}</div>
+              ) : null}
             </div>
-            {item.sub ? (
-              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
-                           color: INK_SOFT, whiteSpace: 'nowrap'}}>{item.sub}</div>
-            ) : null}
           </div>
-        </div>
+        ) : null}
       </>
     );
   };
@@ -151,10 +161,10 @@ export const ExchangeMotionCard = ({
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg />
       <PaperTitle title={title} sub={sub} />
-      <Party cx={LX} node={left} o={fadeIn(frame, 6)} />
-      <Party cx={RX} node={right} o={fadeIn(frame, 12)} />
-      <Lane y={Y_GIVE} from={AX0} to={AX1} t={e1} item={give} delay={18} flip={false} />
-      <Lane y={Y_GET} from={AX1} to={AX0} t={e2} item={got} delay={86} flip />
+      <Party cx={LX} cy={CY} node={left} o={fadeIn(frame, 6)} />
+      <Party cx={RX} cy={CY} node={right} o={fadeIn(frame, 12)} />
+      <Lane y={Y_GIVE} from={AX0} to={AX1} tLine={seg(18, 40)} tMove={seg(34, 74)} item={give} />
+      <Lane y={Y_GET} from={AX1} to={AX0} tLine={seg(92, 114)} tMove={seg(108, 148)} item={got} />
       <PaperSource source={source} />
     </AbsoluteFill>
   );

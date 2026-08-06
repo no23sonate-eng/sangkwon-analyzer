@@ -15,7 +15,8 @@
 | `shape_centralpark.png` / `shape_yongsanpark.png` | `etc-seoul-pic05.jpg` 에서 추출한 공원 경계 실루엣 | 동상 | (실사 출처와 함께 표기) |
 | `photo_centralpark.jpg` | Wikimedia `Central Park New York skyline (22212172922).jpg` | dronepicr, **CC BY 2.0** | `사진: dronepicr / CC BY 2.0` |
 | `photo_yongsanpark.jpg` | Wikimedia `Korea Yongsan Family Park 20140421 01 (13939732142).jpg` | Korea.net (Jeon Han), **CC BY-SA 2.0** | `사진: Korea.net / CC BY-SA 2.0` |
-| `eterno_towers.jpg` / `eterno_aerial.jpg` / `eterno_street.jpg` | 에테르노 용산 분양 자료 (ddims.co.kr 게재본) | 시행 RBDK · 설계 Rafael Moneo | `이미지: 에테르노 용산 분양 자료` |
+| `eterno_towers.jpg` | 공식 홈페이지 eterno-yongsan.site · 2개 동 투시도 (746×580 원본) | 시행 RBDK · 설계 Rafael Moneo | `이미지: 에테르노 용산 분양 자료` |
+| `eterno_street.jpg` | 동상 · 가로 진입부 투시도 (1188×840). **패널의 홍보 문구는 지웠다** | 동상 | `이미지: 에테르노 용산 분양 자료` |
 | `parkside_towers.jpg` | `hero.jpg` 를 좌우 분할 패널용으로 재크롭 | 더파크사이드 서울 | `이미지: 더파크사이드 서울` |
 | `mori_roppongi.jpg` | Wikimedia `Roppongi Hills from Tokyo Tower.jpg` | 稲妻ノ歯鯨, **CC BY-SA 4.0** | `사진: 稲妻ノ歯鯨 / CC BY-SA 4.0` |
 | `mori_toranomon.jpg` | Wikimedia `Toranomon Hills Station Tower 03.jpg` | Kakidai, **CC BY-SA 4.0** | `사진: Kakidai / CC BY-SA 4.0` |
@@ -58,7 +59,10 @@ Pexels·Pixabay·Videvo 는 이 환경 프록시에서 403 이라 못 받는다.
 - 공식 홈페이지 조감도·투시도는 **저작권이 시행사(일레븐건설)에 있다.** 보도·비평 목적
   인용 범위에서 쓰고, 화면에 반드시 출처를 남긴다. 썸네일·광고 소재로는 쓰지 않는다.
 - 에테르노 용산 렌더는 **시행사 저작물**이다. 비교·비평 인용 범위에서 쓰고 출처를 남긴다.
-  원본 해상도가 550px 라 업스케일 후 언샤프를 걸었다 — 더 큰 원본이 생기면 교체할 것.
+  ddims.co.kr 에서 받았던 이전 파일들은 **다른 프로젝트 렌더였다** — 공식 홈페이지
+  (eterno-yongsan.site, Zyro CDN)에서 다시 받아 교체했다. 원본이
+  `https://assets.zyrosite.com/Hu4gozjAu7MRdKYY/<파일명>` 로 직접 열린다.
+  트윈타워 원본이 746×580 뿐이라 2.6배 업스케일 + 언샤프 — 더 큰 원본이 생기면 교체할 것.
 - Wikimedia 이미지는 CC 라이선스라 **저작자 표기가 의무**다. 위 "화면 표기" 문자열을
   빼지 말 것.
 - 홈페이지는 CUPID(국내 WAF) JS 챌린지가 걸려 있어 일반 curl 로는 못 받는다.
