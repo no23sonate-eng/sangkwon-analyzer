@@ -16,7 +16,7 @@ const CUT7 = {
   headline: '용산 → 평택',
   sub: '2003년 4월 한미 합의 · 이전 비용 3조 4,000억원',
   scrim: 0.4,
-  source: '사진: USAG Humphreys / CC BY 2.0',
+  source: 'USAG Humphreys / CC BY 2.0',
 };
 const CUT8 = {
   title: '기부 대 양여', sub: '2007년 11월',
@@ -24,7 +24,7 @@ const CUT8 = {
   right: {logo: 'parkside/logo_mnd.png', label: '국방부', sub: '용산기지 소유'},
   give: {icon: 'base', label: '평택기지', sub: '3조 4,000억'},
   get: {icon: 'land', label: '4개 부지'},
-  source: '국방부 · LH 협약',
+  source: '국방부·LH 협약',
 };
 const CUT5 = {
   title: '사업비', sub: '건물 높이가 아니라 사업비를 비교한다',
