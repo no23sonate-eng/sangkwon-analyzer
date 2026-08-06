@@ -94,10 +94,13 @@ export const SectionPhotoCard = ({
         ) : null}
       </div>
 
-      {/* 지상 / 지하 수치 — 치수선 왼쪽 */}
-      {[['above', above, (TOP_Y + groundY) / 2, 22], ['below', below, (groundY + BOT_Y) / 2, 34]].map(([k, o, y, t]) => (
+      {/* 지상 / 지하 수치 — 치수선 왼쪽.
+          지상 블록은 지반선 **위**로, 지하 블록은 지반선 **아래**로 붙인다.
+          가운데 정렬로 두면 지하 블록이 지반선을 넘어와 지상 수치와 겹친다. */}
+      {[['above', above, groundY - 26, 22, '-100%'],
+        ['below', below, groundY + 26, 34, '0%']].map(([k, o, y, t, ty]) => (
         <div key={k} style={{position: 'absolute', left: 40, width: DIM_X - 76, top: y,
-                             transform: 'translateY(-50%)', textAlign: 'right', opacity: fadeIn(frame, t)}}>
+                             transform: `translateY(${ty})`, textAlign: 'right', opacity: fadeIn(frame, t)}}>
           <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: '#D8DDE4',
                        letterSpacing: '0.05em', lineHeight: 1.1, textShadow: SHADOW}}>{o.label}</div>
           <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 100,
@@ -127,8 +130,8 @@ export const SectionPhotoCard = ({
       ))}
 
       {source ? (
-        <div style={{position: 'absolute', right: 72, top: 1008, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em',
+        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.05em',
                      color: '#FFFFFF', opacity: 0.8 * fadeIn(frame, 40), textShadow: SHADOW}}>
           {source}
         </div>

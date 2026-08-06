@@ -46,7 +46,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
             <g key={i}>
               <rect x={250} y={y - ROW / 2 + 8} width={1420} height={ROW - 16}
                     fill={on && s.hot ? YELLOW : TONES[(i + 1) % TONES.length]}
-                    opacity={(on ? (s.hot ? 0.92 : 0.62) : 0.14) * o} />
+                    opacity={(on ? (s.hot ? 0.92 : 0.34) : 0.12) * o} />
               <line x1={250} y1={y + ROW / 2 - 8} x2={1670} y2={y + ROW / 2 - 8}
                     stroke={INK} strokeWidth={2} opacity={0.35 * o} />
             </g>
@@ -83,7 +83,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
               {s.label}
             </div>
             {s.sub ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK_SOFT}}>
+              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK, opacity: 0.72}}>
                 {s.sub}
               </div>
             ) : null}

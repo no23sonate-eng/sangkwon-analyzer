@@ -106,7 +106,7 @@ export const PaperSource = ({source = '', dark = false}) => {
   const frame = useCurrentFrame();
   if (!source) return null;
   return (
-    <div style={{position: 'absolute', right: 72, top: 1008, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em', color: dark ? DARK_INK_SOFT : INK_SOFT, opacity: fadeIn(frame, 40)}}>
+    <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.06em', color: dark ? DARK_INK_SOFT : INK_SOFT, opacity: fadeIn(frame, 40)}}>
       {source}
     </div>
   );

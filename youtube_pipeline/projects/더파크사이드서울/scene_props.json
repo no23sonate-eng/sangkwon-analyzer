@@ -8,7 +8,7 @@
         "image": "parkside/hero.jpg",
         "ratio": 1.778,
         "wide": true,
-        "source": "이미지: 더파크사이드 서울"
+        "source": "더파크사이드 서울"
       }
     },
     "1": {
@@ -34,7 +34,7 @@
             "hot": true
           }
         ],
-        "source": "도면: 더파크사이드 서울",
+        "source": "더파크사이드 서울",
         "topRatio": 0.212,
         "botRatio": 0.885
       }
@@ -65,7 +65,7 @@
           }
         ],
         "note": "용산공원은 센트럴파크의 89% 크기",
-        "source": "사진: dronepicr / CC BY 2.0 · Korea.net / CC BY-SA 2.0"
+        "source": "dronepicr · Korea.net / CC BY"
       }
     },
     "3": {
@@ -105,7 +105,7 @@
       "props": {
         "image": "parkside/yongsan_base.jpg",
         "headline": "시작은 도시가 아니었다",
-        "source": "사진: MNXANL / CC BY-SA 4.0"
+        "source": "MNXANL / CC BY-SA 4.0"
       }
     },
     "5": {
@@ -115,7 +115,7 @@
         "headline": "용산 → 평택",
         "sub": "2003년 4월 한미 합의 · 이전 비용 3조 4,000억원",
         "scrim": 0.4,
-        "source": "사진: USAG Humphreys / CC BY 2.0"
+        "source": "USAG Humphreys / CC BY 2.0"
       }
     },
     "6": {
@@ -143,7 +143,7 @@
           "label": "4개 부지",
           "sub": ""
         },
-        "source": "국방부 · LH 협약"
+        "source": "국방부·LH 협약"
       }
     },
     "7": {
@@ -168,8 +168,8 @@
             "hot": true
           }
         ],
-        "note": "용적률 = 대지면적 대비 지을 수 있는 연면적. 상한이 오르면 땅값이 오른다.",
-        "source": "서울시 도시관리계획 변경"
+        "note": "",
+        "source": "서울시"
       }
     },
     "8": {
@@ -179,7 +179,7 @@
         "image": "parkside/map.jpg",
         "ratio": 1.445,
         "caption": "2017년 5월 · 공급면적 약 1만3,600평 · 예정가 8,031억원 (평당 약 5,900만원)",
-        "source": "이미지: 더파크사이드 서울"
+        "source": "더파크사이드 서울"
       }
     },
     "9": {
@@ -204,7 +204,7 @@
             "hot": true
           }
         ],
-        "source": "LH 공개매각 결과"
+        "source": "LH 매각공고"
       }
     },
     "10": {
@@ -267,7 +267,7 @@
             "hot": true
           }
         ],
-        "source": "국토계획법 · 서울시 도시계획조례"
+        "source": "국토계획법·서울시 조례"
       }
     },
     "12": {
@@ -319,7 +319,7 @@
           "label": "더 파크사이드 서울",
           "note": "남산 소월길보다 낮게"
         },
-        "source": "서울시 경관 심의"
+        "source": "서울시 경관심의"
       }
     },
     "14": {
@@ -345,7 +345,7 @@
             "hot": true
           }
         ],
-        "source": "도면: 더파크사이드 서울",
+        "source": "더파크사이드 서울",
         "topRatio": 0.212,
         "botRatio": 0.885
       }
@@ -368,7 +368,7 @@
           }
         ],
         "unit": "%",
-        "source": "건축 개요 · 모리빌딩 자료"
+        "source": "건축개요·모리빌딩"
       }
     },
     "16": {
@@ -401,7 +401,7 @@
             "hot": true
           }
         ],
-        "source": "사진: 稲妻ノ歯鯨 · Kakidai / CC BY-SA 4.0 · Syced / CC0",
+        "source": "稲妻ノ歯鯨 · Kakidai / CC BY-SA · Syced / CC0",
         "gapScale": 0.5
       }
     },
@@ -412,7 +412,7 @@
         "image": "parkside/retail.jpg",
         "ratio": 1.781,
         "caption": "2025년 7월 1일 · 지하 1층~지상 4층 전용 1만6,470㎡ 전면 경영제휴",
-        "source": "이미지: 더파크사이드 서울"
+        "source": "더파크사이드 서울"
       }
     },
     "19": {
@@ -447,7 +447,7 @@
         "headline": "로즈우드",
         "sub": "1979년 댈러스에서 시작 · 전 세계 39개 도시",
         "scrim": 0.4,
-        "source": "사진: Wpcpey / CC BY-SA 4.0 (로즈우드 홍콩)"
+        "source": "Wpcpey / CC BY-SA 4.0"
       }
     },
     "21": {
@@ -471,14 +471,14 @@
         ],
         "worst": 4,
         "caption": "2025년 10월 발표 — 전 세계 1위",
-        "source": "The World's 50 Best Hotels"
+        "source": "50 Best Hotels"
       }
     },
     "22": {
       "card": "ElevatorCard",
       "props": {
         "title": "엘리베이터를 타고 내려가면",
-        "sub": "옆이 아니라 위아래로 이어진다",
+        "sub": "위아래로 이어진다",
         "stops": [
           {
             "floor": "5~20F",
@@ -492,11 +492,10 @@
           },
           {
             "floor": "B1",
-            "label": "그 옆이 백화점",
-            "sub": "신세계 제휴 구역"
+            "label": "신세계 공간"
           }
         ],
-        "source": "건축 개요"
+        "source": "건축개요"
       }
     },
     "23": {
@@ -521,7 +520,7 @@
             "hot": true
           }
         ],
-        "source": "분양 공고 · 보도 종합",
+        "source": "분양공고",
         "gapScale": 0.5
       }
     },
@@ -529,10 +528,10 @@
       "card": "FullBleedCard",
       "props": {
         "image": "parkside/layout.jpg",
-        "headline": "분양하는 동을 숲에 붙였다",
+        "headline": "세대는 숲을 품었다",
         "sub": "용산공원을 마주보는 쪽이 오피스텔 · 로즈우드는 오히려 뒤쪽",
         "scrim": 0.46,
-        "source": "이미지: 더파크사이드 서울"
+        "source": "더파크사이드 서울"
       }
     },
     "25": {
@@ -555,7 +554,7 @@
             "회수 시점이 수년~수십 년"
           ]
         },
-        "verdict": "둘을 한 회사가 하는 사례가 없었다",
+        "verdict": "한 회사가 하는 사례가 없음",
         "source": ""
       }
     },
@@ -584,7 +583,7 @@
             "hot": true
           }
         ],
-        "source": "모리빌딩 · 건축 개요"
+        "source": "모리빌딩·건축개요"
       }
     },
     "27": {
@@ -630,7 +629,7 @@
             "hot": true
           }
         ],
-        "source": "분양 공고",
+        "source": "분양공고",
         "note": "변 길이가 아니라 면적이 실제 전용면적 비율(53㎡ : 185㎡)"
       }
     },
@@ -668,7 +667,7 @@
             ]
           }
         ],
-        "source": "분양 공고 · 보도 종합",
+        "source": "분양공고",
         "sub": "2027년",
         "tickLabels": [
           "1월",
@@ -710,7 +709,7 @@
           }
         ],
         "verdict": "같은 입지, 반대 방향",
-        "source": "이미지: 더파크사이드 서울 · 에테르노 용산 분양 자료"
+        "source": "더파크사이드 서울 · 에테르노 용산"
       }
     },
     "31": {
@@ -718,7 +717,7 @@
       "props": {
         "image": "parkside/closing.jpg",
         "ratio": 1.335,
-        "source": "이미지: 더파크사이드 서울"
+        "source": "더파크사이드 서울"
       }
     }
   }

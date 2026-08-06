@@ -102,7 +102,7 @@ export const ParkCompareCard = ({title = '', sub = '', sides = [], note = '', so
       ) : null}
 
       {source ? (
-        <div style={{position: 'absolute', right: 72, top: 1008, textAlign: 'right',
+        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.05em',
                      color: '#FFFFFF', opacity: 0.75 * fadeIn(frame, 40), textShadow: SHADOW}}>
           {source}

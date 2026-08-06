@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJ = os.path.join(ROOT, 'projects', '더파크사이드서울')
 FONT = os.path.join(ROOT, 'motion', 'public', 'fonts', 'Pretendard-Bold.otf')
 FF = imageio_ffmpeg.get_ffmpeg_exe()
-CREDIT = '이미지: 더파크사이드 서울'
+CREDIT = '더파크사이드 서울'
 FPS = 30
 
 
@@ -70,9 +70,9 @@ def overlay_png(text='', sub='', key='credit', credit=CREDIT):
             w2 = d.textbbox((0, 0), sub, font=fs)[2]
             _shadow_text(d, ((1920 - w2) // 2, 600), sub, fs, (226, 231, 238, 255))
 
-    f = ImageFont.truetype(FONT, 27)
+    f = ImageFont.truetype(FONT, 23)
     w = d.textbbox((0, 0), credit, font=f)[2]
-    _shadow_text(d, (1920 - 72 - w, 1004), credit, f, (255, 255, 255, 205), off=1)
+    _shadow_text(d, (1920 - 44 - w, 1026), credit, f, (255, 255, 255, 205), off=1)
     im.save(out)
     return out
 
