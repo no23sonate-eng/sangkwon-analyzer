@@ -48,42 +48,53 @@ projects/더파크사이드서울/
 6. 내레이션 오디오를 A1 에 얹고, 클립 길이를 실제 낭독 길이에 맞춰 밀면 된다.
    (타이밍은 5.3자/초 기준 추정값 — 녹음 후 조정 전제)
 
-## 장면 구성
+## 컷 목록 (타임라인 순)
 
-| # | 카드 | 내용 |
-|---|---|---|
-| 0 | — (실사) | 조감도 (훅) |
-| 1 | SectionPhotoCard | 지하7·지상20 실측 단면 |
-| 2 | ParkCompareCard | 센트럴파크 vs 용산공원 면적 |
-| 3 | SkylineCompareCard | 사업비 2.1조 / 4.2조 / 11조 |
-| 4 | FullBleedCard | 시작은 도시가 아니었다 |
-| 5 | FullBleedCard | 용산 → 평택 |
-| 6 | ExchangeMotionCard | 기부 대 양여 (주고받기 모션) |
-| 7 | SkylineCompareCard | 용도지역 변경 · 용적률 상한 |
-| 8 | PaperImageCard | 유엔사 부지 공개매각 |
-| 9 | RatioCard | 예정가 vs 낙찰가 |
-| 10 | PhotoStepsCard | 엄석오 회장 4단계 |
-| 11 | SkylineCompareCard | 용적률 1300 / 800 / 600 |
-| 12 | ExchangeMotionCard | 국방부 vs 서울시 논쟁 (주고받기 모션) |
-| 13 | SightlineCard | 반포대교 → 남산 7부능선 |
-| 14 | SectionPhotoCard | 70m, 그래서 지하로 |
-| 15 | RatioCard | 상업시설 비중 8.1% vs 2.7% |
-| 16 | — (실사) | 운영사가 필요해진다 (실사 3컷) |
-| 17 | PhotoStepsCard | 모리빌딩 3개 프로젝트 |
-| 18 | — (실사) | 신세계 MOU |
-| 19 | AreaNestCard | 제휴 구역 면적 4,980평 vs 1,500평 |
-| 20 | FullBleedCard | 로즈우드 (홍콩 전체화면) |
-| 21 | RankTrendCard | 50 Best Hotels 2위→3위→1위 |
-| 22 | ElevatorCard | 엘리베이터로 위아래 연결 |
-| 23 | PhotoStepsCard | 회수 시점 셋 |
-| 24 | FullBleedCard | 배치 — 분양 동을 숲에 |
-| 25 | SplitCard | 개발사 vs 운영사 |
-| 26 | TimelineRailCard | 아자부다이 34년 vs 10년 |
-| 27 | BigStatsCard | 청약 경쟁률 |
-| 28 | SkylineCompareCard | 분양가 — 평면 면적 비교 |
-| 29 | TimelineRailCard | 남은 일정 2027 |
-| 30 | PhotoSplitCard | 다른 전략 — 에테르노 용산 |
-| 31 | — (실사) | 클로징 |
+| 컷 | 파일 | 종류 | 길이 | 내용 |
+|---|---|---|---|---|
+| 1 | `sec00_hero_b.mp4` | 실사 | 5.5s | 공식 프로젝트 필름 |
+| 2 | `sec01_section.mp4` | SectionPhotoCard | 11.0s | 지하7·지상20 실측 단면 |
+| 3 | `sec01_section_b.mp4` | 실사 | 6.2s | 공식 프로젝트 필름 |
+| 4 | `sec02_title.mp4` | ParkCompareCard | 10.4s | 센트럴파크 vs 용산공원 면적 |
+| 5 | `sec03_cost3.mp4` | SkylineCompareCard | 10.0s | 사업비 2.1조 / 4.2조 / 11조 |
+| 6 | `sec04_hookturn.mp4` | FullBleedCard | 8.3s | 시작은 도시가 아니었다 |
+| 7 | `sec05_move.mp4` | FullBleedCard | 11.7s | 용산 → 평택 |
+| 8 | `sec06_exchange.mp4` | ExchangeMotionCard | 12.0s | 기부 대 양여 (주고받기 모션) |
+| 9 | `sec06_exchange_b.mp4` | 실사 | 6.0s | 공식 프로젝트 필름 |
+| 10 | `sec07_rezone.mp4` | SkylineCompareCard | 12.2s | 용도지역 변경 · 용적률 상한 |
+| 11 | `sec07_rezone_b.mp4` | 실사 | 6.5s | 공식 프로젝트 필름 |
+| 12 | `sec08_tender.mp4` | PaperImageCard | 14.8s | 유엔사 부지 공개매각 |
+| 13 | `sec09_bid.mp4` | RatioCard | 13.1s | 예정가 vs 낙찰가 |
+| 14 | `sec10_founder.mp4` | PhotoStepsCard | 10.5s | 엄석오 회장 4단계 |
+| 15 | `sec10_founder_b.mp4` | 실사 | 5.4s | 공식 프로젝트 필름 |
+| 16 | `sec11_far.mp4` | SkylineCompareCard | 15.0s | 용적률 1300 / 800 / 600 |
+| 17 | `sec12_conflict.mp4` | ExchangeMotionCard | 13.4s | 국방부 vs 서울시 논쟁 (주고받기 모션) |
+| 18 | `sec13_sightline.mp4` | SightlineCard | 11.9s | 반포대교 → 남산 7부능선 |
+| 19 | `sec14_section2.mp4` | SectionPhotoCard | 10.0s | 70m, 그래서 지하로 |
+| 20 | `sec14_section2_b.mp4` | 실사 | 5.3s | 공식 프로젝트 필름 |
+| 21 | `sec15_retail.mp4` | RatioCard | 11.2s | 상업시설 비중 8.1% vs 2.7% |
+| 22 | `sec16_needop_b1.mp4` | 실사 | 5.0s | 임차인 트렌드가 빠르다 |
+| 23 | `sec16_needop_b2.mp4` | 실사 | 5.0s | 소비 사이클에 민감하다 |
+| 24 | `sec16_needop_b3.mp4` | 실사 | 5.1s | 그래서 운영사가 필요해진다 |
+| 25 | `sec17_mori.mp4` | PhotoStepsCard | 16.5s | 모리빌딩 3개 프로젝트 |
+| 26 | `sec18_shinsegae_b.mp4` | 실사 | 13.3s | 공식 프로젝트 필름 |
+| 27 | `sec19_ss_area.mp4` | AreaNestCard | 11.4s | 제휴 구역 면적 4,980평 vs 1,500평 |
+| 28 | `sec20_rosewood.mp4` | FullBleedCard | 7.5s | 로즈우드 (홍콩 전체화면) |
+| 29 | `sec20_rosewood_b.mp4` | 실사 | 5.4s | 공식 프로젝트 필름 |
+| 30 | `sec21_rank.mp4` | RankTrendCard | 15.3s | 50 Best Hotels 2위→3위→1위 |
+| 31 | `sec22_stack.mp4` | ElevatorCard | 9.0s | 엘리베이터로 위아래 연결 |
+| 32 | `sec22_stack_b1.mp4` | 실사 | 3.4s | 로즈우드 라운지 · 스파 |
+| 33 | `sec22_stack_b2.mp4` | 실사 | 3.5s | B1 신세계 공간 |
+| 34 | `sec23_recover.mp4` | PhotoStepsCard | 12.5s | 회수 시점 셋 |
+| 35 | `sec24_layout.mp4` | FullBleedCard | 14.8s | 세대는 숲을 품었다 |
+| 36 | `sec25_split.mp4` | SplitCard | 13.1s | 개발사 vs 운영사 |
+| 37 | `sec26_azabu.mp4` | TimelineRailCard | 13.1s | 아자부다이 34년 vs 10년 |
+| 38 | `sec27_subscribe.mp4` | BigStatsCard | 12.5s | 청약 경쟁률 |
+| 39 | `sec28_price.mp4` | SkylineCompareCard | 13.6s | 분양가 — 평면 면적 비교 |
+| 40 | `sec29_timeline.mp4` | TimelineRailCard | 10.5s | 남은 일정 2027 |
+| 41 | `sec29_timeline_b.mp4` | 실사 | 5.8s | 공식 프로젝트 필름 |
+| 42 | `sec30_eterno.mp4` | PhotoSplitCard | 13.8s | 다른 전략 — 에테르노 용산 |
+| 43 | `sec31_closing_b.mp4` | 실사 | 10.6s | 공식 프로젝트 필름 |
 
 ## 고치고 싶을 때
 
