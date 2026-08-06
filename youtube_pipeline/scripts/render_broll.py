@@ -61,18 +61,28 @@ def cut(src, ss, dur, out):
     vf = [f'setpts={slow}*PTS'] if slow > 1.0 else []
     vf += ['scale=1920:1080:force_original_aspect_ratio=increase',
            'crop=1920:1080', f'fps={FPS}']
-    cmd = [FF, '-y', '-loglevel', 'error', '-ss', str(ss), '-i', src,
-           '-t', str(dur / slow if slow > 1.0 else dur),
+    # 길이는 반드시 출력 옵션 -frames:v 로 자른다.
+    # 입력이 둘이라 -t 를 중간에 두면 두 번째 입력(출처 PNG)에 붙어버려
+    # 영상이 원본 끝까지 흘러나온다. setpts 를 쓸 때도 프레임 수가 정답.
+    cmd = [FF, '-y', '-loglevel', 'error',
+           '-ss', str(ss), '-i', src,
            # 출처 오버레이 — 이 ffmpeg 빌드에는 drawtext(libfreetype)가 없어서
-           # PIL 로 만든 투명 PNG 를 얹는다
-           '-i', credit_png(),
+           # PIL 로 만든 투명 PNG 를 얹는다. -loop 1 로 길이만큼 계속 공급
+           '-loop', '1', '-i', credit_png(),
            '-filter_complex', f"[0:v]{','.join(vf)}[v];[v][1:v]overlay=0:0",
-           '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', '18',
+           '-frames:v', str(int(round(dur * FPS))),
+           # 원본이 5~6Mbps 라 crf 만 두면 CG 디테일 때문에 30Mbps 까지 튄다.
+           # 원본 수준으로 상한을 걸어 편집 소스 용량을 잡는다.
+           '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', '20',
+           '-maxrate', '7M', '-bufsize', '14M',
+           # Remotion 출력과 타임스케일을 맞춘다. 다르면(15360 vs 90k) concat 데먹서가
+           # 타임스탬프를 잘못 이어붙여 41분짜리 파일이 나온다.
+           '-video_track_timescale', '90000',
            '-pix_fmt', 'yuv420p', '-r', str(FPS), out]
-    # setpts 를 쓰면 -t 는 입력 기준이므로 출력 프레임 수로 길이를 다시 맞춘다
-    if slow > 1.0:
-        cmd = cmd[:-1] + ['-frames:v', str(int(round(dur * FPS))), out]
     subprocess.run(cmd, check=True, capture_output=True)
+    got = round(probe_duration(out) * FPS)
+    want = int(round(dur * FPS))
+    assert abs(got - want) <= 1, f'{os.path.basename(out)}: {got}f 나옴 (기대 {want}f)'
 
 
 def main():
