@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 종이 위 아이콘 플로우 (레퍼런스 Stocks→Cash 다이어그램 문법).
 // nodes: [{icon, label, sub, hot}] — 좌→우 화살표 연결, hot 노드는 옐로 박스.
@@ -103,7 +103,12 @@ const Party = ({cx, cy, node, o}) => (
   </>
 );
 
-export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], exchange = null, source = ''}) => {
+// layout='steps'  — 좌하 → 우상으로 한 칸씩 올라가는 계단. 경력·단계적 상승용.
+// layout='vertical' — 위에서 아래로. 아이콘 왼쪽, 설명 오른쪽. 갈래·순차 회수용.
+// 둘 다 "좌→우 한 줄"과 화면 구성이 달라 같은 카드가 반복되는 느낌을 줄인다.
+export const PaperFlowCard = ({
+  title = '', sub = '', nodes = [], arrows = [], exchange = null, layout = 'row', source = '',
+}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const n = nodes.length;
@@ -112,6 +117,121 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
   const totalW = n * BOX + (n - 1) * gap;
   const startX = (1920 - totalW) / 2;
   const cy = 572; // 타이틀 아래~하단 사이 광학 중심
+
+  if (!exchange && layout === 'steps' && n) {
+    // 계단 — 판 위에 아이콘이 서고, 오른쪽 위로 한 칸씩 올라간다
+    const SW = Math.min(320, 1500 / n);              // 계단 한 칸 너비
+    const x0 = (1920 - SW * n) / 2;
+    const baseY = CONTENT_BOTTOM - 40;
+    // 가장 높은 칸의 라벨(아이콘 위 2줄)이 타이틀 아래에서 시작하도록 계단 높이를 정한다
+    const titleBottom = title ? (sub ? 285 : 224) : 130;
+    const SH = Math.max(48, Math.min(96, (baseY - titleBottom - 286) / n));
+    const topOf = (i) => baseY - (i + 1) * SH;
+    return (
+      <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+        <PaperBg />
+        <PaperTitle title={title} sub={sub} />
+        <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+          {nodes.map((nd, i) => {
+            const o = fadeIn(frame, 10 + i * 12);
+            const x = x0 + i * SW, y = topOf(i);
+            return (
+              <g key={i} opacity={o}>
+                <rect x={x} y={y} width={SW} height={baseY - y}
+                      fill={nd.hot ? YELLOW : TONES[(i + 1) % TONES.length]} opacity={nd.hot ? 0.95 : 0.4} />
+                <polyline points={`${x},${baseY} ${x},${y} ${x + SW},${y}`}
+                          fill="none" stroke={INK} strokeWidth={3} />
+              </g>
+            );
+          })}
+          <line x1={x0 - 60} y1={baseY} x2={x0 + SW * n + 60} y2={baseY} stroke={INK} strokeWidth={4} />
+        </svg>
+        {nodes.map((nd, i) => {
+          const o = fadeIn(frame, 14 + i * 12);
+          const x = x0 + i * SW, y = topOf(i);
+          return (
+            <React.Fragment key={i}>
+              <div style={{position: 'absolute', left: x, width: SW, top: y - 150, height: 130, opacity: o,
+                           display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
+                <svg width={124} height={124} viewBox="-50 -50 100 100">
+                  <Icon name={nd.icon} stroke={INK} />
+                </svg>
+              </div>
+              <div style={{position: 'absolute', left: x - 40, width: SW + 80, top: y - 142,
+                           transform: 'translateY(-100%)', textAlign: 'center', opacity: o, wordBreak: 'keep-all'}}>
+                <span style={{fontFamily: nd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                              fontSize: nd.hot ? 46 : 40, color: INK, lineHeight: 1.25, padding: '2px 10px',
+                              background: nd.hot ? 'rgba(250,255,46,0.75)' : 'none',
+                              boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
+                  {nd.label}
+                </span>
+                {nd.sub ? (
+                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: INK_SOFT}}>
+                    {nd.sub}
+                  </div>
+                ) : null}
+              </div>
+            </React.Fragment>
+          );
+        })}
+        <PaperSource source={source} />
+      </AbsoluteFill>
+    );
+  }
+
+  if (!exchange && layout === 'vertical' && n) {
+    const TOP = title ? (sub ? 316 : 274) : 190;
+    const ROW = Math.min(160, (CONTENT_BOTTOM - 30 - TOP) / n);
+    const IX = 560;                       // 아이콘 열 x
+    return (
+      <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+        <PaperBg />
+        <PaperTitle title={title} sub={sub} />
+        <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+          {nodes.map((nd, i) => {
+            if (i === n - 1) return null;
+            const y = TOP + i * ROW + ROW / 2;
+            return (
+              <g key={i} opacity={fadeIn(frame, 20 + i * 12)}>
+                <line x1={IX} y1={y + 52} x2={IX} y2={y + ROW - 70} stroke={INK} strokeWidth={2.4} />
+                <polygon points={`${IX},${y + ROW - 54} ${IX - 8},${y + ROW - 72} ${IX + 8},${y + ROW - 72}`} fill={INK} />
+              </g>
+            );
+          })}
+        </svg>
+        {nodes.map((nd, i) => {
+          const y = TOP + i * ROW + ROW / 2;
+          const o = fadeIn(frame, 10 + i * 12);
+          return (
+            <React.Fragment key={i}>
+              <div style={{position: 'absolute', left: IX - 70, top: y, width: 140, height: 140,
+                           transform: 'translateY(-50%)', opacity: o,
+                           display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <svg width={132} height={132} viewBox="-50 -50 100 100">
+                  <Icon name={nd.icon} stroke={INK} />
+                </svg>
+              </div>
+              <div style={{position: 'absolute', left: IX + 96, width: 780, top: y,
+                           transform: 'translateY(-50%)', opacity: o, wordBreak: 'keep-all'}}>
+                <span style={{fontFamily: nd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                              fontSize: nd.hot ? 50 : 45, color: INK, lineHeight: 1.25, padding: '2px 10px',
+                              background: nd.hot ? 'rgba(250,255,46,0.75)' : 'none',
+                              boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
+                  {nd.label}
+                </span>
+                {nd.sub ? (
+                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK_SOFT}}>
+                    {nd.sub}
+                  </div>
+                ) : null}
+              </div>
+            </React.Fragment>
+          );
+        })}
+        <PaperSource source={source} />
+      </AbsoluteFill>
+    );
+  }
 
   if (exchange) {
     const cy = 566;

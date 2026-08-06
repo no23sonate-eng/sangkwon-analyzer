@@ -36,6 +36,10 @@ import {SectionCard} from './SectionCard';
 import {RatioCard} from './RatioCard';
 import {SightlineCard} from './SightlineCard';
 import {RankTrendCard} from './RankTrendCard';
+import {ExplodedStackCard} from './ExplodedStackCard';
+import {TimelineRailCard} from './TimelineRailCard';
+import {AreaNestCard} from './AreaNestCard';
+import {DotMatrixCard} from './DotMatrixCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -350,6 +354,10 @@ export const RemotionRoot = () => {
         ['RatioCard', RatioCard, {items: []}],
         ['SightlineCard', SightlineCard, {}],
         ['RankTrendCard', RankTrendCard, {points: []}],
+        ['ExplodedStackCard', ExplodedStackCard, {layers: []}],
+        ['TimelineRailCard', TimelineRailCard, {rails: []}],
+        ['AreaNestCard', AreaNestCard, {items: []}],
+        ['DotMatrixCard', DotMatrixCard, {groups: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

@@ -27,6 +27,7 @@ export const SectionCard = ({
   const fhA = H_ABOVE / A;                // 지상 층고
   const fhB = H_BELOW / B;                // 지하 층고
   const W = 400, cx = 900, x0 = cx - W / 2;
+  const DIM_X = x0 - 76;                  // 좌측 치수선 x
 
   const growA = spring({frame: frame - 8, fps, config: {damping: 200}, durationInFrames: 34});
   const growB = spring({frame: frame - 24, fps, config: {damping: 200}, durationInFrames: 32});
@@ -81,17 +82,31 @@ export const SectionCard = ({
         <rect x={x0} y={groundY - H_ABOVE} width={W} height={H_ABOVE} fill="none" stroke={INK} strokeWidth={3} opacity={growA} />
         <rect x={x0} y={groundY} width={W} height={H_BELOW} fill="none" stroke={INK} strokeWidth={3} strokeDasharray="7 5" opacity={growB} />
         <line x1={x0 - 190} y1={groundY} x2={x0 + W + 190} y2={groundY} stroke={INK} strokeWidth={4} />
+
+        {/* 치수선 — 숫자가 어느 구간을 가리키는지 눈으로 잇는다 (끝에 짧은 틱) */}
+        {[[groundY - H_ABOVE, groundY, growA, 20], [groundY, groundY + H_BELOW, growB, 34]].map(([yA, yB, g, t], i) => (
+          <g key={i} stroke={INK} strokeWidth={2} opacity={0.55 * fadeIn(frame, t)}>
+            <line x1={DIM_X} y1={yA} x2={DIM_X} y2={yB} />
+            <line x1={DIM_X - 12} y1={yA} x2={DIM_X + 12} y2={yA} />
+            <line x1={DIM_X - 12} y1={yB} x2={DIM_X + 12} y2={yB} />
+          </g>
+        ))}
       </svg>
 
-      {/* 지상/지하 수치 — 좌측에 크게 */}
-      {[['above', above, groundY - H_ABOVE / 2, growA], ['below', below, groundY + H_BELOW / 2, growB]].map(([k, o, y, g]) => (
-        <div key={k} style={{position: 'absolute', left: 150, top: y - 62, width: 400, textAlign: 'right', opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: INK_SOFT, letterSpacing: '0.05em'}}>{o.label}</div>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: INK, lineHeight: 1.1}}>
+      {/* 지상/지하 수치 — 치수선 왼쪽, 각 구간의 정확한 세로 중심에 맞춘다.
+          (translateY(-50%) 로 블록 높이와 무관하게 중앙 정렬) */}
+      {[['above', above, groundY - H_ABOVE / 2], ['below', below, groundY + 10]].map(([k, o, y]) => (
+        // 지상은 구간 중앙 정렬. 지하는 구간(160px)보다 글자 블록이 커서 중앙에 두면
+        // 지반선 위로 올라가므로 지반선 바로 아래에 위쪽을 맞춘다.
+        <div key={k} style={{position: 'absolute', left: DIM_X - 28 - 420, top: y, width: 420,
+                             transform: k === 'above' ? 'translateY(-50%)' : 'none', textAlign: 'right',
+                             opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: INK_SOFT, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
+          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: INK, lineHeight: 1.08}}>
             {o.floors}<span style={{fontSize: 56}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT}}>{o.note}</div>
+            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, lineHeight: 1.2}}>{o.note}</div>
           ) : null}
         </div>
       ))}

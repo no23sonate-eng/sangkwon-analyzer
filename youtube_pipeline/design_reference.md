@@ -1086,11 +1086,53 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 | `RatioCard` | 비중 비교. 원=파이 조각 / `mode:'bar'`=100% 넘는 값(경쟁률·배수) | `items:[{label,pct,sub,decimals,hot}]`, `unit` |
 | `SightlineCard` | 조망 라인 단면. 관측점 → 능선, 규제 높이 | `viewer`, `peak:{label,ridgeLabel}`, `building` |
 | `RankTrendCard` | 순위 추이(낮을수록 좋음). y축을 뒤집어 상승으로 읽힘 | `points:[{x,rank}]`, `worst`, `caption` |
+| `ExplodedStackCard` | 건물 하나를 용도별 아이소메트릭 판으로 분해 | `layers:[{label,sub,hot}]`(위→아래), `groundAfter` |
+| `TimelineRailCard` | 실제 연도축 위 기간 막대 + 사건 마커 | `axis:{from,to,step}`, `rails:[{label,from,to,note,events[]}]` |
+| `AreaNestCard` | 면적을 같은 모서리에 겹쳐 그림 — "몇 배"가 보임 | `items:[{label,value,display,sub,hot}]`, `multipleNote` |
+| `DotMatrixCard` | 개수를 점 격자로. 초과 물량이 눈에 들어옴 | `groups:[{label,value,sub,hot}]`, `perDot`, `cols` |
 
 - 실루엣 `shape`: sphere(구형 공연장) / arena / slender / setback / taper / slab
 - 아이콘: money · building · gov · doc · person · globe · key · clock
 - 공통: 타이틀 top 138 Pretendard Bold 60 / 접지 그림자로 지면 기준감 /
   강조는 옐로 1곳 / 브래킷(`[`) 표기는 **쓰지 않음**
+
+### 21-1-c. 구성 다양성 — 같은 문법을 반복하지 말 것 (2026-08-06 사용자 지시)
+
+> "그래픽 로직이 너무 비슷해. 특히 왼쪽 가운데 오른쪽 순서대로 오는 거 말하는
+> 거야. 그리고 건물 1개에 상층 저층 이것도"
+
+**"좌→우 3칸"과 "정면 단면"은 기본값이 아니다.** 한 영상 안에서 같은 구성이
+3번 넘게 나오면 다른 문법으로 갈아탄다. 판단 기준은 데이터의 성질:
+
+| 데이터 성질 | 쓸 문법 | 컴포넌트 |
+|---|---|---|
+| 시간·순서가 실제 값 | 연도축 (기간 길이가 눈에 보임) | `TimelineRailCard` |
+| 단계적 상승 | 계단 | `PaperFlowCard layout='steps'` |
+| 갈래·순차 분기 | 위→아래 | `PaperFlowCard layout='vertical'` |
+| 주고받는 관계 | 좌우 화살표 2개 | `PaperFlowCard exchange` |
+| 면적·"몇 배" | 같은 모서리에 중첩 | `AreaNestCard` |
+| 셀 수 있는 개수 | 점 격자 | `DotMatrixCard` |
+| 한 건물의 용도 층 | 아이소메트릭 분해 (정면 단면과 번갈아) | `ExplodedStackCard` |
+| 비중(전체 대비) | 파이 조각 | `RatioCard` 원형 |
+| 100% 넘는 배수 | 가로 막대 (세로 실루엣과 축이 달라짐) | `RatioCard mode='bar'` |
+| 물리적 크기 비교 | 세로 실루엣 | `SkylineCompareCard` |
+
+더 파크사이드 서울 29장 기준 분포 — 어느 문법도 5장을 넘지 않는다:
+PaperImageCard 8 / SkylineCompareCard 4 / PaperFlowCard(row) 4 /
+TimelineRailCard 3 / SectionCard 2 / PaperFlowCard(exchange) 2 /
+나머지(steps·vertical·bar·pie·area·dot·section·sightline·rank) 각 1.
+
+**새 카드를 만들 때 밟기 쉬운 함정**
+
+- 아이소메트릭 판이 세로로 차지하는 높이는 두께 `H` 가 아니라 **`D + H`**
+  (D = 윗면 마름모의 세로 지름). 간격을 `H` 기준으로 잡으면 판끼리 겹쳐
+  셰브론처럼 보인다.
+- 시간축 위 사건이 가까우면 라벨이 반드시 겹친다 → **홀짝으로 높이를 번갈아**
+  올리고 지시선 길이를 함께 늘린다.
+- 격자·목록처럼 항목마다 높이가 다른 배치는 수치·라벨을 **가장 큰 항목 기준
+  한 줄에 정렬**한다. 제각각 두면 크기 차이가 아니라 배치 실수로 읽힌다.
+- 구간을 가리키는 큰 수치는 **치수선(끝에 틱)** 으로 이어라. 구간보다 글자
+  블록이 크면 중앙 정렬이 선을 넘으므로 바깥 모서리에 붙인다.
 
 **레이아웃 자동 규칙 (2026-08-06 — 폰트 확대 후 겹침을 코드로 막은 것)**
 

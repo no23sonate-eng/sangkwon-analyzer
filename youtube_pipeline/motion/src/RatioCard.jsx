@@ -52,7 +52,7 @@ export const RatioCard = ({
                            opacity: fadeIn(frame, 20 + i * 10)}}>
                 <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 65, color: INK,
                               fontVariantNumeric: 'tabular-nums'}}>
-                  {v.toFixed(it.decimals ?? 0)}<span style={{fontSize: 43}}>{unit}</span>
+                  {Number(v.toFixed(it.decimals ?? 0)).toLocaleString('ko-KR')}<span style={{fontSize: 43}}>{unit}</span>
                 </span>
                 {it.sub ? (
                   <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: INK_SOFT}}>
