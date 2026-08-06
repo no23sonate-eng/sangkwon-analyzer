@@ -49,6 +49,7 @@ import {SplitCard} from './SplitCard';
 import {BigStatsCard} from './BigStatsCard';
 import {PhotoSplitCard} from './PhotoSplitCard';
 import {ExchangeMotionCard} from './ExchangeMotionCard';
+import {MotionSample} from './MotionSample';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -389,6 +390,15 @@ export const RemotionRoot = () => {
           calculateMetadata={async ({props}) => durationFromProps({props})}
         />
       ))}
+      <Composition
+        id="MotionSample"
+        component={MotionSample}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={24 * FPS}
+        defaultProps={{}}
+      />
       <Composition
         id="NewsQuoteCard"
         component={NewsQuoteCard}
