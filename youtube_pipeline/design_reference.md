@@ -1015,14 +1015,22 @@ depth 정렬은 `(col+row)` 기준 zorder 로 처리 — 블록 개수가 많아
 | 현장·사례·인용 | 실사 카드 (`shared.jsx`) | 실사 영상/사진 + 다크 오버레이 |
 | 기사 인용 | 기사 지면 재조판 | 흰 지면 + 크림 캔버스 |
 
-### 20-2. 타이포 (1080p 기준, 폰 가독성 확보값)
+### 20-2. 타이포 (1080p 기준, 폰 가독성 확보값 — 2026-08-06 전면 확대)
 
-- 종이 카드 타이틀: **Pretendard Bold 52**, top **138px** (상단에 붙이지 말 것)
-- 종이 카드 서브: A2Z Light 27
+> "핸드폰으로 봤을 때 글자가 너무 작지 않게 전반적으로 키워줘" —
+> 종이 카드 전체를 약 +18% 키운 값이 아래다. 이게 현재 기준값.
+
+- 종이 카드 타이틀: **Pretendard Bold 60**, top **138px** (상단에 붙이지 말 것)
+- 종이 카드 서브: A2Z Light 32
+- 종이 카드 본문 라벨 **39~45** / 보조설명 **30~32** / 화살표 라벨 28
+- 종이 카드 빅 수치: 84~94 (단위는 그 55~60%)
 - 실사 카드 소제목: **44** / 부제: **46** / 캡션: **34**
 - 아이콘 라벨: **40** · 헤드라인 문장: **64** · 빅 수치: 96(미디어 위 104)
 - 실사 위 텍스트는 **흰색(#FFFFFF) + TEXT_SHADOW** 필수
 - 자막 안전영역: 하단 260px 비움 (`CONTENT_BOTTOM = 820`)
+- **출처 캡션은 우하단** (`PaperSource`, right 96 / 26px).
+  자막이 하단 중앙에 깔리므로 좌하단은 비워 둔다.
+- 한글 텍스트는 예외 없이 `wordBreak: 'keep-all'` — 없으면 "평/택기지" 처럼 단어가 쪼개진다.
 
 ### 20-3. 컬러
 
@@ -1072,12 +1080,28 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 | `SkylineCompareCard` | 규모 비교 (좌석·높이). 실루엣이 자라남 | `buildings:[{label,value,note,hot,shape,tone}]`, `maxH` |
 | `TowerGaugeCard` | 공연장 진행률. 돔 객석이 아래부터 점등 | `items:[{label,pct,sub,note}]` |
 | `PaperFlowCard` | 구조·흐름. 선형 3노드 또는 **exchange(주고받기)** | `nodes[]`+`arrows[]` / `exchange:{left,right,give,get}` |
-| `PaperImageCard` | 자료 사진을 흰 매트 액자로 종이에 얹음 | `image`, `imageTitle`, `caption`, `wide`, `kenBurns` |
+| `PaperImageCard` | 자료 사진을 흰 매트 액자로 종이에 얹음 | `image`, `caption`, `ratio`, `fit`, `wide`, `kenBurns` |
+| `SectionCard` | 지상/지하 단면. 지반선 기준 + 층 구간 강조 밴드 | `above/below:{floors,label,note}`, `bands:[{from,to,label,hot}]` (음수=지하) |
+| `RatioCard` | 비중 비교. 원=파이 조각 / `mode:'bar'`=100% 넘는 값(경쟁률·배수) | `items:[{label,pct,sub,decimals,hot}]`, `unit` |
+| `SightlineCard` | 조망 라인 단면. 관측점 → 능선, 규제 높이 | `viewer`, `peak:{label,ridgeLabel}`, `building` |
+| `RankTrendCard` | 순위 추이(낮을수록 좋음). y축을 뒤집어 상승으로 읽힘 | `points:[{x,rank}]`, `worst`, `caption` |
 
 - 실루엣 `shape`: sphere(구형 공연장) / arena / slender / setback / taper / slab
 - 아이콘: money · building · gov · doc · person · globe · key · clock
-- 공통: 타이틀 top 138 Pretendard Bold 52 / 접지 그림자로 지면 기준감 /
+- 공통: 타이틀 top 138 Pretendard Bold 60 / 접지 그림자로 지면 기준감 /
   강조는 옐로 1곳 / 브래킷(`[`) 표기는 **쓰지 않음**
+
+**레이아웃 자동 규칙 (2026-08-06 — 폰트 확대 후 겹침을 코드로 막은 것)**
+
+- `PaperImageCard`: `ratio`(원본 가로/세로)를 주면 액자를 그 비율로 맞춰 **잘림·여백 없음**.
+  다이어그램처럼 잘리면 안 되는 이미지는 `fit:'contain'`.
+  타이틀/서브 유무에 따라 액자 위치·높이를 자동으로 깎아 캡션까지 820 안에 넣는다.
+- `SkylineCompareCard`: 첨탑형(slender/setback/taper)은 실루엣 위로 20% 더 솟으므로
+  최대 높이를 자동으로 낮춘다 → 꼭대기 수치가 타이틀을 침범하지 않는다.
+- `RatioCard` 원형: 채움을 "중심에서 자라는 원"으로 하면 8.1% 같은 낮은 비중이
+  점처럼 보인다. **파이 조각**으로 그린다. 라벨은 원 위, 수치는 원 아래.
+- `RatioCard` 막대: 수치를 막대 **아래**가 아니라 라벨과 같은 줄(오른쪽 끝)에 둔다.
+  아래에 두면 다음 행 라벨과 겹친다. 행 간격 172 / 막대 높이 58.
 
 ### 21-2. 기사 인용 (§20-6 참조)
 
@@ -1124,6 +1148,18 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 
 ### 21-6. 미착수 아이디어 (B1M 레퍼런스에서 확인, 필요 시 제작)
 
-- 큰 원 1개로 비율 표현 (두 톤 + 링 아웃라인)
 - 막대 위 사람 아이콘 — "한 명당" 스케일 비교
 - 손글씨 화이트보드 모드 (빨간 취소선 → 정정)
+- (구현됨) 큰 원 1개로 비율 표현 → `RatioCard`
+
+### 21-7. 자료 이미지 수집
+
+- 저장 위치: `motion/public/<프로젝트>/` + 같은 폴더에 `CREDITS.md`
+  (원본 경로 / 라이선스 / **화면에 표기할 문자열**을 표로 남긴다)
+- CC 라이선스 이미지는 `source` prop 에 저작자 표기 필수
+  (예: `사진: Wpcpey / CC BY-SA 4.0`)
+- 국내 분양 홈페이지 다수가 **CUPID(WAF) JS 챌린지**를 건다. curl 로는 빈
+  스크립트 페이지만 온다. `slowAES.decrypt(c,2,a,b)` = AES-128-CBC(nopad) 복호값을
+  CUPID 쿠키에 넣고 `?ckattempt=1` 재요청하면 통과 —
+  구현: `scripts/fetch_parkside_images.py` 의 `cupid_session()`
+- 공식 조감도·투시도는 시행사 저작물. 보도·비평 인용 범위에서 쓰고 출처를 화면에 남긴다.

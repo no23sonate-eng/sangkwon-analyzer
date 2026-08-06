@@ -14,8 +14,12 @@ export const RatioCard = ({
   const n = items.length;
 
   if (mode === 'bar') {
+    // 한 행 = [라벨 ......... 수치 보조] / 그 아래 막대.
+    // 수치를 막대 아래가 아니라 라벨과 같은 줄에 두어야 다음 행과 안 겹친다.
     const maxV = Math.max(...items.map((i) => i.pct ?? 0), 1);
-    const BW = 1080, x0 = (1920 - BW) / 2, y0 = 400;
+    const BW = 1140, x0 = (1920 - BW) / 2;
+    const y0 = 372, ROW = 172, BH = 58;
+    const rowY = (i) => y0 + i * ROW;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
         <PaperBg />
@@ -24,11 +28,11 @@ export const RatioCard = ({
           {items.map((it, i) => {
             const v = interpolate(frame, [14 + i * 10, 66 + i * 10], [0, it.pct ?? 0],
                                   {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-            const y = y0 + i * 122;
+            const y = rowY(i);
             return (
               <g key={i}>
-                <rect x={x0} y={y} width={BW} height={54} fill={INK} opacity={0.07} rx={4} />
-                <rect x={x0} y={y} width={BW * (v / maxV)} height={54} rx={4}
+                <rect x={x0} y={y} width={BW} height={BH} fill={INK} opacity={0.07} rx={4} />
+                <rect x={x0} y={y} width={Math.max(3, BW * (v / maxV))} height={BH} rx={4}
                       fill={it.hot ? YELLOW : TONES[(i + 1) % TONES.length]} />
               </g>
             );
@@ -37,21 +41,21 @@ export const RatioCard = ({
         {items.map((it, i) => {
           const v = interpolate(frame, [14 + i * 10, 66 + i * 10], [0, it.pct ?? 0],
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-          const y = y0 + i * 122;
+          const y = rowY(i);
           return (
             <React.Fragment key={i}>
-              <div style={{position: 'absolute', left: x0, top: y - 46, opacity: fadeIn(frame, 10 + i * 10),
-                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 34, color: INK}}>
+              <div style={{position: 'absolute', left: x0, top: y - 62, opacity: fadeIn(frame, 10 + i * 10),
+                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 40, color: INK}}>
                 {it.label}
               </div>
-              <div style={{position: 'absolute', left: x0, width: BW, top: y + 66, textAlign: 'right',
+              <div style={{position: 'absolute', left: x0, width: BW, top: y - 70, textAlign: 'right',
                            opacity: fadeIn(frame, 20 + i * 10)}}>
-                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, color: INK,
+                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 58, color: INK,
                               fontVariantNumeric: 'tabular-nums'}}>
-                  {v.toFixed(it.decimals ?? 0)}<span style={{fontSize: 34}}>{unit}</span>
+                  {v.toFixed(it.decimals ?? 0)}<span style={{fontSize: 38}}>{unit}</span>
                 </span>
                 {it.sub ? (
-                  <span style={{marginLeft: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: INK_SOFT}}>
+                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: INK_SOFT}}>
                     {it.sub}
                   </span>
                 ) : null}
@@ -65,8 +69,16 @@ export const RatioCard = ({
   }
 
   // ── 원형 모드 ──
-  const R = 168;
-  const slot = Math.min(760, 1600 / n);
+  // 채움을 "중심에서 자라는 작은 원"으로 하면 8.1% 같은 낮은 비중이 점처럼 보인다.
+  // 파이 조각(원 전체 대비 부채꼴)이 낮은 비중에서도 읽힌다 — B1M 도넛 문법.
+  const R = 150;
+  const CY = 500;   // 파이 중심 — 라벨(위)·수치(아래) 사이
+  const slot = Math.min(560, 1600 / n);
+  const wedge = (cx, cy, pct) => {
+    const a = 2 * Math.PI * Math.min(99.999, Math.max(0, pct)) / 100;
+    const x = cx + R * Math.sin(a), y = cy - R * Math.cos(a);
+    return `M ${cx} ${cy} L ${cx} ${cy - R} A ${R} ${R} 0 ${a > Math.PI ? 1 : 0} 1 ${x} ${y} Z`;
+  };
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg />
@@ -74,21 +86,19 @@ export const RatioCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.map((it, i) => {
           const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;
-          const cy = 470;
+          const cy = CY;
           const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-          const C = 2 * Math.PI * R;
           return (
             <g key={i}>
-              {/* 바탕 링 */}
-              <circle cx={cx} cy={cy} r={R} fill="none" stroke={INK} strokeWidth={3} opacity={0.28} />
-              {/* 채움 — 얇은 면이 아니라 중심에서 자라는 원 (비중 = 면적) */}
-              <circle cx={cx} cy={cy} r={R * Math.sqrt(Math.max(0, v) / 100)}
-                      fill={it.hot ? YELLOW : TONES[(i + 1) % TONES.length]} opacity={it.hot ? 0.95 : 0.75} />
-              {/* 진행 호 */}
-              <circle cx={cx} cy={cy} r={R} fill="none" stroke={INK} strokeWidth={5}
-                      strokeDasharray={`${C * (v / 100)} ${C}`}
-                      transform={`rotate(-90 ${cx} ${cy})`} strokeLinecap="round" />
+              {/* 전체(=100%) 바탕 면 */}
+              <circle cx={cx} cy={cy} r={R} fill={INK} opacity={0.07} />
+              {/* 비중 = 파이 조각 */}
+              <path d={wedge(cx, cy, v)} fill={it.hot ? YELLOW : TONES[(i + 1) % TONES.length]}
+                    opacity={it.hot ? 1 : 0.85} />
+              <path d={wedge(cx, cy, v)} fill="none" stroke={INK} strokeWidth={2.5} opacity={0.9} />
+              {/* 외곽 링 */}
+              <circle cx={cx} cy={cy} r={R} fill="none" stroke={INK} strokeWidth={3} opacity={0.35} />
             </g>
           );
         })}
@@ -99,20 +109,20 @@ export const RatioCard = ({
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
           <React.Fragment key={i}>
-            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 500 + 196, textAlign: 'center',
+            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: CY + R + 22, textAlign: 'center',
                          opacity: fadeIn(frame, 24 + i * 10)}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 82, color: INK,
+              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: INK,
                             fontVariantNumeric: 'tabular-nums'}}>
-                {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 48}}>{unit}</span>
+                {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 56}}>{unit}</span>
               </span>
             </div>
-            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 500 + 300, textAlign: 'center',
+            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 252, textAlign: 'center',
                          opacity: fadeIn(frame, 30 + i * 10)}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 34, color: INK, wordBreak: 'keep-all'}}>
+              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 40, color: INK, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
               {it.sub ? (
-                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: INK_SOFT, wordBreak: 'keep-all'}}>
+                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT, wordBreak: 'keep-all'}}>
                   {it.sub}
                 </div>
               ) : null}

@@ -95,9 +95,9 @@ const Party = ({cx, cy, node, o}) => (
       </svg>
     </div>
     <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 38, color: INK, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
       {node.sub ? (
-        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, lineHeight: 1.35, color: INK_SOFT}}>{node.sub}</div>
+        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, lineHeight: 1.35, color: INK_SOFT}}>{node.sub}</div>
       ) : null}
     </div>
   </>
@@ -111,10 +111,10 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
   const gap = Math.min(190, (1620 - n * BOX) / Math.max(1, n - 1) || 0);
   const totalW = n * BOX + (n - 1) * gap;
   const startX = (1920 - totalW) / 2;
-  const cy = 545; // 타이틀 아래~하단 사이 광학 중심
+  const cy = 572; // 타이틀 아래~하단 사이 광학 중심
 
   if (exchange) {
-    const cy = 545;
+    const cy = 566;
     const LX = 500, RX = 1420;
     const AX0 = LX + 250, AX1 = RX - 250;
     const oL = fadeIn(frame, 8), oR = fadeIn(frame, 16);
@@ -139,7 +139,7 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
         </svg>
         {exchange.give ? (
           <div style={{position: 'absolute', left: AX0 - 60, width: AX1 - AX0 + 120, bottom: 1080 - (cy - 116), textAlign: 'center', opacity: oGive, lineHeight: 1.65}}>
-            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 29, color: INK, letterSpacing: '0.03em',
+            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 35, color: INK, letterSpacing: '0.03em', wordBreak: 'keep-all',
                           background: 'rgba(250,255,46,0.75)', padding: '4px 14px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
               {exchange.give}
             </span>
@@ -147,7 +147,7 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
         ) : null}
         {exchange.get ? (
           <div style={{position: 'absolute', left: AX0, width: AX1 - AX0, top: cy + 6, textAlign: 'center', opacity: oGet}}>
-            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: INK_SOFT, letterSpacing: '0.03em'}}>
+            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT, letterSpacing: '0.03em', wordBreak: 'keep-all'}}>
               {exchange.get}
             </span>
           </div>
@@ -178,13 +178,13 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
             </div>
             {/* 라벨 — hot 은 옐로 하이라이트 바를 뒤에 깐다 */}
             <div style={{position: 'absolute', left: cxN - BOX / 2 - 50, width: BOX + 100, top: cy + 26, textAlign: 'center', opacity: o, wordBreak: 'keep-all'}}>
-              <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: hot ? 38 : 33,
+              <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: hot ? 46 : 39,
                             color: INK, lineHeight: 1.3, padding: '2px 10px',
                             background: hot ? 'rgba(250,255,46,0.75)' : 'none', boxDecorationBreak: 'clone'}}>
                 {nd.label}
               </span>
               {nd.sub ? (
-                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, lineHeight: 1.35, color: INK_SOFT, letterSpacing: '0.02em'}}>
+                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, lineHeight: 1.35, color: INK_SOFT, letterSpacing: '0.02em'}}>
                   {nd.sub}
                 </div>
               ) : null}
@@ -195,7 +195,7 @@ export const PaperFlowCard = ({title = '', sub = '', nodes = [], arrows = [], ex
                 <polygon points={`${x + BOX + gap + 16},${cy - 64} ${x + BOX + gap + 1},${cy - 71} ${x + BOX + gap + 1},${cy - 57}`} fill={INK} />
                 {arrows[i] ? (
                   <text x={x + BOX + gap / 2} y={cy - 82} textAnchor="middle"
-                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 23, fill: INK_SOFT, letterSpacing: '0.06em'}}>
+                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, fill: INK_SOFT, letterSpacing: '0.06em'}}>
                     {arrows[i]}
                   </text>
                 ) : null}

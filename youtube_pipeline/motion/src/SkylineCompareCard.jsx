@@ -101,6 +101,11 @@ export const SkylineCompareCard = ({
   const n = buildings.length;
   const slot = Math.min(340, 1500 / Math.max(1, n));
   const startX = (1920 - slot * n) / 2 + slot / 2;
+  // 첨탑형(slender/setback/taper)은 실루엣 위로 20% 더 솟는다 → 그만큼 최대 높이를 깎아
+  // 꼭대기 수치(note)가 타이틀 블록과 겹치지 않게 한다.
+  const headroom = (title ? (sub ? 265 : 210) : 130) + 34;
+  const spire = buildings.some((b) => ['slender', 'setback', 'taper'].includes(b.shape)) ? 0.2 : 0;
+  const MH = Math.min(maxH, (baseY - headroom - 54) / (1 + spire));
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -117,10 +122,10 @@ export const SkylineCompareCard = ({
               <ellipse cx={startX + i * slot} cy={baseY + 2} rx={Math.min(190, slot * 0.62) * (b.shape === 'sphere' ? 0.72 : 0.55)} ry={7}
                        fill={INK} opacity={0.13 * grow} />
               <Silhouette cx={startX + i * slot} baseY={baseY} W={Math.min(190, slot * 0.62)}
-                          H={Math.max(50, maxH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill={fill} grow={grow} />
+                          H={Math.max(50, MH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill={fill} grow={grow} />
               {hot ? (
                 <Silhouette cx={startX + i * slot} baseY={baseY} W={Math.min(190, slot * 0.62)}
-                            H={Math.max(50, maxH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill="none" grow={grow} />
+                            H={Math.max(50, MH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill="none" grow={grow} />
               ) : null}
             </g>
           );
@@ -131,7 +136,7 @@ export const SkylineCompareCard = ({
         const cx = startX + i * slot;
         const hot = Boolean(b.hot);
         const o = fadeIn(frame, 24 + i * 6);
-        const bH = Math.max(50, maxH * (b.value ?? 0.5));
+        const bH = Math.max(50, MH * (b.value ?? 0.5));
         const bW = Math.min(190, slot * 0.62);
         let topY = baseY - bH;
         if (b.shape === 'sphere') {
@@ -142,13 +147,13 @@ export const SkylineCompareCard = ({
         return (
           <React.Fragment key={i}>
             {b.note ? (
-              <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: topY - 52, textAlign: 'center', opacity: o,
-                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 38, color: INK, fontVariantNumeric: 'tabular-nums'}}>
+              <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: topY - 66, textAlign: 'center', opacity: o,
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 44, color: INK, fontVariantNumeric: 'tabular-nums'}}>
                 {b.note}
               </div>
             ) : null}
             <div style={{position: 'absolute', left: cx - slot / 2 + 8, width: slot - 16, top: baseY + 18, textAlign: 'center', opacity: o}}>
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26, lineHeight: 1.4, color: hot ? INK : INK_SOFT, letterSpacing: '0.03em', whiteSpace: 'pre-line'}}>
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, lineHeight: 1.4, color: hot ? INK : INK_SOFT, letterSpacing: '0.03em', whiteSpace: 'pre-line'}}>
                 {b.label}
               </div>
             </div>

@@ -84,12 +84,12 @@ export const SectionCard = ({
       {/* 지상/지하 수치 — 좌측에 크게 */}
       {[['above', above, groundY - H_ABOVE / 2, growA], ['below', below, groundY + H_BELOW / 2, growB]].map(([k, o, y, g]) => (
         <div key={k} style={{position: 'absolute', left: 150, top: y - 62, width: 400, textAlign: 'right', opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: INK_SOFT, letterSpacing: '0.05em'}}>{o.label}</div>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 72, color: INK, lineHeight: 1.1}}>
-            {o.floors}<span style={{fontSize: 42}}>층</span>
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, letterSpacing: '0.05em'}}>{o.label}</div>
+          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 84, color: INK, lineHeight: 1.1}}>
+            {o.floors}<span style={{fontSize: 50}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: INK_SOFT}}>{o.note}</div>
+            <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT}}>{o.note}</div>
           ) : null}
         </div>
       ))}
@@ -99,10 +99,10 @@ export const SectionCard = ({
         const yTop = bd.to >= 0 ? yAbove(bd.to) : yBelow(-bd.to - 1);
         const yBot = bd.from >= 0 ? yAbove(bd.from - 1) : yBelow(-bd.from);
         return (
-          <div key={i} style={{position: 'absolute', left: x0 + W + 78, top: (yTop + yBot) / 2 - 26, width: 480,
+          <div key={i} style={{position: 'absolute', left: x0 + W + 78, top: (yTop + yBot) / 2 - 30, width: 640,
                                opacity: fadeIn(frame, 50 + i * 8)}}>
             <div style={{fontFamily: bd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 34, color: INK, wordBreak: 'keep-all'}}>{bd.label}</div>
+                         fontSize: 40, color: INK, wordBreak: 'keep-all'}}>{bd.label}</div>
           </div>
         );
       })}

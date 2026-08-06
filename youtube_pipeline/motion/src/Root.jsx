@@ -35,6 +35,7 @@ import {NewsQuoteCard} from './NewsQuoteCard';
 import {SectionCard} from './SectionCard';
 import {RatioCard} from './RatioCard';
 import {SightlineCard} from './SightlineCard';
+import {RankTrendCard} from './RankTrendCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -348,6 +349,7 @@ export const RemotionRoot = () => {
         ['SectionCard', SectionCard, {bands: []}],
         ['RatioCard', RatioCard, {items: []}],
         ['SightlineCard', SightlineCard, {}],
+        ['RankTrendCard', RankTrendCard, {points: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}
