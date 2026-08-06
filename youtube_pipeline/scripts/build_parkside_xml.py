@@ -7,7 +7,7 @@ scene_plan.json 의 start/end(초)를 그대로 타임라인 위치로 쓴다.
 
     python3 youtube_pipeline/scripts/build_parkside_xml.py
 """
-import json, os
+import json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJ = os.path.join(ROOT, 'projects', '더파크사이드서울')
@@ -76,7 +76,7 @@ def main():
 '''
     out = os.path.join(PROJ, f'{SEQ}.xml')
     open(out, 'w', encoding='utf-8').write(xml)
-    nb = sum(1 for c in cuts if c[1].endswith('_b.mp4'))
+    nb = sum(1 for c in cuts if re.search(r'_b\d*\.mp4$', c[1]))
     print(f'{out}  — {len(items)}클립 (카드 {len(items) - nb} + 실사 {nb}) / '
           f'{total}프레임 ({total / FPS:.1f}초)')
 
