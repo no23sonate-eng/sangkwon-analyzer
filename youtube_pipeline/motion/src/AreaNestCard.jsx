@@ -18,8 +18,8 @@ export const AreaNestCard = ({
   const sorted = [...items].sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
   const maxV = sorted[0].value ?? 1;
   // 가장 큰 사각형을 기준 크기로, 나머지는 면적비의 제곱근만큼
-  const BOX = 384;                      // 큰 사각형 한 변
-  const CX = 700, BASE_Y = 748;         // 좌하단 기준점(공통 모서리)
+  const BOX = 392;                      // 큰 사각형 한 변
+  const CX = 640, BASE_Y = 776;         // 좌하단 기준점(공통 모서리)
   const side = (v) => BOX * Math.sqrt(Math.max(0, v) / maxV);
 
   return (
@@ -82,7 +82,7 @@ export const AreaNestCard = ({
       })}
 
       {multipleNote ? (
-        <div style={{position: 'absolute', left: 60, width: CX - BOX / 2 - 130, top: 470,
+        <div style={{position: 'absolute', left: 40, width: CX - BOX / 2 - 100, top: 452,
                      textAlign: 'right', opacity: fadeIn(frame, 70)}}>
           <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 56, color: INK,
                         background: 'rgba(250,255,46,0.8)', padding: '6px 20px'}}>

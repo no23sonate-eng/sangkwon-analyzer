@@ -1,14 +1,14 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, palette} from './paper';
 
 // 빌딩 실루엣 비교 카드 v2 — B1M Billionaires' Row 높이차트 정밀 재현.
 // 실제 건물처럼 "인지 가능한 프로파일" 프리셋 + 건물마다 다른 톤 패밀리.
 // buildings: [{label, value(0~1), note, hot, shape, tone(옵션: TONES 인덱스)}]
 // shape: 'sphere'(구형 공연장) | 'arena'(낮은 돔) | 'slender'(초세장)
 //        | 'setback'(계단형+첨탑) | 'taper'(테이퍼+안테나) | 'slab'(사각+코니스)
-const Silhouette = ({cx, baseY, W, H, shape, fill, grow}) => {
+const Silhouette = ({cx, baseY, W, H, shape, fill, grow, INK}) => {
   const h = H * grow;
   const top = baseY - h;
   const win = (x, y, w2, hgt) =>
@@ -154,13 +154,15 @@ export const SkylineCompareCard = ({
   source = '',
   note = '',      // 하단 단서 조항 (예: 금액 기준이 달라 단순 비교 주의)
   maxH = 420,
+  dark = false,   // 어두운 종이 톤 (연속되는 종이 카드 사이에 변주)
 }) => {
   useA2ZFonts();
+  const {ink: INK, inkSoft: INK_SOFT, tones: TONES} = palette(dark);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const baseY = CONTENT_BOTTOM - 58; // 바닥선을 화면 아래쪽으로
   const n = buildings.length;
-  const slot = Math.min(340, 1500 / Math.max(1, n));
+  const slot = Math.min(520, 1520 / Math.max(1, n));   // 라벨 폭에 맞춰 간격 확보
   const startX = (1920 - slot * n) / 2 + slot / 2;
   // 첨탑형(slender/setback/taper)은 실루엣 위로 20% 더 솟는다 → 그만큼 최대 높이를 깎아
   // 꼭대기 수치(note)가 타이틀 블록과 겹치지 않게 한다.
@@ -170,8 +172,8 @@ export const SkylineCompareCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg dark={dark} />
+      <PaperTitle title={title} sub={sub} dark={dark} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {buildings.map((b, i) => {
           const grow = spring({frame: frame - 8 - i * 6, fps, config: {damping: 200}, durationInFrames: 36});
@@ -183,10 +185,10 @@ export const SkylineCompareCard = ({
               <ellipse cx={startX + i * slot} cy={baseY + 2} rx={Math.min(190, slot * 0.62) * (b.shape === 'sphere' ? 0.72 : 0.55)} ry={7}
                        fill={INK} opacity={0.13 * grow} />
               <Silhouette cx={startX + i * slot} baseY={baseY} W={Math.min(190, slot * 0.62)}
-                          H={Math.max(50, MH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill={fill} grow={grow} />
+                          H={Math.max(50, MH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill={fill} grow={grow} INK={INK} />
               {hot ? (
                 <Silhouette cx={startX + i * slot} baseY={baseY} W={Math.min(190, slot * 0.62)}
-                            H={Math.max(50, MH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill="none" grow={grow} />
+                            H={Math.max(50, MH * (b.value ?? 0.5))} shape={b.shape || 'slab'} fill="none" grow={grow} INK={INK} />
               ) : null}
             </g>
           );
@@ -209,13 +211,13 @@ export const SkylineCompareCard = ({
         return (
           <React.Fragment key={i}>
             {b.note ? (
-              <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: topY - 74, textAlign: 'center', opacity: o,
-                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 50, color: INK, fontVariantNumeric: 'tabular-nums'}}>
+              <div style={{position: 'absolute', left: cx - (slot + 80) / 2, width: slot + 80, top: topY - 74, textAlign: 'center', opacity: o,
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 50, color: INK, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap'}}>
                 {b.note}
               </div>
             ) : null}
-            <div style={{position: 'absolute', left: cx - slot / 2 + 8, width: slot - 16, top: baseY + 18, textAlign: 'center', opacity: o}}>
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 35, lineHeight: 1.4, color: hot ? INK : INK_SOFT, letterSpacing: '0.03em', whiteSpace: 'pre-line'}}>
+            <div style={{position: 'absolute', left: cx - (slot - 24) / 2, width: slot - 24, top: baseY + 18, textAlign: 'center', opacity: o}}>
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 35, lineHeight: 1.35, color: hot ? INK : INK_SOFT, letterSpacing: '0.02em', whiteSpace: 'pre-line', wordBreak: 'keep-all'}}>
                 {b.label}
               </div>
             </div>
@@ -223,13 +225,13 @@ export const SkylineCompareCard = ({
         );
       })}
       {note ? (
-        <div style={{position: 'absolute', left: 96, width: 1100, top: CONTENT_BOTTOM - 6,
+        <div style={{position: 'absolute', left: 96, width: 1400, top: 900,
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.03em',
                      color: INK_SOFT, opacity: fadeIn(frame, 64), wordBreak: 'keep-all'}}>
           {note}
         </div>
       ) : null}
-      <PaperSource source={source} />
+      <PaperSource source={source} dark={dark} />
     </AbsoluteFill>
   );
 };

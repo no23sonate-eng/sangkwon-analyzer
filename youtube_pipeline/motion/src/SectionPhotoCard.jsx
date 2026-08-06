@@ -123,7 +123,7 @@ export const SectionPhotoCard = ({
       ))}
 
       {source ? (
-        <div style={{position: 'absolute', right: 96, top: 816, textAlign: 'right',
+        <div style={{position: 'absolute', right: 72, top: 1008, textAlign: 'right',
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em',
                      color: '#FFFFFF', opacity: 0.8 * fadeIn(frame, 40), textShadow: SHADOW}}>
           {source}

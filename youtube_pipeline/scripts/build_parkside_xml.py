@@ -31,8 +31,15 @@ def main():
         split = s0 + frames(cardDur)
         if cardDur > 0:
             cuts.append((sc['id'], f"sec{sc['id']:02d}_{sc['key']}.mp4", s0, min(split, e0)))
-        if sc.get('broll'):
-            cuts.append((sc['id'], f"sec{sc['id']:02d}_{sc['key']}_b.mp4", max(s0, split), e0))
+        bs = sc.get('broll')
+        if bs:
+            bs = bs if isinstance(bs, list) else [bs]
+            t = max(s0, split)
+            for j, b in enumerate(bs):
+                sfx = '_b' if len(bs) == 1 else f'_b{j + 1}'
+                end = e0 if j == len(bs) - 1 else t + frames(b['dur'])
+                cuts.append((sc['id'], f"sec{sc['id']:02d}_{sc['key']}{sfx}.mp4", t, end))
+                t = end
 
     items, total = [], 0
     for i, (sid, name, start, end) in enumerate(cuts):

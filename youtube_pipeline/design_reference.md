@@ -1092,6 +1092,11 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 | `DotMatrixCard` | 개수를 점 격자로. 초과 물량이 눈에 들어옴 | `groups:[{label,value,sub,hot}]`, `perDot`, `cols` |
 | `SectionPhotoCard` | **실측 단면 도면** 위에 치수·강조 (도식 대신 실물) | `image`,`imageRatio`,`groundRatio`,`groundY`,`above/below`,`bands:[{y0,y1,label}]` |
 | `ParkCompareCard` | 좌우 분할 실사 + 경계 실루엣 (같은 축척) | `sides:[{photo,shape,dw,dh,name,area,hot}]`, `note` |
+| `FullBleedCard` | 전체 화면 이미지 + 문구 한 줄. 훅·전체보기·클로징 | `image`,`headline`,`caption`,`align`,`scrim` |
+| `PhotoStepsCard` | Vox 식 단계 타일(사진/아이콘) + 화살표 + 진행 점 | `steps:[{photo\|icon,label,sub,hot}]` |
+| `ElevatorCard` | 층을 **이동**으로 보여준다 (엘리베이터가 내려감) | `stops:[{floor,label,sub,hot}]` |
+| `SplitCard` | 두 입장을 좌우로 갈라 대비 + 결론 한 줄 | `left/right:{label,sub,lines[]}`, `verdict` |
+| `BigStatsCard` | 도형 없이 큰 수치 2~3개 | `items:[{display,unit,label,sub,hot}]` |
 
 - 실루엣 `shape`: sphere(구형 공연장) / arena / slender / setback / taper / slab
 - 아이콘: money · building · gov · doc · person · globe · key · clock
@@ -1123,6 +1128,20 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 PaperImageCard 8 / SkylineCompareCard 4 / PaperFlowCard(row) 4 /
 TimelineRailCard 3 / SectionCard 2 / PaperFlowCard(exchange) 2 /
 나머지(steps·vertical·bar·pie·area·dot·section·sightline·rank) 각 1.
+
+**컷 단위 피드백에서 반복해서 나온 규칙 (2026-08-06)**
+
+- 출처는 **화면 오른쪽 아래 끝**(right 72 / top 1008). 자막이 하단 중앙에 깔리므로
+  모서리로 완전히 빼야 서로 안 건드린다. 실사 컷도 같은 좌표에 굽는다.
+- 종이 카드가 길게 이어지면 중간에 **어두운 종이 톤**(`dark` prop)을 한두 장 끼운다.
+  `palette(dark)` 로 잉크·톤만 뒤집고 문법은 그대로 둔다.
+- 설명이 필요 없는 장면은 카드를 만들지 말고 **이미지 한 장 + 문구 하나**로 끝낸다.
+- 기관·기업이 주체인 그림에는 **로고**를 쓴다. 아이콘보다 주체가 즉시 읽힌다.
+  (Commons SVG 썸네일은 알파 PNG 다 — `convert('RGB')` 로 열면 배경이 검게 눌린다)
+- 라벨 박스를 넓혔으면 **항목 간격(slot)도 같이 넓혀야** 옆 항목과 안 겹친다.
+- 시간축에 사건이 한 해에 몰리면 축을 **월 단위**로 바꾸고 `tickLabels` 로 라벨을 준다.
+- 그래픽이 문장의 뜻과 겉돌면 도형을 바꾸는 게 아니라 **동사를 그린다**.
+  "엘리베이터를 타고 내려가면" → 적층도가 아니라 내려가는 케이지.
 
 **실사 위에 그래픽을 얹을 때 (2026-08-06 추가)**
 

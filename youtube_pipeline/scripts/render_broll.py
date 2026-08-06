@@ -31,27 +31,53 @@ def probe_duration(path):
     raise RuntimeError(f'duration 못 읽음: {path}')
 
 
-_CREDIT_PNG = os.path.join(PROJ, 'clips', '_credit.png')
+FONT_R = os.path.join(ROOT, 'motion', 'public', 'fonts', 'A2Z-4Regular.ttf')
+_OVERLAY_DIR = os.path.join(PROJ, 'clips', '_overlay')
 
 
-def credit_png():
-    """우하단 출처 오버레이(1920x1080 투명 PNG). 카드의 PaperSource 와 같은 위치·크기."""
-    if os.path.exists(_CREDIT_PNG):
-        return _CREDIT_PNG
+def _shadow_text(d, xy, txt, font, fill, sh=(0, 0, 0, 150), off=2):
+    d.text((xy[0] + off, xy[1] + off + 1), txt, font=font, fill=sh)
+    d.text(xy, txt, font=font, fill=fill)
+
+
+def overlay_png(text='', sub='', key='credit'):
+    """실사 위에 얹을 투명 PNG. 출처는 항상, text 가 있으면 가운데 문구도 함께.
+
+    이 ffmpeg 빌드에는 drawtext(libfreetype)가 없어서 PIL 로 굽는다.
+    """
+    os.makedirs(_OVERLAY_DIR, exist_ok=True)
+    out = os.path.join(_OVERLAY_DIR, f'{key}.png')
+    if os.path.exists(out):
+        return out
     from PIL import Image, ImageDraw, ImageFont
     im = Image.new('RGBA', (1920, 1080), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
+
+    if text:
+        # 문구 뒤에 옅은 세로 그라디언트를 깔아 어떤 화면에서도 읽히게
+        scrim = Image.new('RGBA', (1920, 1080), (0, 0, 0, 0))
+        sd = ImageDraw.Draw(scrim)
+        for i in range(360):
+            a = int(150 * (1 - abs(i - 180) / 180) ** 0.7)
+            sd.line([(0, 360 + i), (1920, 360 + i)], fill=(11, 14, 18, a))
+        im = Image.alpha_composite(im, scrim)
+        d = ImageDraw.Draw(im)
+        fb = ImageFont.truetype(FONT, 88)
+        w = d.textbbox((0, 0), text, font=fb)[2]
+        _shadow_text(d, ((1920 - w) // 2, 486), text, fb, (255, 255, 255, 255), off=3)
+        if sub:
+            fs = ImageFont.truetype(FONT_R, 42)
+            w2 = d.textbbox((0, 0), sub, font=fs)[2]
+            _shadow_text(d, ((1920 - w2) // 2, 600), sub, fs, (226, 231, 238, 255))
+
     f = ImageFont.truetype(FONT, 27)
     w = d.textbbox((0, 0), CREDIT, font=f)[2]
-    x, y = 1920 - 96 - w, 812
-    d.text((x + 1, y + 2), CREDIT, font=f, fill=(0, 0, 0, 130))   # 밝은 화면용 그림자
-    d.text((x, y), CREDIT, font=f, fill=(255, 255, 255, 205))
-    os.makedirs(os.path.dirname(_CREDIT_PNG), exist_ok=True)
-    im.save(_CREDIT_PNG)
-    return _CREDIT_PNG
+    _shadow_text(d, (1920 - 72 - w, 1004), CREDIT, f, (255, 255, 255, 205), off=1)
+    im.save(out)
+    return out
 
 
-def cut(src, ss, dur, out):
+def cut(src, ss, dur, out, overlay):
     avail = probe_duration(src) - ss
     # 모자라면 느리게 재생해 채운다. 1.25배까지만 — 그 이상은 부자연스러움
     slow = max(1.0, dur / avail) if avail < dur else 1.0
@@ -68,7 +94,7 @@ def cut(src, ss, dur, out):
            '-ss', str(ss), '-i', src,
            # 출처 오버레이 — 이 ffmpeg 빌드에는 drawtext(libfreetype)가 없어서
            # PIL 로 만든 투명 PNG 를 얹는다. -loop 1 로 길이만큼 계속 공급
-           '-loop', '1', '-i', credit_png(),
+           '-loop', '1', '-i', overlay,
            '-filter_complex', f"[0:v]{','.join(vf)}[v];[v][1:v]overlay=0:0",
            '-frames:v', str(int(round(dur * FPS))),
            # 원본이 5~6Mbps 라 crf 만 두면 CG 디테일 때문에 30Mbps 까지 튄다.
@@ -95,15 +121,19 @@ def main():
     os.makedirs(outdir, exist_ok=True)
     n = 0
     for sc in plan['scenes']:
-        b = sc.get('broll')
-        if not b or (a.ids and sc['id'] not in a.ids):
+        bs = sc.get('broll')
+        if not bs or (a.ids and sc['id'] not in a.ids):
             continue
-        src = os.path.join(PROJ, 'footage', b['src'])
-        out = os.path.join(outdir, f"sec{sc['id']:02d}_{sc['key']}_b.mp4")
-        cut(src, b['ss'], b['dur'], out)
-        print(f"[ok] #{sc['id']:02d} {sc['key']:12s} broll {b['dur']:5.1f}s "
-              f"{b['src'][:10]}@{b['ss']}s  {os.path.getsize(out)//1024}KB", flush=True)
-        n += 1
+        bs = bs if isinstance(bs, list) else [bs]      # 한 장면에 실사 여러 컷 가능
+        for j, b in enumerate(bs):
+            src = os.path.join(PROJ, 'footage', b['src'])
+            sfx = '_b' if len(bs) == 1 else f'_b{j + 1}'
+            out = os.path.join(outdir, f"sec{sc['id']:02d}_{sc['key']}{sfx}.mp4")
+            key = 'credit' if not b.get('text') else f"t{sc['id']:02d}_{j}"
+            cut(src, b['ss'], b['dur'], out, overlay_png(b.get('text', ''), b.get('sub', ''), key))
+            print(f"[ok] #{sc['id']:02d} {sc['key']:12s} {sfx[1:]:3s} {b['dur']:5.1f}s "
+                  f"{b['src'][:10]}@{b['ss']}s  {os.path.getsize(out)//1024}KB", flush=True)
+            n += 1
     print(f'실사 {n}컷 → {outdir}', flush=True)
 
 

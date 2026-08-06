@@ -18,7 +18,7 @@ export const RatioCard = ({
     // 수치를 막대 아래가 아니라 라벨과 같은 줄에 두어야 다음 행과 안 겹친다.
     const maxV = Math.max(...items.map((i) => i.pct ?? 0), 1);
     const BW = 1140, x0 = (1920 - BW) / 2;
-    const y0 = 372, ROW = 172, BH = 58;
+    const y0 = 396, ROW = 190, BH = 62;
     const rowY = (i) => y0 + i * ROW;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -44,11 +44,11 @@ export const RatioCard = ({
           const y = rowY(i);
           return (
             <React.Fragment key={i}>
-              <div style={{position: 'absolute', left: x0, top: y - 62, opacity: fadeIn(frame, 10 + i * 10),
+              <div style={{position: 'absolute', left: x0, top: y - 78, opacity: fadeIn(frame, 10 + i * 10), lineHeight: 1,
                            fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK}}>
                 {it.label}
               </div>
-              <div style={{position: 'absolute', left: x0, width: BW, top: y - 70, textAlign: 'right',
+              <div style={{position: 'absolute', left: x0, width: BW, top: y - 92, textAlign: 'right',
                            opacity: fadeIn(frame, 20 + i * 10)}}>
                 <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 65, color: INK,
                               fontVariantNumeric: 'tabular-nums'}}>

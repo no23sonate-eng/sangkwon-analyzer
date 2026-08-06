@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
 
@@ -88,11 +88,24 @@ const Icon = ({name, size = 74, stroke = INK}) => {
 // exchange: {left:{icon,label,sub}, right:{icon,label,sub}, give:'좌→우 라벨', get:'우→좌 라벨'}
 const Party = ({cx, cy, node, o}) => (
   <>
-    <div style={{position: 'absolute', left: cx - 130, top: cy - 170, width: 260, height: 170, opacity: o,
+    <div style={{position: 'absolute', left: cx - 150, top: cy - 210, width: 300, height: 200, opacity: o,
                  display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      <svg width={170} height={170} viewBox="-50 -50 100 100">
-        <Icon name={node.icon} stroke={INK} />
-      </svg>
+      {node.logo ? (
+        // 로고가 있으면 로고를 쓴다 (아이콘보다 주체가 즉시 읽힘)
+        <Img src={staticFile(node.logo)}
+             style={{maxWidth: 260, maxHeight: 180, objectFit: 'contain'}} />
+      ) : node.wordmark ? (
+        <div style={{width: 236, height: 152, border: `4px solid ${INK}`, display: 'flex',
+                     alignItems: 'center', justifyContent: 'center',
+                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 84,
+                     letterSpacing: '0.04em', color: INK}}>
+          {node.wordmark}
+        </div>
+      ) : (
+        <svg width={190} height={190} viewBox="-50 -50 100 100">
+          <Icon name={node.icon} stroke={INK} />
+        </svg>
+      )}
     </div>
     <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
       <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 50, color: INK, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
@@ -259,7 +272,7 @@ export const PaperFlowCard = ({
         </svg>
         {exchange.give ? (
           <div style={{position: 'absolute', left: AX0 - 60, width: AX1 - AX0 + 120, bottom: 1080 - (cy - 116), textAlign: 'center', opacity: oGive, lineHeight: 1.65}}>
-            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 40, color: INK, letterSpacing: '0.03em', wordBreak: 'keep-all',
+            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 46, color: INK, letterSpacing: '0.02em', wordBreak: 'keep-all',
                           background: 'rgba(250,255,46,0.75)', padding: '4px 14px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
               {exchange.give}
             </span>
@@ -267,7 +280,7 @@ export const PaperFlowCard = ({
         ) : null}
         {exchange.get ? (
           <div style={{position: 'absolute', left: AX0, width: AX1 - AX0, top: cy + 6, textAlign: 'center', opacity: oGet}}>
-            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, letterSpacing: '0.03em', wordBreak: 'keep-all'}}>
+            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 42, color: INK, letterSpacing: '0.02em', wordBreak: 'keep-all'}}>
               {exchange.get}
             </span>
           </div>

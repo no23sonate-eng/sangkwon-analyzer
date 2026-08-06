@@ -48,12 +48,23 @@ export const fadeIn = (frame, start, len = 14) => {
   return t * t * (3 - 2 * t);
 };
 
+// 어두운 종이 톤 — 같은 문법을 유지한 채 색만 뒤집는다.
+// 종이 카드가 길게 이어질 때 중간에 한두 장 끼워 넣어 단조로움을 끊는 용도.
+export const DARK_PAPER = '#242830';
+export const DARK_INK = '#F2F0EC';
+export const DARK_INK_SOFT = '#A7AEB8';
+export const DARK_TONES = ['#4A525E', '#79828F', '#3A414C', '#98A1AD', '#5C6470'];
+export const palette = (dark) => (dark
+  ? {paper: DARK_PAPER, ink: DARK_INK, inkSoft: DARK_INK_SOFT, tones: DARK_TONES,
+     line: 'rgba(242,240,236,0.10)', vig: '#000'}
+  : {paper: PAPER, ink: INK, inkSoft: INK_SOFT, tones: TONES, line: PAPER_LINE, vig: '#000'});
+
 // 크림 종이 배경 + 옅은 격자 + 가장자리 비네트
-export const PaperBg = () => (
+export const PaperBg = ({dark = false}) => (
   <>
-    <div style={{position: 'absolute', inset: 0, background: PAPER}} />
+    <div style={{position: 'absolute', inset: 0, background: dark ? DARK_PAPER : PAPER}} />
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-      <g stroke={PAPER_LINE} strokeWidth={1}>
+      <g stroke={dark ? 'rgba(242,240,236,0.10)' : PAPER_LINE} strokeWidth={1}>
         {Array.from({length: 23}, (_, i) => (
           <line key={`v${i}`} x1={(i + 1) * 80} y1={0} x2={(i + 1) * 80} y2={1080} />
         ))}
@@ -73,15 +84,15 @@ export const PaperBg = () => (
 );
 
 // 상단 중앙 타이틀 (레퍼런스 "Occupancy" 스타일 — 작고 절제된 제목)
-export const PaperTitle = ({title, sub = ''}) => {
+export const PaperTitle = ({title, sub = '', dark = false}) => {
   const frame = useCurrentFrame();
   return (
     <div style={{position: 'absolute', top: 138, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, letterSpacing: '-0.01em', color: INK}}>
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, letterSpacing: '-0.01em', color: dark ? DARK_INK : INK}}>
         {title}
       </div>
       {sub ? (
-        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.08em', color: INK_SOFT}}>
+        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.08em', color: dark ? DARK_INK_SOFT : INK_SOFT}}>
           {sub}
         </div>
       ) : null}
@@ -89,13 +100,13 @@ export const PaperTitle = ({title, sub = ''}) => {
   );
 };
 
-// 우하단 출처 캡션 — 좌하단에서 이동(2026-08-06). 자막은 하단 중앙에 깔리므로
-// 출처는 오른쪽 끝으로 붙여 시선 간섭을 줄인다.
-export const PaperSource = ({source = ''}) => {
+// 우하단 출처 캡션 — 화면 오른쪽 아래 **끝**에 붙인다(2026-08-06).
+// 자막은 하단 중앙에 깔리므로 모서리로 완전히 빼야 서로 안 건드린다.
+export const PaperSource = ({source = '', dark = false}) => {
   const frame = useCurrentFrame();
   if (!source) return null;
   return (
-    <div style={{position: 'absolute', right: 96, top: CONTENT_BOTTOM - 4, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em', color: INK_SOFT, opacity: fadeIn(frame, 40)}}>
+    <div style={{position: 'absolute', right: 72, top: 1008, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em', color: dark ? DARK_INK_SOFT : INK_SOFT, opacity: fadeIn(frame, 40)}}>
       {source}
     </div>
   );

@@ -42,6 +42,11 @@ import {AreaNestCard} from './AreaNestCard';
 import {DotMatrixCard} from './DotMatrixCard';
 import {SectionPhotoCard} from './SectionPhotoCard';
 import {ParkCompareCard} from './ParkCompareCard';
+import {FullBleedCard} from './FullBleedCard';
+import {PhotoStepsCard} from './PhotoStepsCard';
+import {ElevatorCard} from './ElevatorCard';
+import {SplitCard} from './SplitCard';
+import {BigStatsCard} from './BigStatsCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -362,6 +367,11 @@ export const RemotionRoot = () => {
         ['DotMatrixCard', DotMatrixCard, {groups: []}],
         ['SectionPhotoCard', SectionPhotoCard, {bands: []}],
         ['ParkCompareCard', ParkCompareCard, {sides: []}],
+        ['FullBleedCard', FullBleedCard, {}],
+        ['PhotoStepsCard', PhotoStepsCard, {steps: []}],
+        ['ElevatorCard', ElevatorCard, {stops: []}],
+        ['SplitCard', SplitCard, {left: {}, right: {}}],
+        ['BigStatsCard', BigStatsCard, {items: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

@@ -13,6 +13,7 @@ import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_
 export const TimelineRailCard = ({
   title = '', sub = '',
   axis = {from: 2000, to: 2030, step: 5},
+  tickLabels = null,   // 눈금 라벨을 직접 지정 (월 단위 일정표 등)
   rails = [],
   source = '',
 }) => {
@@ -21,12 +22,12 @@ export const TimelineRailCard = ({
   const n = rails.length;
   if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
 
-  const X0 = 440, X1 = 1660;      // 좌측 레일 이름이 3줄로 접히지 않게 여백 확보
-  const LIFT = (j) => 78 + (j % 2) * 122;   // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침
+  const X0 = 400, X1 = 1780;      // 좌측 레일 이름이 3줄로 접히지 않게 여백 확보
+  const LIFT = (j) => 82 + ((j + 1) % 2) * 108;  // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침
   const px = (y) => X0 + ((y - axis.from) / (axis.to - axis.from)) * (X1 - X0);
   const AXIS_Y = CONTENT_BOTTOM - 84;
   const ROW = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1));
-  const railY = (i) => (n === 1 ? AXIS_Y - 190 : 400 + i * ROW);
+  const railY = (i) => (n === 1 ? AXIS_Y - 158 : 400 + i * ROW);
 
   const ticks = [];
   for (let y = axis.from; y <= axis.to; y += axis.step) ticks.push(y);
@@ -59,8 +60,8 @@ export const TimelineRailCard = ({
             <g key={i}>
               {r.from != null ? (
                 <>
-                  <rect x={x0} y={y - 27} width={Math.max(4, (x1 - x0) * grow)} height={54} rx={4} fill={fill} />
-                  <rect x={x0} y={y - 27} width={Math.max(4, (x1 - x0) * grow)} height={54} rx={4}
+                  <rect x={x0} y={y - 34} width={Math.max(4, (x1 - x0) * grow)} height={68} rx={4} fill={fill} />
+                  <rect x={x0} y={y - 34} width={Math.max(4, (x1 - x0) * grow)} height={68} rx={4}
                         fill="none" stroke={INK} strokeWidth={2.5} />
                 </>
               ) : (
@@ -73,7 +74,7 @@ export const TimelineRailCard = ({
                 const o = fadeIn(frame, 40 + i * 12 + j * 8);
                 return (
                   <g key={j} opacity={o}>
-                    <line x1={ex} y1={y - 27} x2={ex} y2={y - LIFT(j) + 16} stroke={INK} strokeWidth={2} opacity={0.5} />
+                    <line x1={ex} y1={y - 34} x2={ex} y2={y - LIFT(j) + 16} stroke={INK} strokeWidth={2} opacity={0.5} />
                     <circle cx={ex} cy={y} r={e.hot ? 17 : 12}
                             fill={e.hot ? YELLOW : '#FFF'} stroke={INK} strokeWidth={3.5} />
                   </g>
@@ -89,7 +90,7 @@ export const TimelineRailCard = ({
         <div key={i} style={{position: 'absolute', left: px(y) - 100, width: 200, top: AXIS_Y + 22,
                              textAlign: 'center', opacity: fadeIn(frame, 6),
                              fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, color: INK_SOFT}}>
-          {y}
+          {tickLabels ? (tickLabels[i] ?? '') : y}
         </div>
       ))}
 

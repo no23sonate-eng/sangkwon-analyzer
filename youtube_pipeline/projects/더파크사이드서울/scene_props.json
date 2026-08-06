@@ -99,32 +99,11 @@
       }
     },
     "4": {
-      "card": "PaperFlowCard",
+      "card": "FullBleedCard",
       "props": {
-        "title": "시작은 도시가 아니었다",
-        "nodes": [
-          {
-            "icon": "gov",
-            "label": "미군기지 이전",
-            "sub": "2003년 한미 합의"
-          },
-          {
-            "icon": "money",
-            "label": "이전 비용",
-            "sub": "3조 4,000억원"
-          },
-          {
-            "icon": "building",
-            "label": "11조 복합단지",
-            "sub": "그 결과물",
-            "hot": true
-          }
-        ],
-        "arrows": [
-          "돈이 필요했다",
-          "그래서"
-        ],
-        "source": ""
+        "image": "parkside/yongsan_base.jpg",
+        "headline": "시작은 도시가 아니었다",
+        "source": "사진: MNXANL / CC BY-SA 4.0"
       }
     },
     "5": {
@@ -141,51 +120,47 @@
       "card": "PaperFlowCard",
       "props": {
         "title": "기부 대 양여",
-        "sub": "2007년 11월 · 국방부 ↔ LH",
+        "sub": "2007년 11월",
         "exchange": {
           "left": {
-            "icon": "building",
+            "wordmark": "LH",
             "label": "LH",
             "sub": "한국토지주택공사"
           },
           "right": {
-            "icon": "gov",
+            "logo": "parkside/logo_mnd.png",
             "label": "국방부",
             "sub": "용산기지 소유"
           },
-          "give": "자체 자금 3조 4,000억원으로 평택기지 건설",
-          "get": "용산기지 4개 부지를 넘겨받는다"
+          "give": "평택기지를 지어 준다 — 3조 4,000억",
+          "get": "용산기지 4개 부지를 받는다"
         },
         "source": "국방부 · LH 협약"
       }
     },
     "7": {
-      "card": "PaperFlowCard",
+      "card": "SkylineCompareCard",
       "props": {
-        "title": "땅값을 올리는 방법",
+        "title": "용도지역이 바뀌면 높이가 바뀐다",
         "sub": "2015년 4월 · 유엔사 부지",
-        "nodes": [
+        "dark": true,
+        "buildings": [
           {
-            "icon": "doc",
-            "label": "제3종일반주거지역",
-            "sub": "변경 전"
+            "label": "제3종일반주거지역 · 250%",
+            "value": 0.28,
+            "note": "변경 전",
+            "shape": "slab",
+            "tone": 0
           },
           {
-            "icon": "gov",
-            "label": "용도지역 변경",
-            "sub": "2015년 4월"
-          },
-          {
-            "icon": "money",
-            "label": "일반상업지역",
-            "sub": "땅값 상승",
+            "label": "일반상업지역 · 상한 1300%",
+            "value": 1.0,
+            "note": "변경 후",
+            "shape": "slender",
             "hot": true
           }
         ],
-        "arrows": [
-          "",
-          "결과"
-        ],
+        "note": "용적률 = 대지면적 대비 지을 수 있는 연면적. 상한이 오르면 땅값이 오른다.",
         "source": "서울시 도시관리계획 변경"
       }
     },
@@ -225,26 +200,27 @@
       }
     },
     "10": {
-      "card": "PaperFlowCard",
+      "card": "PhotoStepsCard",
       "props": {
         "title": "일레븐건설 엄석오 회장",
-        "layout": "steps",
-        "nodes": [
+        "steps": [
           {
-            "icon": "person",
+            "icon": "books",
             "label": "책 외판원",
             "sub": "사회생활 시작"
           },
           {
-            "icon": "doc",
-            "label": "출판사 설립"
+            "icon": "press",
+            "label": "출판사",
+            "sub": "설립"
           },
           {
-            "icon": "building",
-            "label": "건설사 설립"
+            "icon": "crane",
+            "label": "건설사",
+            "sub": "설립"
           },
           {
-            "icon": "key",
+            "photo": "parkside/site_aerial.jpg",
             "label": "1조짜리 땅",
             "sub": "서울 한복판",
             "hot": true
@@ -380,66 +356,34 @@
     "16": {
       "card": "PaperFlowCard",
       "props": {
-        "title": "리테일 비중이 높으면",
-        "nodes": [
-          {
-            "icon": "person",
-            "label": "임차인 트렌드",
-            "sub": "오피스보다 빠르다"
-          },
-          {
-            "icon": "clock",
-            "label": "소비 사이클",
-            "sub": "민감하다"
-          },
-          {
-            "icon": "key",
-            "label": "운영사가 필요해진다",
-            "sub": "전체를 아우르는",
-            "hot": true
-          }
-        ],
-        "arrows": [
-          "",
-          "그래서"
-        ],
-        "source": ""
+        "title": "",
+        "nodes": []
       }
     },
     "17": {
-      "card": "TimelineRailCard",
+      "card": "PhotoStepsCard",
       "props": {
         "title": "도쿄의 답 — 모리빌딩",
         "sub": "짓고, 그대로 운영한다",
-        "axis": {
-          "from": 2000,
-          "to": 2025,
-          "step": 5
-        },
-        "rails": [
+        "steps": [
           {
-            "label": "모리빌딩",
-            "from": 2003,
-            "to": 2023,
-            "hot": true,
-            "events": [
-              {
-                "at": 2003,
-                "label": "롯폰기힐스"
-              },
-              {
-                "at": 2014,
-                "label": "도라노몬힐스"
-              },
-              {
-                "at": 2023,
-                "label": "아자부다이힐스",
-                "hot": true
-              }
-            ]
+            "photo": "parkside/mori_roppongi.jpg",
+            "label": "롯폰기힐스",
+            "sub": "2003"
+          },
+          {
+            "photo": "parkside/mori_toranomon.jpg",
+            "label": "도라노몬힐스",
+            "sub": "2014"
+          },
+          {
+            "photo": "parkside/mori_azabudai.jpg",
+            "label": "아자부다이힐스",
+            "sub": "2023",
+            "hot": true
           }
         ],
-        "source": "모리빌딩"
+        "source": "사진: 稲妻ノ歯鯨 · Kakidai / CC BY-SA 4.0 · Syced / CC0"
       }
     },
     "18": {
@@ -456,19 +400,19 @@
       "card": "AreaNestCard",
       "props": {
         "title": "백화점 밖 제휴 구역",
-        "sub": "신세계 기존 사례와 비교",
+        "sub": "",
         "unit": "평",
         "items": [
           {
             "label": "더 파크사이드 서울",
-            "sub": "제휴 구역",
+            "sub": "",
             "value": 4980,
             "display": "약 4,980",
             "hot": true
           },
           {
             "label": "하우스오브신세계 청담",
-            "sub": "백화점 밖 첫 사례",
+            "sub": "",
             "value": 1500,
             "display": "1,500"
           }
@@ -512,53 +456,49 @@
       }
     },
     "22": {
-      "card": "ExplodedStackCard",
+      "card": "ElevatorCard",
       "props": {
-        "title": "옆이 아니라 위아래",
-        "sub": "엘리베이터로 연결된다",
-        "layers": [
+        "title": "엘리베이터를 타고 내려가면",
+        "sub": "옆이 아니라 위아래로 이어진다",
+        "stops": [
           {
-            "label": "주거 · 레지던스",
-            "sub": "지상 5~20층"
+            "floor": "5~20F",
+            "label": "집",
+            "sub": "주거 · 레지던스"
           },
           {
-            "label": "로즈우드 라운지 · 스파",
-            "sub": "지상 1~4층",
+            "floor": "1~4F",
+            "label": "로즈우드가 운영하는 라운지 · 스파",
             "hot": true
           },
           {
-            "label": "백화점",
-            "sub": "지하 1층 ~ 지상 4층"
-          },
-          {
-            "label": "주차 3,384대",
-            "sub": "지하 2~7층"
+            "floor": "B1",
+            "label": "그 옆이 백화점",
+            "sub": "신세계 제휴 구역"
           }
         ],
-        "groundAfter": 2,
         "source": "건축 개요"
       }
     },
     "23": {
-      "card": "PaperFlowCard",
+      "card": "PhotoStepsCard",
       "props": {
         "title": "회수 시점을 셋으로 나눴다",
-        "layout": "vertical",
-        "nodes": [
+        "steps": [
           {
-            "icon": "key",
+            "icon": "books",
             "label": "오피스텔",
             "sub": "2025년 바로 분양"
           },
           {
-            "icon": "building",
+            "icon": "crane",
             "label": "아파트",
             "sub": "2027년 분양 예정"
           },
           {
-            "icon": "money",
+            "icon": "press",
             "label": "리테일",
-            "sub": "분양하지 않고 보유 — 임대수익",
+            "sub": "분양하지 않고 보유",
             "hot": true
           }
         ],
@@ -566,41 +506,37 @@
       }
     },
     "24": {
-      "card": "PaperImageCard",
+      "card": "FullBleedCard",
       "props": {
-        "title": "배치",
         "image": "parkside/layout.jpg",
-        "ratio": 1.306,
+        "headline": "",
+        "align": "bottom",
+        "scrim": 0.22,
         "caption": "용산공원을 마주보는 쪽에 오피스텔 · 로즈우드는 오히려 뒤쪽",
         "source": "이미지: 더파크사이드 서울"
       }
     },
     "25": {
-      "card": "PaperFlowCard",
+      "card": "SplitCard",
       "props": {
         "title": "한국에 없었던 이유",
-        "nodes": [
-          {
-            "icon": "building",
-            "label": "개발사",
-            "sub": "짓고 판다"
-          },
-          {
-            "icon": "person",
-            "label": "운영사",
-            "sub": "별개 회사"
-          },
-          {
-            "icon": "doc",
-            "label": "분리",
-            "sub": "통으로 기획하고 계속 운영하는 회사가 없었다",
-            "hot": true
-          }
-        ],
-        "arrows": [
-          "",
-          ""
-        ],
+        "left": {
+          "label": "개발사",
+          "sub": "짓고 판다",
+          "lines": [
+            "분양이 끝나면 손을 뗀다",
+            "회수 시점이 준공"
+          ]
+        },
+        "right": {
+          "label": "운영사",
+          "sub": "빌리고 굴린다",
+          "lines": [
+            "임차인·콘텐츠를 계속 갈아끼운다",
+            "회수 시점이 수십 년"
+          ]
+        },
+        "verdict": "둘을 한 회사가 하는 사례가 없었다",
         "source": ""
       }
     },
@@ -633,23 +569,21 @@
       }
     },
     "27": {
-      "card": "DotMatrixCard",
+      "card": "BigStatsCard",
       "props": {
         "title": "오피스텔 청약",
-        "sub": "2025년 7월",
-        "perDot": 10,
-        "cols": 15,
-        "caption": "점 하나 = 10",
-        "groups": [
+        "sub": "2025년 7월 · 775실 모집에 1,296건",
+        "items": [
           {
-            "label": "모집",
-            "value": 775,
-            "sub": "오피스텔 775실"
+            "display": "1.67",
+            "unit": ":1",
+            "label": "평균 경쟁률"
           },
           {
-            "label": "접수",
-            "value": 1296,
-            "sub": "평균 1.67대 1 · 최고 40대 1 초과",
+            "display": "40",
+            "unit": ":1",
+            "label": "최고 경쟁률",
+            "sub": "초과",
             "hot": true
           }
         ],
@@ -663,14 +597,14 @@
         "sub": "전용면적 기준 3.3㎡당 2억원대",
         "buildings": [
           {
-            "label": "전용 53㎡\n가장 작은 타입",
+            "label": "전용 53㎡ · 가장 작은 타입",
             "value": 0.16,
             "note": "29억 8,300만원",
             "shape": "slab",
             "tone": 0
           },
           {
-            "label": "전용 185㎡\n가장 큰 타입",
+            "label": "전용 185㎡ · 가장 큰 타입",
             "value": 1.0,
             "note": "185억 700만원",
             "shape": "slender",
@@ -685,28 +619,28 @@
       "props": {
         "title": "남은 일정",
         "axis": {
-          "from": 2025,
-          "to": 2028,
-          "step": 1
+          "from": 2027.0,
+          "to": 2027.92,
+          "step": 0.184
         },
         "rails": [
           {
             "label": "",
-            "from": 2025.5,
-            "to": 2027.9,
+            "from": 2027.0,
+            "to": 2027.92,
             "events": [
               {
-                "at": 2027.1,
+                "at": 2027.08,
                 "label": "준공",
-                "sub": "2027년 2월"
+                "sub": "2월"
               },
               {
-                "at": 2027.45,
+                "at": 2027.42,
                 "label": "입주",
-                "sub": "2027년 6월"
+                "sub": "6월"
               },
               {
-                "at": 2027.8,
+                "at": 2027.75,
                 "label": "아파트 420가구",
                 "sub": "분양 방식이 관건",
                 "hot": true
@@ -714,29 +648,42 @@
             ]
           }
         ],
-        "source": "분양 공고 · 보도 종합"
+        "source": "분양 공고 · 보도 종합",
+        "sub": "2027년",
+        "tickLabels": [
+          "1월",
+          "3월",
+          "5월",
+          "7월",
+          "9월",
+          "11월"
+        ]
       }
     },
     "30": {
-      "card": "SkylineCompareCard",
+      "card": "SplitCard",
       "props": {
         "title": "300m 거리, 정반대의 답",
-        "buildings": [
-          {
-            "label": "더 파크사이드 서울\n11개 동",
-            "value": 1.0,
-            "note": "11조",
-            "shape": "setback",
-            "hot": true
-          },
-          {
-            "label": "에테르노 용산\n라파엘 모네오 설계",
-            "value": 0.42,
-            "note": "33가구",
-            "shape": "slab",
-            "tone": 1
-          }
-        ],
+        "left": {
+          "label": "더 파크사이드 서울",
+          "sub": "일레븐건설",
+          "lines": [
+            "11개 동 · 지상 20층",
+            "오피스텔 775실 + 아파트 420가구",
+            "백화점 · 호텔 · 리테일을 품는다"
+          ],
+          "hot": true
+        },
+        "right": {
+          "label": "에테르노 용산",
+          "sub": "라파엘 모네오 설계",
+          "lines": [
+            "33가구",
+            "단일 주거동",
+            "희소성으로 승부"
+          ]
+        },
+        "verdict": "같은 입지, 반대 방향",
         "source": "보도 종합"
       }
     },
