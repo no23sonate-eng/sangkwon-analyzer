@@ -20,8 +20,10 @@ export const SectionCard = ({
   const {fps} = useVideoConfig();
 
   const A = above.floors, B = below.floors;
-  const H_ABOVE = 372, H_BELOW = 176;
-  const groundY = 268 + H_ABOVE;          // 지반선
+  // 타이틀 폰트가 커지면서 서브 문구가 건물 꼭대기에 닿아 도형을 아래로 내리고
+  // 총 높이를 줄였다 (지하 바닥이 자막 안전영역 820 을 넘지 않는 선에서).
+  const H_ABOVE = 340, H_BELOW = 160;
+  const groundY = 300 + H_ABOVE;          // 지반선
   const fhA = H_ABOVE / A;                // 지상 층고
   const fhB = H_BELOW / B;                // 지하 층고
   const W = 400, cx = 900, x0 = cx - W / 2;
@@ -84,12 +86,12 @@ export const SectionCard = ({
       {/* 지상/지하 수치 — 좌측에 크게 */}
       {[['above', above, groundY - H_ABOVE / 2, growA], ['below', below, groundY + H_BELOW / 2, growB]].map(([k, o, y, g]) => (
         <div key={k} style={{position: 'absolute', left: 150, top: y - 62, width: 400, textAlign: 'right', opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, letterSpacing: '0.05em'}}>{o.label}</div>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 84, color: INK, lineHeight: 1.1}}>
-            {o.floors}<span style={{fontSize: 50}}>층</span>
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: INK_SOFT, letterSpacing: '0.05em'}}>{o.label}</div>
+          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: INK, lineHeight: 1.1}}>
+            {o.floors}<span style={{fontSize: 56}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT}}>{o.note}</div>
+            <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT}}>{o.note}</div>
           ) : null}
         </div>
       ))}
@@ -102,7 +104,7 @@ export const SectionCard = ({
           <div key={i} style={{position: 'absolute', left: x0 + W + 78, top: (yTop + yBot) / 2 - 30, width: 640,
                                opacity: fadeIn(frame, 50 + i * 8)}}>
             <div style={{fontFamily: bd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 40, color: INK, wordBreak: 'keep-all'}}>{bd.label}</div>
+                         fontSize: 45, color: INK, wordBreak: 'keep-all'}}>{bd.label}</div>
           </div>
         );
       })}

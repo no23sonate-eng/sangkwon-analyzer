@@ -28,7 +28,13 @@ def load():
         entry = props[sid]
         if entry['card'] != sc['card']:
             print(f"[warn] #{sid} 카드 불일치: plan={sc['card']} props={entry['card']}", flush=True)
-        out.append((sc['id'], entry['card'], dict(entry['props']), sc['dur'], sc['key']))
+        # cardDur 가 있으면 장면의 앞부분만 카드고 나머지는 실사(render_broll.py).
+        # cardDur == 0 이면 장면 전체가 실사라 카드를 아예 안 뽑는다.
+        dur = sc.get('cardDur', sc['dur'])
+        if dur <= 0:
+            print(f"[skip] #{sid} {sc['key']} — 장면 전체가 실사", flush=True)
+            continue
+        out.append((sc['id'], entry['card'], dict(entry['props']), dur, sc['key']))
     return out
 
 

@@ -22,7 +22,7 @@ export const RankTrendCard = ({
   if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
 
   const lo = worst ?? Math.max(...points.map((p) => p.rank)) + 1;
-  const X0 = 420, X1 = 1500, Y0 = 430, Y1 = 630;
+  const X0 = 420, X1 = 1500, Y0 = 452, Y1 = 630;
   const px = (i) => (n === 1 ? (X0 + X1) / 2 : X0 + (i * (X1 - X0)) / (n - 1));
   const py = (r) => Y0 + ((r - best) / Math.max(1, lo - best)) * (Y1 - Y0);
 
@@ -83,20 +83,20 @@ export const RankTrendCard = ({
         const o = fadeIn(frame, T0 + SEG * i + 2, 12);
         return (
           <React.Fragment key={i}>
-            <div style={{position: 'absolute', left: px(i) - 180, width: 360, top: py(p.rank) - (hot ? 138 : 116),
+            <div style={{position: 'absolute', left: px(i) - 180, width: 360, top: py(p.rank) - (hot ? 150 : 126),
                          textAlign: 'center', opacity: o}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: hot ? 100 : 76,
+              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: hot ? 110 : 84,
                             color: INK, lineHeight: 1, fontVariantNumeric: 'tabular-nums'}}>
-                {p.rank}<span style={{fontSize: hot ? 54 : 42}}>{unit}</span>
+                {p.rank}<span style={{fontSize: hot ? 60 : 47}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: px(i) - 180, width: 360, top: Y1 + 54, textAlign: 'center', opacity: o}}>
               <div style={{fontFamily: hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                           fontSize: 40, color: hot ? INK : INK_SOFT, letterSpacing: '0.02em'}}>
+                           fontSize: 45, color: hot ? INK : INK_SOFT, letterSpacing: '0.02em'}}>
                 {p.x}
               </div>
               {p.label ? (
-                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: INK_SOFT, wordBreak: 'keep-all'}}>
+                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK_SOFT, wordBreak: 'keep-all'}}>
                   {p.label}
                 </div>
               ) : null}
@@ -107,7 +107,7 @@ export const RankTrendCard = ({
       {caption ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: CONTENT_BOTTOM - 58, textAlign: 'center',
                      opacity: fadeIn(frame, T0 + SEG * n + 6), fontFamily: 'A2Z Regular, sans-serif',
-                     fontSize: 34, color: INK, wordBreak: 'keep-all'}}>
+                     fontSize: 38, color: INK, wordBreak: 'keep-all'}}>
           <span style={{background: 'rgba(250,255,46,0.75)', padding: '4px 16px'}}>{caption}</span>
         </div>
       ) : null}

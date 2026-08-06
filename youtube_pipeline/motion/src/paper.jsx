@@ -77,11 +77,11 @@ export const PaperTitle = ({title, sub = ''}) => {
   const frame = useCurrentFrame();
   return (
     <div style={{position: 'absolute', top: 138, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 60, letterSpacing: '-0.01em', color: INK}}>
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, letterSpacing: '-0.01em', color: INK}}>
         {title}
       </div>
       {sub ? (
-        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, letterSpacing: '0.08em', color: INK_SOFT}}>
+        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.08em', color: INK_SOFT}}>
           {sub}
         </div>
       ) : null}
@@ -95,7 +95,7 @@ export const PaperSource = ({source = ''}) => {
   const frame = useCurrentFrame();
   if (!source) return null;
   return (
-    <div style={{position: 'absolute', right: 96, top: CONTENT_BOTTOM - 4, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 26, letterSpacing: '0.06em', color: INK_SOFT, opacity: fadeIn(frame, 40)}}>
+    <div style={{position: 'absolute', right: 96, top: CONTENT_BOTTOM - 4, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em', color: INK_SOFT, opacity: fadeIn(frame, 40)}}>
       {source}
     </div>
   );

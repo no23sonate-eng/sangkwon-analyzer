@@ -75,27 +75,27 @@ export const SightlineCard = ({
       {/* 라벨 */}
       <div style={{position: 'absolute', left: viewer.x - 210, width: 420, top: groundY + 22, textAlign: 'center',
                    opacity: fadeIn(frame, 8), fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                   fontSize: 38, color: INK, wordBreak: 'keep-all'}}>
+                   fontSize: 43, color: INK, wordBreak: 'keep-all'}}>
         {viewer.label}
       </div>
       <div style={{position: 'absolute', left: mx - 210, width: 420, top: groundY + 22, textAlign: 'center',
                    opacity: fadeIn(frame, 8), fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                   fontSize: 38, color: INK}}>
+                   fontSize: 43, color: INK}}>
         {peak.label}
       </div>
       <div style={{position: 'absolute', left: mx - 240, width: 480, top: groundY - mtH - 112, textAlign: 'center',
-                   opacity: fadeIn(frame, 66), fontFamily: 'A2Z Regular, sans-serif', fontSize: 36, color: INK}}>
+                   opacity: fadeIn(frame, 66), fontFamily: 'A2Z Regular, sans-serif', fontSize: 40, color: INK}}>
         <span style={{background: 'rgba(250,255,46,0.85)', padding: '4px 14px'}}>{peak.ridgeLabel}</span>
-        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: INK_SOFT, whiteSpace: 'nowrap'}}>
+        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: INK_SOFT, whiteSpace: 'nowrap'}}>
           이 선이 보여야 한다
         </div>
       </div>
       {building.label ? (
         <div style={{position: 'absolute', left: building.x - 230, width: 460, top: groundY - building.h - 108,
                      textAlign: 'center', opacity: fadeIn(frame, 20)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 40, color: INK}}>{building.label}</div>
+          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK}}>{building.label}</div>
           {building.note ? (
-            <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: INK_SOFT}}>{building.note}</div>
+            <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: INK_SOFT}}>{building.note}</div>
           ) : null}
         </div>
       ) : null}

@@ -45,17 +45,17 @@ export const RatioCard = ({
           return (
             <React.Fragment key={i}>
               <div style={{position: 'absolute', left: x0, top: y - 62, opacity: fadeIn(frame, 10 + i * 10),
-                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 40, color: INK}}>
+                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK}}>
                 {it.label}
               </div>
               <div style={{position: 'absolute', left: x0, width: BW, top: y - 70, textAlign: 'right',
                            opacity: fadeIn(frame, 20 + i * 10)}}>
-                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 58, color: INK,
+                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 65, color: INK,
                               fontVariantNumeric: 'tabular-nums'}}>
-                  {v.toFixed(it.decimals ?? 0)}<span style={{fontSize: 38}}>{unit}</span>
+                  {v.toFixed(it.decimals ?? 0)}<span style={{fontSize: 43}}>{unit}</span>
                 </span>
                 {it.sub ? (
-                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: INK_SOFT}}>
+                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: INK_SOFT}}>
                     {it.sub}
                   </span>
                 ) : null}
@@ -71,8 +71,8 @@ export const RatioCard = ({
   // ── 원형 모드 ──
   // 채움을 "중심에서 자라는 작은 원"으로 하면 8.1% 같은 낮은 비중이 점처럼 보인다.
   // 파이 조각(원 전체 대비 부채꼴)이 낮은 비중에서도 읽힌다 — B1M 도넛 문법.
-  const R = 150;
-  const CY = 500;   // 파이 중심 — 라벨(위)·수치(아래) 사이
+  const R = 142;
+  const CY = 516;   // 파이 중심 — 라벨(위)·수치(아래) 사이
   const slot = Math.min(560, 1600 / n);
   const wedge = (cx, cy, pct) => {
     const a = 2 * Math.PI * Math.min(99.999, Math.max(0, pct)) / 100;
@@ -111,18 +111,18 @@ export const RatioCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: CY + R + 22, textAlign: 'center',
                          opacity: fadeIn(frame, 24 + i * 10)}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: INK,
+              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 104, color: INK,
                             fontVariantNumeric: 'tabular-nums'}}>
-                {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 56}}>{unit}</span>
+                {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 62}}>{unit}</span>
               </span>
             </div>
-            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 252, textAlign: 'center',
+            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 236, textAlign: 'center',
                          opacity: fadeIn(frame, 30 + i * 10)}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 40, color: INK, wordBreak: 'keep-all'}}>
+              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
               {it.sub ? (
-                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT, wordBreak: 'keep-all'}}>
+                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, wordBreak: 'keep-all'}}>
                   {it.sub}
                 </div>
               ) : null}

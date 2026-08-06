@@ -22,14 +22,25 @@ def frames(sec):
 def main():
     plan = json.load(open(os.path.join(PROJ, 'scene_plan.json'), encoding='utf-8'))
     clipdir = os.path.join(PROJ, 'clips')
+
+    # 한 장면이 [카드 + 실사] 두 컷으로 쪼개질 수 있다 (cardDur / broll)
+    cuts = []
+    for sc in plan['scenes']:
+        s0, e0 = frames(sc['start']), frames(sc['end'])
+        cardDur = sc.get('cardDur', sc['dur'])
+        split = s0 + frames(cardDur)
+        if cardDur > 0:
+            cuts.append((sc['id'], f"sec{sc['id']:02d}_{sc['key']}.mp4", s0, min(split, e0)))
+        if sc.get('broll'):
+            cuts.append((sc['id'], f"sec{sc['id']:02d}_{sc['key']}_b.mp4", max(s0, split), e0))
+
     items, total = [], 0
-    for i, sc in enumerate(plan['scenes']):
-        name = f"sec{sc['id']:02d}_{sc['key']}.mp4"
+    for i, (sid, name, start, end) in enumerate(cuts):
         if not os.path.exists(os.path.join(clipdir, name)):
             print(f'[warn] 없음: {name}')
-        start, end = frames(sc['start']), frames(sc['end'])
         dur = end - start
         total = max(total, end)
+        sc = {'id': sid}
         items.append(
             f'<clipitem id="clip-{i}"><name>#{sc["id"]} {name}</name><enabled>TRUE</enabled>'
             f'<duration>{dur}</duration><rate><timebase>{FPS}</timebase><ntsc>FALSE</ntsc></rate>'
@@ -58,7 +69,9 @@ def main():
 '''
     out = os.path.join(PROJ, f'{SEQ}.xml')
     open(out, 'w', encoding='utf-8').write(xml)
-    print(f'{out}  — {len(items)}클립 / {total}프레임 ({total / FPS:.1f}초)')
+    nb = sum(1 for c in cuts if c[1].endswith('_b.mp4'))
+    print(f'{out}  — {len(items)}클립 (카드 {len(items) - nb} + 실사 {nb}) / '
+          f'{total}프레임 ({total / FPS:.1f}초)')
 
 
 if __name__ == '__main__':
