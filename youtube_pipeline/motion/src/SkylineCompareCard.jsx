@@ -17,6 +17,66 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow}) => {
             stroke="#FFFFFF" strokeWidth={1.6} opacity={0.22} />
     ));
   switch (shape) {
+    // ── 실제 건물을 알아볼 수 있게 만든 프로파일 (2026-08-06) ──
+    case 'parc1': {
+      // 여의도 파크원 — 높이가 다른 판상형 타워 3개(69·53·10층)가 한 덩어리로 서 있다.
+      const w1 = W * 0.34, w2 = W * 0.30, w3 = W * 0.30;
+      const g = W * 0.03;
+      const x1 = cx - W / 2, x2 = x1 + w1 + g, x3 = x2 + w2 + g;
+      const h2 = h * 0.76, h3 = h * 0.30;
+      return (
+        <g>
+          <rect x={x1} y={baseY - h} width={w1} height={h} fill={fill} />
+          <rect x={x2} y={baseY - h2} width={w2} height={h2} fill={fill} />
+          <rect x={x3} y={baseY - h3} width={w3} height={h3} fill={fill} />
+          {/* 파크원 특유의 수직 프레임 */}
+          {[[x1, w1, h], [x2, w2, h2], [x3, w3, h3]].map(([x, w, hh], k) => (
+            <g key={k}>
+              <line x1={x + w * 0.5} y1={baseY - hh} x2={x + w * 0.5} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.3} />
+              {win(x, baseY - hh, w, hh)}
+            </g>
+          ))}
+        </g>
+      );
+    }
+    case 'lotte': {
+      // 롯데월드타워 — 아래가 넓고 위로 갈수록 좁아지는 곡선 테이퍼 + 뾰족한 첨탑
+      const wb = W * 0.62, wt = W * 0.14;
+      const xb0 = cx - wb / 2, xb1 = cx + wb / 2;
+      const xt0 = cx - wt / 2, xt1 = cx + wt / 2;
+      return (
+        <g>
+          <path d={`M ${xb0} ${baseY} Q ${cx - wb * 0.34} ${baseY - h * 0.55} ${xt0} ${top}
+                    L ${xt1} ${top} Q ${cx + wb * 0.34} ${baseY - h * 0.55} ${xb1} ${baseY} Z`} fill={fill} />
+          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.11} stroke={fill} strokeWidth={5} />
+          <line x1={cx} y1={top} x2={cx} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.28} />
+          {win(cx - wb * 0.3, top + h * 0.08, wb * 0.6, h * 0.86)}
+        </g>
+      );
+    }
+    case 'cluster': {
+      // 더 파크사이드 서울 — 70m 로 높이가 묶인 중층 동이 여러 채 늘어선다.
+      // "한 채가 아니라 여러 채"가 실루엣만으로 읽히는 게 핵심.
+      const ns = 5;
+      const gap = W * 0.045;
+      const w = (W - gap * (ns - 1)) / ns;
+      const ratio = [0.92, 1.0, 0.86, 0.97, 0.8];
+      return (
+        <g>
+          {Array.from({length: ns}, (_, k) => {
+            const x = cx - W / 2 + k * (w + gap);
+            const hh = h * ratio[k];
+            return (
+              <g key={k}>
+                <rect x={x} y={baseY - hh} width={w} height={hh} fill={fill} />
+                <rect x={x - 2} y={baseY - hh - 8} width={w + 4} height={8} fill={fill} />
+                {win(x, baseY - hh, w, hh)}
+              </g>
+            );
+          })}
+        </g>
+      );
+    }
     case 'sphere': {
       // 구형 공연장 — 지면에 살짝 묻힌 구 (라스베가스 스피어 프로파일)
       const r = Math.min(W * 0.78, h / 1.72);
@@ -92,6 +152,7 @@ export const SkylineCompareCard = ({
   sub = '',
   buildings = [],
   source = '',
+  note = '',      // 하단 단서 조항 (예: 금액 기준이 달라 단순 비교 주의)
   maxH = 420,
 }) => {
   useA2ZFonts();
@@ -104,7 +165,7 @@ export const SkylineCompareCard = ({
   // 첨탑형(slender/setback/taper)은 실루엣 위로 20% 더 솟는다 → 그만큼 최대 높이를 깎아
   // 꼭대기 수치(note)가 타이틀 블록과 겹치지 않게 한다.
   const headroom = (title ? (sub ? 285 : 224) : 130) + 36;
-  const spire = buildings.some((b) => ['slender', 'setback', 'taper'].includes(b.shape)) ? 0.2 : 0;
+  const spire = buildings.some((b) => ['slender', 'setback', 'taper', 'lotte'].includes(b.shape)) ? 0.2 : 0;
   const MH = Math.min(maxH, (baseY - headroom - 54) / (1 + spire));
 
   return (
@@ -144,6 +205,7 @@ export const SkylineCompareCard = ({
           topY = baseY - r * 0.86 - r; // 구 꼭대기
         } else if (b.shape === 'setback' || b.shape === 'taper') topY -= bH * 0.18;
         else if (b.shape === 'slender') topY -= bH * 0.2;
+        else if (b.shape === 'lotte') topY -= bH * 0.11;
         return (
           <React.Fragment key={i}>
             {b.note ? (
@@ -160,6 +222,13 @@ export const SkylineCompareCard = ({
           </React.Fragment>
         );
       })}
+      {note ? (
+        <div style={{position: 'absolute', left: 96, width: 1100, top: CONTENT_BOTTOM - 6,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.03em',
+                     color: INK_SOFT, opacity: fadeIn(frame, 64), wordBreak: 'keep-all'}}>
+          {note}
+        </div>
+      ) : null}
       <PaperSource source={source} />
     </AbsoluteFill>
   );

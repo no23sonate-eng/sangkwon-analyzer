@@ -1090,6 +1090,8 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 | `TimelineRailCard` | 실제 연도축 위 기간 막대 + 사건 마커 | `axis:{from,to,step}`, `rails:[{label,from,to,note,events[]}]` |
 | `AreaNestCard` | 면적을 같은 모서리에 겹쳐 그림 — "몇 배"가 보임 | `items:[{label,value,display,sub,hot}]`, `multipleNote` |
 | `DotMatrixCard` | 개수를 점 격자로. 초과 물량이 눈에 들어옴 | `groups:[{label,value,sub,hot}]`, `perDot`, `cols` |
+| `SectionPhotoCard` | **실측 단면 도면** 위에 치수·강조 (도식 대신 실물) | `image`,`imageRatio`,`groundRatio`,`groundY`,`above/below`,`bands:[{y0,y1,label}]` |
+| `ParkCompareCard` | 좌우 분할 실사 + 경계 실루엣 (같은 축척) | `sides:[{photo,shape,dw,dh,name,area,hot}]`, `note` |
 
 - 실루엣 `shape`: sphere(구형 공연장) / arena / slender / setback / taper / slab
 - 아이콘: money · building · gov · doc · person · globe · key · clock
@@ -1121,6 +1123,19 @@ B1M 은 기사를 두 방식으로 쓴다. 길이·성격에 맞춰 골라 쓴�
 PaperImageCard 8 / SkylineCompareCard 4 / PaperFlowCard(row) 4 /
 TimelineRailCard 3 / SectionCard 2 / PaperFlowCard(exchange) 2 /
 나머지(steps·vertical·bar·pie·area·dot·section·sightline·rank) 각 1.
+
+**실사 위에 그래픽을 얹을 때 (2026-08-06 추가)**
+
+- 원본 사진·도면에 이미 캡션이 박혀 있으면 **전체를 한 겹 눌러**(0.3 안팎) 우리
+  오버레이가 위로 오게 한다. 그러고도 겹치는 자리는 불투명 판을 깐다.
+- 배경 위 글자는 흰색 + 그림자. 노란 강조 칩은 글자를 잉크색으로 뒤집는다.
+- 도면을 `cover` 로 깔면 기준선(지반 등)이 화면 어디에 놓일지 통제할 수 없다.
+  **폭에 맞춰 깔고, 기준선이 원하는 y 에 오도록 위아래 위치를 계산**하라
+  (`imageRatio` + `groundRatio` + `groundY`). 남는 아래 여백은 자막 영역이 된다.
+- 두 대상을 실루엣으로 비교할 땐 **하나의 축척**을 공유해야 한다. 각자 박스에
+  맞추면 3.41㎢ 와 3.03㎢ 가 같은 크기로 보여 비교가 거짓말이 된다.
+- 도면에서 실루엣을 뽑을 땐 글자가 지나간 자리가 파인다. 점 패턴(연회색)만
+  집어내면 순검정 글자는 애초에 안 섞이고, 남는 홈은 축 방향 gap-fill 로 메운다.
 
 **새 카드를 만들 때 밟기 쉬운 함정**
 

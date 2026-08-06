@@ -24,7 +24,7 @@
       "end": 23.1,
       "dur": 17.2,
       "text": "대지면적 약 1만3,600평. 그 위에 올라가는 건물 연면적 약 14만5,600평. 지하 7층에 지상 20층, 11개 동입니다. 아파트와 오피스텔은 물론이고 백화점과 해외 유명 호텔까지 들어옵니다.",
-      "card": "SectionCard",
+      "card": "SectionPhotoCard",
       "key": "section",
       "cardDur": 11.0,
       "broll": {
@@ -40,7 +40,7 @@
       "end": 33.9,
       "dur": 10.4,
       "text": "하나의 작은 도시가 새로 생기는 거나 다름없는데요. 서울의 센트럴파크를 만들겠다고 내세운 더 파크사이드 서울입니다.",
-      "card": "PaperImageCard",
+      "card": "ParkCompareCard",
       "key": "title"
     },
     {
@@ -178,7 +178,7 @@
       "end": 204.8,
       "dur": 15.3,
       "text": "그렇게 나온 게 70미터입니다. 지상 20층. 건물을 더 높게 지을 수 없으니 지하를 파야 했습니다. 그래서 지하 7층까지 내려갔고, 주차 3,384대가 전부 땅 밑에 들어갔습니다.",
-      "card": "SectionCard",
+      "card": "SectionPhotoCard",
       "key": "section2",
       "cardDur": 10.0,
       "broll": {

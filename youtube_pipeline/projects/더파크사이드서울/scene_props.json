@@ -12,7 +12,7 @@
       }
     },
     "1": {
-      "card": "SectionCard",
+      "card": "SectionPhotoCard",
       "props": {
         "title": "지하 7층 · 지상 20층",
         "sub": "대지면적 약 1만3,600평 · 연면적 약 14만5,600평 · 11개 동",
@@ -24,29 +24,46 @@
         "below": {
           "floors": 7,
           "label": "지하",
-          "note": ""
+          "note": "주차 3,384대"
         },
         "bands": [
           {
-            "from": -1,
-            "to": 4,
-            "label": "백화점 · 리테일",
+            "y0": 0.604,
+            "y1": 0.757,
+            "label": "백화점 · 리테일 (B1~4F)",
             "hot": true
           }
         ],
-        "source": "건축 개요 · 분양 공고"
+        "source": "도면: 더파크사이드 서울"
       }
     },
     "2": {
-      "card": "PaperImageCard",
+      "card": "ParkCompareCard",
       "props": {
         "title": "\"서울의 센트럴파크\"",
-        "image": "parkside/centralpark.jpg",
-        "ratio": 1.547,
-        "fit": "contain",
-        "kenBurns": false,
-        "caption": "용산공원은 뉴욕 센트럴파크의 89% 크기",
-        "source": "이미지: 더파크사이드 서울"
+        "sides": [
+          {
+            "photo": "parkside/photo_centralpark.jpg",
+            "shape": "parkside/shape_centralpark.png",
+            "name": "뉴욕 센트럴파크",
+            "area": "3,410,000㎡",
+            "sub": "4.1km × 0.8km",
+            "dw": 340,
+            "dh": 1422
+          },
+          {
+            "photo": "parkside/photo_yongsanpark.jpg",
+            "shape": "parkside/shape_yongsanpark.png",
+            "name": "용산공원",
+            "area": "3,030,000㎡",
+            "sub": "반환 미군기지 부지",
+            "hot": true,
+            "dw": 730,
+            "dh": 932
+          }
+        ],
+        "note": "용산공원은 센트럴파크의 89% 크기",
+        "source": "사진: dronepicr / CC BY 2.0 · Korea.net / CC BY-SA 2.0"
       }
     },
     "3": {
@@ -59,24 +76,25 @@
             "label": "여의도 파크원",
             "value": 0.19,
             "note": "2조 1,000억",
-            "shape": "slab",
+            "shape": "parc1",
             "tone": 0
           },
           {
             "label": "롯데월드타워",
             "value": 0.38,
             "note": "4조 2,000억",
-            "shape": "taper",
+            "shape": "lotte",
             "tone": 2
           },
           {
             "label": "더 파크사이드 서울",
             "value": 1.0,
             "note": "11조",
-            "shape": "setback",
+            "shape": "cluster",
             "hot": true
           }
         ],
+        "note": "보도된 금액의 기준(총사업비 · 공사비 · 토지비 포함 여부)이 서로 달라 단순 비교는 참고용",
         "source": "보도 종합"
       }
     },
@@ -313,7 +331,7 @@
       }
     },
     "14": {
-      "card": "SectionCard",
+      "card": "SectionPhotoCard",
       "props": {
         "title": "70m — 지상 20층",
         "sub": "위로 못 가니 아래로 팠다",
@@ -329,13 +347,13 @@
         },
         "bands": [
           {
-            "from": -7,
-            "to": -1,
+            "y0": 0.735,
+            "y1": 0.985,
             "label": "주차 3,384대 전부 지하",
             "hot": true
           }
         ],
-        "source": "건축 개요"
+        "source": "도면: 더파크사이드 서울"
       }
     },
     "15": {
