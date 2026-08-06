@@ -15,6 +15,14 @@
 | `shape_centralpark.png` / `shape_yongsanpark.png` | `etc-seoul-pic05.jpg` 에서 추출한 공원 경계 실루엣 | 동상 | (실사 출처와 함께 표기) |
 | `photo_centralpark.jpg` | Wikimedia `Central Park New York skyline (22212172922).jpg` | dronepicr, **CC BY 2.0** | `사진: dronepicr / CC BY 2.0` |
 | `photo_yongsanpark.jpg` | Wikimedia `Korea Yongsan Family Park 20140421 01 (13939732142).jpg` | Korea.net (Jeon Han), **CC BY-SA 2.0** | `사진: Korea.net / CC BY-SA 2.0` |
+| `eterno_towers.jpg` / `eterno_aerial.jpg` / `eterno_street.jpg` | 에테르노 용산 분양 자료 (ddims.co.kr 게재본) | 시행 RBDK · 설계 Rafael Moneo | `이미지: 에테르노 용산 분양 자료` |
+| `parkside_towers.jpg` | `hero.jpg` 를 좌우 분할 패널용으로 재크롭 | 더파크사이드 서울 | `이미지: 더파크사이드 서울` |
+| `mori_roppongi.jpg` | Wikimedia `Roppongi Hills from Tokyo Tower.jpg` | 稲妻ノ歯鯨, **CC BY-SA 4.0** | `사진: 稲妻ノ歯鯨 / CC BY-SA 4.0` |
+| `mori_toranomon.jpg` | Wikimedia `Toranomon Hills Station Tower 03.jpg` | Kakidai, **CC BY-SA 4.0** | `사진: Kakidai / CC BY-SA 4.0` |
+| `mori_azabudai.jpg` | Wikimedia `Azabudai Hills 4.jpg` | Syced, **CC0** | `사진: Syced / CC0` |
+| `yongsan_base.jpg` | Wikimedia `202403 … Yongsan Garrison … .jpg` | MNXANL, **CC BY-SA 4.0** | `사진: MNXANL / CC BY-SA 4.0` |
+| `logo_mnd.png` | Wikimedia `Emblem of the Ministry of National Defense (South Korea).svg` | 대한민국 국방부, **Public domain** | (로고 자체가 출처) |
+| `site_aerial.jpg` | 공식 프로젝트 필름 프레임 (1109232716) | 더파크사이드 서울 | `이미지: 더파크사이드 서울` |
 | `humphreys.jpg` | Wikimedia Commons `Aerial Tour 2 Camp Humphreys, Sept. 13, 2017 (37293016265).jpg` | USAG-Humphreys, **CC BY 2.0** | `사진: USAG Humphreys / CC BY 2.0` |
 | `rosewood.jpg` | Wikimedia Commons `Rosewood Hong Kong Lobby 201906.jpg` | Wpcpey, **CC BY-SA 4.0** | `사진: Wpcpey / CC BY-SA 4.0` |
 
@@ -32,7 +40,9 @@
 
 - 공식 홈페이지 조감도·투시도는 **저작권이 시행사(일레븐건설)에 있다.** 보도·비평 목적
   인용 범위에서 쓰고, 화면에 반드시 출처를 남긴다. 썸네일·광고 소재로는 쓰지 않는다.
-- Wikimedia 두 장은 CC 라이선스라 **저작자 표기가 의무**다. 위 "화면 표기" 문자열을
+- 에테르노 용산 렌더는 **시행사 저작물**이다. 비교·비평 인용 범위에서 쓰고 출처를 남긴다.
+  원본 해상도가 550px 라 업스케일 후 언샤프를 걸었다 — 더 큰 원본이 생기면 교체할 것.
+- Wikimedia 이미지는 CC 라이선스라 **저작자 표기가 의무**다. 위 "화면 표기" 문자열을
   빼지 말 것.
 - 홈페이지는 CUPID(국내 WAF) JS 챌린지가 걸려 있어 일반 curl 로는 못 받는다.
   재수집은 `youtube_pipeline/scripts/fetch_parkside_images.py` 로 한다.

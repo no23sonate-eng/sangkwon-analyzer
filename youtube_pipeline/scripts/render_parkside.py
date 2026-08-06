@@ -51,11 +51,11 @@ def render(sid, card, props, dur, key, still, outdir):
         cmd = ['npx', 'remotion', 'still', 'src/index.jsx', card, out,
                f'--props={pp}', f'--frame={min(int(dur * FPS) - 1, 78)}']
     else:
-        # crf 18 은 사진을 꽉 채우는 카드에서 20Mbps 넘게 튄다. 편집 소스로는
-        # 과하고 배포 용량만 커져서, 실사 컷과 같은 수준(원본 5~7Mbps)으로 맞춘다.
+        # crf 18 은 사진을 꽉 채우는 카드에서 20Mbps 넘게 튄다. 편집 소스로는 과해서 20 으로.
+        # (remotion 은 --crf 와 --video-bitrate 를 동시에 못 받는다. 상한이 필요한
+        #  소수 카드는 렌더 후 ffmpeg 로 -maxrate 걸어 다시 인코딩한다.)
         cmd = ['npx', 'remotion', 'render', 'src/index.jsx', card, out,
-               f'--props={pp}', '--codec=h264', '--crf=20',
-               '--video-bitrate=7M']
+               f'--props={pp}', '--codec=h264', '--crf=20']
     cmd += ['--gl=angle', f'--browser-executable={CHROME}', '--log=error']
     r = subprocess.run(cmd, cwd=MOTION, capture_output=True, text=True)
     os.unlink(pp)
