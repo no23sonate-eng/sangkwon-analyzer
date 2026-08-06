@@ -11,7 +11,7 @@ scene_plan.json 의 `broll:{src,ss,dur}` 대로 잘라 `clips/secNN_key_b.mp4` �
     python3 youtube_pipeline/scripts/render_broll.py           # 전부
     python3 youtube_pipeline/scripts/render_broll.py 18 31     # 특정 장면만
 """
-import argparse, json, os, subprocess, sys
+import argparse, json, os, subprocess, sys, zlib
 import imageio_ffmpeg
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +40,7 @@ def _shadow_text(d, xy, txt, font, fill, sh=(0, 0, 0, 150), off=2):
     d.text(xy, txt, font=font, fill=fill)
 
 
-def overlay_png(text='', sub='', key='credit'):
+def overlay_png(text='', sub='', key='credit', credit=CREDIT):
     """실사 위에 얹을 투명 PNG. 출처는 항상, text 가 있으면 가운데 문구도 함께.
 
     이 ffmpeg 빌드에는 drawtext(libfreetype)가 없어서 PIL 로 굽는다.
@@ -71,8 +71,8 @@ def overlay_png(text='', sub='', key='credit'):
             _shadow_text(d, ((1920 - w2) // 2, 600), sub, fs, (226, 231, 238, 255))
 
     f = ImageFont.truetype(FONT, 27)
-    w = d.textbbox((0, 0), CREDIT, font=f)[2]
-    _shadow_text(d, (1920 - 72 - w, 1004), CREDIT, f, (255, 255, 255, 205), off=1)
+    w = d.textbbox((0, 0), credit, font=f)[2]
+    _shadow_text(d, (1920 - 72 - w, 1004), credit, f, (255, 255, 255, 205), off=1)
     im.save(out)
     return out
 
@@ -129,8 +129,10 @@ def main():
             src = os.path.join(PROJ, 'footage', b['src'])
             sfx = '_b' if len(bs) == 1 else f'_b{j + 1}'
             out = os.path.join(outdir, f"sec{sc['id']:02d}_{sc['key']}{sfx}.mp4")
-            key = 'credit' if not b.get('text') else f"t{sc['id']:02d}_{j}"
-            cut(src, b['ss'], b['dur'], out, overlay_png(b.get('text', ''), b.get('sub', ''), key))
+            cr = b.get('credit', CREDIT)
+            key = f"c{zlib.crc32(cr.encode()) % 99999}" if not b.get('text') else f"t{sc['id']:02d}_{j}"
+            cut(src, b['ss'], b['dur'], out,
+                overlay_png(b.get('text', ''), b.get('sub', ''), key, cr))
             print(f"[ok] #{sc['id']:02d} {sc['key']:12s} {sfx[1:]:3s} {b['dur']:5.1f}s "
                   f"{b['src'][:10]}@{b['ss']}s  {os.path.getsize(out)//1024}KB", flush=True)
             n += 1

@@ -22,12 +22,14 @@ export const TimelineRailCard = ({
   const n = rails.length;
   if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
 
-  const X0 = 400, X1 = 1780;      // 좌측 레일 이름이 3줄로 접히지 않게 여백 확보
+  // 레일 이름이 있으면 왼쪽에 자리를 비우고, 이름이 없는 일정표는 화면 가운데로 편다.
+  const hasLabel = rails.some((r) => r.label);
+  const X0 = hasLabel ? 400 : 250, X1 = hasLabel ? 1780 : 1670;
   const LIFT = (j) => 82 + ((j + 1) % 2) * 108;  // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침
   const px = (y) => X0 + ((y - axis.from) / (axis.to - axis.from)) * (X1 - X0);
-  const AXIS_Y = CONTENT_BOTTOM - 84;
+  const AXIS_Y = CONTENT_BOTTOM - 40;
   const ROW = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1));
-  const railY = (i) => (n === 1 ? AXIS_Y - 158 : 400 + i * ROW);
+  const railY = (i) => (n === 1 ? AXIS_Y - 140 : 400 + i * ROW);
 
   const ticks = [];
   for (let y = axis.from; y <= axis.to; y += axis.step) ticks.push(y);

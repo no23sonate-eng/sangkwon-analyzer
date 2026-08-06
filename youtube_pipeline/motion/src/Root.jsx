@@ -48,6 +48,7 @@ import {ElevatorCard} from './ElevatorCard';
 import {SplitCard} from './SplitCard';
 import {BigStatsCard} from './BigStatsCard';
 import {PhotoSplitCard} from './PhotoSplitCard';
+import {ExchangeMotionCard} from './ExchangeMotionCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -374,6 +375,7 @@ export const RemotionRoot = () => {
         ['SplitCard', SplitCard, {left: {}, right: {}}],
         ['BigStatsCard', BigStatsCard, {items: []}],
         ['PhotoSplitCard', PhotoSplitCard, {sides: []}],
+        ['ExchangeMotionCard', ExchangeMotionCard, {left: {}, right: {}}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

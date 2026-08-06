@@ -53,8 +53,8 @@ export const FullBleedCard = ({
       </div>
 
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: 838, textAlign: 'center',
-                     fontFamily: 'A2Z Regular, sans-serif', fontSize: 36, color: '#E4E8EE',
+        <div style={{position: 'absolute', left: 200, width: 1520, top: 800, textAlign: 'center',
+                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, color: '#FFFFFF',
                      textShadow: SHADOW, opacity: fadeIn(frame, 30), wordBreak: 'keep-all'}}>
           {caption}
         </div>

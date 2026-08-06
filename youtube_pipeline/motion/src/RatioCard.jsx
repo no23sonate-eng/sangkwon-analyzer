@@ -18,7 +18,7 @@ export const RatioCard = ({
     // 수치를 막대 아래가 아니라 라벨과 같은 줄에 두어야 다음 행과 안 겹친다.
     const maxV = Math.max(...items.map((i) => i.pct ?? 0), 1);
     const BW = 1140, x0 = (1920 - BW) / 2;
-    const y0 = 396, ROW = 190, BH = 62;
+    const y0 = 452, ROW = 190, BH = 62;
     const rowY = (i) => y0 + i * ROW;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -72,7 +72,7 @@ export const RatioCard = ({
   // 채움을 "중심에서 자라는 작은 원"으로 하면 8.1% 같은 낮은 비중이 점처럼 보인다.
   // 파이 조각(원 전체 대비 부채꼴)이 낮은 비중에서도 읽힌다 — B1M 도넛 문법.
   const R = 142;
-  const CY = 516;   // 파이 중심 — 라벨(위)·수치(아래) 사이
+  const CY = 556;   // 파이 중심 — 라벨(위)·수치(아래) 사이
   const slot = Math.min(560, 1600 / n);
   const wedge = (cx, cy, pct) => {
     const a = 2 * Math.PI * Math.min(99.999, Math.max(0, pct)) / 100;
@@ -116,7 +116,7 @@ export const RatioCard = ({
                 {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 62}}>{unit}</span>
               </span>
             </div>
-            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 236, textAlign: 'center',
+            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 288, textAlign: 'center',
                          opacity: fadeIn(frame, 30 + i * 10)}}>
               <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK, wordBreak: 'keep-all'}}>
                 {it.label}

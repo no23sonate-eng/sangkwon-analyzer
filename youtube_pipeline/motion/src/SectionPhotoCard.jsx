@@ -18,6 +18,8 @@ export const SectionPhotoCard = ({
   imageRatio = 2.124,      // 잘라낸 도면의 가로/세로
   groundRatio = 0.7132,    // 도면 안에서 지반(광장 레벨)이 놓인 세로 비율
   groundY = 596,           // 그 지반을 화면 어느 높이에 둘지 — 이 한 값으로 전체가 정렬된다
+  topRatio = 0.10,         // 도면 안에서 **타워 꼭대기**가 놓인 세로 비율
+  botRatio = 0.985,        // 도면 안에서 **지하 최하층 바닥**이 놓인 세로 비율
   above = {floors: 20, label: '지상', note: ''},
   below = {floors: 7, label: '지하', note: ''},
   bands = [],
@@ -38,8 +40,10 @@ export const SectionPhotoCard = ({
   const draw = interpolate(frame, [10, 42], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 
   const DIM_X = 300;                 // 치수선 x
-  const TOP_Y = 262;                 // 지상 치수 시작 (타워 꼭대기 근처)
-  const BOT_Y = Math.round(imgTop + imgH);  // 지하 치수 끝 = 도면 바닥
+  // 치수선은 화면 고정값이 아니라 **도면 안의 실제 위치**에 맞춘다.
+  // 그래야 "지상 20층"이 가리키는 구간이 진짜 타워 높이가 된다.
+  const TOP_Y = Math.round(yOf(topRatio));
+  const BOT_Y = Math.round(yOf(botRatio));
 
   const Dim = ({y0, y1, o}) => (
     <g stroke="#FFFFFF" strokeWidth={2.5} opacity={0.85 * o}>

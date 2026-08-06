@@ -1,8 +1,8 @@
 # 더 파크사이드 서울 — 편집 패키지
 
 11조 용산 유엔사 부지 개발. 13개 섹션 스크립트 → **32장면 / 약 7분 24초**.
-설명 그래픽 사이에 **공식 프로젝트 필름 14컷** 이 끼어 있다.
-**총 42컷** (카드 28 + 실사 14) / 443.5초.
+설명 그래픽 사이에 **실사 15컷**(공식 프로젝트 필름 + Mixkit 스톡) 이 끼어 있다.
+**총 43컷** (카드 28 + 실사 15) / 443.5초.
 
 ## 폴더
 
@@ -24,18 +24,18 @@ projects/더파크사이드서울/
 
 | 장면 | 카드 | 실사 | 내용 |
 |---|---|---|---|
-| 0 | — | 5.5s | 위성 → 용산 부지 줌인 → 남산 (오프닝) |
-| 1 | 11.0s | 6.2s | 야간 조감 |
-| 6 | 12.0s | 6.0s | 야경 조감 |
-| 7 | 12.2s | 6.5s | 도로변 투시 |
-| 10 | 10.5s | 5.4s | 동 사이 협곡, 카메라 상승 |
-| 14 | 10.0s | 5.3s | 파사드 상승 |
-| 16 | — | 5.0+5.0+5.1s | 전체 화면 3단계 (가운데 문구 얹음) |
-| 18 | — | 13.3s | 리테일 가로 (신세계 제휴 구역) |
-| 20 | 7.5s | 5.4s | 라운지 인테리어 |
-| 22 | 10.5s | 5.4s | 발코니에서 용산공원 조망 |
-| 29 | 10.5s | 5.8s | 준공 이미지 |
-| 31 | — | 10.6s | 개구부 너머 용산공원 (엔딩) |
+| 0 | — | 5.5s | 공식 필름 |
+| 1 | 11.0 | 6.2s | 공식 필름 |
+| 6 | 12.0 | 6.0s | 공식 필름 |
+| 7 | 12.2 | 6.5s | 공식 필름 |
+| 10 | 10.5 | 5.4s | 공식 필름 |
+| 14 | 10.0 | 5.3s | 공식 필름 |
+| 16 | — | 5.0s + 5.0s + 5.1s | 임차인 트렌드가 빠르다, 소비 사이클에 민감하다, 그래서 운영사가 필요해진다 |
+| 18 | — | 13.3s | 공식 필름 |
+| 20 | 7.5 | 5.4s | 공식 필름 |
+| 22 | 9.0 | 3.4s + 3.5s | 로즈우드 라운지 · 스파, B1 신세계 공간 |
+| 29 | 10.5 | 5.8s | 공식 필름 |
+| 31 | — | 10.6s | 공식 필름 |
 
 ## 프리미어에 얹는 법
 
@@ -52,38 +52,38 @@ projects/더파크사이드서울/
 
 | # | 카드 | 내용 |
 |---|---|---|
-| 0 | PaperImageCard | 조감도 (훅) |
-| 1 | SectionCard | 지하7·지상20 단면 |
-| 2 | PaperImageCard | 센트럴파크 면적 비교 |
+| 0 | — (실사) | 조감도 (훅) |
+| 1 | SectionPhotoCard | 지하7·지상20 실측 단면 |
+| 2 | ParkCompareCard | 센트럴파크 vs 용산공원 면적 |
 | 3 | SkylineCompareCard | 사업비 2.1조 / 4.2조 / 11조 |
-| 4 | PaperFlowCard | 시작은 도시가 아니었다 |
-| 5 | PaperImageCard | 용산 → 평택 |
-| 6 | PaperFlowCard (exchange) | 기부 대 양여 |
-| 7 | PaperFlowCard | 용도지역 변경 |
+| 4 | FullBleedCard | 시작은 도시가 아니었다 |
+| 5 | FullBleedCard | 용산 → 평택 |
+| 6 | ExchangeMotionCard | 기부 대 양여 (주고받기 모션) |
+| 7 | SkylineCompareCard | 용도지역 변경 · 용적률 상한 |
 | 8 | PaperImageCard | 유엔사 부지 공개매각 |
-| 9 | SkylineCompareCard | 예정가 vs 낙찰가 |
-| 10 | PaperFlowCard | 엄석오 회장 |
-| 11 | SkylineCompareCard | 용적률 1300/800/600 |
-| 12 | PaperFlowCard (exchange) | 국방부 ↔ 서울시 |
+| 9 | RatioCard | 예정가 vs 낙찰가 |
+| 10 | PhotoStepsCard | 엄석오 회장 4단계 |
+| 11 | SkylineCompareCard | 용적률 1300 / 800 / 600 |
+| 12 | ExchangeMotionCard | 국방부 vs 서울시 논쟁 (주고받기 모션) |
 | 13 | SightlineCard | 반포대교 → 남산 7부능선 |
-| 14 | SectionCard | 70m, 지하로 |
+| 14 | SectionPhotoCard | 70m, 그래서 지하로 |
 | 15 | RatioCard | 상업시설 비중 8.1% vs 2.7% |
-| 16 | PaperFlowCard | 운영사가 필요해진다 |
-| 17 | PaperFlowCard | 모리빌딩 |
-| 18 | PaperImageCard | 신세계 MOU |
-| 19 | SkylineCompareCard | 제휴 구역 면적 |
-| 20 | PaperImageCard | 로즈우드 |
+| 16 | — (실사) | 운영사가 필요해진다 (실사 3컷) |
+| 17 | PhotoStepsCard | 모리빌딩 3개 프로젝트 |
+| 18 | — (실사) | 신세계 MOU |
+| 19 | AreaNestCard | 제휴 구역 면적 4,980평 vs 1,500평 |
+| 20 | FullBleedCard | 로즈우드 (홍콩 전체화면) |
 | 21 | RankTrendCard | 50 Best Hotels 2위→3위→1위 |
-| 22 | SectionCard | 위아래로 쌓인 구조 |
-| 23 | PaperFlowCard | 회수 시점 셋 |
-| 24 | PaperImageCard | 배치 |
-| 25 | PaperFlowCard | 개발·운영 분리 |
-| 26 | RatioCard (bar) | 아자부다이 8.1ha / 4.5ha |
-| 27 | RatioCard (bar) | 청약 경쟁률 |
-| 28 | SkylineCompareCard | 분양가 최소/최대 |
-| 29 | PaperFlowCard | 남은 일정 |
-| 30 | SkylineCompareCard | 에테르노 용산 |
-| 31 | PaperImageCard | 클로징 |
+| 22 | ElevatorCard | 엘리베이터로 위아래 연결 |
+| 23 | PhotoStepsCard | 회수 시점 셋 |
+| 24 | FullBleedCard | 배치 — 분양 동을 숲에 |
+| 25 | SplitCard | 개발사 vs 운영사 |
+| 26 | TimelineRailCard | 아자부다이 34년 vs 10년 |
+| 27 | BigStatsCard | 청약 경쟁률 |
+| 28 | SkylineCompareCard | 분양가 — 평면 면적 비교 |
+| 29 | TimelineRailCard | 남은 일정 2027 |
+| 30 | PhotoSplitCard | 다른 전략 — 에테르노 용산 |
+| 31 | — (실사) | 클로징 |
 
 ## 고치고 싶을 때
 

@@ -70,7 +70,7 @@
       "end": 65.1,
       "dur": 11.7,
       "text": "2003년 4월, 한미 양국이 용산 미군기지를 평택으로 옮기기로 합의합니다. 문제는 돈이었습니다. 이전 비용 3조4,000억원.",
-      "card": "PaperImageCard",
+      "card": "FullBleedCard",
       "key": "move"
     },
     {
@@ -80,7 +80,7 @@
       "end": 83.5,
       "dur": 18.0,
       "text": "이 비용을 충당하기 위해 2007년 11월, 국방부와 LH가 협약을 맺습니다. 방식은 기부 대 양여. LH가 자체 자금 3조4,000억원으로 평택기지를 짓고, 국방부는 용산기지 4개 부지를 LH에 넘겨줍니다.",
-      "card": "PaperFlowCard",
+      "card": "ExchangeMotionCard",
       "key": "exchange",
       "cardDur": 12.0,
       "broll": {
@@ -158,7 +158,7 @@
       "end": 176.8,
       "dur": 13.4,
       "text": "땅을 판 국방부는 세 부지 모두 800%로 짓길 원했습니다. 돈이 필요했으니까요. 서울시가 반대했습니다. 남산이 가려지니까요. 이 대립이 몇 년을 끕니다.",
-      "card": "PaperFlowCard",
+      "card": "ExchangeMotionCard",
       "key": "conflict"
     },
     {
@@ -209,25 +209,28 @@
       "cardDur": 0,
       "broll": [
         {
-          "src": "1109232706_1080p.mp4",
-          "ss": 0.0,
+          "src": "stock_storefront.mp4",
+          "ss": 0.4,
           "dur": 5.0,
           "text": "임차인 트렌드가 빠르다",
-          "sub": "오피스보다"
+          "sub": "오피스보다",
+          "credit": "영상: Mixkit"
         },
         {
-          "src": "1109232669_1080p.mp4",
-          "ss": 8.5,
+          "src": "stock_mall.mp4",
+          "ss": 0.6,
           "dur": 5.0,
           "text": "소비 사이클에 민감하다",
-          "sub": ""
+          "sub": "",
+          "credit": "영상: Mixkit"
         },
         {
-          "src": "1109232658_720p.mp4",
-          "ss": 0.2,
+          "src": "stock_atrium.mp4",
+          "ss": 0.5,
           "dur": 5.1,
           "text": "그래서 운영사가 필요해진다",
-          "sub": "전체를 아우르는"
+          "sub": "전체를 아우르는",
+          "credit": "영상: Mixkit"
         }
       ]
     },
@@ -274,7 +277,7 @@
       "end": 287.6,
       "dur": 12.9,
       "text": "운영사가 하나 더 있습니다. 로즈우드입니다. 1979년 미국 댈러스에서 시작했고, 지금은 전 세계 39개 도시에서 호텔과 레지던스를 운영합니다.",
-      "card": "PaperImageCard",
+      "card": "FullBleedCard",
       "key": "rosewood",
       "cardDur": 7.5,
       "broll": {
@@ -302,12 +305,23 @@
       "text": "호텔이 옆에 있다는 게 아닙니다. 주거 입주자가 그 호텔 서비스를 쓴다는 구조입니다. 집에서 엘리베이터를 타고 내려가면 로즈우드가 운영하는 라운지와 스파가 있고, 그 옆이 백화점입니다.",
       "card": "ElevatorCard",
       "key": "stack",
-      "cardDur": 10.5,
-      "broll": {
-        "src": "1109232658_720p.mp4",
-        "ss": 4.4,
-        "dur": 5.4
-      }
+      "cardDur": 9.0,
+      "broll": [
+        {
+          "src": "1109232658_720p.mp4",
+          "ss": 4.4,
+          "dur": 3.4,
+          "text": "로즈우드 라운지 · 스파",
+          "sub": ""
+        },
+        {
+          "src": "1109232706_1080p.mp4",
+          "ss": 6.0,
+          "dur": 3.5,
+          "text": "B1 신세계 공간",
+          "sub": ""
+        }
+      ]
     },
     {
       "id": 23,

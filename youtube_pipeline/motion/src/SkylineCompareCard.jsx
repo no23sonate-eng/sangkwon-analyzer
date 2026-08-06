@@ -29,9 +29,13 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, INK}) => {
           <rect x={x1} y={baseY - h} width={w1} height={h} fill={fill} />
           <rect x={x2} y={baseY - h2} width={w2} height={h2} fill={fill} />
           <rect x={x3} y={baseY - h3} width={w3} height={h3} fill={fill} />
-          {/* 파크원 특유의 수직 프레임 */}
+          {/* 파크원 특유의 수직 프레임 — 지붕 위로 솟은 붉은 기둥이 이 건물의 표식 */}
           {[[x1, w1, h], [x2, w2, h2], [x3, w3, h3]].map(([x, w, hh], k) => (
             <g key={k}>
+              {[0.08, 0.5, 0.92].map((f, m) => (
+                <rect key={m} x={x + w * f - w * 0.045} y={baseY - hh - hh * 0.06}
+                      width={w * 0.09} height={hh * 0.06 + hh} fill={fill} />
+              ))}
               <line x1={x + w * 0.5} y1={baseY - hh} x2={x + w * 0.5} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.3} />
               {win(x, baseY - hh, w, hh)}
             </g>
@@ -40,31 +44,43 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, INK}) => {
       );
     }
     case 'lotte': {
-      // 롯데월드타워 — 아래가 넓고 위로 갈수록 좁아지는 곡선 테이퍼 + 뾰족한 첨탑
-      const wb = W * 0.62, wt = W * 0.14;
+      // 롯데월드타워 — 밑이 넓지 않고 위로 갈수록 **오목하게** 좁아지는 555m 세장 타워.
+      // 꼭대기는 한쪽이 잘려 비스듬한 왕관(라제트) 모양 + 첨탑.
+      const wb = W * 0.46, wt = W * 0.13;
       const xb0 = cx - wb / 2, xb1 = cx + wb / 2;
       const xt0 = cx - wt / 2, xt1 = cx + wt / 2;
       return (
         <g>
-          <path d={`M ${xb0} ${baseY} Q ${cx - wb * 0.34} ${baseY - h * 0.55} ${xt0} ${top}
-                    L ${xt1} ${top} Q ${cx + wb * 0.34} ${baseY - h * 0.55} ${xb1} ${baseY} Z`} fill={fill} />
-          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.11} stroke={fill} strokeWidth={5} />
-          <line x1={cx} y1={top} x2={cx} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.28} />
-          {win(cx - wb * 0.3, top + h * 0.08, wb * 0.6, h * 0.86)}
+          {/* 오목 곡선: 제어점을 안쪽으로 당겨 실루엣이 활처럼 휘게 */}
+          <path d={`M ${xb0} ${baseY}
+                    C ${cx - wb * 0.34} ${baseY - h * 0.42} ${xt0 - wt * 0.55} ${baseY - h * 0.78} ${xt0} ${top}
+                    L ${xt1} ${top}
+                    C ${xt1 + wt * 0.55} ${baseY - h * 0.78} ${cx + wb * 0.34} ${baseY - h * 0.42} ${xb1} ${baseY} Z`}
+                fill={fill} />
+          {/* 비스듬히 잘린 왕관 */}
+          <polygon points={`${xt0},${top} ${xt1},${top} ${xt1},${top - h * 0.07} ${xt0},${top - h * 0.03}`} fill={fill} />
+          <line x1={cx + wt * 0.28} y1={top - h * 0.06} x2={cx + wt * 0.28} y2={top - h * 0.15}
+                stroke={fill} strokeWidth={4} />
+          <line x1={cx} y1={top} x2={cx} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.26} />
+          {win(cx - wt * 0.9, top + h * 0.06, wt * 1.8, h * 0.88)}
         </g>
       );
     }
     case 'cluster': {
       // 더 파크사이드 서울 — 70m 로 높이가 묶인 중층 동이 여러 채 늘어선다.
       // "한 채가 아니라 여러 채"가 실루엣만으로 읽히는 게 핵심.
-      const ns = 5;
-      const gap = W * 0.045;
-      const w = (W - gap * (ns - 1)) / ns;
-      const ratio = [0.92, 1.0, 0.86, 0.97, 0.8];
+      const ns = 6;
+      const gap = W * 0.028;
+      const w = (W * 1.18 - gap * (ns - 1)) / ns;
+      const span = w * ns + gap * (ns - 1);
+      const ratio = [0.88, 1.0, 0.83, 0.96, 0.9, 0.78];
       return (
         <g>
+          {/* 공유 저층부(포디엄) — 여러 동이 한 덩어리로 서 있다는 게 실루엣으로 읽힌다 */}
+          <rect x={cx - span / 2 - w * 0.16} y={baseY - h * 0.2}
+                width={span + w * 0.32} height={h * 0.2} fill={fill} />
           {Array.from({length: ns}, (_, k) => {
-            const x = cx - W / 2 + k * (w + gap);
+            const x = cx - span / 2 + k * (w + gap);
             const hh = h * ratio[k];
             return (
               <g key={k}>
@@ -74,6 +90,27 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, INK}) => {
               </g>
             );
           })}
+        </g>
+      );
+    }
+    case 'plan': {
+      // 평면도 — 건물 실루엣 대신 위에서 본 한 세대. 면적 비교에 쓴다.
+      // 가로/세로를 같이 키워야 "넓이"가 눈에 맞는다 (value 는 변 길이 = √면적비).
+      const hh = h, w = hh * 1.34;
+      const x = cx - w / 2, y = baseY - hh;
+      const rooms = [[0.0, 0.0, 0.58, 0.62], [0.58, 0.0, 0.42, 0.34],
+                     [0.58, 0.34, 0.42, 0.28], [0.0, 0.62, 1.0, 0.38]];
+      return (
+        <g>
+          <rect x={x} y={y} width={w} height={hh} fill={fill} />
+          <rect x={x} y={y} width={w} height={hh} fill="none" stroke={INK} strokeWidth={3.5} />
+          {rooms.map(([rx, ry, rw, rh], k) => (
+            <rect key={k} x={x + rx * w} y={y + ry * hh} width={rw * w} height={rh * hh}
+                  fill="none" stroke={INK} strokeWidth={1.8} opacity={0.55} />
+          ))}
+          {/* 현관 표시 */}
+          <line x1={x + w * 0.10} y1={y + hh} x2={x + w * 0.26} y2={y + hh}
+                stroke="#FFF" strokeWidth={5} />
         </g>
       );
     }
@@ -208,6 +245,8 @@ export const SkylineCompareCard = ({
         } else if (b.shape === 'setback' || b.shape === 'taper') topY -= bH * 0.18;
         else if (b.shape === 'slender') topY -= bH * 0.2;
         else if (b.shape === 'lotte') topY -= bH * 0.11;
+        else if (b.shape === 'parc1') topY -= bH * 0.06;
+        else if (b.shape === 'plan') topY = baseY - bH;
         return (
           <React.Fragment key={i}>
             {b.note ? (

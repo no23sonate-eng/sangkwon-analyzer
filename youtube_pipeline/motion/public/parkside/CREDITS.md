@@ -25,6 +25,20 @@
 | `site_aerial.jpg` | 공식 프로젝트 필름 프레임 (1109232716) | 더파크사이드 서울 | `이미지: 더파크사이드 서울` |
 | `humphreys.jpg` | Wikimedia Commons `Aerial Tour 2 Camp Humphreys, Sept. 13, 2017 (37293016265).jpg` | USAG-Humphreys, **CC BY 2.0** | `사진: USAG Humphreys / CC BY 2.0` |
 | `rosewood.jpg` | Wikimedia Commons `Rosewood Hong Kong Lobby 201906.jpg` | Wpcpey, **CC BY-SA 4.0** | `사진: Wpcpey / CC BY-SA 4.0` |
+| `rosewood_full.jpg` | Wikimedia Commons `Rosewood Hong Kong Level 6 Swimming Pool 201906.jpg` | Wpcpey, **CC BY-SA 4.0** | `사진: Wpcpey / CC BY-SA 4.0 (로즈우드 홍콩)` |
+| `rosewood_tower.jpg` | Wikimedia Commons `Victoria Dockside … from harbour.jpg` | Ceeseven, **CC BY-SA 4.0** | `사진: Ceeseven / CC BY-SA 4.0` |
+| `logo_seoul.png` | Wikimedia `Seal of Seoul.svg` | 서울특별시, **Public domain** | (로고 자체가 출처) |
+
+## 실사 스톡 (`projects/더파크사이드서울/footage/`)
+
+| 파일 | 원본 | 라이선스 | 화면 표기 |
+|---|---|---|---|
+| `stock_storefront.mp4` | Mixkit #23845 (쇼윈도·마네킹) | Mixkit Free License | `영상: Mixkit` |
+| `stock_mall.mp4` | Mixkit #31086 (쇼핑몰 아트리움) | Mixkit Free License | `영상: Mixkit` |
+| `stock_atrium.mp4` | Mixkit #25516 (몰 내려다본 앵글) | Mixkit Free License | `영상: Mixkit` |
+
+720p 만 공개돼 있어 `scale=1920:1080:flags=lanczos,unsharp=5:5:0.6` 로 업스케일했다.
+Pexels·Pixabay·Videvo 는 이 환경 프록시에서 403 이라 못 받는다.
 
 ## 단면 도면 (`sectional.jpg`)
 
@@ -32,6 +46,9 @@
 (광장·가로 레벨)이 **세로 0.7132** 위치에 있다. `SectionPhotoCard` 는 이 두 값으로
 도면을 배치한다 — `cover` 로 깔면 지반이 화면 아래(y≈770)에 박혀 지하 수치가
 자막 영역으로 밀려 내려간다. 잘라내는 비율을 바꾸면 두 값도 같이 고쳐야 한다.
+
+치수선(지상/지하 세로선)도 화면 고정값이 아니라 도면 안 비율로 잡는다 —
+타워 꼭대기 `topRatio = 0.212`, 지하 최하층 바닥 `botRatio = 0.885`.
 
 주의: 좌측 로즈우드 동은 **지상부도 절개**돼 있어서 어두운 면이 시작되는 곳을
 지반으로 잡으면 안 된다. 사람이 걷는 광장 레벨이 지반이다.

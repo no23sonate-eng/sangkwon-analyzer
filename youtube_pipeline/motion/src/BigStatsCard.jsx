@@ -20,7 +20,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
       <PaperTitle title={title} sub={sub} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.slice(1).map((_, i) => (
-          <line key={i} x1={startX + slot * (i + 1)} y1={388} x2={startX + slot * (i + 1)} y2={648}
+          <line key={i} x1={startX + slot * (i + 1)} y1={452} x2={startX + slot * (i + 1)} y2={712}
                 stroke={INK} strokeWidth={2} opacity={0.22 * fadeIn(frame, 10)} />
         ))}
       </svg>
@@ -28,7 +28,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         const v = interpolate(frame, [14 + i * 12, 62 + i * 12], [0, it.value ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
-          <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: 400,
+          <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: 464,
                                textAlign: 'center', opacity: fadeIn(frame, 8 + i * 12)}}>
             <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                          fontSize: it.hot ? 148 : 124, color: INK, lineHeight: 1,
@@ -50,7 +50,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         );
       })}
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: 730, textAlign: 'center',
+        <div style={{position: 'absolute', left: 200, width: 1520, top: 792, textAlign: 'center',
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK_SOFT,
                      opacity: fadeIn(frame, 56), wordBreak: 'keep-all'}}>
           {caption}

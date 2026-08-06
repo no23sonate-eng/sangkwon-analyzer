@@ -47,6 +47,8 @@ const Pict = ({name, size = 96, stroke = INK}) => {
 
 export const PhotoStepsCard = ({
   title = '', sub = '', steps = [], source = '', arrows = [],
+  scale = 1,        // 타일 크기 배율
+  gapScale = 1,     // 타일 사이 간격 배율
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -54,9 +56,9 @@ export const PhotoStepsCard = ({
   const n = steps.length;
   if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
 
-  const TW = Math.min(340, 1560 / n);        // 타일 폭
+  const TW = Math.round(Math.min(340, 1560 / n) * scale);   // 타일 폭
   const TH = Math.round(TW * 0.78);
-  const gap = (1720 - TW * n) / Math.max(1, n - 1);
+  const gap = Math.max(60, ((1720 - TW * n) / Math.max(1, n - 1)) * gapScale);
   const x0 = (1920 - (TW * n + gap * (n - 1))) / 2;
   const cy = 470;                            // 타일 세로 중심
   const cx = (i) => x0 + i * (TW + gap) + TW / 2;

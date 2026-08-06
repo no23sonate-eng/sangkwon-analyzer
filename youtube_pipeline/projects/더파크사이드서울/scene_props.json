@@ -34,7 +34,9 @@
             "hot": true
           }
         ],
-        "source": "도면: 더파크사이드 서울"
+        "source": "도면: 더파크사이드 서울",
+        "topRatio": 0.212,
+        "botRatio": 0.885
       }
     },
     "2": {
@@ -70,18 +72,18 @@
       "card": "SkylineCompareCard",
       "props": {
         "title": "사업비",
-        "sub": "국내 대형 개발과 비교하면",
+        "sub": "건물 높이가 아니라 사업비를 비교한다",
         "buildings": [
           {
             "label": "여의도 파크원",
-            "value": 0.19,
+            "value": 0.96,
             "note": "2조 1,000억",
             "shape": "parc1",
             "tone": 0
           },
           {
             "label": "롯데월드타워",
-            "value": 0.38,
+            "value": 0.9,
             "note": "4조 2,000억",
             "shape": "lotte",
             "tone": 2
@@ -107,33 +109,39 @@
       }
     },
     "5": {
-      "card": "PaperImageCard",
+      "card": "FullBleedCard",
       "props": {
-        "title": "용산 → 평택",
         "image": "parkside/humphreys.jpg",
-        "ratio": 1.517,
-        "caption": "2003년 4월 한미 합의 · 이전 비용 3조 4,000억원",
+        "headline": "용산 → 평택",
+        "sub": "2003년 4월 한미 합의 · 이전 비용 3조 4,000억원",
+        "scrim": 0.4,
         "source": "사진: USAG Humphreys / CC BY 2.0"
       }
     },
     "6": {
-      "card": "PaperFlowCard",
+      "card": "ExchangeMotionCard",
       "props": {
         "title": "기부 대 양여",
         "sub": "2007년 11월",
-        "exchange": {
-          "left": {
-            "wordmark": "LH",
-            "label": "LH",
-            "sub": "한국토지주택공사"
-          },
-          "right": {
-            "logo": "parkside/logo_mnd.png",
-            "label": "국방부",
-            "sub": "용산기지 소유"
-          },
-          "give": "평택기지를 지어 준다 — 3조 4,000억",
-          "get": "용산기지 4개 부지를 받는다"
+        "left": {
+          "wordmark": "LH",
+          "label": "LH",
+          "sub": "한국토지주택공사"
+        },
+        "right": {
+          "logo": "parkside/logo_mnd.png",
+          "label": "국방부",
+          "sub": "용산기지 소유"
+        },
+        "give": {
+          "icon": "base",
+          "label": "평택기지",
+          "sub": "3조 4,000억"
+        },
+        "get": {
+          "icon": "land",
+          "label": "4개 부지",
+          "sub": ""
         },
         "source": "국방부 · LH 협약"
       }
@@ -226,7 +234,9 @@
             "hot": true
           }
         ],
-        "source": "보도 종합"
+        "source": "보도 종합",
+        "scale": 0.8,
+        "gapScale": 0.8
       }
     },
     "11": {
@@ -261,23 +271,29 @@
       }
     },
     "12": {
-      "card": "PaperFlowCard",
+      "card": "ExchangeMotionCard",
       "props": {
-        "title": "800% 대 남산",
+        "title": "국방부 vs 서울시 논쟁",
         "sub": "이 대립이 몇 년을 끌었다",
-        "exchange": {
-          "left": {
-            "icon": "gov",
-            "label": "국방부",
-            "sub": "땅을 판 쪽"
-          },
-          "right": {
-            "icon": "globe",
-            "label": "서울시",
-            "sub": "인허가권"
-          },
-          "give": "세 부지 모두 800%로 — 돈이 필요했으니까",
-          "get": "남산이 가려진다 — 반대"
+        "left": {
+          "logo": "parkside/logo_mnd.png",
+          "label": "국방부",
+          "sub": "땅을 판 쪽"
+        },
+        "right": {
+          "logo": "parkside/logo_seoul.png",
+          "label": "서울시",
+          "sub": "인허가권"
+        },
+        "give": {
+          "icon": "height",
+          "label": "최대 용적률",
+          "sub": ""
+        },
+        "get": {
+          "icon": "mountain",
+          "label": "남산 간섭",
+          "sub": ""
         },
         "source": "보도 종합"
       }
@@ -323,13 +339,15 @@
         },
         "bands": [
           {
-            "y0": 0.735,
-            "y1": 0.985,
+            "y0": 0.742,
+            "y1": 0.885,
             "label": "주차 3,384대 전부 지하",
             "hot": true
           }
         ],
-        "source": "도면: 더파크사이드 서울"
+        "source": "도면: 더파크사이드 서울",
+        "topRatio": 0.212,
+        "botRatio": 0.885
       }
     },
     "15": {
@@ -383,7 +401,8 @@
             "hot": true
           }
         ],
-        "source": "사진: 稲妻ノ歯鯨 · Kakidai / CC BY-SA 4.0 · Syced / CC0"
+        "source": "사진: 稲妻ノ歯鯨 · Kakidai / CC BY-SA 4.0 · Syced / CC0",
+        "gapScale": 0.5
       }
     },
     "18": {
@@ -422,13 +441,13 @@
       }
     },
     "20": {
-      "card": "PaperImageCard",
+      "card": "FullBleedCard",
       "props": {
-        "title": "로즈우드",
-        "image": "parkside/rosewood.jpg",
-        "ratio": 1.5,
-        "caption": "1979년 미국 댈러스에서 시작 · 전 세계 39개 도시에서 호텔과 레지던스 운영",
-        "source": "사진: Wpcpey / CC BY-SA 4.0"
+        "image": "parkside/rosewood_full.jpg",
+        "headline": "로즈우드",
+        "sub": "1979년 댈러스에서 시작 · 전 세계 39개 도시",
+        "scrim": 0.4,
+        "source": "사진: Wpcpey / CC BY-SA 4.0 (로즈우드 홍콩)"
       }
     },
     "21": {
@@ -502,17 +521,17 @@
             "hot": true
           }
         ],
-        "source": "분양 공고 · 보도 종합"
+        "source": "분양 공고 · 보도 종합",
+        "gapScale": 0.5
       }
     },
     "24": {
       "card": "FullBleedCard",
       "props": {
         "image": "parkside/layout.jpg",
-        "headline": "",
-        "align": "bottom",
-        "scrim": 0.22,
-        "caption": "용산공원을 마주보는 쪽에 오피스텔 · 로즈우드는 오히려 뒤쪽",
+        "headline": "분양하는 동을 숲에 붙였다",
+        "sub": "용산공원을 마주보는 쪽이 오피스텔 · 로즈우드는 오히려 뒤쪽",
+        "scrim": 0.46,
         "source": "이미지: 더파크사이드 서울"
       }
     },
@@ -530,10 +549,10 @@
         },
         "right": {
           "label": "운영사",
-          "sub": "빌리고 굴린다",
+          "sub": "빌리고 운영한다",
           "lines": [
-            "임차인·콘텐츠를 계속 갈아끼운다",
-            "회수 시점이 수십 년"
+            "임차인·콘텐츠 계속 변경",
+            "회수 시점이 수년~수십 년"
           ]
         },
         "verdict": "둘을 한 회사가 하는 사례가 없었다",
@@ -598,20 +617,21 @@
         "buildings": [
           {
             "label": "전용 53㎡ · 가장 작은 타입",
-            "value": 0.16,
+            "value": 0.54,
             "note": "29억 8,300만원",
-            "shape": "slab",
+            "shape": "plan",
             "tone": 0
           },
           {
             "label": "전용 185㎡ · 가장 큰 타입",
             "value": 1.0,
             "note": "185억 700만원",
-            "shape": "slender",
+            "shape": "plan",
             "hot": true
           }
         ],
-        "source": "분양 공고"
+        "source": "분양 공고",
+        "note": "변 길이가 아니라 면적이 실제 전용면적 비율(53㎡ : 185㎡)"
       }
     },
     "29": {
@@ -663,12 +683,12 @@
     "30": {
       "card": "PhotoSplitCard",
       "props": {
-        "title": "300m 거리, 정반대의 답",
+        "title": "다른 전략",
         "sides": [
           {
             "photo": "parkside/parkside_towers.jpg",
             "name": "더 파크사이드 서울",
-            "sub": "11개 동 · 지상 20층",
+            "sub": "11개 동 · KPF 설계",
             "stat": "1,195",
             "statUnit": "세대",
             "lines": [
