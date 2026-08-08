@@ -197,13 +197,14 @@ export const SkylineCompareCard = ({
   const {ink: INK, inkSoft: INK_SOFT, tones: TONES} = palette(dark);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const baseY = CONTENT_BOTTOM - 58; // 바닥선을 화면 아래쪽으로
+  // 바닥선 아래에 라벨 두 줄이 들어가야 하므로 CONTENT_BOTTOM 에서 넉넉히 띄운다
+  const baseY = CONTENT_BOTTOM - 80;
   const n = buildings.length;
   const slot = Math.min(520, 1520 / Math.max(1, n));   // 라벨 폭에 맞춰 간격 확보
   const startX = (1920 - slot * n) / 2 + slot / 2;
   // 첨탑형(slender/setback/taper)은 실루엣 위로 20% 더 솟는다 → 그만큼 최대 높이를 깎아
   // 꼭대기 수치(note)가 타이틀 블록과 겹치지 않게 한다.
-  const headroom = (title ? (sub ? 285 : 224) : 130) + 36;
+  const headroom = (title ? (sub ? 285 : 224) : 130) + (note ? 80 : 36);
   const spire = buildings.some((b) => ['slender', 'setback', 'taper', 'lotte'].includes(b.shape)) ? 0.2 : 0;
   const MH = Math.min(maxH, (baseY - headroom - 54) / (1 + spire));
 
@@ -263,10 +264,12 @@ export const SkylineCompareCard = ({
           </React.Fragment>
         );
       })}
+      {/* 단서 조항 — 하단은 자막 자리라 **타이틀 바로 아래**에 둔다 */}
       {note ? (
-        <div style={{position: 'absolute', left: 96, width: 1400, top: 900,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.03em',
-                     color: INK_SOFT, opacity: fadeIn(frame, 64), wordBreak: 'keep-all'}}>
+        <div style={{position: 'absolute', left: 260, width: 1400, top: title ? (sub ? 302 : 232) : 120,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 26,
+                     letterSpacing: '0.03em', color: INK_SOFT, opacity: fadeIn(frame, 64),
+                     wordBreak: 'keep-all'}}>
           {note}
         </div>
       ) : null}

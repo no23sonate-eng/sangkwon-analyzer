@@ -26,7 +26,7 @@ def load():
             print(f'[skip] #{sid} — scene_props.json 에 없음', flush=True)
             continue
         entry = props[sid]
-        if entry['card'] != sc['card']:
+        if entry['card'] != sc['card'] and not entry.get('motion'):
             print(f"[warn] #{sid} 카드 불일치: plan={sc['card']} props={entry['card']}", flush=True)
         # cardDur 가 있으면 장면의 앞부분만 카드고 나머지는 실사(render_broll.py).
         # cardDur == 0 이면 장면 전체가 실사라 카드를 아예 안 뽑는다.
@@ -34,7 +34,15 @@ def load():
         if dur <= 0:
             print(f"[skip] #{sid} {sc['key']} — 장면 전체가 실사", flush=True)
             continue
-        out.append((sc['id'], entry['card'], dict(entry['props']), dur, sc['key']))
+        # `motion` 이 있으면 카드를 MotionShell 로 감싸는 컴포지션으로 돌린다.
+        # 카드 코드는 그대로 두고 전환·강조 모션만 얹는다 (design_reference §23).
+        motion = entry.get('motion')
+        if motion:
+            out.append((sc['id'], 'MotionWrap',
+                        {'card': entry['card'], 'props': dict(entry['props']), 'motion': motion},
+                        dur, sc['key']))
+        else:
+            out.append((sc['id'], entry['card'], dict(entry['props']), dur, sc['key']))
     return out
 
 

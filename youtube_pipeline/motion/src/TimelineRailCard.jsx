@@ -27,7 +27,8 @@ export const TimelineRailCard = ({
   const X0 = hasLabel ? 400 : 250, X1 = hasLabel ? 1780 : 1670;
   const LIFT = (j) => 82 + ((j + 1) % 2) * 108;  // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침
   const px = (y) => X0 + ((y - axis.from) / (axis.to - axis.from)) * (X1 - X0);
-  const AXIS_Y = CONTENT_BOTTOM - 40;
+  // 축 라벨(top = AXIS_Y + 22, 34px)까지 자막 안전영역(CONTENT_BOTTOM) 위에 들어와야 한다
+  const AXIS_Y = CONTENT_BOTTOM - 66;
   const ROW = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1));
   const railY = (i) => (n === 1 ? AXIS_Y - 140 : 400 + i * ROW);
 
