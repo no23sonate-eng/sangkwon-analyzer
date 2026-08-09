@@ -1,18 +1,28 @@
 {
   "project": "신세계MOU",
-  "note": "기존 파크사이드 자산 미사용 — 신세계 본점 사진(CC)로 구성",
+  "note": "빠른 컷 + 다중 소스 데모",
   "scenes": {
     "0": {
       "card": "FullBleedCard",
       "props": {
-        "image": "mou/shinsegae_night.jpg",
-        "headline": "신세계백화점과 MOU",
-        "sub": "2025년 7월 1일",
-        "scrim": 0.44,
-        "source": "사진: Abasaa / PD"
+        "image": "신세계MOU/shinsegae_plate.jpg",
+        "headline": "2025년 7월 1일",
+        "sub": "",
+        "scrim": 0.42,
+        "source": "Minseong Kim / CC BY-SA 4.0"
       }
     },
     "1": {
+      "card": "FullBleedCard",
+      "props": {
+        "image": "신세계MOU/shinsegae_lights.jpg",
+        "headline": "신세계백화점과 MOU",
+        "sub": "",
+        "scrim": 0.46,
+        "source": "travel oriented / BY-SA 2.0"
+      }
+    },
+    "2": {
       "card": "BigStatsCard",
       "props": {
         "title": "제휴 구역",
@@ -36,15 +46,9 @@
         "source": "헤럴드경제 · 이투데이 · 아주경제"
       }
     },
-    "2": {
+    "3": {
       "card": "FullBleedCard",
-      "props": {
-        "image": "mou/shinsegae_day.jpg",
-        "headline": "전면 경영제휴",
-        "sub": "임차가 아니라 운영을 함께한다",
-        "scrim": 0.5,
-        "source": "사진: Minseong Kim / CC BY-SA 4.0"
-      }
+      "props": {}
     }
   }
 }

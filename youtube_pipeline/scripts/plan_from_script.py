@@ -28,10 +28,16 @@ CPS = 5.53
 GAP = 0.4            # 문단(섹션)이 바뀔 때의 호흡
 GAP_IN = 0.15        # 같은 문단 안에서 장면만 나뉠 때 — 여기서 0.4 를 주면
                      # 한 문단을 읽다 말고 쉬는 꼴이 되고 전체 길이가 부풀어 오른다
-MAX_CUT = 15.0       # 한 컷 최대 (넘으면 실사로 쪼갠다)
-SPLIT_AT = 9.0       # 문장이 둘 이상이면 이 길이부터 장면을 나눈다
-                     # (컷 스위트스팟이 3~8초인데 MAX_CUT 만 보면 13초짜리 한 컷이 나온다)
-MIN_CUT = 4.0        # 이보다 짧으면 앞 장면에 붙인다
+# ── 컷 밀도 ──────────────────────────────────────────────────────────────
+# 파크사이드 1편은 평균 10.0초였다. 설명 영상이라도 화면이 그렇게 오래 안 바뀌면
+# 늘어진다. 목표를 **평균 5초 안팎**으로 내리고, 문장뿐 아니라 **절(쉼표)** 에서도
+# 끊는다. 내레이션은 그대로 두고 화면만 더 자주 바뀌게 하는 게 요점이다.
+MAX_CUT = 10.0       # 한 컷 최대 (넘으면 실사로 쪼갠다)
+SPLIT_AT = 6.0       # 이 길이를 넘기면 문장 경계에서 나눈다
+CLAUSE_AT = 6.5      # 한 문장이 이보다 길면 **쉼표에서도** 나눈다
+MIN_CUT = 1.8        # 이보다 짧은 조각만 앞에 붙인다.
+                     # 2초짜리 마무리 절("전면 경영제휴입니다")은 오히려 리듬을 만든다 —
+                     # 여기를 2.2 로 두면 그런 절이 앞 컷에 붙어 7초짜리가 된다
 OPENING_SEC = 30.0
 OPENING_MIN_CUTS = 3
 
@@ -108,17 +114,37 @@ def split_sentences(par):
     return [p.strip() for p in parts if p.strip()]
 
 
+def split_clauses(sent):
+    """긴 문장을 쉼표에서 절로 나눈다.
+
+    숫자 안의 쉼표(1만3,600)에서 끊으면 안 되므로 자리표시자로 잠시 치환한다.
+    조각이 MIN_CUT 보다 짧으면 앞 절에 도로 붙인다 — 0.8초짜리 컷은 튄다.
+    """
+    if speak_sec(sent) <= CLAUSE_AT:
+        return [sent]
+    masked = re.sub(r'(?<=\d),(?=\d)', '\x00', sent)
+    parts = [p.strip() for p in re.split(r'(?<=,)\s*', masked) if p.strip()]
+    out = []
+    for p in parts:
+        p = p.replace('\x00', ',')
+        if out and speak_sec(p) < MIN_CUT:
+            out[-1] = (out[-1] + ' ' + p).strip()
+        else:
+            out.append(p)
+    return out
+
+
 def build_scenes(sections):
     """섹션(문단) → 장면. 장면이 너무 길면 문장 경계에서 쪼갠다."""
     scenes = []
     for act, par in enumerate(sections, start=1):
-        sents = split_sentences(par)
+        sents = [c for s in split_sentences(par) for c in split_clauses(s)]
         buf, cur = [], 0.0
         for s in sents:
             d = speak_sec(s)
             # 문장 경계에서 끊는다. 기준은 MAX_CUT 이 아니라 SPLIT_AT —
             # 15초까지 버티면 스위트스팟(3~8초)을 늘 벗어난다.
-            if buf and cur + d > SPLIT_AT and cur >= MIN_CUT * 0.75:
+            if buf and cur + d > SPLIT_AT and cur >= MIN_CUT:
                 scenes.append((act, ' '.join(buf), cur))
                 buf, cur = [], 0.0
             buf.append(s)
@@ -128,11 +154,47 @@ def build_scenes(sections):
     return scenes
 
 
+# 같은 문법이 연속될 때 돌려 쓸 대안. 뜻이 안 깨지는 짝만 넣는다.
+ALT = {
+    'PaperImageCard':      ['FullBleedCard', 'AnnotatedShotCard'],
+    'FullBleedCard':       ['PaperImageCard', 'AnnotatedShotCard'],
+    'SkylineCompareCard':  ['ScaleCompareCard', 'BigStatsCard'],
+    'ScaleCompareCard':    ['SkylineCompareCard'],
+    'RatioCard':           ['BigStatsCard', 'AreaNestCard'],
+    'BigStatsCard':        ['RatioCard'],
+    'PhotoStepsCard':      ['TimelineRailCard', 'SplitCard'],
+    'SplitCard':           ['PhotoStepsCard'],
+    'TimelineRailCard':    ['PhotoStepsCard'],
+}
+REPEAT_MAX = 2          # 같은 카드 연속 허용 한도
+
+
 def suggest_card(text):
     for pat, card, why in RULES:
         if re.search(pat, text):
             return card, why
     return DEFAULT_CARD, '기본값'
+
+
+def vary(cards):
+    """같은 카드가 REPEAT_MAX 를 넘겨 연속되면 대안으로 바꾼다.
+
+    컷을 잘게 쪼개면 인접 장면이 비슷해져 같은 카드가 줄줄이 나온다.
+    컷은 빨라졌는데 화면은 안 바뀌는 상태 — 그게 제일 나쁘다.
+    """
+    out, run = [], 0
+    for i, c in enumerate(cards):
+        if out and c == out[-1]:
+            run += 1
+        else:
+            run = 1
+        if run > REPEAT_MAX:
+            for a in ALT.get(c, []):
+                if not out or a != out[-1]:
+                    c, run = a, 1
+                    break
+        out.append(c)
+    return out
 
 
 def key_of(text, used):
@@ -146,7 +208,8 @@ def key_of(text, used):
 
 
 def allocate(scenes):
-    """장면 → scene_plan 항목. 15초 초과 장면은 [카드 + 실사] 로 자동 분할."""
+    """장면 → scene_plan 항목. MAX_CUT 초과 장면은 [카드 + 실사] 로 자동 분할."""
+    picked = vary([suggest_card(t)[0] for _, t, _ in scenes])
     out, used, t = [], set(), 0.0
     prev_act = None
     for i, (act, text, dur) in enumerate(scenes):
@@ -154,7 +217,8 @@ def allocate(scenes):
             t += GAP if act != prev_act else GAP_IN
         prev_act = act
         dur = round(dur, 1)
-        card, why = suggest_card(text)
+        _, why = suggest_card(text)
+        card = picked[i]
         e = {
             'id': i, 'act': act, 'start': round(t, 1), 'end': round(t + dur, 1), 'dur': dur,
             'text': text, 'card': card, 'key': key_of(text, used), '_why': why,

@@ -32,10 +32,12 @@ W, H = 1920, 1080
 SUBTITLE_SAFE_BOTTOM = 260          # paper.jsx 와 같은 값
 TIMESCALE = 90000
 MAX_CLIP_MB = 12.0
-MAX_CUT_SEC = 15.0                  # 이보다 긴 한 컷은 리텐션이 꺾인다
+MAX_CUT_SEC = 10.0                  # 이보다 긴 한 컷은 리텐션이 꺾인다
 OPENING_SEC = 30.0                  # 오프닝 구간
-OPENING_MIN_CUTS = 3
-CUT_SWEET_SPOT = (3.0, 8.0)
+OPENING_MIN_CUTS = 5                # 오프닝은 더 촘촘하게
+CUT_SWEET_SPOT = (2.5, 6.0)
+TARGET_AVG = 6.0                    # 평균 컷 길이 목표
+REPEAT_MAX = 2                      # 같은 카드가 이보다 많이 연속되면 경고
 
 # 저작자 표기가 의무인 자산 → source 에 반드시 들어가야 하는 문자열
 # 배경에 사진/도면을 까는 카드 — 하단 잉크 검사로는 자막 침범을 판단할 수 없다
@@ -250,8 +252,35 @@ def check_retention(cuts, rep):
     inside = sum(1 for d in ds if CUT_SWEET_SPOT[0] <= d <= CUT_SWEET_SPOT[1])
     rep.ok('리텐션', f'컷 {len(ds)}개 · 평균 {avg:.1f}s · 최장 {max(ds):.1f}s · '
                     f'3~8초 구간 {inside}/{len(ds)}컷 ({inside / len(ds) * 100:.0f}%)')
-    if avg > 12:
-        rep.warn('리텐션', f'평균 컷 길이 {avg:.1f}s — 설명 영상이라도 10초 아래를 목표로')
+    if avg > TARGET_AVG:
+        rep.warn('리텐션', f'평균 컷 길이 {avg:.1f}s — 목표 {TARGET_AVG:.0f}초. '
+                           f'절(쉼표) 단위로 더 쪼개거나 실사를 끼울 것')
+
+
+def check_grammar_variety(plan, props, rep):
+    """같은 카드가 연속으로 반복되면 화면이 안 바뀐 것처럼 읽힌다.
+
+    파크사이드 1편은 SkylineCompareCard 가 4번, PhotoStepsCard 가 3번 반복됐다.
+    컷 길이만 봐서는 안 잡히는 결함이라 따로 센다.
+    """
+    seq = [props[str(sc['id'])]['card'] for sc in plan['scenes']
+           if str(sc['id']) in props and sc.get('cardDur', sc['dur']) > 0]
+    run, worst = 1, []
+    for i in range(1, len(seq)):
+        if seq[i] == seq[i - 1]:
+            run += 1
+        else:
+            if run > REPEAT_MAX:
+                worst.append((seq[i - 1], run))
+            run = 1
+    if run > REPEAT_MAX:
+        worst.append((seq[-1], run))
+    for card, n in worst:
+        rep.warn('문법', f'{card} 가 {n}컷 연속 — 중간에 다른 문법이나 실사를 끼울 것')
+    from collections import Counter
+    c = Counter(seq)
+    top = c.most_common(1)[0] if c else ('-', 0)
+    rep.ok('문법', f'카드 {len(set(seq))}종 / {len(seq)}컷 · 최다 {top[0]} {top[1]}회')
 
 
 def check_safe_area(props, projdir, rep, limit=None):
@@ -307,6 +336,7 @@ def main():
     check_data(plan, props, rep)
     check_assets(props, rep)
     check_credits(props, rep)
+    check_grammar_variety(plan, props, rep)
     cuts = check_clips(plan, os.path.join(projdir, 'clips'), rep)
     if cuts:
         check_timescale(os.path.join(projdir, 'clips'), cuts, rep)

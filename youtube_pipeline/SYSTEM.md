@@ -182,3 +182,59 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
    `SkylineCompareCard` 가 4번, `PhotoStepsCard` 가 3번 반복됐다.
 6. **로케이터** — "여기가 어디인가"를 넓게→좁게 보여 주는 컷. 지금 0개다.
    `AnnotatedShotCard` 를 중첩 이미지 3장으로 이어 붙이면 된다.
+
+---
+
+## 9. 컷 밀도 · 다중 소스 (2026-08-06 확장)
+
+### 9-1. 화면이 더 빨리 바뀌게 — 문법이 아니라 **분할 단위**를 바꿨다
+
+1편 실측이 평균 10.0초였다. 컷 문법을 늘려도 한 장면 = 한 문단이면 화면은 안 바뀐다.
+그래서 **분할 단위를 절(쉼표)까지 내렸다.**
+
+| 기준 | 이전 | 지금 |
+|---|---|---|
+| 문장 분할 | 24초(MAX_CUT×1.6) → 9초 | **6초** |
+| 절(쉼표) 분할 | 없음 | **6.5초 넘는 문장** |
+| 최소 컷 | 4.0초 | **1.8초** |
+| 한 컷 최대 | 15초 | **10초** |
+| 스위트스팟 | 3~8초 | **2.5~6초** |
+| 오프닝 최소 컷 | 3개 | **5개** |
+
+같은 파크사이드 스크립트: **43컷 · 평균 10.0초 → 93컷 · 평균 4.9초.**
+내레이션은 한 글자도 안 바뀐다. 화면만 두 배 이상 자주 바뀐다.
+
+`MIN_CUT` 을 1.8 로 내린 게 핵심이다. 2.2 로 두면 "전면 경영제휴입니다" 같은
+2초짜리 마무리 절이 앞 컷에 붙어 7초짜리가 된다. **짧은 마무리 컷이 리듬을 만든다.**
+
+### 9-2. 같은 카드가 연속되면 컷만 빨라지고 화면은 그대로다
+
+컷을 잘게 쪼개면 인접 장면이 비슷해져 같은 카드가 줄줄이 나온다.
+플래너가 `ALT` 표로 3연속부터 대안 문법으로 돌린다. `qa_check` 도 따로 센다.
+
+> 파크사이드 1편 실측: 카드 16종 / 28컷 · **최다 SkylineCompareCard 4회 연속**.
+
+### 9-3. 다중 소스 수집 (`fetch_sources.py`)
+
+자료 수집이 매번 손이었다 — 뒤지고, 라이선스 확인하고, CREDITS 적고,
+**잘못된 건물을 쓴 적도 있다**(에테르노 3장).
+
+```bash
+python3 youtube_pipeline/scripts/fetch_sources.py 프로젝트 \
+    --q "shinsegae department store" --q "Seoul department store night" \
+    --video "shopping mall"
+# → 후보 20개 (Commons + Openverse + Mixkit) · 라이선스/저작자 포함
+#   _candidates/contact_sheet.png 로 **눈으로 확인**
+
+python3 youtube_pipeline/scripts/fetch_sources.py 프로젝트 --adopt b21cf550 shinsegae_plate.jpg
+# → 본 폴더로 승격 + CREDITS.md 에 줄 추가 (영상은 채택 시 720p 로 재다운로드)
+```
+
+| 소스 | 종류 | 비고 |
+|---|---|---|
+| Wikimedia Commons | 사진 | 저작자·라이선스가 가장 확실 |
+| Openverse | 사진 | Flickr 등 집계. 상업이용 가능만 필터 |
+| Mixkit | 영상 | 미리보기 360p → 채택 시 720p |
+
+**규칙: 컨택트시트를 보기 전에는 절대 본 폴더로 안 들어간다.** 첫 실행에서
+"Dongdaegu Bus Center"가 신세계 검색에 섞여 나왔다 — 이름만 보고 쓰면 또 사고다.
