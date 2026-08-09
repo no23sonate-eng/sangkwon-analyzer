@@ -11,14 +11,14 @@ import argparse, json, os, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOTION = os.path.join(ROOT, 'motion')
-PROJ = os.path.join(ROOT, 'projects', '더파크사이드서울')
+DEFAULT_PROJECT = '더파크사이드서울'
 CHROME = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'
 FPS = 30
 
 
-def load():
-    plan = json.load(open(os.path.join(PROJ, 'scene_plan.json'), encoding='utf-8'))
-    props = json.load(open(os.path.join(PROJ, 'scene_props.json'), encoding='utf-8'))['scenes']
+def load(proj):
+    plan = json.load(open(os.path.join(proj, 'scene_plan.json'), encoding='utf-8'))
+    props = json.load(open(os.path.join(proj, 'scene_props.json'), encoding='utf-8'))['scenes']
     out = []
     for sc in plan['scenes']:
         sid = str(sc['id'])
@@ -78,11 +78,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('ids', nargs='*', type=int)
     ap.add_argument('--still', action='store_true')
+    ap.add_argument('--project', default=DEFAULT_PROJECT)
     a = ap.parse_args()
 
-    outdir = os.path.join(PROJ, 'stills' if a.still else 'clips')
+    proj = os.path.join(ROOT, 'projects', a.project)
+    outdir = os.path.join(proj, 'stills' if a.still else 'clips')
     os.makedirs(outdir, exist_ok=True)
-    scenes = [s for s in load() if not a.ids or s[0] in a.ids]
+    scenes = [s for s in load(proj) if not a.ids or s[0] in a.ids]
     fails = [s[0] for s in scenes if not render(*s, a.still, outdir)]
     print(('FAILS: ' + str(fails)) if fails else f'all ok ({len(scenes)} scenes) → {outdir}', flush=True)
     sys.exit(1 if fails else 0)

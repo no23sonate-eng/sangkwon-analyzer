@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xmeml>
+<xmeml version="4">
+<sequence id="seq-1">
+  <name>신세계MOU_타임라인</name>
+  <duration>507</duration>
+  <rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate>
+  <media><video>
+    <format><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height><pixelaspectratio>square</pixelaspectratio></samplecharacteristics></format>
+    <track><clipitem id="clip-0"><name>#0 sec00_mou.mp4</name><enabled>TRUE</enabled><duration>132</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>0</start><end>132</end><in>0</in><out>132</out><file id="file-0"><name>sec00_mou.mp4</name><pathurl>file://localhost/sec00_mou.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>132</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem>
+<clipitem id="clip-1"><name>#1 sec01_floors.mp4</name><enabled>TRUE</enabled><duration>138</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>138</start><end>276</end><in>0</in><out>138</out><file id="file-1"><name>sec01_floors.mp4</name><pathurl>file://localhost/sec01_floors.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>138</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem>
+<clipitem id="clip-2"><name>#2 sec02_area.mp4</name><enabled>TRUE</enabled><duration>120</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>279</start><end>399</end><in>0</in><out>120</out><file id="file-2"><name>sec02_area.mp4</name><pathurl>file://localhost/sec02_area.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>120</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem>
+<clipitem id="clip-3"><name>#3 sec03_deal.mp4</name><enabled>TRUE</enabled><duration>102</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>405</start><end>507</end><in>0</in><out>102</out><file id="file-3"><name>sec03_deal.mp4</name><pathurl>file://localhost/sec03_deal.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>102</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem></track>
+  </video><audio/></media>
+</sequence>
+</xmeml>

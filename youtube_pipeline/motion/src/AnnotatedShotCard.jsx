@@ -35,6 +35,9 @@ export const AnnotatedShotCard = ({
   title = '', titleSub = '',
   beats = [],
   leadIn = 0.7,             // 첫 지점으로 들어가기 전 넓게 보여 주는 시간(초)
+  scrim = 0,                // 바탕을 평평하게 누르는 정도.
+                            // 도면·조감도처럼 **원본에 이미 캡션이 박혀 있는 판**은
+                            // 0.3~0.4 로 눌러야 내 주석이 위로 올라온다. 사진은 0.
   source = '',
   debug = false,
 }) => {
@@ -102,6 +105,9 @@ export const AnnotatedShotCard = ({
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: '#0b0e12', overflow: 'hidden'}}>
       <Img src={staticFile(image)}
            style={{position: 'absolute', left, top, width: imgW, height: imgH}} />
+      {scrim > 0 ? (
+        <div style={{position: 'absolute', inset: 0, background: `rgba(11,14,18,${scrim})`}} />
+      ) : null}
       <div style={{position: 'absolute', inset: 0,
                    background: 'linear-gradient(180deg, rgba(11,14,18,0.62) 0%, rgba(11,14,18,0) 26%, '
                              + 'rgba(11,14,18,0) 58%, rgba(11,14,18,0.55) 100%)'}} />

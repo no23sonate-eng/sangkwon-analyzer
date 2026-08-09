@@ -15,7 +15,8 @@ import argparse, json, os, subprocess, sys, zlib
 import imageio_ffmpeg
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJ = os.path.join(ROOT, 'projects', '더파크사이드서울')
+DEFAULT_PROJECT = '더파크사이드서울'
+PROJ = os.path.join(ROOT, 'projects', DEFAULT_PROJECT)   # main() 에서 --project 로 교체
 FONT = os.path.join(ROOT, 'motion', 'public', 'fonts', 'Pretendard-Bold.otf')
 FF = imageio_ffmpeg.get_ffmpeg_exe()
 CREDIT = '더파크사이드 서울'
@@ -114,7 +115,12 @@ def cut(src, ss, dur, out, overlay):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('ids', nargs='*', type=int)
+    ap.add_argument('--project', default=DEFAULT_PROJECT)
     a = ap.parse_args()
+
+    global PROJ, _OVERLAY_DIR
+    PROJ = os.path.join(ROOT, 'projects', a.project)
+    _OVERLAY_DIR = os.path.join(PROJ, 'clips', '_overlay')
 
     plan = json.load(open(os.path.join(PROJ, 'scene_plan.json'), encoding='utf-8'))
     outdir = os.path.join(PROJ, 'clips')

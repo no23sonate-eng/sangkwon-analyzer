@@ -25,8 +25,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 낭독 속도 (자/초). 파크사이드 확정 타이밍(443.5초)에 맞춰 역산한 값 —
 # 5.3 으로 두면 4% 길게 나온다. 새 영상에서 어긋나면 여기만 고친다.
 CPS = 5.53
-GAP = 0.4            # 장면 사이 호흡
+GAP = 0.4            # 문단(섹션)이 바뀔 때의 호흡
+GAP_IN = 0.15        # 같은 문단 안에서 장면만 나뉠 때 — 여기서 0.4 를 주면
+                     # 한 문단을 읽다 말고 쉬는 꼴이 되고 전체 길이가 부풀어 오른다
 MAX_CUT = 15.0       # 한 컷 최대 (넘으면 실사로 쪼갠다)
+SPLIT_AT = 9.0       # 문장이 둘 이상이면 이 길이부터 장면을 나눈다
+                     # (컷 스위트스팟이 3~8초인데 MAX_CUT 만 보면 13초짜리 한 컷이 나온다)
 MIN_CUT = 4.0        # 이보다 짧으면 앞 장면에 붙인다
 OPENING_SEC = 30.0
 OPENING_MIN_CUTS = 3
@@ -112,8 +116,9 @@ def build_scenes(sections):
         buf, cur = [], 0.0
         for s in sents:
             d = speak_sec(s)
-            # 이 문장을 더 넣으면 MAX_CUT 을 크게 넘고, 이미 최소 길이를 채웠으면 끊는다
-            if buf and cur + d > MAX_CUT * 1.6 and cur >= MIN_CUT:
+            # 문장 경계에서 끊는다. 기준은 MAX_CUT 이 아니라 SPLIT_AT —
+            # 15초까지 버티면 스위트스팟(3~8초)을 늘 벗어난다.
+            if buf and cur + d > SPLIT_AT and cur >= MIN_CUT * 0.75:
                 scenes.append((act, ' '.join(buf), cur))
                 buf, cur = [], 0.0
             buf.append(s)
@@ -143,7 +148,11 @@ def key_of(text, used):
 def allocate(scenes):
     """장면 → scene_plan 항목. 15초 초과 장면은 [카드 + 실사] 로 자동 분할."""
     out, used, t = [], set(), 0.0
+    prev_act = None
     for i, (act, text, dur) in enumerate(scenes):
+        if prev_act is not None:
+            t += GAP if act != prev_act else GAP_IN
+        prev_act = act
         dur = round(dur, 1)
         card, why = suggest_card(text)
         e = {
@@ -156,7 +165,7 @@ def allocate(scenes):
             e['cardDur'] = card_dur
             e['broll'] = {'src': 'TODO.mp4', 'ss': 0.0, 'dur': round(dur - card_dur, 1)}
         out.append(e)
-        t += dur + GAP
+        t += dur
     return out
 
 

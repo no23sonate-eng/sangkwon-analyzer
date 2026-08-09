@@ -7,12 +7,11 @@ scene_plan.json 의 start/end(초)를 그대로 타임라인 위치로 쓴다.
 
     python3 youtube_pipeline/scripts/build_parkside_xml.py
 """
-import json, os, re
+import argparse, json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJ = os.path.join(ROOT, 'projects', '더파크사이드서울')
+DEFAULT_PROJECT = '더파크사이드서울'
 FPS = 30
-SEQ = '더파크사이드서울_타임라인'
 
 
 def frames(sec):
@@ -20,6 +19,11 @@ def frames(sec):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--project', default=DEFAULT_PROJECT)
+    a = ap.parse_args()
+    PROJ = os.path.join(ROOT, 'projects', a.project)
+    SEQ = f'{a.project}_타임라인'
     plan = json.load(open(os.path.join(PROJ, 'scene_plan.json'), encoding='utf-8'))
     clipdir = os.path.join(PROJ, 'clips')
 
