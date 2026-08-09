@@ -50,7 +50,10 @@ import {BigStatsCard} from './BigStatsCard';
 import {PhotoSplitCard} from './PhotoSplitCard';
 import {ExchangeMotionCard} from './ExchangeMotionCard';
 
+import {AnnotatedShotCard} from './AnnotatedShotCard';
+
 export const CARDS = {
+  AnnotatedShotCard,
   BuildingCard,
   StatCard,
   QuoteCard,
