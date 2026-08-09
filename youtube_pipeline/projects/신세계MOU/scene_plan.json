@@ -5,8 +5,8 @@
       "id": 0,
       "act": 1,
       "start": 0.0,
-      "end": 4.4,
-      "dur": 4.4,
+      "end": 4.6,
+      "dur": 4.6,
       "text": "2025년 7월 1일, 신세계백화점과 MOU를 체결합니다.",
       "card": "FullBleedCard",
       "key": "mou"
@@ -14,29 +14,19 @@
     {
       "id": 1,
       "act": 1,
-      "start": 4.6,
-      "end": 9.2,
-      "dur": 4.6,
-      "text": "지하 1층부터 지상 4층까지",
-      "card": "AnnotatedShotCard",
-      "key": "floors"
+      "start": 4.8,
+      "end": 9.9,
+      "dur": 5.2,
+      "text": "지하 1층부터 지상 4층까지 전용 1만6,470제곱미터,",
+      "card": "BigStatsCard",
+      "key": "scale"
     },
     {
       "id": 2,
       "act": 1,
-      "start": 9.3,
-      "end": 13.3,
-      "dur": 4.0,
-      "text": "전용 1만6,470제곱미터,",
-      "card": "BigStatsCard",
-      "key": "area"
-    },
-    {
-      "id": 3,
-      "act": 1,
-      "start": 13.5,
-      "end": 16.9,
-      "dur": 3.4,
+      "start": 10.1,
+      "end": 13.9,
+      "dur": 3.8,
       "text": "전면 경영제휴입니다.",
       "card": "FullBleedCard",
       "key": "deal"
