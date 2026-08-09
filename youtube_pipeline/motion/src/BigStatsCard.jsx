@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, NumberIn, INK, INK_SOFT, YELLOW, fadeIn} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -30,12 +30,22 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         return (
           <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: 464,
                                textAlign: 'center', opacity: fadeIn(frame, 8 + i * 12)}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                         fontSize: it.hot ? 148 : 124, color: INK, lineHeight: 1,
-                         fontVariantNumeric: 'tabular-nums'}}>
-              {it.display ?? v.toFixed(it.decimals ?? 0)}
-              <span style={{fontSize: it.hot ? 66 : 56, marginLeft: 6,
-                            color: it.hot ? INK : INK_SOFT}}>{it.unit}</span>
+            {/* 강조 수치만 밑줄까지 그어 "확정"시킨다 — §27 */}
+            <div style={{lineHeight: 1}}>
+              {it.display != null ? (
+                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                              fontSize: it.hot ? 148 : 124, color: INK,
+                              fontVariantNumeric: 'tabular-nums'}}>
+                  {it.display}
+                  <span style={{fontSize: it.hot ? 66 : 56, marginLeft: 6,
+                                color: it.hot ? INK : INK_SOFT}}>{it.unit}</span>
+                </span>
+              ) : (
+                <NumberIn to={it.value ?? 0} start={14 + i * 12} dur={44}
+                          decimals={it.decimals ?? 0} unit={it.unit} unitSize={0.45}
+                          size={it.hot ? 148 : 124} color={INK} align="center"
+                          underline={it.hot ? YELLOW : null} />
+              )}
             </div>
             <div style={{marginTop: 26, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 46, color: INK, wordBreak: 'keep-all'}}>

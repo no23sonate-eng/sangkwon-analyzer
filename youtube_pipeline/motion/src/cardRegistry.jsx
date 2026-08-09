@@ -51,9 +51,13 @@ import {PhotoSplitCard} from './PhotoSplitCard';
 import {ExchangeMotionCard} from './ExchangeMotionCard';
 
 import {AnnotatedShotCard} from './AnnotatedShotCard';
+import {ScaleCompareCard} from './ScaleCompareCard';
+import {BeforeAfterCard} from './BeforeAfterCard';
 
 export const CARDS = {
   AnnotatedShotCard,
+  ScaleCompareCard,
+  BeforeAfterCard,
   BuildingCard,
   StatCard,
   QuoteCard,

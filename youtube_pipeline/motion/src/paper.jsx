@@ -111,3 +111,50 @@ export const PaperSource = ({source = '', dark = false}) => {
     </div>
   );
 };
+
+// ── 수치가 도착하는 방식 ─────────────────────────────────────────────────
+// 지금까지 모든 카드가 숫자를 **같은 방식**으로 띄웠다 — interpolate 로 값만
+// 굴리고 통째로 페이드. 그래서 43컷에서 수치가 다 똑같이 읽혔다.
+//
+// 강조되는 수치는 세 겹으로 온다.
+//   ① 자릿수 마스크   아래에서 위로 밀려 올라오며 나타난다 (페이드 아님)
+//   ② 카운트업       값이 굴러간다
+//   ③ 밑줄 긋기      다 굴러간 뒤 밑줄이 좌→우로 그어지며 "확정"된다
+// ③ 이 있고 없고가 "표시된 숫자"와 "선언된 숫자"를 가른다.
+//
+// value/to  : 목표 값 (숫자)
+// start     : 시작 프레임
+// decimals  : 소수 자리
+// underline : 밑줄 색 (없으면 안 그림)
+export const NumberIn = ({
+  to = 0, start = 0, dur = 34, decimals = 0, unit = '', unitSize = 0.62,
+  size = 96, color = INK, underline = null, locale = true, align = 'left',
+}) => {
+  const frame = useCurrentFrame();
+  const t = Math.max(0, Math.min(1, (frame - start) / dur));
+  const e = t * t * (3 - 2 * t);
+  const v = to * e;
+  const shown = locale
+    ? Number(v.toFixed(decimals)).toLocaleString('ko-KR',
+        {minimumFractionDigits: decimals, maximumFractionDigits: decimals})
+    : v.toFixed(decimals);
+  // 마스크 리빌 — 글자 높이만큼 아래에서 올라온다
+  const rise = (1 - e) * size * 0.42;
+  const ul = Math.max(0, Math.min(1, (frame - start - dur) / 14));
+  return (
+    <span style={{display: 'inline-block', textAlign: align}}>
+      <span style={{display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom',
+                    lineHeight: 1.02, height: size * 1.02}}>
+        <span style={{display: 'inline-block', transform: `translateY(${rise}px)`,
+                      fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: size,
+                      color, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.01em'}}>
+          {shown}<span style={{fontSize: size * unitSize}}>{unit}</span>
+        </span>
+      </span>
+      {underline ? (
+        <span style={{display: 'block', height: 6, background: underline,
+                      transform: `scaleX(${ul})`, transformOrigin: 'left center', marginTop: 4}} />
+      ) : null}
+    </span>
+  );
+};

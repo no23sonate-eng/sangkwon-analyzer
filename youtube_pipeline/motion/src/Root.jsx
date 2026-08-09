@@ -52,6 +52,8 @@ import {ExchangeMotionCard} from './ExchangeMotionCard';
 import {MotionSample} from './MotionSample';
 import {MotionWrap} from './MotionWrap';
 import {AnnotatedShotCard} from './AnnotatedShotCard';
+import {ScaleCompareCard} from './ScaleCompareCard';
+import {BeforeAfterCard} from './BeforeAfterCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -380,6 +382,8 @@ export const RemotionRoot = () => {
         ['PhotoSplitCard', PhotoSplitCard, {sides: []}],
         ['ExchangeMotionCard', ExchangeMotionCard, {left: {}, right: {}}],
         ['AnnotatedShotCard', AnnotatedShotCard, {beats: []}],
+        ['ScaleCompareCard', ScaleCompareCard, {items: []}],
+        ['BeforeAfterCard', BeforeAfterCard, {}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}
