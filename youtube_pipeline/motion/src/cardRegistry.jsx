@@ -53,11 +53,13 @@ import {ExchangeMotionCard} from './ExchangeMotionCard';
 import {AnnotatedShotCard} from './AnnotatedShotCard';
 import {ScaleCompareCard} from './ScaleCompareCard';
 import {BeforeAfterCard} from './BeforeAfterCard';
+import {TrackRecordCard} from './TrackRecordCard';
 
 export const CARDS = {
   AnnotatedShotCard,
   ScaleCompareCard,
   BeforeAfterCard,
+  TrackRecordCard,
   BuildingCard,
   StatCard,
   QuoteCard,

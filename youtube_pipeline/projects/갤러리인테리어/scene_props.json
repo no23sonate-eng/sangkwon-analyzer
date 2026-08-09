@@ -1,0 +1,111 @@
+{
+  "project": "갤러리인테리어",
+  "note": "다중 소스 + 빠른 컷",
+  "scenes": {
+    "0": {
+      "card": "FullBleedCard",
+      "props": {
+        "image": "갤러리인테리어/yeoksam_night.jpg",
+        "headline": "갤러리는 현장에 없다",
+        "sub": "강남구 역삼동",
+        "scrim": 0.5,
+        "source": "Christophe95 / CC BY-SA 4.0"
+      }
+    },
+    "1": {
+      "card": "SplitCard",
+      "props": {
+        "title": "왜 역삼동인가",
+        "left": {
+          "label": "현장",
+          "sub": "용산",
+          "lines": [
+            "실제 부지",
+            "공사 중"
+          ]
+        },
+        "right": {
+          "label": "갤러리",
+          "sub": "강남구 역삼동",
+          "lines": [
+            "강남 자산가 접근성",
+            "쉽게 올 수 있는 자리"
+          ]
+        },
+        "verdict": "접근성을 택했다",
+        "source": ""
+      }
+    },
+    "2": {
+      "card": "FullBleedCard",
+      "props": {}
+    },
+    "3": {
+      "card": "FullBleedCard",
+      "props": {}
+    },
+    "4": {
+      "card": "TrackRecordCard",
+      "props": {
+        "title": "",
+        "name": "EWAI",
+        "role": "국내 하이엔드 인테리어 전문사",
+        "items": [],
+        "source": "EWAI 공식 · 대우건설 써밋"
+      }
+    },
+    "5": {
+      "card": "TrackRecordCard",
+      "props": {
+        "title": "",
+        "name": "EWAI",
+        "role": "해온 프로젝트",
+        "items": [
+          {
+            "label": "한남더힐"
+          },
+          {
+            "label": "서울숲 트리마제"
+          },
+          {
+            "label": "에테르노 청담",
+            "hot": true
+          }
+        ],
+        "source": "EWAI 공식 · 대우건설 써밋"
+      }
+    },
+    "6": {
+      "card": "FullBleedCard",
+      "props": {}
+    },
+    "7": {
+      "card": "FullBleedCard",
+      "props": {}
+    },
+    "8": {
+      "card": "SplitCard",
+      "props": {
+        "title": "고급을 만드는 방식",
+        "left": {
+          "label": "화려하게",
+          "sub": "자재로 압도",
+          "lines": [
+            "비싼 걸 많이"
+          ]
+        },
+        "right": {
+          "label": "합리적으로",
+          "sub": "톤과 마감으로",
+          "lines": [
+            "어두운 원목",
+            "마블",
+            "마감 디테일"
+          ]
+        },
+        "verdict": "후자에 가까웠다",
+        "source": "현장 확인"
+      }
+    }
+  }
+}
