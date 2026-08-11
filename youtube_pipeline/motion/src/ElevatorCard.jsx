@@ -11,12 +11,13 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper
 // stops: [{label, sub, hot}] — 위에서 아래 순서
 export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = stops.length;
-  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const TOP = title ? (sub ? 316 : 272) : 190;
   const BOT = 790;
@@ -38,7 +39,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 층 슬래브 — 코어 좌우로 뻗는다 */}

@@ -33,14 +33,16 @@ const Col = ({d, x, w, frame, delay, T}) => {
 };
 
 export const SplitCard = ({title = '', sub = '', left = {}, right = {}, verdict = '',
-                          source = '', theme, align = 'center'}) => {
+                          source = '', theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
+}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const T = themeOf(theme);
   const HALF = 960, PAD = 110;
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         <line x1={HALF} y1={302} x2={HALF} y2={716} stroke={T.ink} strokeWidth={2.5}

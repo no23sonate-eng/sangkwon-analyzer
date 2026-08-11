@@ -95,6 +95,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => {
 export const ExchangeMotionCard = ({
   title = '', sub = '', left = {}, right = {}, give = {}, get: got = {}, source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -161,7 +162,7 @@ export const ExchangeMotionCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <Party T={T} cx={LX} cy={CY} node={left} o={fadeIn(frame, 6)} />
       <Party T={T} cx={RX} cy={CY} node={right} o={fadeIn(frame, 12)} />

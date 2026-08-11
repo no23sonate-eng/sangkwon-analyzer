@@ -122,6 +122,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => (
 export const PaperFlowCard = ({
   title = '', sub = '', nodes = [], arrows = [], exchange = null, layout = 'row', source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -144,7 +145,7 @@ export const PaperFlowCard = ({
     const topOf = (i) => baseY - (i + 1) * SH;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg theme={theme} />
+        <PaperBg theme={theme} {...bg} />
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {nodes.map((nd, i) => {
@@ -200,7 +201,7 @@ export const PaperFlowCard = ({
     const IX = 560;                       // 아이콘 열 x
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg theme={theme} />
+        <PaperBg theme={theme} {...bg} />
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {nodes.map((nd, i) => {
@@ -256,7 +257,7 @@ export const PaperFlowCard = ({
     const oGive = fadeIn(frame, 30), oGet = fadeIn(frame, 46);
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg theme={theme} />
+        <PaperBg theme={theme} {...bg} />
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <Party T={T} cx={LX} cy={cy} node={exchange.left} o={oL} />
         <Party T={T} cx={RX} cy={cy} node={exchange.right} o={oR} />
@@ -294,7 +295,7 @@ export const PaperFlowCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {nodes.map((nd, i) => {
         const x = startX + i * (BOX + gap);

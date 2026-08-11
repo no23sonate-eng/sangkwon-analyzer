@@ -120,3 +120,74 @@ export const StampLabel = ({top, sub = '', size = 54, hot = false, align = 'left
     </div>
   );
 };
+
+// ── 형광펜 ───────────────────────────────────────────────────────────────
+// B1M 이 기사를 인용할 때 핵심 구절에 긋는 것은 **밑줄이 아니라 형광펜**이다.
+// (Chicago Sun-Times 인용 판에서 확인 — 연노랑이 두 줄에 걸쳐 글자를 감싼다)
+// 밑줄은 "여기 봐라"지만 형광펜은 **"내가 이 부분을 읽고 있다"** 가 된다.
+//
+// 여러 줄에 걸친 인라인 하이라이트를 **왼쪽에서 오른쪽으로 한 획에** 긋는 게 관건인데,
+// `box-decoration-break: clone` 을 쓰면 줄마다 따로 칠해져서 전부 동시에 차오른다.
+// 기본값인 **slice** 를 그대로 두면 브라우저가 여러 줄을 한 띠로 이어 붙여 칠하므로,
+// 1행을 끝까지 칠하고 2행으로 넘어간다 — 실제 형광펜이 지나가는 순서다.
+//
+// 색은 채널 옐로(#FAFF2E)보다 **연하게** 간다. 원색으로 칠하면 글자가 안 읽힌다.
+export const HL_YELLOW = '#FAFA7A';
+
+export const Highlighter = ({children, progress = 1, color = HL_YELLOW, pad = '0.08em'}) => {
+  const p = Math.max(0, Math.min(1, progress));
+  return (
+    <span style={{
+      background: `linear-gradient(90deg, ${color} 0 100%)`,
+      backgroundSize: `${p * 100}% 100%`,
+      backgroundRepeat: 'no-repeat',
+      boxDecorationBreak: 'slice',
+      WebkitBoxDecorationBreak: 'slice',
+      padding: `${pad} 0`,
+    }}>
+      {children}
+    </span>
+  );
+};
+
+// ── 치수선 ───────────────────────────────────────────────────────────────
+// "15M" 을 굴착면 위에 세로 양방향 화살표로 박는 그 처리.
+// 라벨 화살표(HandArrow)와 **역할이 다르다** — 저건 가리키는 것이고 이건 **재는 것**이다.
+// 그래서 손맛을 주면 안 된다. 곧고, 양끝에 캡이 있고, 굵기가 일정하다.
+export const DimLine = ({x1, y1, x2, y2, progress = 1, color = '#FFFFFF',
+                          width = 4, cap = 20, label = '', labelSize = 54, opacity = 1}) => {
+  const p = Math.max(0, Math.min(1, progress));
+  if (p <= 0.001) return null;
+  const ex = x1 + (x2 - x1) * p, ey = y1 + (y2 - y1) * p;
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.hypot(dx, dy) || 1;
+  const nx = -dy / len, ny = dx / len;                 // 캡 방향
+  const head = 16;
+  const ux = dx / len, uy = dy / len;
+  const arrow = (px, py, s) =>
+    `${px},${py} ${px + ux * head * s - nx * head * 0.5},${py + uy * head * s - ny * head * 0.5} `
+    + `${px + ux * head * s + nx * head * 0.5},${py + uy * head * s + ny * head * 0.5}`;
+  return (
+    <g opacity={opacity}>
+      <line x1={x1 - nx * cap} y1={y1 - ny * cap} x2={x1 + nx * cap} y2={y1 + ny * cap}
+            stroke={color} strokeWidth={width} />
+      <line x1={x1} y1={y1} x2={ex} y2={ey} stroke={color} strokeWidth={width} />
+      {p > 0.98 ? (
+        <>
+          <line x1={x2 - nx * cap} y1={y2 - ny * cap} x2={x2 + nx * cap} y2={y2 + ny * cap}
+                stroke={color} strokeWidth={width} />
+          <polygon points={arrow(x1, y1, 1)} fill={color} />
+          <polygon points={arrow(x2, y2, -1)} fill={color} />
+        </>
+      ) : null}
+      {label && p > 0.98 ? (
+        <text x={(x1 + x2) / 2 + nx * (labelSize * 0.5 + 14)} y={(y1 + y2) / 2 + ny * 6 + labelSize * 0.34}
+              fill={color} fontSize={labelSize} textAnchor="middle"
+              style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                      paintOrder: 'stroke', stroke: 'rgba(0,0,0,0.45)', strokeWidth: 6}}>
+          {label}
+        </text>
+      ) : null}
+    </g>
+  );
+};

@@ -16,12 +16,13 @@ export const RankTrendCard = ({
   caption = '',
   source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = points.length;
-  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const lo = worst ?? Math.max(...points.map((p) => p.rank)) + 1;
   const X0 = 420, X1 = 1500, Y0 = 452, Y1 = 630;
@@ -47,7 +48,7 @@ export const RankTrendCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 1위 기준선 — 목표선 */}

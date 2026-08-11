@@ -9,6 +9,7 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeI
 export const RatioCard = ({
   title = '', sub = '', items = [], mode = 'circle', unit = '%', source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -24,7 +25,7 @@ export const RatioCard = ({
     const rowY = (i) => y0 + i * ROW;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg theme={theme} />
+        <PaperBg theme={theme} {...bg} />
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {items.map((it, i) => {
@@ -83,7 +84,7 @@ export const RatioCard = ({
   };
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.map((it, i) => {

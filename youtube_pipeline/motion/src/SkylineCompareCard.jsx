@@ -193,6 +193,7 @@ export const SkylineCompareCard = ({
   maxH = 420,
   dark = false,   // 어두운 종이 톤 (연속되는 종이 카드 사이에 변주),
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme, dark);
@@ -211,7 +212,7 @@ export const SkylineCompareCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg dark={dark} theme={theme} />
+      <PaperBg dark={dark} theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} dark={dark} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {buildings.map((b, i) => {

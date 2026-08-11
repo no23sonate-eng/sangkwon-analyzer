@@ -11,12 +11,13 @@ export const DotMatrixCard = ({
   title = '', sub = '', groups = [], perDot = 10, cols = 13,
   unit = '', source = '', caption = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = groups.length;
-  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const R = 10, PITCH = 30;
   const blockW = cols * PITCH;
@@ -32,7 +33,7 @@ export const DotMatrixCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {groups.map((g, gi) => {

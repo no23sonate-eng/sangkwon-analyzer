@@ -72,6 +72,10 @@ RULES = [
     (r'(해온 회사|한 회사입니다|작업한|대표작|레퍼런스|시공한 (곳|현장)|'
      r'실적|포트폴리오|[^.]{0,40}(,\s*[^.,]{2,20}){2,}\s*을?\s*(해온|맡아온|지은))',
      'TrackRecordCard', '회사 이력 = 도장 찍기'),
+    # 기사·보도자료를 인용한다 → 원문 판 위에 형광펜 (§32-1)
+    (r'(\(([^)]*(경제|일보|신문|뉴스|타임스|저널|통신|방송)[^)]*)\)|'
+     r'[가-힣A-Za-z]{2,10}(경제|일보|신문|뉴스|타임스)[^.]{0,20}(보도|따르면|전했|밝혔))',
+     'ArticleCard', '기사 인용 = 원문 + 형광펜'),
     (r'(\d+)\s*(위|등)[^.]{0,40}?(\d+)\s*(위|등)', 'RankTrendCard', '순위 변화'),
     # 값이 **대체**된다 — 나란히 비교가 아니라 옛 값에 취소선을 긋는 동작
     (r'([\d,]+\s*(%|억|조|시간|분|년|미터|m|층|평|㎡))[^.]{0,50}?'
@@ -86,6 +90,9 @@ RULES = [
      r'(지금은|현재는|바뀌|됐습니다|되었습니다)|철거하고|리모델링해)', 'BeforeAfterCard', '전/후 대비'),
     (r'(지하\s*\d+\s*층|지상\s*\d+\s*층|연면적|대지면적)', 'SectionPhotoCard', '층수·면적 = 단면'),
     (r'(엘리베이터|위아래로|층층이|아래로 내려가|수직으로)', 'ElevatorCard', '수직 이동'),
+    # 어떻게 생겼나·어떻게 짓나 → 얕은 3D 축측 도해 (§32-3)
+    (r'(파냈|파야|굴착|공법|구조를|배치는|앉히|올린 구조|덩어리|매스|동선)',
+     'IsoDiagramCard', '구조·공법 = 축측 도해'),
     (r'(기부 대 양여|맞바꾸|넘겨줍니다|넘겨준다|양여)', 'ExchangeMotionCard', '주고받기'),
     (r'(vs|반대했|대립|논쟁|갈등|맞섰|원했습니다.{0,40}반대)', 'ExchangeMotionCard', '두 주체의 대립'),
     (r'(\d{4})년[^.]{0,80}?(\d{4})년[^.]{0,40}?(걸렸|끝났|기간|만에|착공|준공|완공)', 'TimelineRailCard', '기간 비교 = 시간축'),
@@ -138,6 +145,14 @@ SKELETON = {
                   'right': {'label': '', 'sub': '', 'lines': []}, 'verdict': '', 'source': ''},
     'FullBleedCard': {'image': '', 'headline': '', 'sub': '', 'scrim': 0.42, 'source': ''},
     'PaperImageCard': {'title': '', 'image': '', 'ratio': 1.778, 'caption': '', 'source': ''},
+    # body 안에서 형광펜 칠할 구간을 «…» 로 감싼다. 원문을 통째로 넣을 것 —
+    # 인용구만 뽑으면 "내가 고른 말"이 되고, 원문을 놓아야 "기사에 그렇게 적혀 있다"가 된다
+    'ArticleCard': {'outlet': '', 'date': '', 'body': '«»', 'portrait': '', 'who': '', 'role': '',
+                    'dim': True, 'serif': True, 'source': ''},
+    'IsoDiagramCard': {'title': '', 'sub': '',
+                       'blocks': [{'x': -2, 'z': -1, 'w': 2, 'd': 2, 'h': 1, 'label': ''},
+                                  {'x': 0.5, 'z': -1, 'w': 2, 'd': 2, 'h': 1.4, 'hot': True, 'label': ''}],
+                       'dim': None, 'note': '', 'source': ''},
     # from/to 는 문자열 그대로. 카운트업이 아니라 **대체**다
     'StrikeSwapCard': {'title': '', 'sub': '', 'from': '', 'fromLabel': '',
                        'to': '', 'toLabel': '', 'note': '', 'image': '', 'source': ''},
@@ -234,6 +249,8 @@ ALT = {
     'AnnotatedShotCard':   ['FullBleedCard', 'PaperImageCard'],
     'BeforeAfterCard':     ['SplitCard'],
     'StrikeSwapCard':      ['BigStatsCard', 'RatioCard'],
+    'ArticleCard':         ['NewsQuoteCard', 'QuoteCard'],
+    'IsoDiagramCard':      ['SectionPhotoCard', 'ExplodedStackCard'],
 }
 REPEAT_MAX = 2          # 같은 카드 연속 허용 한도
 

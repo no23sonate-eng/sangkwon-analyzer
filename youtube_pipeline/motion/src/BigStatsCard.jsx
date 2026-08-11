@@ -8,18 +8,19 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, YELLOW, fadeIn} fro
 // items: [{value, unit, label, sub, hot, decimals}]
 export const BigStatsCard = ({title = '', sub = '', items = [], source = '', caption = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = items.length;
-  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
   const slot = Math.min(720, 1680 / n);
   const startX = (1920 - slot * n) / 2;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.slice(1).map((_, i) => (

@@ -24,6 +24,7 @@ export const BrandCard = ({
   title = '', sub = '',
   logo = '', name = '', line = '', tags = [], photo = '',
   layout = '', logoScale = 1, logoInvert = 'auto', source = '', theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -49,7 +50,7 @@ export const BrandCard = ({
                              {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg theme={theme} />
+        <PaperBg theme={theme} {...bg} />
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <div style={{position: 'absolute', left: 0, right: 0,
                      top: title ? (sub ? 380 : 330) : 300,
@@ -113,7 +114,7 @@ export const BrandCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
       <div style={{position: 'absolute', left: PX, top: 0, width: PW, height: 1080,

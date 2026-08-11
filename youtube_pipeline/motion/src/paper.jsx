@@ -1,5 +1,5 @@
 import React from 'react';
-import {useCurrentFrame} from 'remotion';
+import {Img, staticFile, useCurrentFrame} from 'remotion';
 
 // ── 종이 설명 그래픽 공통 토큰 (2026-08-02, Billionaires' Row 레퍼런스) ──
 // B1M의 "밝은 종이 + 그리드 + 플랫 실루엣" 설명 문법을 채널 팔레트로 번역:
@@ -83,14 +83,56 @@ export const THEMES = {
 };
 export const themeOf = (t, dark) => THEMES[t] || (dark ? THEMES.ink : THEMES.paper);
 
+// ── 살아 있는 배경 ───────────────────────────────────────────────────────
+// B1M 화면은 **정지하는 순간이 없다.** 도표 카드조차 뒤에 실사가 깔려 아주 느리게
+// 밀리고 커진다. 사진은 주인공이 아니라 **질감**이라 베일로 눌러 놓는다.
+//
+// 왜 필요한가: 완전히 멈춘 판은 몇 초만 지나도 "슬라이드"로 읽힌다.
+// 내레이션이 계속 흐르는데 화면이 멈춰 있으면 시청자는 화면을 보지 않게 된다.
+// 컷을 더 쪼개는 것(§9-1)과 별개 문제다 — **한 컷 안에서도 멎으면 안 된다.**
+//
+// 값의 근거: 5초(150프레임)에 배율 +3.5%, 이동 1.4% 정도가 한계다.
+// 그보다 크면 '움직인다'고 알아채고, 그보다 작으면 안 느껴진다.
+// 그리고 **절대 이징하지 않는다.** 가감속이 붙는 순간 "애니메이션"이 되어 버린다.
+// 등속으로 계속 가는 것이 카메라가 걸려 있는 느낌을 만든다.
+//
+// dir 로 방향을 돌린다. 연속된 컷이 같은 방향으로 밀리면 그것대로 눈에 띈다.
+const DRIFT_DIRS = [[1, 0.4], [-1, 0.3], [0.5, -1], [-0.6, -0.8], [0.9, 0.9], [-1, 0.9]];
+
+export const LiveBackdrop = ({image = '', veil = 0.9, blur = 0, dir = 0,
+                              scale = 0.035, shift = 0.014, theme, dark = false}) => {
+  const frame = useCurrentFrame();
+  const T = themeOf(theme, dark);
+  if (!image) return null;
+  const [dx, dy] = DRIFT_DIRS[Math.abs(dir) % DRIFT_DIRS.length];
+  const t = frame / 150;                       // 5초를 1로 본다
+  const k = 1.06 + scale * t;                  // 처음부터 살짝 크게 깔아 여백이 안 생기게
+  const tx = dx * shift * t * 1920;
+  const ty = dy * shift * t * 1080;
+  return (
+    <>
+      <div style={{position: 'absolute', inset: 0, overflow: 'hidden', background: T.bg}}>
+        <Img src={/^https?:/.test(image) ? image : staticFile(image)}
+             style={{position: 'absolute', left: '50%', top: '50%', width: 1920, height: 1080,
+                     objectFit: 'cover',
+                     transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${k})`,
+                     filter: blur ? `blur(${blur}px)` : 'none'}} />
+      </div>
+      <div style={{position: 'absolute', inset: 0, background: T.bg, opacity: veil}} />
+    </>
+  );
+};
+
 // 크림 종이 배경 + 옅은 격자 + 가장자리 비네트
-export const PaperBg = ({dark = false, theme}) => {
+// backdrop 을 주면 격자 아래에 살아 있는 실사가 깔린다 — 판이 멎지 않는다.
+export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 0, dir = 0}) => {
   const T = themeOf(theme, dark);
   const nv = Math.floor(1920 / T.step) - 1;
   const nh = Math.floor(1080 / T.step) - 1;
   return (
   <>
     <div style={{position: 'absolute', inset: 0, background: T.bg}} />
+    <LiveBackdrop image={backdrop} veil={veil} blur={blur} dir={dir} theme={theme} dark={dark} />
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
       <g stroke={T.grid} strokeWidth={1}>
         {Array.from({length: nv}, (_, i) => (

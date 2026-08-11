@@ -88,13 +88,14 @@ export const ScaleCompareCard = ({
   showHuman = true,
   source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const n = items.length;
-  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const baseY = CONTENT_BOTTOM - 74;
   const topRoom = (title ? (sub ? 300 : 240) : 150);
@@ -122,7 +123,7 @@ export const ScaleCompareCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>

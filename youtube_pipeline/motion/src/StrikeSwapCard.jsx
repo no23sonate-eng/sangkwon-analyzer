@@ -24,6 +24,7 @@ export const StrikeSwapCard = ({
   to = '', toLabel = '',
   note = '', image = '',
   theme, align = 'center', source = '',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -48,7 +49,7 @@ export const StrikeSwapCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       {image ? (
         <div style={{position: 'absolute', inset: 0, opacity: 0.16}}>
           <Img src={/^https?:/.test(image) ? image : staticFile(image)}

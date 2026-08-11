@@ -22,6 +22,7 @@ export const TrackRecordCard = ({
   name = '', role = '',
   items = [],
   source = '', theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -44,7 +45,7 @@ export const TrackRecordCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
       {/* 주체 이름 — 이력의 주어. 가장 크게 */}

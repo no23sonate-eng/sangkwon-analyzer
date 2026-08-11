@@ -8,6 +8,7 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeI
 // items: [{label(가운데 정렬 이름), pct(0~100), sub, note}]
 export const TowerGaugeCard = ({title = '', sub = '', items = [], source = '',
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -20,7 +21,7 @@ export const TowerGaugeCard = ({title = '', sub = '', items = [], source = '',
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {items.map((it, i) => {
         const slot = Math.min(760, 1720 / n);

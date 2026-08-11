@@ -18,6 +18,7 @@ export const PaperImageCard = ({
   ratio = 0,      // 원본 가로/세로 비. 주면 액자를 그 비율에 맞춰 잘림 없이 담는다
   fit = 'cover',  // 'contain' 이면 다이어그램처럼 잘리면 안 되는 이미지,
   theme, align = 'center',
+  bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -39,7 +40,7 @@ export const PaperImageCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} />
+      <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {imageTitle ? (
         <div style={{position: 'absolute', left, width: W, top: top - 56, textAlign: 'center',

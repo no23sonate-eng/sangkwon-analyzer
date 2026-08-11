@@ -13,6 +13,11 @@ const WEIGHTS = {
   'A2Z Regular': 'A2Z-4Regular.ttf',
   'A2Z Medium': 'A2Z-5Medium.ttf',
   'Pretendard Bold': 'Pretendard-Bold.otf',
+  // 기사 인용 판 전용 명조. B1M 이 기사를 인용할 때 원문은 세리프다 —
+  // 산세리프로 찍으면 "내가 옮겨 적은 문장"이 되고, 명조여야 "신문에 실린 글"이 된다.
+  // (Google Fonts Nanum Myeongjo, OFL)
+  'Myeongjo': 'NanumMyeongjo-Regular.ttf',
+  'Myeongjo Bold': 'NanumMyeongjo-Bold.ttf',
 };
 
 let loaded = false;

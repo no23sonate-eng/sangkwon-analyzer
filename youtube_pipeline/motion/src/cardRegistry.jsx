@@ -56,6 +56,8 @@ import {BeforeAfterCard} from './BeforeAfterCard';
 import {TrackRecordCard} from './TrackRecordCard';
 import {BrandCard} from './BrandCard';
 import {StrikeSwapCard} from './StrikeSwapCard';
+import {ArticleCard} from './ArticleCard';
+import {IsoDiagramCard} from './IsoDiagramCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -64,6 +66,8 @@ export const CARDS = {
   TrackRecordCard,
   BrandCard,
   StrikeSwapCard,
+  ArticleCard,
+  IsoDiagramCard,
   BuildingCard,
   StatCard,
   QuoteCard,
