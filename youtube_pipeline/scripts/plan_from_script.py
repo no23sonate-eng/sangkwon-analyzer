@@ -41,6 +41,16 @@ MIN_CUT = 1.8        # 이보다 짧은 조각만 앞에 붙인다.
 OPENING_SEC = 30.0
 OPENING_MIN_CUTS = 3
 
+# ── 챕터 (design_reference §31-3) ────────────────────────────────────────
+# B1M 챕터 117편 실측: 중앙 8개 · 각 90초 · Intro 65초.
+# 지금까지 이 플래너는 **문단을 그대로 act** 로 썼다. 파크사이드는 13섹션 450초라
+# 섹션당 35초 — 너무 잘다. 시청자가 "지금 어디쯤인지" 를 못 잡는다.
+# 문단은 그대로 두고, 그 위에 90초짜리 챕터를 한 겹 얹는다.
+CHAPTER_SEC = 90.0       # 목표 챕터 길이
+CHAPTER_MIN = 48.0       # p10. 이보다 짧으면 다음 챕터에 붙인다
+CHAPTER_MAX = 237.0      # p90. 이보다 길면 문단 경계에서 쪼갠다
+INTRO_SEC = 65.0         # 첫 챕터는 훅. 여기에 1분을 쓴다
+
 # ── 카드 추천 규칙 ───────────────────────────────────────────────────────
 # (정규식, 카드, 왜) — 위에서부터 먼저 맞는 것을 쓴다. 구체적인 규칙이 위로.
 # 구체적인 규칙이 위. 아래로 갈수록 느슨하다.
@@ -321,6 +331,44 @@ def tighten_opening(plan):
     return plan
 
 
+def chapters(plan):
+    """장면을 90초 안팎의 챕터로 묶는다. 경계는 **반드시 문단(act) 경계**.
+
+    문장 중간에서 챕터를 끊으면 유튜브 목차에서 말이 잘린 채 시작한다.
+    이름은 비워 둔다 — 챕터 제목은 기획의 일이라 자동으로 지으면 다 똑같아진다.
+    대신 그 챕터 첫 문장을 힌트로 남긴다.
+    """
+    if not plan:
+        return []
+    out, cur = [], None
+    for e in plan:
+        target = INTRO_SEC if not out and cur is None else CHAPTER_SEC
+        new_act = cur is not None and e['act'] != cur['_act']
+        if cur is None:
+            cur = {'start': e['start'], 'name': '', 'hint': e['text'][:44], '_act': e['act']}
+        elif new_act and (cur['_len'] if '_len' in cur else e['start'] - cur['start']) >= target * 0.72:
+            cur['end'] = round(e['start'], 1)
+            out.append(cur)
+            cur = {'start': e['start'], 'name': '', 'hint': e['text'][:44], '_act': e['act']}
+        cur['_act'] = e['act']
+        cur['_len'] = e['end'] - cur['start']
+    cur['end'] = plan[-1]['end']
+    out.append(cur)
+
+    # 너무 짧은 챕터는 앞에 붙인다 (48초 = B1M p10)
+    merged = []
+    for c in out:
+        if merged and c['end'] - c['start'] < CHAPTER_MIN:
+            merged[-1]['end'] = c['end']
+        else:
+            merged.append(c)
+    for c in merged:
+        c.pop('_act', None); c.pop('_len', None)
+        c['dur'] = round(c['end'] - c['start'], 1)
+        c['ts'] = f"{int(c['start']) // 60}:{int(c['start']) % 60:02d}"
+    return merged
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('script')
@@ -351,6 +399,12 @@ def main():
         print(f"  #{e['id']:2d} act{e['act']:2d} {e['dur']:5.1f}s {mark} {e['card']:20s} "
               f"({e['_why']})  {e['text'][:34]}…")
 
+    chs = chapters(plan)
+    print(f'\n챕터 {len(chs)}개 · 길이 중앙 '
+          f'{sorted(c["dur"] for c in chs)[len(chs) // 2]:.0f}초 (B1M 실측 8개 · 90초)')
+    for c in chs:
+        print(f"  {c['ts']:>6s}  {c['dur']:5.1f}s  (제목 미정)  {c['hint']}…")
+
     if a.dry:
         return
 
@@ -358,7 +412,7 @@ def main():
     os.makedirs(outdir, exist_ok=True)
     for e in plan:
         e.pop('_why', None)
-    json.dump({'project': a.project, 'scenes': plan},
+    json.dump({'project': a.project, 'chapters': chs, 'scenes': plan},
               open(os.path.join(outdir, 'scene_plan.json'), 'w', encoding='utf-8'),
               ensure_ascii=False, indent=2)
 

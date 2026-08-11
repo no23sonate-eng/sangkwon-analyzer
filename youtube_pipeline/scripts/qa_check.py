@@ -33,6 +33,11 @@ SUBTITLE_SAFE_BOTTOM = 260          # paper.jsx 와 같은 값
 TIMESCALE = 90000
 MAX_CLIP_MB = 12.0
 MAX_CUT_SEC = 10.0                  # 이보다 긴 한 컷은 리텐션이 꺾인다
+# 챕터 기준은 전부 B1M 117편 실측치다 (design_reference §31-3)
+CHAP_MIN = 48.0                     # p10
+CHAP_MAX = 237.0                    # p90
+INTRO_MAX = 100.0                   # 중앙 65초. 100초를 넘으면 훅이 늘어진 것
+CHAP_PER_MIN = 0.55
 OPENING_SEC = 30.0                  # 오프닝 구간
 OPENING_MIN_CUTS = 5                # 오프닝은 더 촘촘하게
 CUT_SWEET_SPOT = (2.5, 6.0)
@@ -257,6 +262,41 @@ def check_retention(cuts, rep):
                            f'절(쉼표) 단위로 더 쪼개거나 실사를 끼울 것')
 
 
+def check_chapters(plan, rep):
+    """챕터 구조 (design_reference §31-3, B1M 117편 실측).
+
+    챕터는 시청자가 "지금 어디쯤인지" 를 잡는 유일한 장치다.
+    없으면 롱폼이 그냥 흐른다. 있어도 30초짜리로 잘게 썰면 목차 구실을 못 한다.
+    """
+    chs = plan.get('chapters') or []
+    total = plan['scenes'][-1]['end'] if plan.get('scenes') else 0
+    if not chs:
+        rep.warn('챕터', '챕터가 없다 — plan_from_script.py 를 다시 돌리거나 손으로 넣을 것')
+        return
+    ds = sorted(c['dur'] for c in chs)
+    med = ds[len(ds) // 2]
+    rep.ok('챕터', f'{len(chs)}개 · 길이 중앙 {med:.0f}초 '
+                   f'(B1M 실측 중앙 8개 · 90초 · 분당 {CHAP_PER_MIN})')
+    if chs[0]['ts'] != '0:00':
+        rep.err('챕터', '첫 챕터가 0:00 이 아니다 — 유튜브가 목차로 안 잡는다')
+    short = [c for c in chs if c['dur'] < CHAP_MIN]
+    for c in short:
+        rep.warn('챕터', f"{c['ts']} {c['dur']:.0f}초 — {CHAP_MIN:.0f}초(B1M p10) 미만. 앞 챕터에 붙일 것")
+    for c in chs:
+        if c['dur'] > CHAP_MAX:
+            rep.warn('챕터', f"{c['ts']} {c['dur']:.0f}초 — {CHAP_MAX:.0f}초(B1M p90) 초과. 쪼갤 것")
+    if chs[0]['dur'] > INTRO_MAX:
+        rep.warn('챕터', f"인트로 {chs[0]['dur']:.0f}초 — B1M 중앙 65초. 훅이 길면 본론 전에 이탈한다")
+    unnamed = [c['ts'] for c in chs if not c.get('name')]
+    if unnamed:
+        rep.warn('챕터', f"제목 없는 챕터 {len(unnamed)}개 ({', '.join(unnamed[:4])}) — "
+                         '설명문 목차에 그대로 나간다')
+    if total:
+        rate = len(chs) / (total / 60)
+        if rate < CHAP_PER_MIN * 0.55:
+            rep.warn('챕터', f'분당 {rate:.2f}개 — B1M {CHAP_PER_MIN}. 챕터가 너무 굵다')
+
+
 def check_grammar_variety(plan, props, rep):
     """같은 카드가 연속으로 반복되면 화면이 안 바뀐 것처럼 읽힌다.
 
@@ -355,6 +395,7 @@ def main():
     check_data(plan, props, rep)
     check_assets(props, rep)
     check_credits(props, rep)
+    check_chapters(plan, rep)
     check_grammar_variety(plan, props, rep)
     cuts = check_clips(plan, os.path.join(projdir, 'clips'), rep)
     if cuts:
