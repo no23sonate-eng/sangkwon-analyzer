@@ -170,6 +170,8 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 
 | 카드 | 언제 |
 |---|---|
+| `ArticleCard` | 기사·보도자료를 인용할 때. **원문 통째 + 형광펜** |
+| `IsoDiagramCard` | "어떻게 생겼나 / 어떻게 짓나" — 얕은 3D 축측 도해 |
 | `BrandCard` | 회사·브랜드가 **처음 나올 때**. 누끼 로고 + 한 줄 (`split`/`mark`) |
 | `TrackRecordCard` | "그 회사가 뭘 해왔는데" — 레퍼런스를 도장 찍듯 떨어뜨린다 |
 | `StrikeSwapCard` | 값이 **대체**될 때. 옛 값 → 취소선 → 새 값 |
@@ -187,6 +189,16 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 - `stamp` **기본 권장** — 검정 상자 + 흰 글씨 2단. 스크림을 안 깔아 사진이 산다
 - `center` / `lower` / `band` — 스크림을 깐다. 하늘·단색 배경 실사에서만
 - 연속 두 컷이 같은 처리면 안 된다. `qa_check` 가 센다
+
+**배경은 멎지 않는다** (§32-5). 종이 카드 21종이 `bg` 를 받는다:
+`bg: {backdrop: "프로젝트/사진.jpg", veil: 0.9, dir: 0~5}`
+→ 격자 아래에 실사가 깔려 5초에 배율 +3.5%·이동 1.4% 로 **등속** 이동한다.
+사진은 주인공이 아니라 질감이라 베일로 눌러 놓는다. `dir` 은 컷마다 돌려 쓸 것.
+
+인용·강조 프리미티브 (`annotate.jsx`)
+- `Highlighter` — 형광펜. 기사 강조는 밑줄이 아니라 이것 (§32-1)
+- `DimLine` — 치수선. **가리키는 게 아니라 재는 것**이라 손맛을 주지 않는다
+- `HandArrow` / `DashCircle` / `StampLabel` — §31-4
 
 바탕 테마 (`theme`): `paper`(크림) / `ink`(먹) / `blueprint`(청사진).
 카드 51종 중 실사 카드를 뺀 전부가 받는다. **정렬(`align`)까지 합쳐 껍데기가 6종.**
