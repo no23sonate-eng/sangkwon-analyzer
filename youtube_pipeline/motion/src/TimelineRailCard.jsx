@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 연도 레일 카드 — 가로 연도축 위에 기간 막대와 사건 마커.
 // "좌→우로 아이콘 3개"류와 달리 **실제 시간 축**이 있어서, 기간의 길이 차이나
@@ -16,11 +16,13 @@ export const TimelineRailCard = ({
   tickLabels = null,   // 눈금 라벨을 직접 지정 (월 단위 일정표 등)
   rails = [],
   source = '',
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = rails.length;
-  if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
 
   // 레일 이름이 있으면 왼쪽에 자리를 비우고, 이름이 없는 일정표는 화면 가운데로 편다.
   const hasLabel = rails.some((r) => r.label);
@@ -37,27 +39,27 @@ export const TimelineRailCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 연도 눈금 — 세로 가이드가 먼저 깔린다 */}
         {ticks.map((y, i) => (
           <line key={`t${i}`} x1={px(y)} y1={366} x2={px(y)} y2={AXIS_Y}
-                stroke={INK} strokeWidth={1} opacity={0.14 * fadeIn(frame, 4)} />
+                stroke={T.ink} strokeWidth={1} opacity={0.14 * fadeIn(frame, 4)} />
         ))}
         {/* 축 */}
         <line x1={X0 - 40} y1={AXIS_Y} x2={X1 + 40} y2={AXIS_Y}
-              stroke={INK} strokeWidth={3} opacity={fadeIn(frame, 2)} />
+              stroke={T.ink} strokeWidth={3} opacity={fadeIn(frame, 2)} />
         {ticks.map((y, i) => (
           <line key={`m${i}`} x1={px(y)} y1={AXIS_Y} x2={px(y)} y2={AXIS_Y + 12}
-                stroke={INK} strokeWidth={2} opacity={fadeIn(frame, 2)} />
+                stroke={T.ink} strokeWidth={2} opacity={fadeIn(frame, 2)} />
         ))}
 
         {rails.map((r, i) => {
           const y = railY(i);
           const grow = interpolate(frame, [16 + i * 12, 62 + i * 12], [0, 1],
                                    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-          const fill = r.hot ? YELLOW : TONES[(i + 1) % TONES.length];
+          const fill = r.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
           const x0 = px(r.from ?? axis.from), x1 = px(r.to ?? axis.to);
           return (
             <g key={i}>
@@ -65,11 +67,11 @@ export const TimelineRailCard = ({
                 <>
                   <rect x={x0} y={y - 34} width={Math.max(4, (x1 - x0) * grow)} height={68} rx={4} fill={fill} />
                   <rect x={x0} y={y - 34} width={Math.max(4, (x1 - x0) * grow)} height={68} rx={4}
-                        fill="none" stroke={INK} strokeWidth={2.5} />
+                        fill="none" stroke={T.ink} strokeWidth={2.5} />
                 </>
               ) : (
                 <line x1={x0} y1={y} x2={x0 + (x1 - x0) * grow} y2={y}
-                      stroke={INK} strokeWidth={4} strokeLinecap="round" />
+                      stroke={T.ink} strokeWidth={4} strokeLinecap="round" />
               )}
               {(r.events || []).map((e, j) => {
                 const ex = px(e.at);
@@ -77,9 +79,9 @@ export const TimelineRailCard = ({
                 const o = fadeIn(frame, 40 + i * 12 + j * 8);
                 return (
                   <g key={j} opacity={o}>
-                    <line x1={ex} y1={y - 34} x2={ex} y2={y - LIFT(j) + 16} stroke={INK} strokeWidth={2} opacity={0.5} />
+                    <line x1={ex} y1={y - 34} x2={ex} y2={y - LIFT(j) + 16} stroke={T.ink} strokeWidth={2} opacity={0.5} />
                     <circle cx={ex} cy={y} r={e.hot ? 17 : 12}
-                            fill={e.hot ? YELLOW : '#FFF'} stroke={INK} strokeWidth={3.5} />
+                            fill={e.hot ? YELLOW : '#FFF'} stroke={T.ink} strokeWidth={3.5} />
                   </g>
                 );
               })}
@@ -92,7 +94,7 @@ export const TimelineRailCard = ({
       {ticks.map((y, i) => (
         <div key={i} style={{position: 'absolute', left: px(y) - 100, width: 200, top: AXIS_Y + 22,
                              textAlign: 'center', opacity: fadeIn(frame, 6),
-                             fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, color: INK_SOFT}}>
+                             fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, color: T.soft}}>
           {tickLabels ? (tickLabels[i] ?? '') : y}
         </div>
       ))}
@@ -107,14 +109,14 @@ export const TimelineRailCard = ({
               <div style={{position: 'absolute', left: 30, width: X0 - 106, top: y, transform: 'translateY(-50%)',
                            textAlign: 'right', opacity: o,
                            fontFamily: r.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                           fontSize: 42, color: INK, lineHeight: 1.2, wordBreak: 'keep-all'}}>
+                           fontSize: 42, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                 {r.label}
               </div>
             ) : null}
             {r.note ? (
               <div style={{position: 'absolute', left: px(r.to ?? axis.to) + 26, width: 400, top: y,
                            transform: 'translateY(-50%)', opacity: fadeIn(frame, 56 + i * 12),
-                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46, color: INK,
+                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46, color: T.ink,
                            whiteSpace: 'nowrap'}}>
                 {r.note}
               </div>
@@ -124,11 +126,11 @@ export const TimelineRailCard = ({
                                    transform: 'translateY(-100%)', textAlign: 'center',
                                    opacity: fadeIn(frame, 44 + i * 12 + j * 8)}}>
                 <div style={{fontFamily: e.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                             fontSize: 40, color: INK, lineHeight: 1.2, wordBreak: 'keep-all'}}>
+                             fontSize: 40, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                   {e.hot ? <span style={{background: 'rgba(250,255,46,0.75)', padding: '2px 10px'}}>{e.label}</span> : e.label}
                 </div>
                 {e.sub ? (
-                  <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT, wordBreak: 'keep-all'}}>
+                  <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
                     {e.sub}
                   </div>
                 ) : null}
@@ -137,7 +139,7 @@ export const TimelineRailCard = ({
           </React.Fragment>
         );
       })}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

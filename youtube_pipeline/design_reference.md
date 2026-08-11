@@ -1891,3 +1891,30 @@ Google Earth(8) · Warner Bros(7) · Disney(6) · DW News(6) · Bloomberg(4) …
   CC BY 는 저작자 표시가 **라이선스 조건**이라 B1M보다 표기 의무가 오히려 빡세다
 - `qa_check.py` 에 `check_chapters` 추가. 기준은 전부 B1M 실측치
   (p10 48초 / p90 237초 / 인트로 100초 / 분당 0.55)
+
+### 31-9. 카드 17종 테마 개방 (§31-7 4 완료)
+
+`SplitCard`·`TrackRecordCard` 만 `theme` 을 받고 나머지는 크림 고정이었다.
+17종을 열었다 — 이제 51종 중 실사 카드를 뺀 전부가 `paper`/`ink`/`blueprint` 를 받는다.
+
+기계 변환이 두 군데서 걸렸다.
+
+1. **모듈 단위 헬퍼가 토큰을 쓴다.** `Silhouette`·`Figure`·`Body`·`Pict`·`Icon`·`Slab`
+   는 카드 함수 **밖**에 있어서 `const T = themeOf(theme)` 스코프가 안 닿는다.
+   `T = THEMES.paper` 기본값 prop 을 주고 호출부에서 넘긴다.
+   본문만 훑는 정규식으로는 못 잡으니 **함수 경계로 잘라서** 따로 처리해야 한다.
+2. `SkylineCompareCard` 는 이미 `dark` prop + `palette(dark)` 를 쓰고 있었다.
+   `themeOf(theme, dark)` 로 합치고 `palette` 분해대입은 지웠다.
+   `<PaperBg dark={dark} />` 처럼 이미 인자가 있는 호출은 치환 정규식이 못 잡는다 — 별도 처리.
+
+**회귀 검증**: 실제 파크사이드 props 로 14종을 `theme` 없이 렌더해
+변환 전후를 픽셀 비교했다. **14종 전부 최대차 0.** 납품한 두 편은 영향 없다.
+테마 적용 검증은 `ink` 로 렌더해 크림(#EFEAE3) 잔존 면적을 쟀다 — 0.
+(허용오차는 4 이하로 잡을 것. `ink` 테마 글자색 `#F2F0EC` 와 최대 9밖에 차이가 안 나
+tol 14 로 재면 글자를 전부 "안 바뀐 크림"으로 오탐한다.)
+
+### 31-10. 실사 문구 `stamp` (§31-7 3 완료)
+
+`render_broll.py` 에 네 번째 스타일 `stamp` — 검정 상자 + 흰 글씨 2단.
+**스크림을 안 깐다.** 기존 `center`/`lower` 는 화면 절반을 어둡게 눌러 글자를 띄우는데,
+역삼동 네온 거리 같은 실사에서는 그게 사진을 죽인다. 상자가 대비를 만들면 사진이 산다.

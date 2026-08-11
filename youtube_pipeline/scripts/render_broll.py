@@ -49,7 +49,7 @@ def _shadow_text(d, xy, txt, font, fill, sh=(0, 0, 0, 150), off=2):
 #   center  화면 한가운데. 선언·전환에.        (기존)
 #   lower   좌하단 + 옐로 룰. 설명·부연에.      화면 위쪽이 살아 있어 사진이 보인다
 #   band    하단 옐로 밴드 + 검은 글씨. 못박을 때. 가장 강하다 — 한 편에 한두 번만
-STYLES = ('center', 'lower', 'band')
+STYLES = ('center', 'lower', 'band', 'stamp')
 
 
 def overlay_png(text='', sub='', key='credit', credit=CREDIT, style='center'):
@@ -98,6 +98,26 @@ def overlay_png(text='', sub='', key='credit', credit=CREDIT, style='center'):
         if sub:
             fs = ImageFont.truetype(FONT_R, 38)
             _shadow_text(d, (120, y + 134), sub, fs, (222, 228, 236, 255))
+
+    elif text and style == 'stamp':
+        # B1M 기본형 (design_reference §31-4) — 검정 상자 + 흰 글씨, 2단.
+        # 스크림을 안 깐다. 상자가 대비를 만들기 때문에 **사진이 안 죽는다.**
+        # 그래서 어두운 밤 실사에도, 하늘이 하얀 낮 실사에도 그대로 쓸 수 있다.
+        d = ImageDraw.Draw(im)
+        X, PAD = 130, (20, 10)
+        fb = ImageFont.truetype(FONT, 78)
+        tw, th = d.textbbox((0, 0), text, font=fb)[2:]
+        bh = th + PAD[1] * 2
+        y = 1080 - 260 - bh - 40                    # 자막 안전영역 위
+        if sub:
+            fs = ImageFont.truetype(FONT_R, 38)
+            sw, sh = d.textbbox((0, 0), sub, font=fs)[2:]
+            sy = y - sh - PAD[1] * 2 - 8
+            d.rectangle([X, sy, X + sw + PAD[0] * 2, sy + sh + PAD[1] * 2],
+                        fill=(11, 14, 18, 235))
+            d.text((X + PAD[0], sy + PAD[1] - 2), sub, font=fs, fill=(255, 255, 255, 255))
+        d.rectangle([X, y, X + tw + PAD[0] * 2, y + bh], fill=(11, 14, 18, 235))
+        d.text((X + PAD[0], y + PAD[1] - 4), text, font=fb, fill=(255, 255, 255, 255))
 
     elif text and style == 'band':
         # 하단 옐로 밴드 + 검은 글씨. 그림 위에 못을 박는 처리라 한 편에 한두 번만.

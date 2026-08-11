@@ -1,15 +1,17 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
 // mode='bar' 면 원 대신 가로 막대(경쟁률·배수처럼 100% 넘는 값에 적합).
 export const RatioCard = ({
   title = '', sub = '', items = [], mode = 'circle', unit = '%', source = '',
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = items.length;
 
@@ -22,8 +24,8 @@ export const RatioCard = ({
     const rowY = (i) => y0 + i * ROW;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg />
-        <PaperTitle title={title} sub={sub} />
+        <PaperBg theme={theme} />
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {items.map((it, i) => {
             const v = interpolate(frame, [14 + i * 10, 66 + i * 10], [0, it.pct ?? 0],
@@ -31,9 +33,9 @@ export const RatioCard = ({
             const y = rowY(i);
             return (
               <g key={i}>
-                <rect x={x0} y={y} width={BW} height={BH} fill={INK} opacity={0.07} rx={4} />
+                <rect x={x0} y={y} width={BW} height={BH} fill={T.ink} opacity={0.07} rx={4} />
                 <rect x={x0} y={y} width={Math.max(3, BW * (v / maxV))} height={BH} rx={4}
-                      fill={it.hot ? YELLOW : TONES[(i + 1) % TONES.length]} />
+                      fill={it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]} />
               </g>
             );
           })}
@@ -45,17 +47,17 @@ export const RatioCard = ({
           return (
             <React.Fragment key={i}>
               <div style={{position: 'absolute', left: x0, top: y - 78, opacity: fadeIn(frame, 10 + i * 10), lineHeight: 1,
-                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK}}>
+                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: T.ink}}>
                 {it.label}
               </div>
               <div style={{position: 'absolute', left: x0, width: BW, top: y - 92, textAlign: 'right',
                            opacity: fadeIn(frame, 20 + i * 10)}}>
-                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 65, color: INK,
+                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 65, color: T.ink,
                               fontVariantNumeric: 'tabular-nums'}}>
                   {Number(v.toFixed(it.decimals ?? 0)).toLocaleString('ko-KR')}<span style={{fontSize: 43}}>{unit}</span>
                 </span>
                 {it.sub ? (
-                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: INK_SOFT}}>
+                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
                     {it.sub}
                   </span>
                 ) : null}
@@ -63,7 +65,7 @@ export const RatioCard = ({
             </React.Fragment>
           );
         })}
-        <PaperSource source={source} />
+        <PaperSource source={source} theme={theme} />
       </AbsoluteFill>
     );
   }
@@ -81,8 +83,8 @@ export const RatioCard = ({
   };
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.map((it, i) => {
           const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;
@@ -92,13 +94,13 @@ export const RatioCard = ({
           return (
             <g key={i}>
               {/* 전체(=100%) 바탕 면 */}
-              <circle cx={cx} cy={cy} r={R} fill={INK} opacity={0.07} />
+              <circle cx={cx} cy={cy} r={R} fill={T.ink} opacity={0.07} />
               {/* 비중 = 파이 조각 */}
-              <path d={wedge(cx, cy, v)} fill={it.hot ? YELLOW : TONES[(i + 1) % TONES.length]}
+              <path d={wedge(cx, cy, v)} fill={it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]}
                     opacity={it.hot ? 1 : 0.85} />
-              <path d={wedge(cx, cy, v)} fill="none" stroke={INK} strokeWidth={2.5} opacity={0.9} />
+              <path d={wedge(cx, cy, v)} fill="none" stroke={T.ink} strokeWidth={2.5} opacity={0.9} />
               {/* 외곽 링 */}
-              <circle cx={cx} cy={cy} r={R} fill="none" stroke={INK} strokeWidth={3} opacity={0.35} />
+              <circle cx={cx} cy={cy} r={R} fill="none" stroke={T.ink} strokeWidth={3} opacity={0.35} />
             </g>
           );
         })}
@@ -111,18 +113,18 @@ export const RatioCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: CY + R + 22, textAlign: 'center',
                          opacity: fadeIn(frame, 24 + i * 10)}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 104, color: INK,
+              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 104, color: T.ink,
                             fontVariantNumeric: 'tabular-nums'}}>
                 {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 62}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 288, textAlign: 'center',
                          opacity: fadeIn(frame, 30 + i * 10)}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: INK, wordBreak: 'keep-all'}}>
+              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: T.ink, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
               {it.sub ? (
-                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, wordBreak: 'keep-all'}}>
+                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft, wordBreak: 'keep-all'}}>
                   {it.sub}
                 </div>
               ) : null}
@@ -130,7 +132,7 @@ export const RatioCard = ({
           </React.Fragment>
         );
       })}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

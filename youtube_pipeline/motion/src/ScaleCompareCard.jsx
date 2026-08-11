@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 import {fit} from './layout';
 
 // ── 절대 스케일 비교 ─────────────────────────────────────────────────────
@@ -17,7 +17,7 @@ import {fit} from './layout';
 // 알려진 기준을 하나 섞어 주는 게 요령이다 (남산 262m / 63빌딩 249m / 10층 30m).
 const HUMAN_M = 1.7;
 
-const Figure = ({x, baseY, mpp, o}) => {
+const Figure = ({x, baseY, mpp, o, T = THEMES.paper}) => {
   // 사람 — 1.7m 를 그대로 환산한다. **최소 크기로 늘리지 않는다.**
   // 늘리는 순간 이 카드의 유일한 존재 이유(정직한 스케일)가 깨진다.
   // 너무 작아 안 보이면 그게 정보다 — 옆의 라벨이 대신 말해 준다.
@@ -26,15 +26,15 @@ const Figure = ({x, baseY, mpp, o}) => {
   const w = Math.max(2, h * 0.10);
   return (
     <g opacity={o}>
-      <circle cx={x} cy={baseY - h + head / 2} r={head / 2} fill={INK} />
-      <rect x={x - w} y={baseY - h + head} width={w * 2} height={body} rx={w * 0.6} fill={INK} />
-      <rect x={x - w} y={baseY - leg} width={w * 0.8} height={leg} fill={INK} />
-      <rect x={x + w * 0.2} y={baseY - leg} width={w * 0.8} height={leg} fill={INK} />
+      <circle cx={x} cy={baseY - h + head / 2} r={head / 2} fill={T.ink} />
+      <rect x={x - w} y={baseY - h + head} width={w * 2} height={body} rx={w * 0.6} fill={T.ink} />
+      <rect x={x - w} y={baseY - leg} width={w * 0.8} height={leg} fill={T.ink} />
+      <rect x={x + w * 0.2} y={baseY - leg} width={w * 0.8} height={leg} fill={T.ink} />
     </g>
   );
 };
 
-const Body = ({cx, baseY, w, h, shape, fill}) => {
+const Body = ({cx, baseY, w, h, shape, fill, T = THEMES.paper}) => {
   const top = baseY - h;
   const floors = Math.max(0, Math.floor(h / 22));
   const lines = Array.from({length: floors}, (_, i) => (
@@ -87,12 +87,14 @@ export const ScaleCompareCard = ({
   unit = 'm',
   showHuman = true,
   source = '',
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const n = items.length;
-  if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
 
   const baseY = CONTENT_BOTTOM - 74;
   const topRoom = (title ? (sub ? 300 : 240) : 150);
@@ -120,8 +122,8 @@ export const ScaleCompareCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 미터 격자 — 먼저 깔려서 "재는 판"이라는 걸 알린다 */}
@@ -129,48 +131,48 @@ export const ScaleCompareCard = ({
           const o = fadeIn(frame, 2 + i * 2);
           return (
             <g key={m} opacity={o}>
-              <line x1={AX} y1={yOf(m)} x2={1860} y2={yOf(m)} stroke={INK} strokeWidth={1} opacity={0.13} />
-              <line x1={AX - 12} y1={yOf(m)} x2={AX} y2={yOf(m)} stroke={INK} strokeWidth={2} opacity={0.5} />
+              <line x1={AX} y1={yOf(m)} x2={1860} y2={yOf(m)} stroke={T.ink} strokeWidth={1} opacity={0.13} />
+              <line x1={AX - 12} y1={yOf(m)} x2={AX} y2={yOf(m)} stroke={T.ink} strokeWidth={2} opacity={0.5} />
             </g>
           );
         })}
-        <line x1={AX} y1={topRoom} x2={AX} y2={baseY} stroke={INK} strokeWidth={2} opacity={0.4} />
-        <line x1={AX - 40} y1={baseY} x2={1880} y2={baseY} stroke={INK} strokeWidth={3} />
+        <line x1={AX} y1={topRoom} x2={AX} y2={baseY} stroke={T.ink} strokeWidth={2} opacity={0.4} />
+        <line x1={AX - 40} y1={baseY} x2={1880} y2={baseY} stroke={T.ink} strokeWidth={3} />
 
         {items.map((it, i) => {
           const grow = spring({frame: frame - 14 - i * 7, fps, config: {damping: 200}, durationInFrames: 40});
           const h = (it.meters || 0) * mpp * grow;
-          const fill = it.hot ? YELLOW : TONES[(it.tone ?? i + 1) % TONES.length];
+          const fill = it.hot ? YELLOW : T.tones[(it.tone ?? i + 1) % T.tones.length];
           return (
             <g key={i}>
               {it.shape !== 'hill' ? (
                 <ellipse cx={cxOf(i)} cy={baseY + 2} rx={bodyW * 0.55} ry={6}
-                         fill={INK} opacity={0.12 * grow} />
+                         fill={T.ink} opacity={0.12 * grow} />
               ) : null}
-              <Body cx={cxOf(i)} baseY={baseY} w={bodyW} h={h} shape={it.shape || 'slab'} fill={fill} />
+              <Body T={T} cx={cxOf(i)} baseY={baseY} w={bodyW} h={h} shape={it.shape || 'slab'} fill={fill} />
               {it.hot ? (
-                <Body cx={cxOf(i)} baseY={baseY} w={bodyW} h={h} shape={it.shape || 'slab'} fill="none" />
+                <Body T={T} cx={cxOf(i)} baseY={baseY} w={bodyW} h={h} shape={it.shape || 'slab'} fill="none" />
               ) : null}
             </g>
           );
         })}
 
         {/* 사람 — 절대 스케일의 기준. 바닥선 왼쪽 끝에 세운다 */}
-        {showHuman ? <Figure x={AX + 34} baseY={baseY} mpp={1 / mpp} o={fadeIn(frame, 34)} /> : null}
+        {showHuman ? <Figure T={T} x={AX + 34} baseY={baseY} mpp={1 / mpp} o={fadeIn(frame, 34)} /> : null}
       </svg>
 
       {/* 눈금 숫자 */}
       {ticks.map((m, i) => (
         <div key={m} style={{position: 'absolute', left: 0, width: AX - 22, top: yOf(m) - 20,
                              textAlign: 'right', opacity: 0.75 * fadeIn(frame, 2 + i * 2),
-                             fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: INK_SOFT,
+                             fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                              fontVariantNumeric: 'tabular-nums'}}>
           {m}{unit}
         </div>
       ))}
       {showHuman ? (
         <div style={{position: 'absolute', left: AX + 58, top: baseY - 46, opacity: fadeIn(frame, 40),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: INK_SOFT}}>
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
           사람 1.7{unit}
         </div>
       ) : null}
@@ -188,19 +190,19 @@ export const ScaleCompareCard = ({
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: y - 76,
                          textAlign: 'center', opacity: o}}>
               <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52,
-                            color: INK, fontVariantNumeric: 'tabular-nums'}}>
+                            color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
                 {Math.round(shown).toLocaleString('ko-KR')}<span style={{fontSize: 34}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: baseY + 18,
                          textAlign: 'center', opacity: o}}>
               <div style={{fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                           fontSize: labelSize, color: it.hot ? INK : INK_SOFT, lineHeight: 1.3,
+                           fontSize: labelSize, color: it.hot ? T.ink : T.soft, lineHeight: 1.3,
                            wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
               {it.note ? (
-                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: INK_SOFT}}>
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: T.soft}}>
                   {it.note}
                 </div>
               ) : null}
@@ -208,7 +210,7 @@ export const ScaleCompareCard = ({
           </React.Fragment>
         );
       })}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

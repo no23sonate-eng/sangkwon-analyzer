@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
 
 // 엘리베이터 카드 — "집에서 엘리베이터를 타고 내려가면 …" 을 그대로 그린다.
 // 하나의 코어 안에서 케이지가 층을 따라 **내려가고**, 멈추는 층의 라벨이 켜진다.
@@ -9,11 +9,14 @@ import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, fadeIn} 
 // 한 건물 안에서 이어진다는 뜻이 그림과 맞는다.
 //
 // stops: [{label, sub, hot}] — 위에서 아래 순서
-export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) => {
+export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
+  theme, align = 'center',
+}) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = stops.length;
-  if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
 
   const TOP = title ? (sub ? 316 : 272) : 190;
   const BOT = 790;
@@ -35,8 +38,8 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 층 슬래브 — 코어 좌우로 뻗는다 */}
         {stops.map((s, i) => {
@@ -45,20 +48,20 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
           return (
             <g key={i}>
               <rect x={250} y={y - ROW / 2 + 8} width={1420} height={ROW - 16}
-                    fill={on && s.hot ? YELLOW : TONES[(i + 1) % TONES.length]}
+                    fill={on && s.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]}
                     opacity={(on ? (s.hot ? 0.92 : 0.34) : 0.12) * o} />
               <line x1={250} y1={y + ROW / 2 - 8} x2={1670} y2={y + ROW / 2 - 8}
-                    stroke={INK} strokeWidth={2} opacity={0.35 * o} />
+                    stroke={T.ink} strokeWidth={2} opacity={0.35 * o} />
             </g>
           );
         })}
         {/* 승강로 */}
         <rect x={SHAFT_X} y={TOP} width={SHAFT_W} height={BOT - TOP}
-              fill="#FFF" opacity={0.55} stroke={INK} strokeWidth={3} />
+              fill="#FFF" opacity={0.55} stroke={T.ink} strokeWidth={3} />
         {/* 케이지 */}
         <g opacity={fadeIn(frame, T0 - 8)}>
           <rect x={SHAFT_X + 12} y={cageY - CAGE_H / 2} width={SHAFT_W - 24} height={CAGE_H}
-                fill={INK} rx={4} />
+                fill={T.ink} rx={4} />
           <line x1={SHAFT_X + SHAFT_W / 2} y1={cageY - CAGE_H / 2 + 10}
                 x2={SHAFT_X + SHAFT_W / 2} y2={cageY + CAGE_H / 2 - 10}
                 stroke="#FFF" strokeWidth={2} opacity={0.5} />
@@ -66,10 +69,10 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
           <polygon points={`${SHAFT_X + SHAFT_W / 2},${cageY + CAGE_H / 2 + 26}
                             ${SHAFT_X + SHAFT_W / 2 - 13},${cageY + CAGE_H / 2 + 6}
                             ${SHAFT_X + SHAFT_W / 2 + 13},${cageY + CAGE_H / 2 + 6}`}
-                   fill={INK} opacity={k < n - 1 ? 0.55 : 0} />
+                   fill={T.ink} opacity={k < n - 1 ? 0.55 : 0} />
         </g>
         {/* 코어 상단 라벨 배경 */}
-        <line x1={SHAFT_X} y1={TOP} x2={SHAFT_X + SHAFT_W} y2={TOP} stroke={INK} strokeWidth={4} />
+        <line x1={SHAFT_X} y1={TOP} x2={SHAFT_X + SHAFT_W} y2={TOP} stroke={T.ink} strokeWidth={4} />
       </svg>
 
       {stops.map((s, i) => {
@@ -79,11 +82,11 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
                                transform: 'translateY(-50%)',
                                opacity: on ? 1 : 0.35, transition: 'none'}}>
             <div style={{fontFamily: s.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 48, color: INK, lineHeight: 1.2, wordBreak: 'keep-all'}}>
+                         fontSize: 48, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
               {s.label}
             </div>
             {s.sub ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK, opacity: 0.72}}>
+              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.ink, opacity: 0.72}}>
                 {s.sub}
               </div>
             ) : null}
@@ -95,11 +98,11 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = ''}) =>
         <div key={i} style={{position: 'absolute', left: 280, width: SHAFT_X - 340, top: yOf(i),
                              transform: 'translateY(-50%)', textAlign: 'right',
                              opacity: arrived(i) ? 0.95 : 0.3,
-                             fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 36, color: INK}}>
+                             fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 36, color: T.ink}}>
           {s.floor || ''}
         </div>
       ))}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

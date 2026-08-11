@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 건물 단면 카드 — 지상/지하를 지반선 기준으로 나눠 보여준다.
 // 지하가 깊은 프로젝트(용산 파크사이드: 지하7·지상20)의 핵심 설명용.
@@ -14,8 +14,10 @@ export const SectionCard = ({
   bands = [],
   groundLabel = '지반',
   source = '',
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -38,12 +40,12 @@ export const SectionCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* ── 지상부 ── */}
         <g clipPath="url(#clipAbove)">
-          <rect x={x0} y={groundY - H_ABOVE * growA} width={W} height={H_ABOVE * growA} fill={TONES[2]} opacity={0.9} />
+          <rect x={x0} y={groundY - H_ABOVE * growA} width={W} height={H_ABOVE * growA} fill={T.tones[2]} opacity={0.9} />
           {Array.from({length: A}, (_, i) => (
             <line key={`a${i}`} x1={x0} y1={yAbove(i + 1)} x2={x0 + W} y2={yAbove(i + 1)}
                   stroke="#FFF" strokeWidth={1} opacity={0.35 * growA} />
@@ -60,7 +62,7 @@ export const SectionCard = ({
 
         {/* ── 지하부 (지반 아래 · 톤을 더 어둡게) ── */}
         <g clipPath="url(#clipBelow)">
-          <rect x={x0} y={groundY} width={W} height={H_BELOW * growB} fill={TONES[3]} opacity={0.92} />
+          <rect x={x0} y={groundY} width={W} height={H_BELOW * growB} fill={T.tones[3]} opacity={0.92} />
           {Array.from({length: B}, (_, i) => (
             <line key={`b${i}`} x1={x0} y1={yBelow(i + 1)} x2={x0 + W} y2={yBelow(i + 1)}
                   stroke="#FFF" strokeWidth={1} opacity={0.22 * growB} />
@@ -79,13 +81,13 @@ export const SectionCard = ({
         })}
 
         {/* 외곽선 + 지반선 */}
-        <rect x={x0} y={groundY - H_ABOVE} width={W} height={H_ABOVE} fill="none" stroke={INK} strokeWidth={3} opacity={growA} />
-        <rect x={x0} y={groundY} width={W} height={H_BELOW} fill="none" stroke={INK} strokeWidth={3} strokeDasharray="7 5" opacity={growB} />
-        <line x1={x0 - 190} y1={groundY} x2={x0 + W + 190} y2={groundY} stroke={INK} strokeWidth={4} />
+        <rect x={x0} y={groundY - H_ABOVE} width={W} height={H_ABOVE} fill="none" stroke={T.ink} strokeWidth={3} opacity={growA} />
+        <rect x={x0} y={groundY} width={W} height={H_BELOW} fill="none" stroke={T.ink} strokeWidth={3} strokeDasharray="7 5" opacity={growB} />
+        <line x1={x0 - 190} y1={groundY} x2={x0 + W + 190} y2={groundY} stroke={T.ink} strokeWidth={4} />
 
         {/* 치수선 — 숫자가 어느 구간을 가리키는지 눈으로 잇는다 (끝에 짧은 틱) */}
         {[[groundY - H_ABOVE, groundY, growA, 20], [groundY, groundY + H_BELOW, growB, 34]].map(([yA, yB, g, t], i) => (
-          <g key={i} stroke={INK} strokeWidth={2} opacity={0.55 * fadeIn(frame, t)}>
+          <g key={i} stroke={T.ink} strokeWidth={2} opacity={0.55 * fadeIn(frame, t)}>
             <line x1={DIM_X} y1={yA} x2={DIM_X} y2={yB} />
             <line x1={DIM_X - 12} y1={yA} x2={DIM_X + 12} y2={yA} />
             <line x1={DIM_X - 12} y1={yB} x2={DIM_X + 12} y2={yB} />
@@ -101,12 +103,12 @@ export const SectionCard = ({
         <div key={k} style={{position: 'absolute', left: DIM_X - 28 - 420, top: y, width: 420,
                              transform: k === 'above' ? 'translateY(-50%)' : 'none', textAlign: 'right',
                              opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: INK_SOFT, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: INK, lineHeight: 1.08}}>
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: T.soft, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
+          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: T.ink, lineHeight: 1.08}}>
             {o.floors}<span style={{fontSize: 56}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: INK_SOFT, lineHeight: 1.2}}>{o.note}</div>
+            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft, lineHeight: 1.2}}>{o.note}</div>
           ) : null}
         </div>
       ))}
@@ -119,11 +121,11 @@ export const SectionCard = ({
           <div key={i} style={{position: 'absolute', left: x0 + W + 78, top: (yTop + yBot) / 2 - 30, width: 640,
                                opacity: fadeIn(frame, 50 + i * 8)}}>
             <div style={{fontFamily: bd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 45, color: INK, wordBreak: 'keep-all'}}>{bd.label}</div>
+                         fontSize: 45, color: T.ink, wordBreak: 'keep-all'}}>{bd.label}</div>
           </div>
         );
       })}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

@@ -1,13 +1,13 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 종이 위 아이콘 플로우 (레퍼런스 Stocks→Cash 다이어그램 문법).
 // nodes: [{icon, label, sub, hot}] — 좌→우 화살표 연결, hot 노드는 옐로 박스.
 // arrows: ['화살표 위 라벨', ...] (nodes-1 개, 생략 가능)
 // icon: 'money' | 'building' | 'gov' | 'doc' | 'person' | 'globe' | 'key' | 'clock'
-const Icon = ({name, size = 74, stroke = INK}) => {
+const Icon = ({name, size = 74, T = THEMES.paper, stroke = T.ink}) => {
   const s = size, sw = 2.8;
   const P = {stroke, strokeWidth: sw, fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round'};
   switch (name) {
@@ -86,7 +86,7 @@ const Icon = ({name, size = 74, stroke = INK}) => {
 
 // exchange 모드 — 두 주체가 주고받는 구조를 명시 (선형 나열보다 계약 관계에 적합)
 // exchange: {left:{icon,label,sub}, right:{icon,label,sub}, give:'좌→우 라벨', get:'우→좌 라벨'}
-const Party = ({cx, cy, node, o}) => (
+const Party = ({cx, cy, node, o, T = THEMES.paper}) => (
   <>
     <div style={{position: 'absolute', left: cx - 150, top: cy - 210, width: 300, height: 200, opacity: o,
                  display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
@@ -95,22 +95,22 @@ const Party = ({cx, cy, node, o}) => (
         <Img src={staticFile(node.logo)}
              style={{maxWidth: 260, maxHeight: 180, objectFit: 'contain'}} />
       ) : node.wordmark ? (
-        <div style={{width: 236, height: 152, border: `4px solid ${INK}`, display: 'flex',
+        <div style={{width: 236, height: 152, border: `4px solid ${T.ink}`, display: 'flex',
                      alignItems: 'center', justifyContent: 'center',
                      fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 84,
-                     letterSpacing: '0.04em', color: INK}}>
+                     letterSpacing: '0.04em', color: T.ink}}>
           {node.wordmark}
         </div>
       ) : (
         <svg width={190} height={190} viewBox="-50 -50 100 100">
-          <Icon name={node.icon} stroke={INK} />
+          <Icon T={T} name={node.icon} stroke={T.ink} />
         </svg>
       )}
     </div>
     <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 50, color: INK, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 50, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
       {node.sub ? (
-        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: INK_SOFT}}>{node.sub}</div>
+        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: T.soft}}>{node.sub}</div>
       ) : null}
     </div>
   </>
@@ -121,8 +121,10 @@ const Party = ({cx, cy, node, o}) => (
 // 둘 다 "좌→우 한 줄"과 화면 구성이 달라 같은 카드가 반복되는 느낌을 줄인다.
 export const PaperFlowCard = ({
   title = '', sub = '', nodes = [], arrows = [], exchange = null, layout = 'row', source = '',
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = nodes.length;
   const BOX = 240;
@@ -142,8 +144,8 @@ export const PaperFlowCard = ({
     const topOf = (i) => baseY - (i + 1) * SH;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg />
-        <PaperTitle title={title} sub={sub} />
+        <PaperBg theme={theme} />
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {nodes.map((nd, i) => {
             const o = fadeIn(frame, 10 + i * 12);
@@ -151,13 +153,13 @@ export const PaperFlowCard = ({
             return (
               <g key={i} opacity={o}>
                 <rect x={x} y={y} width={SW} height={baseY - y}
-                      fill={nd.hot ? YELLOW : TONES[(i + 1) % TONES.length]} opacity={nd.hot ? 0.95 : 0.4} />
+                      fill={nd.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]} opacity={nd.hot ? 0.95 : 0.4} />
                 <polyline points={`${x},${baseY} ${x},${y} ${x + SW},${y}`}
-                          fill="none" stroke={INK} strokeWidth={3} />
+                          fill="none" stroke={T.ink} strokeWidth={3} />
               </g>
             );
           })}
-          <line x1={x0 - 60} y1={baseY} x2={x0 + SW * n + 60} y2={baseY} stroke={INK} strokeWidth={4} />
+          <line x1={x0 - 60} y1={baseY} x2={x0 + SW * n + 60} y2={baseY} stroke={T.ink} strokeWidth={4} />
         </svg>
         {nodes.map((nd, i) => {
           const o = fadeIn(frame, 14 + i * 12);
@@ -167,19 +169,19 @@ export const PaperFlowCard = ({
               <div style={{position: 'absolute', left: x, width: SW, top: y - 150, height: 130, opacity: o,
                            display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
                 <svg width={124} height={124} viewBox="-50 -50 100 100">
-                  <Icon name={nd.icon} stroke={INK} />
+                  <Icon T={T} name={nd.icon} stroke={T.ink} />
                 </svg>
               </div>
               <div style={{position: 'absolute', left: x - 40, width: SW + 80, top: y - 142,
                            transform: 'translateY(-100%)', textAlign: 'center', opacity: o, wordBreak: 'keep-all'}}>
                 <span style={{fontFamily: nd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                              fontSize: nd.hot ? 46 : 40, color: INK, lineHeight: 1.25, padding: '2px 10px',
+                              fontSize: nd.hot ? 46 : 40, color: T.ink, lineHeight: 1.25, padding: '2px 10px',
                               background: nd.hot ? 'rgba(250,255,46,0.75)' : 'none',
                               boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
                   {nd.label}
                 </span>
                 {nd.sub ? (
-                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: INK_SOFT}}>
+                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft}}>
                     {nd.sub}
                   </div>
                 ) : null}
@@ -187,7 +189,7 @@ export const PaperFlowCard = ({
             </React.Fragment>
           );
         })}
-        <PaperSource source={source} />
+        <PaperSource source={source} theme={theme} />
       </AbsoluteFill>
     );
   }
@@ -198,16 +200,16 @@ export const PaperFlowCard = ({
     const IX = 560;                       // 아이콘 열 x
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg />
-        <PaperTitle title={title} sub={sub} />
+        <PaperBg theme={theme} />
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {nodes.map((nd, i) => {
             if (i === n - 1) return null;
             const y = TOP + i * ROW + ROW / 2;
             return (
               <g key={i} opacity={fadeIn(frame, 20 + i * 12)}>
-                <line x1={IX} y1={y + 52} x2={IX} y2={y + ROW - 70} stroke={INK} strokeWidth={2.4} />
-                <polygon points={`${IX},${y + ROW - 54} ${IX - 8},${y + ROW - 72} ${IX + 8},${y + ROW - 72}`} fill={INK} />
+                <line x1={IX} y1={y + 52} x2={IX} y2={y + ROW - 70} stroke={T.ink} strokeWidth={2.4} />
+                <polygon points={`${IX},${y + ROW - 54} ${IX - 8},${y + ROW - 72} ${IX + 8},${y + ROW - 72}`} fill={T.ink} />
               </g>
             );
           })}
@@ -221,19 +223,19 @@ export const PaperFlowCard = ({
                            transform: 'translateY(-50%)', opacity: o,
                            display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 <svg width={132} height={132} viewBox="-50 -50 100 100">
-                  <Icon name={nd.icon} stroke={INK} />
+                  <Icon T={T} name={nd.icon} stroke={T.ink} />
                 </svg>
               </div>
               <div style={{position: 'absolute', left: IX + 96, width: 780, top: y,
                            transform: 'translateY(-50%)', opacity: o, wordBreak: 'keep-all'}}>
                 <span style={{fontFamily: nd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                              fontSize: nd.hot ? 50 : 45, color: INK, lineHeight: 1.25, padding: '2px 10px',
+                              fontSize: nd.hot ? 50 : 45, color: T.ink, lineHeight: 1.25, padding: '2px 10px',
                               background: nd.hot ? 'rgba(250,255,46,0.75)' : 'none',
                               boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
                   {nd.label}
                 </span>
                 {nd.sub ? (
-                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: INK_SOFT}}>
+                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft}}>
                     {nd.sub}
                   </div>
                 ) : null}
@@ -241,7 +243,7 @@ export const PaperFlowCard = ({
             </React.Fragment>
           );
         })}
-        <PaperSource source={source} />
+        <PaperSource source={source} theme={theme} />
       </AbsoluteFill>
     );
   }
@@ -254,25 +256,25 @@ export const PaperFlowCard = ({
     const oGive = fadeIn(frame, 30), oGet = fadeIn(frame, 46);
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-        <PaperBg />
-        <PaperTitle title={title} sub={sub} />
-        <Party cx={LX} cy={cy} node={exchange.left} o={oL} />
-        <Party cx={RX} cy={cy} node={exchange.right} o={oR} />
+        <PaperBg theme={theme} />
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+        <Party T={T} cx={LX} cy={cy} node={exchange.left} o={oL} />
+        <Party T={T} cx={RX} cy={cy} node={exchange.right} o={oR} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {/* 위 화살표: 좌 → 우 (주는 것) */}
           <g opacity={oGive}>
-            <line x1={AX0} y1={cy - 96} x2={AX1 - 14} y2={cy - 96} stroke={INK} strokeWidth={2.6} />
-            <polygon points={`${AX1},${cy - 96} ${AX1 - 17},${cy - 104} ${AX1 - 17},${cy - 88}`} fill={INK} />
+            <line x1={AX0} y1={cy - 96} x2={AX1 - 14} y2={cy - 96} stroke={T.ink} strokeWidth={2.6} />
+            <polygon points={`${AX1},${cy - 96} ${AX1 - 17},${cy - 104} ${AX1 - 17},${cy - 88}`} fill={T.ink} />
           </g>
           {/* 아래 화살표: 우 → 좌 (받는 것) */}
           <g opacity={oGet}>
-            <line x1={AX1} y1={cy - 22} x2={AX0 + 14} y2={cy - 22} stroke={INK} strokeWidth={2.6} />
-            <polygon points={`${AX0},${cy - 22} ${AX0 + 17},${cy - 30} ${AX0 + 17},${cy - 14}`} fill={INK} />
+            <line x1={AX1} y1={cy - 22} x2={AX0 + 14} y2={cy - 22} stroke={T.ink} strokeWidth={2.6} />
+            <polygon points={`${AX0},${cy - 22} ${AX0 + 17},${cy - 30} ${AX0 + 17},${cy - 14}`} fill={T.ink} />
           </g>
         </svg>
         {exchange.give ? (
           <div style={{position: 'absolute', left: AX0 - 60, width: AX1 - AX0 + 120, bottom: 1080 - (cy - 116), textAlign: 'center', opacity: oGive, lineHeight: 1.65}}>
-            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 46, color: INK, letterSpacing: '0.02em', wordBreak: 'keep-all',
+            <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 46, color: T.ink, letterSpacing: '0.02em', wordBreak: 'keep-all',
                           background: 'rgba(250,255,46,0.75)', padding: '4px 14px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
               {exchange.give}
             </span>
@@ -280,20 +282,20 @@ export const PaperFlowCard = ({
         ) : null}
         {exchange.get ? (
           <div style={{position: 'absolute', left: AX0, width: AX1 - AX0, top: cy + 6, textAlign: 'center', opacity: oGet}}>
-            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 42, color: INK, letterSpacing: '0.02em', wordBreak: 'keep-all'}}>
+            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 42, color: T.ink, letterSpacing: '0.02em', wordBreak: 'keep-all'}}>
               {exchange.get}
             </span>
           </div>
         ) : null}
-        <PaperSource source={source} />
+        <PaperSource source={source} theme={theme} />
       </AbsoluteFill>
     );
   }
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {nodes.map((nd, i) => {
         const x = startX + i * (BOX + gap);
         const cxN = x + BOX / 2;
@@ -306,29 +308,29 @@ export const PaperFlowCard = ({
             <div style={{position: 'absolute', left: cxN - 80, top: cy - 150, width: 160, height: 160, opacity: o,
                          display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
               <svg width={150} height={150} viewBox="-50 -50 100 100" style={{transform: `scale(${iconScale})`}}>
-                <Icon name={nd.icon} stroke={INK} />
+                <Icon T={T} name={nd.icon} stroke={T.ink} />
               </svg>
             </div>
             {/* 라벨 — hot 은 옐로 하이라이트 바를 뒤에 깐다 */}
             <div style={{position: 'absolute', left: cxN - BOX / 2 - 50, width: BOX + 100, top: cy + 26, textAlign: 'center', opacity: o, wordBreak: 'keep-all'}}>
               <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: hot ? 52 : 44,
-                            color: INK, lineHeight: 1.3, padding: '2px 10px',
+                            color: T.ink, lineHeight: 1.3, padding: '2px 10px',
                             background: hot ? 'rgba(250,255,46,0.75)' : 'none', boxDecorationBreak: 'clone'}}>
                 {nd.label}
               </span>
               {nd.sub ? (
-                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: INK_SOFT, letterSpacing: '0.02em'}}>
+                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: T.soft, letterSpacing: '0.02em'}}>
                   {nd.sub}
                 </div>
               ) : null}
             </div>
             {i < n - 1 ? (
               <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: fadeIn(frame, 20 + i * 12)}}>
-                <line x1={x + BOX - 6} y1={cy - 64} x2={x + BOX + gap + 4} y2={cy - 64} stroke={INK} strokeWidth={2.4} />
-                <polygon points={`${x + BOX + gap + 16},${cy - 64} ${x + BOX + gap + 1},${cy - 71} ${x + BOX + gap + 1},${cy - 57}`} fill={INK} />
+                <line x1={x + BOX - 6} y1={cy - 64} x2={x + BOX + gap + 4} y2={cy - 64} stroke={T.ink} strokeWidth={2.4} />
+                <polygon points={`${x + BOX + gap + 16},${cy - 64} ${x + BOX + gap + 1},${cy - 71} ${x + BOX + gap + 1},${cy - 57}`} fill={T.ink} />
                 {arrows[i] ? (
                   <text x={x + BOX + gap / 2} y={cy - 82} textAnchor="middle"
-                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, fill: INK_SOFT, letterSpacing: '0.06em'}}>
+                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, fill: T.soft, letterSpacing: '0.06em'}}>
                     {arrows[i]}
                   </text>
                 ) : null}
@@ -337,7 +339,7 @@ export const PaperFlowCard = ({
           </React.Fragment>
         );
       })}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

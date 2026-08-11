@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame, interpolate} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 종이 위 이미지 프레임 카드 — B1M의 "자료 이미지를 흰 매트 액자로 종이에
 // 얹는" 문법. 이미지 위 오버라인 브래킷 + 볼드 타이틀, 아래 캡션.
@@ -16,9 +16,11 @@ export const PaperImageCard = ({
   kenBurns = true,
   wide = false,   // true면 화면 폭을 더 쓰는 와이드 프레임
   ratio = 0,      // 원본 가로/세로 비. 주면 액자를 그 비율에 맞춰 잘림 없이 담는다
-  fit = 'cover',  // 'contain' 이면 다이어그램처럼 잘리면 안 되는 이미지
+  fit = 'cover',  // 'contain' 이면 다이어그램처럼 잘리면 안 되는 이미지,
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const o = fadeIn(frame, 8);
   // 캡션까지 자막 안전영역(y<820) 안에서 끝나도록 프레임 크기 산정.
@@ -37,11 +39,11 @@ export const PaperImageCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {imageTitle ? (
         <div style={{position: 'absolute', left, width: W, top: top - 56, textAlign: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 43, letterSpacing: '0.01em', color: INK, opacity: o}}>
+                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 43, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
           {imageTitle}
         </div>
       ) : null}
@@ -54,11 +56,11 @@ export const PaperImageCard = ({
         </div>
       </div>
       {caption ? (
-        <div style={{position: 'absolute', left: 260, width: 1400, top: top + H + 16, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.4, letterSpacing: '0.04em', color: INK_SOFT, opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
+        <div style={{position: 'absolute', left: 260, width: 1400, top: top + H + 16, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.4, letterSpacing: '0.04em', color: T.soft, opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
           {caption}
         </div>
       ) : null}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

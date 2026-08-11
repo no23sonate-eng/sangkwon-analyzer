@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -10,11 +10,13 @@ import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, TONES, fadeIn} 
 export const DotMatrixCard = ({
   title = '', sub = '', groups = [], perDot = 10, cols = 13,
   unit = '', source = '', caption = '',
+  theme, align = 'center',
 }) => {
   useA2ZFonts();
+  const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = groups.length;
-  if (!n) return <AbsoluteFill><PaperBg /></AbsoluteFill>;
+  if (!n) return <AbsoluteFill><PaperBg theme={theme} /></AbsoluteFill>;
 
   const R = 10, PITCH = 30;
   const blockW = cols * PITCH;
@@ -30,8 +32,8 @@ export const DotMatrixCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {groups.map((g, gi) => {
           const total = dotsOf(g.value);
@@ -46,7 +48,7 @@ export const DotMatrixCard = ({
                 const r = Math.floor(k / cols), c = k % cols;
                 return (
                   <circle key={k} cx={cx0 + c * PITCH} cy={TOP + r * PITCH} r={R}
-                          fill={g.hot ? YELLOW : TONES[3]} stroke={INK} strokeWidth={1.6}
+                          fill={g.hot ? YELLOW : T.tones[3]} stroke={T.ink} strokeWidth={1.6}
                           opacity={o} />
                 );
               })}
@@ -60,17 +62,17 @@ export const DotMatrixCard = ({
           <div key={gi} style={{position: 'absolute', left: startX + gi * slot - slot / 2, width: slot,
                                 top: LABEL_Y, textAlign: 'center',
                                 opacity: fadeIn(frame, 26 + gi * 14)}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, color: INK,
+            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, color: T.ink,
                          lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
               {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
               <span style={{fontSize: 42, marginLeft: 4}}>{unit}</span>
             </div>
             <div style={{marginTop: 6, fontFamily: g.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 42, color: INK, wordBreak: 'keep-all'}}>
+                         fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
               {g.label}
             </div>
             {g.sub ? (
-              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: INK_SOFT, wordBreak: 'keep-all'}}>
+              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
                 {g.sub}
               </div>
             ) : null}
@@ -81,11 +83,11 @@ export const DotMatrixCard = ({
       {caption ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: TOP - 62, textAlign: 'center',
                      opacity: fadeIn(frame, 10), fontFamily: 'A2Z Light, sans-serif',
-                     fontSize: 32, color: INK_SOFT, letterSpacing: '0.04em'}}>
+                     fontSize: 32, color: T.soft, letterSpacing: '0.04em'}}>
           {caption}
         </div>
       ) : null}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };
