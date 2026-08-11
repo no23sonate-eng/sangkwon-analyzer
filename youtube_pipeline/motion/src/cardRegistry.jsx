@@ -54,12 +54,14 @@ import {AnnotatedShotCard} from './AnnotatedShotCard';
 import {ScaleCompareCard} from './ScaleCompareCard';
 import {BeforeAfterCard} from './BeforeAfterCard';
 import {TrackRecordCard} from './TrackRecordCard';
+import {BrandCard} from './BrandCard';
 
 export const CARDS = {
   AnnotatedShotCard,
   ScaleCompareCard,
   BeforeAfterCard,
   TrackRecordCard,
+  BrandCard,
   BuildingCard,
   StatCard,
   QuoteCard,

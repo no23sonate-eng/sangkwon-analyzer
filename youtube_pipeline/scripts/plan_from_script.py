@@ -46,8 +46,29 @@ OPENING_MIN_CUTS = 3
 # 구체적인 규칙이 위. 아래로 갈수록 느슨하다.
 # 연도는 이 장르 스크립트에 늘 깔려 있어서, 단순 날짜 언급으로 타임라인이
 # 잡히지 않도록 "기간을 말하는 단어"를 같이 요구한다.
+# ── 줄글 → 화면 문법 (design_reference §30-2) ──────────────────────────
+# "말로 설명하고 화면엔 글자만" 이 제일 나쁘다. 문장이 하는 말의 유형마다
+# 갈 곳이 정해져 있고, 위에서부터 먼저 걸리는 게 이긴다 —
+# **구체적인 규칙일수록 위에** 둔다.
+COMPANY = r'[가-힣A-Za-z][가-힣A-Za-z0-9&·\'\-]{1,14}' \
+          r'(?:앤파트너스|파트너스|아키텍츠|건설|산업|중공업|그룹|백화점|물산|개발|' \
+          r'엔지니어링|디자인|스튜디오|자산운용|증권|은행|공사|공단|재단|사|社)'
+
 RULES = [
+    # 회사·브랜드가 처음 나오며 무슨 역할을 했다 → 로고를 박는다 (§30-1)
+    (rf'({COMPANY}|[A-Z]{{2,}})[가이는을를과와]?\s*[^.]{{0,30}}'
+     r'(맡았|참여했|담당했|설계했|시공|짓고|짓는|체결|제휴|손잡|합작)', 'BrandCard', '회사 등장 = 로고'),
+    # 그 회사가 뭘 해왔나 — 레퍼런스 나열
+    (r'(해온 회사|한 회사입니다|작업한|대표작|레퍼런스|시공한 (곳|현장)|'
+     r'실적|포트폴리오|[^.]{0,40}(,\s*[^.,]{2,20}){2,}\s*을?\s*(해온|맡아온|지은))',
+     'TrackRecordCard', '회사 이력 = 도장 찍기'),
     (r'(\d+)\s*(위|등)[^.]{0,40}?(\d+)\s*(위|등)', 'RankTrendCard', '순위 변화'),
+    # "얼마나 큰가" — 절대 크기는 사람 1.7m 옆에 세워야 감이 온다
+    (r'(얼마나\s*(크|높|넓|깊)|(\d[\d,.]*)\s*(미터|m)[^.]{0,60}'
+     r'((\d[\d,.]*)\s*(미터|m)|남산|롯데월드|63빌딩|에펠))', 'ScaleCompareCard', '절대 크기 = 사람 옆'),
+    # 전 / 후가 바뀐다
+    (r'((원래는|예전엔|이전에는|과거엔|기존에는|였던 자리)[^.]{0,80}'
+     r'(지금은|현재는|바뀌|됐습니다|되었습니다)|철거하고|리모델링해)', 'BeforeAfterCard', '전/후 대비'),
     (r'(지하\s*\d+\s*층|지상\s*\d+\s*층|연면적|대지면적)', 'SectionPhotoCard', '층수·면적 = 단면'),
     (r'(엘리베이터|위아래로|층층이|아래로 내려가|수직으로)', 'ElevatorCard', '수직 이동'),
     (r'(기부 대 양여|맞바꾸|넘겨줍니다|넘겨준다|양여)', 'ExchangeMotionCard', '주고받기'),
@@ -61,9 +82,17 @@ RULES = [
     (r'(\d[\d,]*)\s*(평|㎡|제곱미터|헥타르)[^.]{0,60}?(\d[\d,]*)\s*(평|㎡|제곱미터|헥타르)', 'AreaNestCard', '면적 비교'),
     (r'(개발사|운영사|반면|정반대|분리돼|나뉘어)', 'SplitCard', '둘로 갈리는 대비'),
     (r'(준공은|입주는|예정입니다|남은 일정)', 'TimelineRailCard', '앞으로의 일정'),
+    # 사진을 놓고 위치·배치를 짚는다 → 카메라가 훑으며 주석 (§26)
+    (r'((왼쪽|오른쪽|가운데|아래쪽|위쪽|여기가|이쪽이|바로 옆|사이에)[^.]{0,40}'
+     r'(있|보이|자리|위치|붙어))', 'AnnotatedShotCard', '위치 지시 = 주석 카메라'),
     (r'(사진|보시면|모습을|전경|현장)', 'FullBleedCard', '사진 한 장으로'),
+    # 수치가 딱 하나 — 크게 세우고 밑줄로 확정한다 (§27 NumberIn)
+    (r'(\d[\d,.]*)\s*(조|억|만|평|㎡|제곱미터|명|가구|세대|개)', 'BigStatsCard', '핵심 수치 하나'),
 ]
 DEFAULT_CARD = 'PaperImageCard'
+# §30-2 마지막 줄 — 표에 안 걸리는 문장은 억지 도식을 만들지 않는다.
+# 그 컷은 실사 b-roll 로 넘기는 게 낫고, 초안은 그렇게 말해 준다.
+NO_DIAGRAM = '도식 불가 — 실사 b-roll 권장'
 
 # 카드별 최소 props 껍데기 — 사람이 값만 채우면 되게
 SKELETON = {
@@ -94,6 +123,23 @@ SKELETON = {
                   'right': {'label': '', 'sub': '', 'lines': []}, 'verdict': '', 'source': ''},
     'FullBleedCard': {'image': '', 'headline': '', 'sub': '', 'scrim': 0.42, 'source': ''},
     'PaperImageCard': {'title': '', 'image': '', 'ratio': 1.778, 'caption': '', 'source': ''},
+    # §30-1 — 로고는 fetch_sources.py --logo 로 누끼를 떠서 넣는다.
+    # logoInvert 값은 어댑트할 때 스크립트가 알려주는 걸 그대로 옮긴다.
+    'BrandCard': {'title': '', 'sub': '', 'logo': '', 'name': '', 'line': '',
+                  'tags': [], 'photo': '', 'layout': '', 'logoInvert': 'auto', 'source': ''},
+    'TrackRecordCard': {'title': '', 'sub': '', 'name': '', 'role': '',
+                        'items': [{'label': '', 'note': ''}], 'source': ''},
+    'ScaleCompareCard': {'title': '', 'sub': '', 'unit': 'm', 'items': [
+        {'label': '', 'meters': 0, 'shape': 'tower', 'note': ''},
+        {'label': '', 'meters': 0, 'shape': 'tower', 'note': '', 'hot': True}], 'source': ''},
+    'BeforeAfterCard': {'before': '', 'after': '', 'beforeLabel': '이전', 'afterLabel': '이후',
+                        'beforeNote': '', 'afterNote': '', 'headline': '',
+                        'startSec': 0.6, 'pauseAt': 0.6, 'source': ''},
+    # zoom 은 1.6 을 넘기지 말 것 — 1920px 원본이 뭉갠다
+    'AnnotatedShotCard': {'image': '', 'imageRatio': 1.778, 'title': '', 'titleSub': '',
+                          'scrim': 0, 'leadIn': 0.7,
+                          'beats': [{'x': 0.5, 'y': 0.5, 'zoom': 1.3, 'label': '', 'sub': '',
+                                     'side': 'right', 'hot': True, 'hold': 40}], 'source': ''},
 }
 
 
@@ -165,6 +211,10 @@ ALT = {
     'PhotoStepsCard':      ['TimelineRailCard', 'SplitCard'],
     'SplitCard':           ['PhotoStepsCard'],
     'TimelineRailCard':    ['PhotoStepsCard'],
+    'BrandCard':           ['TrackRecordCard', 'PaperImageCard'],
+    'TrackRecordCard':     ['BrandCard', 'SplitCard'],
+    'AnnotatedShotCard':   ['FullBleedCard', 'PaperImageCard'],
+    'BeforeAfterCard':     ['SplitCard'],
 }
 REPEAT_MAX = 2          # 같은 카드 연속 허용 한도
 
@@ -173,7 +223,7 @@ def suggest_card(text):
     for pat, card, why in RULES:
         if re.search(pat, text):
             return card, why
-    return DEFAULT_CARD, '기본값'
+    return DEFAULT_CARD, NO_DIAGRAM
 
 
 def vary(cards):
@@ -211,18 +261,27 @@ def allocate(scenes):
     """장면 → scene_plan 항목. MAX_CUT 초과 장면은 [카드 + 실사] 로 자동 분할."""
     picked = vary([suggest_card(t)[0] for _, t, _ in scenes])
     out, used, t = [], set(), 0.0
-    prev_act = None
+    prev_act, no_diag_run = None, False
     for i, (act, text, dur) in enumerate(scenes):
         if prev_act is not None:
             t += GAP if act != prev_act else GAP_IN
         prev_act = act
         dur = round(dur, 1)
-        _, why = suggest_card(text)
+        want, why = suggest_card(text)
         card = picked[i]
+        if card != want:
+            why = f'{why} → 연속 회피로 변주'
         e = {
             'id': i, 'act': act, 'start': round(t, 1), 'end': round(t + dur, 1), 'dur': dur,
             'text': text, 'card': card, 'key': key_of(text, used), '_why': why,
         }
+        # §30-2 마지막 줄 — 도식이 안 나오는 문장을 **연달아** 종이 카드로 때우면
+        # 화면이 안 바뀐다(§30-3). 연속 구간의 두 번째부터는 실사로 넘긴다.
+        if why.startswith(NO_DIAGRAM) and no_diag_run and dur >= MIN_CUT:
+            e['cardDur'] = 0
+            e['broll'] = {'src': 'TODO.mp4', 'ss': 0.0, 'dur': dur}
+        no_diag_run = why.startswith(NO_DIAGRAM) and not e.get('broll')
+
         if dur > MAX_CUT:
             # 앞 2/3 는 카드, 뒤는 실사. 한 컷이 15초를 넘지 않게 나눈다.
             card_dur = round(min(MAX_CUT, dur * 0.66), 1)

@@ -42,6 +42,117 @@ def strip_html(s):
     return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', s or '')).strip()
 
 
+# ── 누끼 ────────────────────────────────────────────────────────────────
+# 로고를 흰 네모째로 얹으면 종이든 다크든 네모가 그대로 보인다. 반드시 뗀다.
+#
+#   ① Commons .svg 로고 → PNG 썸네일이 이미 알파를 갖고 온다. 할 일 없음
+#   ② 흰·단색 바탕 → **가장자리 플러드필**. 단순 임계(밝기>240)로 하면
+#      로고 **안쪽** 흰 부분까지 뚫린다 (서울시 휘장이면 글자 사이가 날아간다).
+#      배경이라는 걸 알 수 있는 유일한 신호는 "가장자리와 이어져 있다" 는 것뿐이다.
+#   ③ 실사에서 피사체 분리 → rembg 필요. 이 환경엔 없다.
+def matte(path, tol=26):
+    """가장자리에서 번지는 플러드필로 연결된 배경만 지운다. (알파가 이미 있으면 그대로)"""
+    from collections import deque
+    from PIL import Image
+    import numpy as np
+
+    im = Image.open(path)
+    if im.mode == 'RGBA':
+        a = np.asarray(im)
+        if (a[..., 3] < 10).mean() > 0.02:      # 이미 뚫려 있으면 손대지 않는다
+            return im, 'alpha-already'
+    im = im.convert('RGB')
+    a = np.asarray(im).astype(int)
+    h, w, _ = a.shape
+    seen = np.zeros((h, w), bool)
+    q = deque()
+    for x in range(w):
+        for y in (0, h - 1):
+            if not seen[y, x]:
+                seen[y, x] = True; q.append((y, x))
+    for y in range(h):
+        for x in (0, w - 1):
+            if not seen[y, x]:
+                seen[y, x] = True; q.append((y, x))
+    ref = a[0, 0]
+    bg = np.zeros((h, w), bool)
+    while q:
+        y, x = q.popleft()
+        if np.abs(a[y, x] - ref).max() > tol:
+            continue
+        bg[y, x] = True
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            ny, nx = y + dy, x + dx
+            if 0 <= ny < h and 0 <= nx < w and not seen[ny, nx]:
+                seen[ny, nx] = True; q.append((ny, nx))
+    # ── 경계 부드럽게 ────────────────────────────────────────────────
+    # 하드 마스크만 쓰면 안티에일리어싱된 테두리 픽셀이 배경색 그대로 남는다.
+    # (흰 배경 로고를 어두운 화면에 얹으면 글자 둘레에 흰 후광이 보인다)
+    # 그래서 배경에 **맞닿은 띠**에서만 알파를 거리로 환산하고 색을 되돌린다.
+    alpha = np.where(bg, 0.0, 1.0)
+    band = np.zeros((h, w), bool)
+    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        s = np.roll(bg, (dy, dx), (0, 1))
+        if dy == 1:   s[0] = False
+        if dy == -1:  s[-1] = False
+        if dx == 1:   s[:, 0] = False
+        if dx == -1:  s[:, -1] = False
+        band |= s
+    band &= ~bg
+    band |= np.roll(band, 1, 0) | np.roll(band, -1, 0) | \
+            np.roll(band, 1, 1) | np.roll(band, -1, 1)
+    band &= ~bg
+
+    d = np.abs(a - ref).max(2)                       # 배경색과의 거리
+    soft = max(tol * 3, 72)
+    ba = np.clip(d / soft, 0.0, 1.0)
+    alpha = np.where(band, ba, alpha)
+
+    rgb = a.astype(float)
+    m = band & (ba > 0.02)                           # 언프리멀티플 — 배경색 섞인 걸 되돌린다
+    if m.any():
+        k = ba[m][:, None]
+        rgb[m] = np.clip(ref + (rgb[m] - ref) / k, 0, 255)
+
+    out = np.dstack([rgb, alpha * 255]).astype('uint8')
+    return Image.fromarray(out, 'RGBA'), f'flood {bg.mean() * 100:.0f}%'
+
+
+def logo_invert(im):
+    """어두운 테마에서 이 로고를 반전해도 되는지 판정한다.
+
+    검정 워드마크는 어두운 배경에서 안 보이니 반전해야 하고,
+    **컬러 로고는 반전하면 색이 뒤집혀 브랜드가 망가진다** (빨강 → 청록).
+    그래서 '불투명 픽셀이 거의 무채색이고 어두운가' 만 본다.
+    """
+    import numpy as np
+    a = np.asarray(im.convert('RGBA')).astype(float)
+    m = a[..., 3] > 128
+    if not m.any():
+        return 'false  # 판정 불가'
+    px = a[m][:, :3]
+    chroma = (px.max(1) - px.min(1)).mean()          # 무채색이면 0 에 가깝다
+    lum = px.mean()
+    if chroma > 26:
+        return 'false  # 컬러 로고 — 반전 금지'
+    if lum > 150:
+        return 'false  # 이미 밝은 로고'
+    return "'auto'  # 단색 어두움 — 어두운 테마에서 자동 반전"
+
+
+def trim_alpha(im, pad=8):
+    """투명 여백을 잘라 로고가 상자 안에서 최대 크기로 앉게 한다."""
+    import numpy as np
+    from PIL import Image
+    a = np.asarray(im)
+    ys, xs = np.where(a[..., 3] > 12)
+    if not len(ys):
+        return im
+    y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
+    return im.crop((max(0, x0 - pad), max(0, y0 - pad),
+                    min(im.width, x1 + pad + 1), min(im.height, y1 + pad + 1)))
+
+
 # ── 소스별 검색 ─────────────────────────────────────────────────────────
 def search_commons(q, limit):
     api = 'https://commons.wikimedia.org/w/api.php?'
@@ -202,7 +313,7 @@ def contact_sheet(cdir, rows, cols=4):
     return out
 
 
-def adopt(project, cid, name):
+def adopt(project, cid, name, logo=False):
     """후보를 본 폴더로 승격하고 CREDITS.md 에 줄을 추가한다."""
     cdir = os.path.join(PUBLIC, project, '_candidates')
     rows = json.load(open(os.path.join(cdir, 'candidates.json'), encoding='utf-8'))
@@ -217,6 +328,13 @@ def adopt(project, cid, name):
         # 미리보기는 360p 였다. 채택할 때 720p 로 다시 받는다.
         if not get(r['hires'], dst):
             sys.exit('720p 내려받기 실패')
+    elif logo:
+        im, how = matte(src)
+        im = trim_alpha(im)
+        dst = os.path.splitext(dst)[0] + '.png'      # 알파는 png 로만 남는다
+        im.save(dst)
+        print(f'누끼: {how} · {im.size[0]}x{im.size[1]} 로 트림')
+        print(f'BrandCard: logoInvert {logo_invert(im)}')
     else:
         import shutil
         shutil.copy(src, dst)
@@ -239,16 +357,19 @@ def main():
     ap.add_argument('--video', action='append', default=[], help='영상 검색어 (Mixkit)')
     ap.add_argument('--limit', type=int, default=6)
     ap.add_argument('--adopt', nargs=2, metavar=('ID', 'NAME'))
+    ap.add_argument('--logo', action='store_true',
+                    help='채택 시 누끼를 떠서 알파 png 로 저장 (검색에도 logo 를 덧붙인다)')
     a = ap.parse_args()
 
     if a.adopt:
-        adopt(a.project, *a.adopt)
+        adopt(a.project, *a.adopt, logo=a.logo)
         return
     if not a.q and not a.video:
         sys.exit('--q 또는 --video 를 줘야 한다')
 
+    qs = [f'{q} logo' for q in a.q] if a.logo else a.q
     print(f'수집: {a.project}')
-    cdir, rows = collect(a.project, a.q, a.video, a.limit)
+    cdir, rows = collect(a.project, qs, a.video, a.limit)
     sheet = contact_sheet(cdir, rows)
     print(f'\n후보 {len(rows)}개 → {cdir}')
     if sheet:
