@@ -55,6 +55,7 @@ import {ScaleCompareCard} from './ScaleCompareCard';
 import {BeforeAfterCard} from './BeforeAfterCard';
 import {TrackRecordCard} from './TrackRecordCard';
 import {BrandCard} from './BrandCard';
+import {StrikeSwapCard} from './StrikeSwapCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -62,6 +63,7 @@ export const CARDS = {
   BeforeAfterCard,
   TrackRecordCard,
   BrandCard,
+  StrikeSwapCard,
   BuildingCard,
   StatCard,
   QuoteCard,

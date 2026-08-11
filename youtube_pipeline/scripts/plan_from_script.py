@@ -63,6 +63,11 @@ RULES = [
      r'실적|포트폴리오|[^.]{0,40}(,\s*[^.,]{2,20}){2,}\s*을?\s*(해온|맡아온|지은))',
      'TrackRecordCard', '회사 이력 = 도장 찍기'),
     (r'(\d+)\s*(위|등)[^.]{0,40}?(\d+)\s*(위|등)', 'RankTrendCard', '순위 변화'),
+    # 값이 **대체**된다 — 나란히 비교가 아니라 옛 값에 취소선을 긋는 동작
+    (r'([\d,]+\s*(%|억|조|시간|분|년|미터|m|층|평|㎡))[^.]{0,50}?'
+     r'(에서|이었지만|였지만|인데|상한[은는]?|였는데|이던|였던|하던|던|에 비해|보다)[^.]{0,50}?'
+     r'([\d,]+\s*(%|억|조|시간|분|년|미터|m|층|평|㎡))[^.]{0,30}'
+     r'(으?로|까지|밖에|뿐|적용|줄|늘|낮|높)', 'StrikeSwapCard', '값이 갈아치워짐'),
     # "얼마나 큰가" — 절대 크기는 사람 1.7m 옆에 세워야 감이 온다
     (r'(얼마나\s*(크|높|넓|깊)|(\d[\d,.]*)\s*(미터|m)[^.]{0,60}'
      r'((\d[\d,.]*)\s*(미터|m)|남산|롯데월드|63빌딩|에펠))', 'ScaleCompareCard', '절대 크기 = 사람 옆'),
@@ -123,6 +128,9 @@ SKELETON = {
                   'right': {'label': '', 'sub': '', 'lines': []}, 'verdict': '', 'source': ''},
     'FullBleedCard': {'image': '', 'headline': '', 'sub': '', 'scrim': 0.42, 'source': ''},
     'PaperImageCard': {'title': '', 'image': '', 'ratio': 1.778, 'caption': '', 'source': ''},
+    # from/to 는 문자열 그대로. 카운트업이 아니라 **대체**다
+    'StrikeSwapCard': {'title': '', 'sub': '', 'from': '', 'fromLabel': '',
+                       'to': '', 'toLabel': '', 'note': '', 'image': '', 'source': ''},
     # §30-1 — 로고는 fetch_sources.py --logo 로 누끼를 떠서 넣는다.
     # logoInvert 값은 어댑트할 때 스크립트가 알려주는 걸 그대로 옮긴다.
     'BrandCard': {'title': '', 'sub': '', 'logo': '', 'name': '', 'line': '',
@@ -215,6 +223,7 @@ ALT = {
     'TrackRecordCard':     ['BrandCard', 'SplitCard'],
     'AnnotatedShotCard':   ['FullBleedCard', 'PaperImageCard'],
     'BeforeAfterCard':     ['SplitCard'],
+    'StrikeSwapCard':      ['BigStatsCard', 'RatioCard'],
 }
 REPEAT_MAX = 2          # 같은 카드 연속 허용 한도
 

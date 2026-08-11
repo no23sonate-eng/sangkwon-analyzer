@@ -3,6 +3,7 @@ import {AbsoluteFill, Img, staticFile, interpolate, spring, useCurrentFrame, use
 import {useA2ZFonts} from './Fonts';
 import {YELLOW, INK, CONTENT_BOTTOM, fadeIn} from './paper';
 import {estWidth, fit} from './layout';
+import {HandArrow, DashCircle, StampLabel} from './annotate';
 
 // ── 움직이는 카메라 + 현장 주석 ──────────────────────────────────────────
 // 지금까지 43컷이 전부 "정지 화면에 요소가 페이드로 얹히는" 한 문법이었다.
@@ -27,7 +28,12 @@ const RING_F = 12;          // 표적 링이 조여드는 시간
 const LINE_F = 12;          // 지시선이 그어지는 시간
 const LABEL_F = 12;         // 라벨이 밀려 나오는 시간
 
-const ease = (t) => t * t * (3 - 2 * t);
+const ease = (t) => {
+  // 0~1 밖으로 나가면 안 된다. 음수를 그대로 넣으면 t²(3-2t) 가 **양수로 튀어**
+  // 카메라가 아직 이동 중인데 라벨이 미리 떠 버린다 (실제로 겪음).
+  const x = Math.max(0, Math.min(1, t));
+  return x * x * (3 - 2 * x);
+};
 
 export const AnnotatedShotCard = ({
   image = '',
@@ -35,6 +41,8 @@ export const AnnotatedShotCard = ({
   title = '', titleSub = '',
   beats = [],
   leadIn = 0.7,             // 첫 지점으로 들어가기 전 넓게 보여 주는 시간(초)
+  pointer = 'arrow',        // 'arrow'(B1M 손그림 화살표) | 'ring'(도면식 링+직선)
+                            // 비트별로 b.pointer 로 덮어쓸 수 있다. 'circle' 은 점선 원
   scrim = 0,                // 바탕을 평평하게 누르는 정도.
                             // 도면·조감도처럼 **원본에 이미 캡션이 박혀 있는 판**은
                             // 0.3~0.4 로 눌러야 내 주석이 위로 올라온다. 사진은 0.
@@ -97,9 +105,20 @@ export const AnnotatedShotCard = ({
   const left = 960 - cx * imgW;
   const top = 540 - cy * imgH;
 
-  // 화면 위에서의 지점 좌표 (라벨·링을 여기에 건다)
+  // 화면 위에서의 지점 좌표 (라벨·화살표를 여기에 건다)
   const px = (b) => 960 + (b.x - cx) * imgW;
   const py = (b) => 540 + (b.y - cy) * imgH;
+
+  // 라벨이 붙는 방향. 화면 밖으로 나갈 방향이면 반대로 뒤집는다 —
+  // 화살표와 라벨이 **같은 함수를 봐야** 서로 어긋나지 않는다.
+  const dirOf = (b) => {
+    let d = b.side === 'left' ? [-1, 0] : b.side === 'up' ? [0, -1]
+          : b.side === 'down' ? [0, 1] : [1, 0];
+    const w = estWidth(b.label || '', 54) + 44;
+    if (d[0] > 0 && px(b) + 250 + w > 1860) d = [-1, 0];
+    else if (d[0] < 0 && px(b) - 250 - w < 60) d = [1, 0];
+    return d;
+  };
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: '#0b0e12', overflow: 'hidden'}}>
@@ -122,23 +141,46 @@ export const AnnotatedShotCard = ({
           if (i < idx - 1) return null;
           const done = prev;
           if (prev && tMove >= 1) return null;
-          const ring = done ? 1 : ease(Math.min(1, settled / RING_F));
-          if (ring <= 0) return null;
+          const grow = done ? 1 : ease(Math.min(1, settled / RING_F));
+          if (grow <= 0) return null;
           const X = px(b), Y = py(b);
-          const r = 62 - 30 * ring;
           const o = done ? 1 - ease(tMove) : 1;
           const col = b.hot ? YELLOW : '#FFFFFF';
-
+          const mode = b.pointer || pointer;
+          const dir = dirOf(b, i);
           const lineT = done ? 1 : ease(Math.min(1, (settled - RING_F) / LINE_F));
-          const dir = b.side === 'left' ? [-1, 0] : b.side === 'up' ? [0, -1]
-                    : b.side === 'down' ? [0, 1] : [1, 0];
+
+          if (mode === 'circle') {
+            // 점선 원 — "여기가 비었다 / 여기가 문제다". 대상을 감싼다
+            return (
+              <g key={i} opacity={o}>
+                <DashCircle cx={X} cy={Y} r={b.r || 96} progress={grow}
+                            color={col} frame={frame} />
+              </g>
+            );
+          }
+          if (mode === 'arrow') {
+            // B1M 기본형 — 라벨 쪽에서 대상까지 휜 화살표가 자라난다.
+            // 링을 먼저 조이지 않는다. 화살표 하나가 링+지시선 역할을 다 한다.
+            const sx = X + dir[0] * 236, sy = Y + dir[1] * 236 - 26;
+            const tx = X - dir[0] * 30, ty = Y - dir[1] * 30;
+            // 휘는 방향은 좌우에 따라 뒤집어야 늘 대상을 감싸며 들어간다
+            const bow = (dir[0] !== 0 ? 74 : 92) * (dir[0] < 0 || dir[1] < 0 ? -1 : 1);
+            return (
+              <g key={i} opacity={o}>
+                <HandArrow from={[sx, sy]} to={[tx, ty]} progress={grow}
+                           bow={bow} color={col} width={15} head={40} />
+              </g>
+            );
+          }
+          // 'ring' — 도면·배치도용. 정확히 한 점을 찍어야 할 때만 쓴다
+          const r = 62 - 30 * grow;
           const L = 150;
           const ex = X + dir[0] * L * lineT, ey = Y + dir[1] * L * lineT;
-
           return (
             <g key={i} opacity={o}>
               <circle cx={X} cy={Y} r={r} fill="none" stroke={col} strokeWidth={3}
-                      opacity={0.35 + 0.65 * ring} />
+                      opacity={0.35 + 0.65 * grow} />
               <circle cx={X} cy={Y} r={7} fill={col} />
               {lineT > 0.01 ? (
                 <line x1={X + dir[0] * 34} y1={Y + dir[1] * 34} x2={ex} y2={ey}
@@ -149,39 +191,27 @@ export const AnnotatedShotCard = ({
         })}
       </svg>
 
-      {/* 라벨 — 지시선 끝에서 **밀려 나온다** (페이드가 아니라 마스크 슬라이드) */}
+      {/* 라벨 — 화살표(또는 지시선) 끝에서 **밀려 나온다** (페이드가 아니라 마스크) */}
       {beats.map((b, i) => {
         if (i > idx || i < idx - 1) return null;
         const done = i === idx - 1;
         if (done && tMove >= 1) return null;
-        const lt = done ? 1 : ease(Math.min(1, (settled - RING_F - LINE_F) / LABEL_F));
+        const mode = b.pointer || pointer;
+        // 화살표는 자라는 동안 이미 방향을 말해 주므로 라벨을 조금 일찍 띄운다
+        const delay = mode === 'arrow' ? RING_F * 0.7 : RING_F + LINE_F;
+        const lt = done ? 1 : ease(Math.min(1, (settled - delay) / LABEL_F));
         if (lt <= 0.01) return null;
-        let dir = b.side === 'left' ? [-1, 0] : b.side === 'up' ? [0, -1]
-                : b.side === 'down' ? [0, 1] : [1, 0];
-        const size = fit(b.label || '', 52, 560);
-        const w = estWidth(b.label || '', size) + 40;
-        // 화면 밖으로 나갈 방향이면 반대쪽으로 뒤집는다 — 가장자리 비트에서 라벨이 잘린다
-        if (dir[0] > 0 && px(b) + 162 + w > 1860) dir = [-1, 0];
-        else if (dir[0] < 0 && px(b) - 162 - w < 60) dir = [1, 0];
-        const X = px(b) + dir[0] * 162, Y = py(b) + dir[1] * 162;
+        const dir = dirOf(b, i);
+        const size = fit(b.label || '', 54, 560);
+        const w = estWidth(b.label || '', size) + 44;
+        const gap = mode === 'arrow' ? 250 : 162;
+        const X = px(b) + dir[0] * gap, Y = py(b) + dir[1] * gap;
         const anchorX = dir[0] < 0 ? X - w : X;
         return (
-          <div key={i} style={{position: 'absolute', left: anchorX, top: Y - 34,
-                               width: w, opacity: done ? 1 - ease(tMove) : 1,
-                               clipPath: `inset(0 ${(1 - lt) * 100}% 0 0)`}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: size,
-                         color: b.hot ? INK : '#FFFFFF', lineHeight: 1.2, whiteSpace: 'nowrap',
-                         background: b.hot ? YELLOW : 'transparent',
-                         padding: b.hot ? '4px 14px' : 0,
-                         textShadow: b.hot ? 'none' : SHADOW}}>
-              {b.label}
-            </div>
-            {b.sub ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
-                           color: '#E4E8EE', whiteSpace: 'nowrap', textShadow: SHADOW}}>
-                {b.sub}
-              </div>
-            ) : null}
+          <div key={i} style={{position: 'absolute', left: anchorX, top: Y - 52,
+                               width: w, opacity: done ? 1 - ease(tMove) : 1}}>
+            <StampLabel top={b.label} sub={b.sub} size={size} hot={b.hot}
+                        reveal={lt} box={b.box !== false} />
           </div>
         );
       })}

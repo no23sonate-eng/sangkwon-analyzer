@@ -56,6 +56,7 @@ import {ScaleCompareCard} from './ScaleCompareCard';
 import {BeforeAfterCard} from './BeforeAfterCard';
 import {TrackRecordCard} from './TrackRecordCard';
 import {BrandCard} from './BrandCard';
+import {StrikeSwapCard} from './StrikeSwapCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -388,6 +389,7 @@ export const RemotionRoot = () => {
         ['BeforeAfterCard', BeforeAfterCard, {}],
         ['TrackRecordCard', TrackRecordCard, {items: []}],
         ['BrandCard', BrandCard, {}],
+        ['StrikeSwapCard', StrikeSwapCard, {}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}
