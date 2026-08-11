@@ -263,8 +263,15 @@ def check_grammar_variety(plan, props, rep):
     파크사이드 1편은 SkylineCompareCard 가 4번, PhotoStepsCard 가 3번 반복됐다.
     컷 길이만 봐서는 안 잡히는 결함이라 따로 센다.
     """
-    seq = [props[str(sc['id'])]['card'] for sc in plan['scenes']
-           if str(sc['id']) in props and sc.get('cardDur', sc['dur']) > 0]
+    # 카드 이름만 보면 "같은 카드 다른 톤"을 반복으로 오판한다.
+    # 화면이 같아 보이느냐가 기준이므로 (카드 + 바탕 + 정렬) 조합으로 센다.
+    seq = []
+    for sc in plan['scenes']:
+        sid = str(sc['id'])
+        if sid not in props or sc.get('cardDur', sc['dur']) <= 0:
+            continue
+        pr = props[sid].get('props', {})
+        seq.append(f"{props[sid]['card']}/{pr.get('theme', 'paper')}/{pr.get('align', 'center')}")
     run, worst = 1, []
     for i in range(1, len(seq)):
         if seq[i] == seq[i - 1]:
@@ -276,11 +283,23 @@ def check_grammar_variety(plan, props, rep):
     if run > REPEAT_MAX:
         worst.append((seq[-1], run))
     for card, n in worst:
-        rep.warn('문법', f'{card} 가 {n}컷 연속 — 중간에 다른 문법이나 실사를 끼울 것')
+        rep.warn('문법', f'{card} 가 {n}컷 연속 — 카드·바탕·정렬 중 하나는 바꿀 것')
     from collections import Counter
     c = Counter(seq)
     top = c.most_common(1)[0] if c else ('-', 0)
-    rep.ok('문법', f'카드 {len(set(seq))}종 / {len(seq)}컷 · 최다 {top[0]} {top[1]}회')
+    rep.ok('문법', f'화면 {len(set(seq))}종 / {len(seq)}컷 · 최다 {top[0]} {top[1]}회')
+
+    # 실사 문구 처리도 같이 본다 — 여기가 전부 center 면 실사끼리 똑같아 보인다
+    st = [b.get('style', 'center')
+          for sc in plan['scenes']
+          for b in ([sc['broll']] if isinstance(sc.get('broll'), dict)
+                    else (sc.get('broll') or []))
+          if b.get('text')]
+    if st:
+        from collections import Counter as C2
+        rep.ok('문법', f'실사 문구 {len(set(st))}종 / {len(st)}컷 · {dict(C2(st))}')
+        if len(set(st)) == 1 and len(st) >= 3:
+            rep.warn('문법', f'실사 문구가 전부 {st[0]} — lower/band 를 섞을 것')
 
 
 def check_safe_area(props, projdir, rep, limit=None):

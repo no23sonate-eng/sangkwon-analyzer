@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, INK, INK_SOFT, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 import {flow, fit, estWidth} from './layout';
 
 // ── 이력 카드 ────────────────────────────────────────────────────────────
@@ -21,10 +21,11 @@ export const TrackRecordCard = ({
   title = '', sub = '',
   name = '', role = '',
   items = [],
-  source = '',
+  source = '', theme, align = 'center',
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const T = themeOf(theme);
   const n = items.length;
 
   const L = flow({
@@ -43,14 +44,14 @@ export const TrackRecordCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg />
-      <PaperTitle title={title} sub={sub} />
+      <PaperBg theme={theme} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
       {/* 주체 이름 — 이력의 주어. 가장 크게 */}
       <div style={{position: 'absolute', left: X, width: 1500, top: L.name.top,
                    opacity: fadeIn(frame, 4)}}>
         <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                     fontSize: fit(name, 76, 1440), color: INK, lineHeight: 1.15,
+                     fontSize: fit(name, 76, 1440), color: T.ink, lineHeight: 1.15,
                      wordBreak: 'keep-all'}}>
           {name}
         </div>
@@ -58,7 +59,7 @@ export const TrackRecordCard = ({
       {role ? (
         <div style={{position: 'absolute', left: X, width: 1400, top: L.role.top,
                      opacity: fadeIn(frame, 12), fontFamily: 'A2Z Light, sans-serif',
-                     fontSize: 36, color: INK_SOFT, wordBreak: 'keep-all'}}>
+                     fontSize: 36, color: T.soft, wordBreak: 'keep-all'}}>
           {role}
         </div>
       ) : null}
@@ -70,7 +71,7 @@ export const TrackRecordCard = ({
               y2={L.list.top + 10 + (n * 96 - 40) * interpolate(
                 frame, [26, 26 + Math.max(1, n * 8)], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}
-              stroke={INK} strokeWidth={3} opacity={0.35} />
+              stroke={T.ink} strokeWidth={3} opacity={0.35} />
         ) : null}
       </svg>
 
@@ -85,7 +86,7 @@ export const TrackRecordCard = ({
             {/* 순번이 먼저 찍히고 */}
             <div style={{position: 'absolute', left: X - 58, top: y + 4, width: 48,
                          textAlign: 'center', opacity: e,
-                         fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: INK_SOFT}}>
+                         fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: T.soft}}>
               {String(i + 1).padStart(2, '0')}
             </div>
             {/* 이름이 기준선에서 밀려 나온다 (페이드가 아니라 마스크) */}
@@ -93,15 +94,15 @@ export const TrackRecordCard = ({
                          width: estWidth(it.label || '', size) + 40,
                          clipPath: `inset(0 ${(1 - e) * 100}% 0 0)`}}>
               <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: size,
-                           color: INK, lineHeight: 1.2, whiteSpace: 'nowrap'}}>
-                <span style={{background: it.hot ? YELLOW : 'none',
+                           color: T.ink, lineHeight: 1.2, whiteSpace: 'nowrap'}}>
+                <span style={{background: it.hot ? YELLOW : 'none', color: it.hot ? INK : T.ink,
                               padding: it.hot ? '2px 12px' : 0}}>{it.label}</span>
               </div>
             </div>
             {it.note ? (
               <div style={{position: 'absolute', left: X + estWidth(it.label || '', size) + 34,
                            top: y + size * 0.42, opacity: fadeIn(frame, 38 + i * 11),
-                           fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: INK_SOFT,
+                           fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
                            whiteSpace: 'nowrap'}}>
                 {it.note}
               </div>
@@ -109,7 +110,7 @@ export const TrackRecordCard = ({
           </React.Fragment>
         );
       })}
-      <PaperSource source={source} />
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

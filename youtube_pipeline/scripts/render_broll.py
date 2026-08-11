@@ -41,8 +41,19 @@ def _shadow_text(d, xy, txt, font, fill, sh=(0, 0, 0, 150), off=2):
     d.text(xy, txt, font=font, fill=fill)
 
 
-def overlay_png(text='', sub='', key='credit', credit=CREDIT):
-    """실사 위에 얹을 투명 PNG. 출처는 항상, text 가 있으면 가운데 문구도 함께.
+# ── 실사 위 문구 처리 ────────────────────────────────────────────────────
+# 실사 컷이 전부 "가운데 흰 글씨 + 위아래 그라디언트" 하나였다.
+# 갤러리 편 9컷 중 4컷이 실사였는데 넷 다 같은 그림으로 읽혔다.
+# 세 가지로 나눈다 — 컷마다 `style` 로 고른다.
+#
+#   center  화면 한가운데. 선언·전환에.        (기존)
+#   lower   좌하단 + 옐로 룰. 설명·부연에.      화면 위쪽이 살아 있어 사진이 보인다
+#   band    하단 옐로 밴드 + 검은 글씨. 못박을 때. 가장 강하다 — 한 편에 한두 번만
+STYLES = ('center', 'lower', 'band')
+
+
+def overlay_png(text='', sub='', key='credit', credit=CREDIT, style='center'):
+    """실사 위에 얹을 투명 PNG. 출처는 항상, text 가 있으면 문구도 함께.
 
     이 ffmpeg 빌드에는 drawtext(libfreetype)가 없어서 PIL 로 굽는다.
     """
@@ -54,7 +65,7 @@ def overlay_png(text='', sub='', key='credit', credit=CREDIT):
     im = Image.new('RGBA', (1920, 1080), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
 
-    if text:
+    if text and style == 'center':
         # 문구 뒤에 옅은 세로 그라디언트를 깔아 어떤 화면에서도 읽히게
         scrim = Image.new('RGBA', (1920, 1080), (0, 0, 0, 0))
         sd = ImageDraw.Draw(scrim)
@@ -70,6 +81,37 @@ def overlay_png(text='', sub='', key='credit', credit=CREDIT):
             fs = ImageFont.truetype(FONT_R, 42)
             w2 = d.textbbox((0, 0), sub, font=fs)[2]
             _shadow_text(d, ((1920 - w2) // 2, 600), sub, fs, (226, 231, 238, 255))
+
+    elif text and style == 'lower':
+        # 좌하단. 위쪽을 비워 두므로 사진이 살아 있다. 옐로 룰이 시작점을 찍는다.
+        scrim = Image.new('RGBA', (1920, 1080), (0, 0, 0, 0))
+        sd = ImageDraw.Draw(scrim)
+        for i in range(420):
+            a = int(190 * (i / 420) ** 1.4)
+            sd.line([(0, 660 + i), (1920, 660 + i)], fill=(11, 14, 18, a))
+        im = Image.alpha_composite(im, scrim)
+        d = ImageDraw.Draw(im)
+        y = 640 if sub else 686
+        d.rectangle([120, y, 120 + 96, y + 8], fill=(250, 255, 46, 255))
+        fb = ImageFont.truetype(FONT, 76)
+        _shadow_text(d, (120, y + 34), text, fb, (255, 255, 255, 255), off=3)
+        if sub:
+            fs = ImageFont.truetype(FONT_R, 38)
+            _shadow_text(d, (120, y + 134), sub, fs, (222, 228, 236, 255))
+
+    elif text and style == 'band':
+        # 하단 옐로 밴드 + 검은 글씨. 그림 위에 못을 박는 처리라 한 편에 한두 번만.
+        d = ImageDraw.Draw(im)
+        fb = ImageFont.truetype(FONT, 82)
+        bh = 168 if sub else 132
+        by = 1080 - 260 - bh          # 자막 안전영역 바로 위
+        d.rectangle([0, by, 1920, by + bh], fill=(250, 255, 46, 255))
+        w = d.textbbox((0, 0), text, font=fb)[2]
+        d.text(((1920 - w) // 2, by + 20), text, font=fb, fill=(18, 21, 26, 255))
+        if sub:
+            fs = ImageFont.truetype(FONT_R, 36)
+            w2 = d.textbbox((0, 0), sub, font=fs)[2]
+            d.text(((1920 - w2) // 2, by + 116), sub, font=fs, fill=(18, 21, 26, 210))
 
     f = ImageFont.truetype(FONT, 23)
     w = d.textbbox((0, 0), credit, font=f)[2]
@@ -136,9 +178,11 @@ def main():
             sfx = '_b' if len(bs) == 1 else f'_b{j + 1}'
             out = os.path.join(outdir, f"sec{sc['id']:02d}_{sc['key']}{sfx}.mp4")
             cr = b.get('credit', CREDIT)
-            key = f"c{zlib.crc32(cr.encode()) % 99999}" if not b.get('text') else f"t{sc['id']:02d}_{j}"
+            st = b.get('style', 'center')
+            key = (f"c{zlib.crc32(cr.encode()) % 99999}" if not b.get('text')
+                   else f"t{sc['id']:02d}_{j}_{st}")
             cut(src, b['ss'], b['dur'], out,
-                overlay_png(b.get('text', ''), b.get('sub', ''), key, cr))
+                overlay_png(b.get('text', ''), b.get('sub', ''), key, cr, st))
             print(f"[ok] #{sc['id']:02d} {sc['key']:12s} {sfx[1:]:3s} {b['dur']:5.1f}s "
                   f"{b['src'][:10]}@{b['ss']}s  {os.path.getsize(out)//1024}KB", flush=True)
             n += 1

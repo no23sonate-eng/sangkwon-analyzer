@@ -37,7 +37,8 @@
         "dur": 2.5,
         "text": "인테리어",
         "sub": "",
-        "credit": "Mixkit"
+        "credit": "Mixkit",
+        "style": "lower"
       }
     },
     {
@@ -56,7 +57,8 @@
         "dur": 5.0,
         "text": "콘란앤파트너스",
         "sub": "런던 기반 · 오피스텔 인테리어 디자인",
-        "credit": "Mixkit"
+        "credit": "Mixkit",
+        "style": "center"
       }
     },
     {
@@ -95,7 +97,8 @@
         "dur": 2.9,
         "text": "어두운 원목",
         "sub": "",
-        "credit": "Mixkit"
+        "credit": "Mixkit",
+        "style": "lower"
       }
     },
     {
@@ -114,7 +117,8 @@
         "dur": 4.1,
         "text": "마감으로 만드는 고급감",
         "sub": "",
-        "credit": "Mixkit"
+        "credit": "Mixkit",
+        "style": "band"
       }
     },
     {

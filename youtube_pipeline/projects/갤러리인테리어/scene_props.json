@@ -33,7 +33,9 @@
           ]
         },
         "verdict": "접근성을 택했다",
-        "source": ""
+        "source": "",
+        "theme": "blueprint",
+        "align": "left"
       }
     },
     "2": {
@@ -51,7 +53,9 @@
         "name": "EWAI",
         "role": "국내 하이엔드 인테리어 전문사",
         "items": [],
-        "source": "EWAI 공식 · 대우건설 써밋"
+        "source": "EWAI 공식 · 대우건설 써밋",
+        "theme": "ink",
+        "align": "left"
       }
     },
     "5": {
@@ -72,7 +76,9 @@
             "hot": true
           }
         ],
-        "source": "EWAI 공식 · 대우건설 써밋"
+        "source": "EWAI 공식 · 대우건설 써밋",
+        "theme": "ink",
+        "align": "left"
       }
     },
     "6": {
@@ -104,7 +110,9 @@
           ]
         },
         "verdict": "후자에 가까웠다",
-        "source": "현장 확인"
+        "source": "현장 확인",
+        "theme": "paper",
+        "align": "center"
       }
     }
   }

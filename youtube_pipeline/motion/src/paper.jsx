@@ -54,24 +54,63 @@ export const DARK_PAPER = '#242830';
 export const DARK_INK = '#F2F0EC';
 export const DARK_INK_SOFT = '#A7AEB8';
 export const DARK_TONES = ['#4A525E', '#79828F', '#3A414C', '#98A1AD', '#5C6470'];
-export const palette = (dark) => (dark
+export const palette = (dark, theme) => (theme
+  ? {paper: THEMES[theme].bg, ink: THEMES[theme].ink, inkSoft: THEMES[theme].soft,
+     tones: THEMES[theme].tones, line: THEMES[theme].grid, vig: '#000'}
+  : dark
   ? {paper: DARK_PAPER, ink: DARK_INK, inkSoft: DARK_INK_SOFT, tones: DARK_TONES,
      line: 'rgba(242,240,236,0.10)', vig: '#000'}
   : {paper: PAPER, ink: INK, inkSoft: INK_SOFT, tones: TONES, line: PAPER_LINE, vig: '#000'});
 
+// ── 바탕 테마 ────────────────────────────────────────────────────────────
+// 종이 카드가 전부 같은 크림 바탕이면 카드를 아무리 늘려도 화면은 한 종류로 읽힌다.
+// (갤러리 편 9컷 중 5컷이 사실상 같은 그림이었다.)
+// 바탕 자체를 갈아 끼울 수 있게 만든다 — 같은 카드도 톤이 바뀌면 다른 화면이 된다.
+//
+//   paper      크림 종이 · 굵은 격자      기본. 설명·비교
+//   ink        딥 차콜                    무게를 싣는 구간, 종이 사이의 쉼표
+//   blueprint  네이비 청사진 · 촘촘한 격자  도면·구조·계획 이야기
+export const THEMES = {
+  paper:     {bg: '#EFEAE3', ink: '#23262B', soft: '#6E747C',
+              grid: 'rgba(35,38,43,0.10)', step: 80, fine: false,
+              tones: ['#B9BFC9', '#5C6470', '#8F97A3', '#3A414C', '#A8B0BC']},
+  ink:       {bg: '#242830', ink: '#F2F0EC', soft: '#A7AEB8',
+              grid: 'rgba(242,240,236,0.10)', step: 80, fine: false,
+              tones: ['#4A525E', '#79828F', '#3A414C', '#98A1AD', '#5C6470']},
+  blueprint: {bg: '#16233A', ink: '#E8F0FF', soft: '#8FA6C8',
+              grid: 'rgba(150,190,255,0.16)', step: 40, fine: true,
+              tones: ['#33507E', '#4E74AE', '#28405F', '#6A92CE', '#3E5F92']},
+};
+export const themeOf = (t, dark) => THEMES[t] || (dark ? THEMES.ink : THEMES.paper);
+
 // 크림 종이 배경 + 옅은 격자 + 가장자리 비네트
-export const PaperBg = ({dark = false}) => (
+export const PaperBg = ({dark = false, theme}) => {
+  const T = themeOf(theme, dark);
+  const nv = Math.floor(1920 / T.step) - 1;
+  const nh = Math.floor(1080 / T.step) - 1;
+  return (
   <>
-    <div style={{position: 'absolute', inset: 0, background: dark ? DARK_PAPER : PAPER}} />
+    <div style={{position: 'absolute', inset: 0, background: T.bg}} />
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-      <g stroke={dark ? 'rgba(242,240,236,0.10)' : PAPER_LINE} strokeWidth={1}>
-        {Array.from({length: 23}, (_, i) => (
-          <line key={`v${i}`} x1={(i + 1) * 80} y1={0} x2={(i + 1) * 80} y2={1080} />
+      <g stroke={T.grid} strokeWidth={1}>
+        {Array.from({length: nv}, (_, i) => (
+          <line key={`v${i}`} x1={(i + 1) * T.step} y1={0} x2={(i + 1) * T.step} y2={1080} />
         ))}
-        {Array.from({length: 13}, (_, i) => (
-          <line key={`h${i}`} x1={0} y1={(i + 1) * 80} x2={1920} y2={(i + 1) * 80} />
+        {Array.from({length: nh}, (_, i) => (
+          <line key={`h${i}`} x1={0} y1={(i + 1) * T.step} x2={1920} y2={(i + 1) * T.step} />
         ))}
       </g>
+      {/* 청사진은 굵은 기준선을 5칸마다 한 번 더 — 도면처럼 보이게 */}
+      {T.fine ? (
+        <g stroke={T.grid} strokeWidth={2} opacity={0.9}>
+          {Array.from({length: Math.floor(nv / 5)}, (_, i) => (
+            <line key={`V${i}`} x1={(i + 1) * T.step * 5} y1={0} x2={(i + 1) * T.step * 5} y2={1080} />
+          ))}
+          {Array.from({length: Math.floor(nh / 5)}, (_, i) => (
+            <line key={`H${i}`} x1={0} y1={(i + 1) * T.step * 5} x2={1920} y2={(i + 1) * T.step * 5} />
+          ))}
+        </g>
+      ) : null}
       <rect x={0} y={0} width={1920} height={1080} fill="url(#paperVig)" />
       <defs>
         <radialGradient id="paperVig" cx="0.5" cy="0.45" r="0.75">
@@ -81,18 +120,33 @@ export const PaperBg = ({dark = false}) => (
       </defs>
     </svg>
   </>
-);
+  );
+};
 
-// 상단 중앙 타이틀 (레퍼런스 "Occupancy" 스타일 — 작고 절제된 제목)
-export const PaperTitle = ({title, sub = '', dark = false}) => {
+// 타이틀 — 가운데 정렬이 기본이지만 **왼쪽 정렬**도 쓴다.
+// 가운데만 쓰면 카드가 달라도 첫인상이 같다. 왼쪽 정렬에는 짧은 옐로 룰을 얹어
+// "다른 장"이라는 신호를 준다 (B1M 이 챕터를 가를 때 쓰는 방식).
+export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'center'}) => {
   const frame = useCurrentFrame();
+  const T = themeOf(theme, dark);
+  const left = align === 'left';
+  const grow = Math.max(0, Math.min(1, (frame - 2) / 14));
   return (
-    <div style={{position: 'absolute', top: 138, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, letterSpacing: '-0.01em', color: dark ? DARK_INK : INK}}>
+    <div style={{position: 'absolute', top: left ? 118 : 138, left: left ? 150 : 0,
+                 width: left ? 1560 : 1920, textAlign: left ? 'left' : 'center',
+                 opacity: fadeIn(frame, 0)}}>
+      {left ? (
+        <div style={{width: 96 * grow, height: 8, background: YELLOW, marginBottom: 22}} />
+      ) : null}
+      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                   fontSize: left ? 76 : 68, letterSpacing: '-0.01em', color: T.ink,
+                   wordBreak: 'keep-all'}}>
         {title}
       </div>
       {sub ? (
-        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.08em', color: dark ? DARK_INK_SOFT : INK_SOFT}}>
+        <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 36,
+                     letterSpacing: left ? '0.02em' : '0.08em', color: T.soft,
+                     wordBreak: 'keep-all'}}>
           {sub}
         </div>
       ) : null}
@@ -102,11 +156,12 @@ export const PaperTitle = ({title, sub = '', dark = false}) => {
 
 // 우하단 출처 캡션 — 화면 오른쪽 아래 **끝**에 붙인다(2026-08-06).
 // 자막은 하단 중앙에 깔리므로 모서리로 완전히 빼야 서로 안 건드린다.
-export const PaperSource = ({source = '', dark = false}) => {
+export const PaperSource = ({source = '', dark = false, theme}) => {
   const frame = useCurrentFrame();
   if (!source) return null;
+  const T = themeOf(theme, dark);
   return (
-    <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.06em', color: dark ? DARK_INK_SOFT : INK_SOFT, opacity: fadeIn(frame, 40)}}>
+    <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.06em', color: T.soft, opacity: fadeIn(frame, 40)}}>
       {source}
     </div>
   );
