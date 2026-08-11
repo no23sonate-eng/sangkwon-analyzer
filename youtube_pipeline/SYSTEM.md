@@ -10,12 +10,19 @@
 ```bash
 P=새프로젝트
 
-# 1. 스크립트 → 장면·타이밍·카드 초안
+# 1. 스크립트 → 장면·타이밍·카드·챕터 초안
 python3 youtube_pipeline/scripts/plan_from_script.py 스크립트.md --project $P --dry   # 먼저 눈으로
 python3 youtube_pipeline/scripts/plan_from_script.py 스크립트.md --project $P
 
-# 2. scene_props.json 의 빈 값을 채운다 (여기가 사람의 일)
-#    이미지는 motion/public/$P/ 에 모으고 CREDITS.md 를 같이 쓴다
+# 2-a. 소재 수집 — 반드시 컨택트시트를 눈으로 보고 채택한다
+python3 youtube_pipeline/scripts/fetch_sources.py $P --q "검색어" --video "검색어" --limit 6
+python3 youtube_pipeline/scripts/fetch_sources.py $P --adopt <ID> <파일명>
+#     회사·브랜드 로고는 --logo 를 붙인다 (누끼 + 알파 PNG + logoInvert 판정까지)
+python3 youtube_pipeline/scripts/fetch_sources.py $P --logo --q "회사명"
+python3 youtube_pipeline/scripts/fetch_sources.py $P --adopt <ID> conran --logo
+
+# 2-b. scene_props.json 의 빈 값을 채운다 (여기가 사람의 일)
+#      scene_plan.json 의 chapters[].name 도 여기서 짓는다 — 자동으로 안 짓는다
 
 # 3. 검수용 스틸 → 눈으로 확인 → 고치기 반복
 python3 youtube_pipeline/scripts/render_parkside.py --still
@@ -29,7 +36,10 @@ python3 youtube_pipeline/scripts/qa_check.py $P            # 클립까지 포함
 # 5. 납품물
 python3 youtube_pipeline/scripts/build_parkside_xml.py     # 프리미어 시퀀스
 python3 youtube_pipeline/scripts/export_srt.py $P          # 자막 초안
-python3 youtube_pipeline/scripts/make_thumbnails.py $P ...  # 썸네일 3안
+python3 youtube_pipeline/scripts/export_description.py $P --logline "한 문장"  # 설명문(목차+출처)
+python3 youtube_pipeline/scripts/make_thumbnails.py $P \
+    --bg $P/hero.jpg --stamp "11조 사업" --stamp-sub "서울 용산" --arrow "0.55,0.62" \
+    --verdict "왜 20층?"                                    # 썸네일 A~E안
 python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → --ids 로 생성
 ```
 
@@ -156,44 +166,72 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 이번 세션에서 자막 영역 침범을 세 카드에서 **따로따로** 고쳤다. 4번을 지켰으면
 한 번에 끝났을 일이다.
 
-## 7-3. 그래픽 어휘 (2026-08-06 확장)
+## 7-3. 그래픽 어휘
 
 | 카드 | 언제 |
 |---|---|
-| `AnnotatedShotCard` | 항공샷·배치도를 **훑으며** 짚어야 할 때 (§26) |
-| `ScaleCompareCard` | "그래서 얼마나 큰데?" — 실제 미터 + 사람 1.7m (§28-1) |
-| `BeforeAfterCard` | 같은 지점의 전/후. **화각이 맞을 때만** (§28-2) |
-| `NumberIn` | 강조 수치는 마스크 리빌 + 카운트업 + 밑줄 (§27) |
+| `BrandCard` | 회사·브랜드가 **처음 나올 때**. 누끼 로고 + 한 줄 (`split`/`mark`) |
+| `TrackRecordCard` | "그 회사가 뭘 해왔는데" — 레퍼런스를 도장 찍듯 떨어뜨린다 |
+| `StrikeSwapCard` | 값이 **대체**될 때. 옛 값 → 취소선 → 새 값 |
+| `AnnotatedShotCard` | 항공샷·배치도를 **훑으며** 짚을 때. `pointer` 3종 |
+| `ScaleCompareCard` | "그래서 얼마나 큰데?" — 실제 미터 + 사람 1.7m |
+| `BeforeAfterCard` | 같은 지점의 전/후. **화각이 맞을 때만** |
+| `NumberIn` | 강조 수치는 마스크 리빌 + 카운트업 + 밑줄 |
 
-한 편 안에서 같은 문법이 3연속으로 나오면 그 자체가 결함이다.
-`qa_check.py` 가 컷 길이는 보지만 **문법 반복은 아직 안 본다** — 다음 개선 후보.
+`AnnotatedShotCard.pointer` (비트별 `b.pointer` 로 덮어씀)
+- `arrow` **기본** — 손으로 그린 듯 휜 화살표. 사진 위에서는 이게 맞다
+- `ring` — 링 + 직선. **도면·배치도**처럼 한 점을 정확히 찍어야 할 때만
+- `circle` — 점선 원. "여기가 비었다 / 여기가 문제다"
 
-## 7-4. 제작 원칙 3종 (2026-08-11 학습 · 다음 편부터 기본값)
+실사 문구 처리 (`render_broll.py --style`)
+- `stamp` **기본 권장** — 검정 상자 + 흰 글씨 2단. 스크림을 안 깔아 사진이 산다
+- `center` / `lower` / `band` — 스크림을 깐다. 하늘·단색 배경 실사에서만
+- 연속 두 컷이 같은 처리면 안 된다. `qa_check` 가 센다
+
+바탕 테마 (`theme`): `paper`(크림) / `ink`(먹) / `blueprint`(청사진).
+카드 51종 중 실사 카드를 뺀 전부가 받는다. **정렬(`align`)까지 합쳐 껍데기가 6종.**
+연속 두 컷이 (카드 + 바탕 + 정렬) 조합까지 같으면 `qa_check` 가 경고한다.
+
+## 7-4. 제작 원칙 3종 (design_reference §30 · **전부 기능으로 구현됨**)
 
 1. **브랜드·기업은 로고/대표 이미지로. 누끼 필수.**
-   Commons SVG 로고는 알파를 갖고 온다. 흰 바탕 로고는 **가장자리 플러드필**로 뗀다
-   (단순 임계로 하면 로고 안쪽 흰 부분이 뚫린다). 실사 피사체 분리는 지금 불가.
-2. **줄글은 도식·그래프·예시로 바꾼다.** 문장 유형 → 카드 매핑은 design_reference §30-2.
-   표에 안 맞으면 억지로 그리지 말고 내레이션만으로 간다.
-3. **화면은 계속 바뀐다.** 컷 평균 5초 이하 + 컷 안에서도 순차 도착·미세 카메라 이동 +
-   연속 두 컷은 껍데기(카드·바탕·정렬)를 달리한다.
+   → `fetch_sources.py --logo` + `BrandCard`
+2. **줄글은 도식·그래프·예시로 바꾼다.** 표에 안 맞으면 억지로 그리지 말고 실사로 넘긴다.
+   → `plan_from_script.py` 의 `RULES` 가 문장 유형을 카드로 보낸다.
+     안 걸리는 문장은 `도식 불가 — 실사 b-roll 권장` 으로 말하고, 연달아 나오면 실사로 넘긴다
+3. **화면은 계속 바뀐다.** 컷 평균 5초 이하 + 컷 안에서도 순차 도착 + 연속 두 컷은 껍데기를 달리한다.
+
+## 7-5. B1M 실측 기준 (620편 · design_reference §31)
+
+**기획할 때 이 숫자에 맞춘다.** 감이 아니라 잰 값이다.
+
+| 항목 | 기준 | 근거 |
+|---|---|---|
+| 길이 | **길이를 줄일 이유 없음** | 최근 1년 중앙 15:16 (7년 전 5:33). 조회수 안 떨어짐 |
+| 챕터 | **8개 · 각 90초** (p10 48s / p90 237s) | 117편 실측 |
+| 인트로 | **65초** | 훅에 1분을 쓴다 |
+| 컷 | 평균 5초 이하 | 자체 규칙 |
+| 제목 | 44자 · **지명 + 금액**을 넣는다 | 최근 2년 지명 46% · 금액 26% |
+| 제목 | 최상급은 아껴 쓴다 | 11년째 12% 붙박이 — 그것만으로는 안 먹힌다 |
+| 설명문 | 로그라인 1줄(61자) + 목차 + 출처 블록 | 85%가 출처 블록을 단다 |
+| 썸네일 | 수치+단위 **또는** 한 단어 판정 | `$2BN` / `ABANDONED.` |
+
+썸네일 부호: **마침표 = 끝났다 · 물음표 = 아직 모른다 · 말줄임표 = 이어진다.**
 
 ## 8. 다음 후보 (우선순위순)
 
-1. **컷 밀도 개선** — 평균 10초는 길다. `plan_from_script.py` 가 카드 하나를
-   앞뒤 두 컷(도입 그래픽 → 수치 강조)으로 쪼개는 패턴을 넣을 것.
-2. **실사 자동 매칭** — 장면 텍스트 → Mixkit 검색어 → 후보 다운로드 → 컨택트시트.
-   지금은 손으로 고른다.
-3. **A/B 기록** — 업로드한 썸네일·제목과 CTR 을 프로젝트에 적어 두고, 다음 기획 때
-   `SYSTEM.md` 규칙을 실제 성과로 갱신.
-4. **음성 길이 실측 피드백** — 녹음 파일을 넣으면 장면별 실제 길이로
-   `scene_plan.json` 을 갱신하는 스크립트. `CPS` 추정을 없앨 수 있다.
-5. **문법 반복 검사** — 같은 카드가 3연속이면 경고. 파크사이드는
-   `SkylineCompareCard` 가 4번, `PhotoStepsCard` 가 3번 반복됐다.
-6. **로케이터** — "여기가 어디인가"를 넓게→좁게 보여 주는 컷. 지금 0개다.
-   `AnnotatedShotCard` 를 중첩 이미지 3장으로 이어 붙이면 된다.
-7. **`fetch_sources.py --logo`** — 로고 검색 + 누끼 + 알파 PNG 저장 (§30-1)
-8. **`BrandCard`** — 누끼 로고 + 한 줄 + 대표 이미지. 회사 소개 전용 (§30-1)
+1. **실사 자동 매칭** — 장면 텍스트 → 검색어 → 후보 다운로드 → 컨택트시트까지 자동.
+   지금은 검색어를 손으로 준다
+2. **음성 길이 실측 피드백** — 녹음 파일을 넣으면 장면별 실제 길이로
+   `scene_plan.json` 을 갱신. `CPS` 추정을 없앨 수 있다
+3. **A/B 기록** — 업로드한 썸네일·제목과 CTR 을 프로젝트에 적어 두고
+   §7-5 기준을 실제 성과로 갱신
+4. **로케이터** — "여기가 어디인가"를 넓게→좁게. 지금 0개다.
+   `AnnotatedShotCard` 를 중첩 이미지 3장으로 이어 붙이면 된다
+5. **챕터 제목 제안** — 자동 작성은 안 하되, 그 구간 문장에서 후보 3개를 뽑아 보여 주기
+
+끝난 것: 컷 밀도(§9-1) · 문법 반복 검사(§9-2) · 다중 소스(§9-3) ·
+누끼/`BrandCard`(§7-4) · 챕터/설명문(§7-5) · 카드 테마 개방
 
 ---
 
