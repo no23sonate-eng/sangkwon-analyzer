@@ -76,6 +76,11 @@ RULES = [
     (r'(\(([^)]*(경제|일보|신문|뉴스|타임스|저널|통신|방송)[^)]*)\)|'
      r'[가-힣A-Za-z]{2,10}(경제|일보|신문|뉴스|타임스)[^.]{0,20}(보도|따르면|전했|밝혔))',
      'ArticleCard', '기사 인용 = 원문 + 형광펜'),
+    # 위치·입지를 말한다 → 지도. 말로만 하면 아는 사람만 알아듣는다 (§33)
+    (r'((서울|경기|인천|부산|대구|대전|광주|울산)?\s*[가-힣]{2,6}(구|시|동|읍|면|로|대로)\s*'
+     r'[^.]{0,24}(있|위치|자리|입지|한복판|인근|옆|사이)|'
+     r'(어디|위치는|입지는|자리는)[^.]{0,20}(입니다|인가|일까))',
+     'MapCard', '위치 = 지도'),
     (r'(\d+)\s*(위|등)[^.]{0,40}?(\d+)\s*(위|등)', 'RankTrendCard', '순위 변화'),
     # 값이 **대체**된다 — 나란히 비교가 아니라 옛 값에 취소선을 긋는 동작
     (r'([\d,]+\s*(%|억|조|시간|분|년|미터|m|층|평|㎡))[^.]{0,50}?'
@@ -149,6 +154,12 @@ SKELETON = {
     # 인용구만 뽑으면 "내가 고른 말"이 되고, 원문을 놓아야 "기사에 그렇게 적혀 있다"가 된다
     'ArticleCard': {'outlet': '', 'date': '', 'body': '«»', 'portrait': '', 'who': '', 'role': '',
                     'dim': True, 'serif': True, 'source': ''},
+    # bounds 는 fetch_map.py 가 찍어 주는 값을 그대로 붙인다.
+    # 핀은 위경도로 찍는다 — 픽셀로 맞추면 지도를 다시 뽑을 때 전부 다시 맞춰야 한다
+    'MapCard': {'image': '', 'bounds': None, 'title': '', 'sub': '',
+                'pins': [{'lat': 0, 'lon': 0, 'label': '', 'sub': '', 'hot': True}],
+                'area': None, 'route': None, 'zoomTo': None,
+                'align': 'left', 'source': '© OpenStreetMap contributors © CARTO'},
     'IsoDiagramCard': {'title': '', 'sub': '',
                        'blocks': [{'x': -2, 'z': -1, 'w': 2, 'd': 2, 'h': 1, 'label': ''},
                                   {'x': 0.5, 'z': -1, 'w': 2, 'd': 2, 'h': 1.4, 'hot': True, 'label': ''}],
@@ -251,6 +262,7 @@ ALT = {
     'StrikeSwapCard':      ['BigStatsCard', 'RatioCard'],
     'ArticleCard':         ['NewsQuoteCard', 'QuoteCard'],
     'IsoDiagramCard':      ['SectionPhotoCard', 'ExplodedStackCard'],
+    'MapCard':             ['AnnotatedShotCard', 'FullBleedCard'],
 }
 REPEAT_MAX = 2          # 같은 카드 연속 허용 한도
 

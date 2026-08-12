@@ -15,6 +15,11 @@ python3 youtube_pipeline/scripts/plan_from_script.py 스크립트.md --project $
 python3 youtube_pipeline/scripts/plan_from_script.py 스크립트.md --project $P
 
 # 2-a. 소재 수집 — 반드시 컨택트시트를 눈으로 보고 채택한다
+python3 youtube_pipeline/scripts/suggest_queries.py $P            # 장면별 영어 검색어 제안
+python3 youtube_pipeline/scripts/suggest_queries.py $P --collect  # 제안대로 바로 수집
+#     지도는 좌표만 주면 된다. 찍히는 bounds 를 MapCard 에 그대로 붙인다
+python3 youtube_pipeline/scripts/fetch_map.py $P --name yongsan \
+    --center 37.5326 126.9800 --zoom 15 --style light
 python3 youtube_pipeline/scripts/fetch_sources.py $P --q "검색어" --video "검색어" --limit 6
 python3 youtube_pipeline/scripts/fetch_sources.py $P --adopt <ID> <파일명>
 #     회사·브랜드 로고는 --logo 를 붙인다 (누끼 + 알파 PNG + logoInvert 판정까지)
@@ -170,6 +175,7 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 
 | 카드 | 언제 |
 |---|---|
+| `MapCard` | **위치를 말할 때는 반드시.** 위경도로 핀·영역·경로 |
 | `ArticleCard` | 기사·보도자료를 인용할 때. **원문 통째 + 형광펜** |
 | `IsoDiagramCard` | "어떻게 생겼나 / 어떻게 짓나" — 얕은 3D 축측 도해 |
 | `BrandCard` | 회사·브랜드가 **처음 나올 때**. 누끼 로고 + 한 줄 (`split`/`mark`) |

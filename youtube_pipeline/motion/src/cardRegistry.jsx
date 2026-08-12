@@ -58,6 +58,7 @@ import {BrandCard} from './BrandCard';
 import {StrikeSwapCard} from './StrikeSwapCard';
 import {ArticleCard} from './ArticleCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
+import {MapCard} from './MapCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -68,6 +69,7 @@ export const CARDS = {
   StrikeSwapCard,
   ArticleCard,
   IsoDiagramCard,
+  MapCard,
   BuildingCard,
   StatCard,
   QuoteCard,

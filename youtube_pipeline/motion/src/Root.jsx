@@ -59,6 +59,7 @@ import {BrandCard} from './BrandCard';
 import {StrikeSwapCard} from './StrikeSwapCard';
 import {ArticleCard} from './ArticleCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
+import {MapCard} from './MapCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -394,6 +395,7 @@ export const RemotionRoot = () => {
         ['StrikeSwapCard', StrikeSwapCard, {}],
         ['ArticleCard', ArticleCard, {}],
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
+        ['MapCard', MapCard, {pins: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}
