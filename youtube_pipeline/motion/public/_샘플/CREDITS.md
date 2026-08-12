@@ -5,3 +5,4 @@
 | `shinsegae.png` | Shinsegaedutyfree (openverse) | shinsegae dutyfree, **BY-SA 4.0** | `shinsegae dutyfree / BY-SA 4.0` |
 | `rosewood.png` | Rosewood hotel resorts logo.jpg (commons) | Rosewood Hotels &amp; Resorts, **Public domain** | `Rosewood Hotels &amp; Resorts / Public domain` |
 | `yongsan.png` | 지도 타일 z15 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `excavation.mp4` | mixkit 49188 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |

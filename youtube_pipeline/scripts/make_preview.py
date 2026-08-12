@@ -32,7 +32,10 @@ def main():
 
     files = []
     for sc in plan['scenes']:
-        for name in (f"sec{sc['id']:02d}_{sc['key']}.mp4", f"sec{sc['id']:02d}_{sc['key']}_broll.mp4"):
+        # 카드가 먼저, 그 뒤에 실사. render_broll 은 접미사를 _b / _b1,_b2… 로 붙인다
+        names = [f"sec{sc['id']:02d}_{sc['key']}.mp4", f"sec{sc['id']:02d}_{sc['key']}_b.mp4"]
+        names += [f"sec{sc['id']:02d}_{sc['key']}_b{j}.mp4" for j in range(1, 5)]
+        for name in names:
             p = os.path.join(clips, name)
             if os.path.exists(p):
                 files.append(p)
