@@ -180,14 +180,22 @@ export const DimLine = ({x1, y1, x2, y2, progress = 1, color = '#FFFFFF',
           <polygon points={arrow(x2, y2, -1)} fill={color} />
         </>
       ) : null}
-      {label && p > 0.98 ? (
-        <text x={(x1 + x2) / 2 + nx * (labelSize * 0.5 + 14)} y={(y1 + y2) / 2 + ny * 6 + labelSize * 0.34}
-              fill={color} fontSize={labelSize} textAnchor="middle"
-              style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                      paintOrder: 'stroke', stroke: 'rgba(0,0,0,0.45)', strokeWidth: 6}}>
-          {label}
-        </text>
-      ) : null}
+      {label && p > 0.98 ? (() => {
+        // 세로 치수선이면 글자를 **옆으로 밀어** 앉힌다. 중앙 정렬로 두면
+        // 치수선이 글자 한가운데를 관통한다 (실제로 겪음).
+        const vertical = Math.abs(dy) > Math.abs(dx);
+        const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        const lx = vertical ? mx + cap + 16 : mx;
+        const ly = vertical ? my + labelSize * 0.34 : my - cap - 14;
+        return (
+          <text x={lx} y={ly} fill={color} fontSize={labelSize}
+                textAnchor={vertical ? 'start' : 'middle'}
+                style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                        paintOrder: 'stroke', stroke: 'rgba(0,0,0,0.45)', strokeWidth: 6}}>
+            {label}
+          </text>
+        );
+      })() : null}
     </g>
   );
 };
