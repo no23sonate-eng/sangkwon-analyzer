@@ -60,6 +60,7 @@ import {StrikeSwapCard} from './StrikeSwapCard';
 import {ArticleCard} from './ArticleCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
+import {SectionDiagramCard} from './SectionDiagramCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -396,6 +397,7 @@ export const RemotionRoot = () => {
         ['ArticleCard', ArticleCard, {}],
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
         ['MapCard', MapCard, {pins: []}],
+        ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

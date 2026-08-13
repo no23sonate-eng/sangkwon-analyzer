@@ -41,6 +41,16 @@ MIN_CUT = 1.8        # 이보다 짧은 조각만 앞에 붙인다.
 OPENING_SEC = 30.0
 OPENING_MIN_CUTS = 3
 
+# ── 실사 비중 (design_reference §34) ─────────────────────────────────────
+# B1M 내부 프레임 780장을 분류해 보니 **실사가 75~90%** 다 (판정 임계에 따라).
+# 내 결과물은 정반대였다 — 파크사이드 21% · 갤러리 35% · 첫 샘플 4%.
+# 도표가 주인공이면 "설명 슬라이드"가 되고, 실사가 주인공이어야 "다큐"가 된다.
+#
+# 그래서 경고만 하지 않고 **기본값을 바꾼다.** 도식이 안 나오는 문장은
+# 어차피 종이 카드로 때우던 것이라, 그걸 실사로 넘기면 비중이 올라간다.
+# 45%는 B1M 에 한참 못 미치지만, CC 소재만 쓰는 조건에서 현실적인 첫 목표다.
+LIVE_TARGET = 0.45
+
 # ── 챕터 (design_reference §31-3) ────────────────────────────────────────
 # B1M 챕터 117편 실측: 중앙 8개 · 각 90초 · Intro 65초.
 # 지금까지 이 플래너는 **문단을 그대로 act** 로 썼다. 파크사이드는 13섹션 450초라
@@ -95,6 +105,9 @@ RULES = [
      r'(지금은|현재는|바뀌|됐습니다|되었습니다)|철거하고|리모델링해)', 'BeforeAfterCard', '전/후 대비'),
     (r'(지하\s*\d+\s*층|지상\s*\d+\s*층|연면적|대지면적)', 'SectionPhotoCard', '층수·면적 = 단면'),
     (r'(엘리베이터|위아래로|층층이|아래로 내려가|수직으로)', 'ElevatorCard', '수직 이동'),
+    # **깊이**가 주인공이면 단면. 축측(덩어리)과 역할이 다르다 (§32-3 ②)
+    (r'(깊이|깊게|파 내려|지하\s*\d+\s*층까지|표고|고저차|절토|성토|터널)',
+     'SectionDiagramCard', '깊이 = 단면 도해'),
     # 어떻게 생겼나·어떻게 짓나 → 얕은 3D 축측 도해 (§32-3)
     (r'(파냈|파야|굴착|공법|구조를|배치는|앉히|올린 구조|덩어리|매스|동선)',
      'IsoDiagramCard', '구조·공법 = 축측 도해'),
@@ -160,6 +173,11 @@ SKELETON = {
                 'pins': [{'lat': 0, 'lon': 0, 'label': '', 'sub': '', 'hot': True}],
                 'area': None, 'route': None, 'zoomTo': None,
                 'align': 'left', 'source': '© OpenStreetMap contributors © CARTO'},
+    # 좌표는 실제 단위 (x=거리 m, y=표고 m. 음수가 지하)
+    'SectionDiagramCard': {'title': '', 'sub': '',
+                           'ground': [[0, 0], [100, 0]], 'cut': [], 'plan': [], 'planLabel': '',
+                           'bands': [], 'marks': [], 'dim': None, 'unit': 'm',
+                           'note': '', 'source': ''},
     'IsoDiagramCard': {'title': '', 'sub': '',
                        'blocks': [{'x': -2, 'z': -1, 'w': 2, 'd': 2, 'h': 1, 'label': ''},
                                   {'x': 0.5, 'z': -1, 'w': 2, 'd': 2, 'h': 1.4, 'hot': True, 'label': ''}],
@@ -263,6 +281,7 @@ ALT = {
     'ArticleCard':         ['NewsQuoteCard', 'QuoteCard'],
     'IsoDiagramCard':      ['SectionPhotoCard', 'ExplodedStackCard'],
     'MapCard':             ['AnnotatedShotCard', 'FullBleedCard'],
+    'SectionDiagramCard':  ['IsoDiagramCard', 'SectionPhotoCard'],
 }
 REPEAT_MAX = 2          # 같은 카드 연속 허용 한도
 
@@ -338,6 +357,66 @@ def allocate(scenes):
         out.append(e)
         t += dur
     return out
+
+
+# ── 컷 연속성 (design_reference §34-2) ────────────────────────────────────
+# 하드컷으로만 이으면 컷마다 화면이 "다시 시작"한다. B1M 은 나가는 컷과
+# 들어오는 컷이 **같은 방향으로 흐른다** — 그래서 끊긴 느낌이 없다.
+# MotionShell 이 그걸 할 수 있는데 여태 쓰이지 않았다. 플래너가 안 넣어서다.
+#
+# 방향을 매 컷 바꾸면 화면이 좌우로 튀어 멀미가 난다. **2~3컷을 같은 방향으로**
+# 흘려보내고 한 번 바꾼다. 실사 컷은 MotionShell 을 안 거치므로 흐름을 끊는데,
+# 그게 오히려 호흡이 된다 — 실사 다음 컷에서 방향을 새로 잡는다.
+FLOW_DIRS = ['left', 'left', 'up', 'right', 'right', 'down']
+FLOW_RUN = 2            # 같은 방향으로 흘려보내는 컷 수
+
+
+def add_motion(plan):
+    di, run = 0, 0
+    for e in plan:
+        if e.get('cardDur', e['dur']) <= 0:      # 통째로 실사인 컷 — 흐름을 끊는다
+            run = 0
+            di = (di + 1) % len(FLOW_DIRS)
+            continue
+        if run >= FLOW_RUN:
+            run = 0
+            di = (di + 1) % len(FLOW_DIRS)
+        e['motion'] = {'dir': FLOW_DIRS[di], 'push': 0.035,
+                       # 뒤에 실사가 붙는 컷은 밀고 나가지 않는다 — 실사가 이어받지 못한다
+                       'exitSec': 0 if e.get('broll') else 0.5}
+        run += 1
+    return plan
+
+
+def lift_live(plan):
+    """실사 비중이 LIVE_TARGET 에 못 미치면 카드 컷을 실사로 넘긴다.
+
+    넘기는 순서가 중요하다. **도식이 안 나오는 긴 컷부터** 넘긴다 —
+    도표가 붙은 컷을 실사로 바꾸면 정보가 사라지지만,
+    종이 카드로 때우던 컷은 애초에 화면이 비어 있었다.
+    """
+    def live_ratio():
+        card = live = 0.0
+        for e in plan:
+            card += max(0.0, e.get('cardDur', e['dur']))
+            bs = e.get('broll')
+            if bs:
+                bs = bs if isinstance(bs, list) else [bs]
+                live += sum(b['dur'] for b in bs)
+        t = card + live
+        return (live / t) if t else 0.0
+
+    # 후보: 아직 실사가 없고, 도식도 없던 컷. 긴 것부터.
+    cands = sorted((e for e in plan
+                    if not e.get('broll') and e.get('_why', '').startswith(NO_DIAGRAM)
+                    and e['dur'] >= MIN_CUT),
+                   key=lambda e: -e['dur'])
+    for e in cands:
+        if live_ratio() >= LIVE_TARGET:
+            break
+        e['cardDur'] = 0
+        e['broll'] = {'src': 'TODO.mp4', 'ss': 0.0, 'dur': e['dur']}
+    return plan
 
 
 def tighten_opening(plan):
@@ -416,7 +495,7 @@ def main():
     if not sections:
         sys.exit('스크립트에서 문단을 못 찾았다.')
 
-    plan = tighten_opening(allocate(build_scenes(sections)))
+    plan = add_motion(lift_live(tighten_opening(allocate(build_scenes(sections)))))
     total = plan[-1]['end']
 
     print(f'섹션 {len(sections)} → 장면 {len(plan)} · {total:.1f}초 ({int(total)//60}:{int(total)%60:02d})')
@@ -446,7 +525,8 @@ def main():
               ensure_ascii=False, indent=2)
 
     props = {str(e['id']): {'card': e['card'],
-                            'props': json.loads(json.dumps(SKELETON.get(e['card'], {})))}
+                            'props': json.loads(json.dumps(SKELETON.get(e['card'], {}))),
+                            **({'motion': e['motion']} if e.get('motion') else {})}
              for e in plan}
     json.dump({'project': a.project,
                'note': 'plan_from_script.py 초안. 수치·라벨을 채운 뒤 qa_check.py 로 검사할 것.',

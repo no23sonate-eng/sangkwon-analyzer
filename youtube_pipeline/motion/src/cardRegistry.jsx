@@ -59,6 +59,7 @@ import {StrikeSwapCard} from './StrikeSwapCard';
 import {ArticleCard} from './ArticleCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
+import {SectionDiagramCard} from './SectionDiagramCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -70,6 +71,7 @@ export const CARDS = {
   ArticleCard,
   IsoDiagramCard,
   MapCard,
+  SectionDiagramCard,
   BuildingCard,
   StatCard,
   QuoteCard,

@@ -40,7 +40,14 @@ export const MotionShell = ({
   const slow = interpolate(frame, [0, total], [1, 1 + push], {extrapolateRight: 'clamp'});
   const hit = punchAt == null ? 0
     : spring({frame: frame - punchAt, fps, config: {damping: 200, stiffness: 90}, durationInFrames: 22});
-  const scale = slow + hit * punch;
+
+  // ④ **가장자리 메우기.** 밀기만 하면 반대쪽 가장자리에 바탕색 띠가 드러난다.
+  // 이어 붙인 영상에서 그 띠가 컷마다 번쩍여서 오히려 전환이 더 눈에 띈다
+  // (샘플 v2 에서 확인 — 검은 띠가 컷 경계마다 보였다).
+  // 밀린 만큼 키워서 화면을 계속 덮게 한다. 그러면 띠 자체가 안 생긴다.
+  const dx = Math.abs(ex + ox), dy = Math.abs(ey + oy);
+  const cover = 1.012 + Math.max(dx * 2 / 1920, dy * 2 / 1080);   // 1.2% 는 반올림 여유
+  const scale = Math.max(slow + hit * punch, cover);
 
   return (
     <AbsoluteFill style={{background: bg, overflow: 'hidden'}}>

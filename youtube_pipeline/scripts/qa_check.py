@@ -38,6 +38,11 @@ CHAP_MIN = 48.0                     # p10
 CHAP_MAX = 237.0                    # p90
 INTRO_MAX = 100.0                   # 중앙 65초. 100초를 넘으면 훅이 늘어진 것
 CHAP_PER_MIN = 0.55
+# ── 실사 비중 (design_reference §34) ──
+# B1M 내부 프레임 780장 분류: 실사 75~90% (판정 임계에 따라 흔들리므로 범위로 적는다).
+# 내 결과물은 정반대였다 — 파크사이드 21% · 갤러리 35% · 첫 샘플 4%.
+LIVE_MIN = 0.35              # 이 아래면 경고. 45%가 플래너 목표(LIVE_TARGET)
+LIVE_REF = '75~90%'          # B1M 실측 범위
 OPENING_SEC = 30.0                  # 오프닝 구간
 OPENING_MIN_CUTS = 5                # 오프닝은 더 촘촘하게
 CUT_SWEET_SPOT = (2.5, 6.0)
@@ -297,6 +302,32 @@ def check_chapters(plan, rep):
             rep.warn('챕터', f'분당 {rate:.2f}개 — B1M {CHAP_PER_MIN}. 챕터가 너무 굵다')
 
 
+def check_live_ratio(plan, rep):
+    """카드와 실사의 시간 비중.
+
+    이 채널의 결과물이 B1M 과 제일 크게 다른 지점이다.
+    도표가 주인공이면 "설명 슬라이드"가 되고, 실사가 주인공이어야 "다큐"가 된다.
+    컷 길이·문법 반복은 이미 보고 있었는데 **무엇이 화면을 채우는가**는 안 보고 있었다.
+    """
+    card = live = 0.0
+    for sc in plan.get('scenes', []):
+        card += max(0.0, sc.get('cardDur', sc['dur']))
+        bs = sc.get('broll')
+        if bs:
+            bs = bs if isinstance(bs, list) else [bs]
+            live += sum(b.get('dur', 0) for b in bs)
+    tot = card + live
+    if tot <= 0:
+        return
+    r = live / tot
+    rep.ok('실사비중', f'카드 {card:.0f}s · 실사 {live:.0f}s → 실사 {r * 100:.0f}% '
+                      f'(B1M 실측 {LIVE_REF})')
+    if r < LIVE_MIN:
+        rep.warn('실사비중', f'{r * 100:.1f}% — {LIVE_MIN * 100:.0f}% 미만. '
+                             '도식이 안 나오는 컷을 실사로 넘길 것 '
+                             '(suggest_queries.py 로 검색어를 뽑는다)')
+
+
 def check_grammar_variety(plan, props, rep):
     """같은 카드가 연속으로 반복되면 화면이 안 바뀐 것처럼 읽힌다.
 
@@ -396,6 +427,7 @@ def main():
     check_assets(props, rep)
     check_credits(props, rep)
     check_chapters(plan, rep)
+    check_live_ratio(plan, rep)
     check_grammar_variety(plan, props, rep)
     cuts = check_clips(plan, os.path.join(projdir, 'clips'), rep)
     if cuts:
