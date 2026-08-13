@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, YELLOW, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -18,13 +18,22 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   const slot = Math.min(720, 1680 / n);
   const startX = (1920 - slot * n) / 2;
 
+  // 세로도 가운데로 맞춘다. 예전엔 top 을 464 로 박아 놔서 **아래가 텅 비었다** —
+  // 가로만 가운데면 "가운데 정렬"이 아니라 "위쪽에 붙은 가운데"다.
+  // 쓸 수 있는 띠는 [타이틀 아래 ~ 자막 안전영역 위] 이고, 그 한가운데에 블록을 놓는다.
+  const bandTop = title ? (sub ? 300 : 246) : 150;
+  const hasSub = items.some((it) => it.sub);
+  const blockH = 148 + 26 + 56 + (hasSub ? 44 : 0);      // 수치 + 라벨 (+ 보조줄)
+  const TOPY = Math.round(bandTop + Math.max(0, (CONTENT_BOTTOM - bandTop - blockH) / 2));
+
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.slice(1).map((_, i) => (
-          <line key={i} x1={startX + slot * (i + 1)} y1={452} x2={startX + slot * (i + 1)} y2={712}
+          <line key={i} x1={startX + slot * (i + 1)} y1={TOPY - 12}
+                x2={startX + slot * (i + 1)} y2={TOPY + blockH + 4}
                 stroke={T.ink} strokeWidth={2} opacity={0.22 * fadeIn(frame, 10)} />
         ))}
       </svg>
@@ -32,7 +41,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         const v = interpolate(frame, [14 + i * 12, 62 + i * 12], [0, it.value ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
-          <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: 464,
+          <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: TOPY,
                                textAlign: 'center', opacity: fadeIn(frame, 8 + i * 12)}}>
             {/* 강조 수치만 밑줄까지 그어 "확정"시킨다 — §27 */}
             <div style={{lineHeight: 1}}>

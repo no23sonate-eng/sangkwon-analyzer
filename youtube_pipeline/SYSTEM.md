@@ -17,7 +17,9 @@ python3 youtube_pipeline/scripts/plan_from_script.py 스크립트.md --project $
 # 2-a. 소재 수집 — 반드시 컨택트시트를 눈으로 보고 채택한다
 python3 youtube_pipeline/scripts/suggest_queries.py $P            # 장면별 영어 검색어 제안
 python3 youtube_pipeline/scripts/suggest_queries.py $P --collect  # 제안대로 바로 수집
-#     지도는 좌표만 주면 된다. 찍히는 bounds 를 MapCard 에 그대로 붙인다
+#     지도 — **좌표는 반드시 --find 로 찾는다. 손으로 찍지 말 것 (§34-4)**
+python3 youtube_pipeline/scripts/fetch_map.py $P --name x --find "녹사평역" --find "용산공원"
+#     찍히는 bounds 를 MapCard 에 그대로 붙인다
 python3 youtube_pipeline/scripts/fetch_map.py $P --name yongsan \
     --center 37.5326 126.9800 --zoom 15 --style light
 python3 youtube_pipeline/scripts/fetch_sources.py $P --q "검색어" --video "검색어" --limit 6

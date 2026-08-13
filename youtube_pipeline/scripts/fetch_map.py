@@ -37,7 +37,25 @@ STYLES = {
     'osm':   ('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               '© OpenStreetMap contributors'),
 }
-MAX_TILES = 48          # 타일 서버 예의. 이걸 넘기면 줌을 낮추라고 말한다
+MAX_TILES = 64          # 타일 서버 예의. 이걸 넘기면 줌을 낮추라고 말한다
+NOMINATIM = 'https://nominatim.openstreetmap.org/search'
+
+
+def find(query, limit=3):
+    """주소·지명 → 좌표 (OSM Nominatim).
+
+    **좌표를 손으로 찍지 말 것.** 샘플 1회차에서 눈대중으로 넣었다가
+    용산공원 핀이 1.5km 어긋났다. 지도는 틀리면 바로 티가 나고,
+    한 번 틀리면 그 영상의 다른 숫자까지 의심받는다.
+
+    한국 지번(예: "이태원동 22-34")은 Nominatim 이 **동 중심점으로 뭉갠다.**
+    필지 단위가 필요하면 근처 랜드마크(역·구청·학교)로 잡는 게 정확하다.
+    """
+    import urllib.parse
+    u = NOMINATIM + '?' + urllib.parse.urlencode({
+        'q': query, 'format': 'json', 'limit': str(limit)})
+    req = urllib.request.Request(u, headers={'User-Agent': UA})
+    return json.loads(urllib.request.urlopen(req, timeout=30).read())
 
 
 def deg2px(lat, lon, z):
@@ -113,12 +131,35 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('project')
     ap.add_argument('--name', required=True, help='파일명 (확장자 없이)')
-    ap.add_argument('--center', nargs=2, type=float, required=True, metavar=('LAT', 'LON'))
+    ap.add_argument('--center', nargs=2, type=float, metavar=('LAT', 'LON'))
     ap.add_argument('--zoom', type=int, default=15,
                     help='13=도시권 · 15=동네 · 17=블록 (기본 15)')
     ap.add_argument('--size', nargs=2, type=int, default=[1920, 1080], metavar=('W', 'H'))
     ap.add_argument('--style', choices=list(STYLES), default='light')
+    ap.add_argument('--find', action='append', default=[],
+                    help='주소·지명으로 좌표를 찾아 출력만 한다 (여러 번). 지도는 안 받는다')
     a = ap.parse_args()
+
+    if not a.find and not a.center:
+        sys.exit('--center 또는 --find 중 하나는 줘야 한다.')
+
+    if a.find:
+        print('좌표 (OSM Nominatim · ODbL)\n')
+        for q in a.find:
+            try:
+                rs = find(q)
+            except Exception as e:
+                print(f'  {q:28s} 실패: {e}'); continue
+            if not rs:
+                print(f'  {q:28s} **못 찾음** — 다른 이름으로 시도할 것'); continue
+            r = rs[0]
+            print(f"  {q:28s} {float(r['lat']):.6f}, {float(r['lon']):.6f}")
+            print(f"  {'':28s} └ {r.get('display_name','')[:70]}")
+            time.sleep(1.1)                      # Nominatim 은 초당 1회
+        print('\n주의: 한국 지번은 동 중심점으로 뭉개진다. 필지가 필요하면')
+        print('      근처 랜드마크(역·구청·학교)로 잡을 것.')
+        return
+
     fetch(a.project, a.name, a.center[0], a.center[1], a.zoom, a.size[0], a.size[1], a.style)
 
 
