@@ -185,6 +185,7 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 | `SectionDiagramCard` | **"얼마나 깊나"** — 깊이·경계. 단면 (주황 채움 + 점선 계획) |
 | `LayerPeelCard` | **"안에 뭐가 들었나"** — 층을 벗기거나 잘라서 본다. 실제 3D (§35-7) |
 | `MassingCard` | **"어떤 동네에 서나"** — OSM 실제 건물 발자국을 세운 3D 매싱 (§35-8) |
+| `NodeArrayCard` | **"몇 곳만 신호를 낸다"** — 점 배열 중 일부를 짚고 잇는다. 센서·출구망 (§36) |
 | `BrandCard` | 회사·브랜드가 **처음 나올 때**. 누끼 로고 + 한 줄 (`split`/`mark`) |
 | `TrackRecordCard` | "그 회사가 뭘 해왔는데" — 레퍼런스를 도장 찍듯 떨어뜨린다 |
 | `StrikeSwapCard` | 값이 **대체**될 때. 옛 값 → 취소선 → 새 값 |

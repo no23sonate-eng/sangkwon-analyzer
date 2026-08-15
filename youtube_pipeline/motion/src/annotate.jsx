@@ -237,3 +237,22 @@ export const DashBox = ({x, y, w, h, progress = 1, color = '#FFFFFF',
     </g>
   );
 };
+
+// ── 감지 펄스 ────────────────────────────────────────────────────────────
+// Cleo Abram 의 심해 중성미자 관측기 편(§36) — 성긴 점 배열 위 몇 개 노드가
+// 반짝여 "여기서 신호가 잡혔다"를 말한다. DashCircle(§32-4, "비어 있다/문제다")과
+// 다르다 — 저건 계속 돌며 결핍을 가리키고, 이건 **한 번 번지고 사라지는 사건**이다.
+// loop 를 켜면 반복(연속 감지). 글로우 대신 **테두리 링**만 쓴다 — 이 프로젝트의
+// 원칙(§32-3)이 3D 로 와도 그대로다: 채움에 광채를 넣으면 도해가 아니라 렌더가 된다.
+export const PulseRing = ({cx, cy, r0 = 10, r1 = 46, frame = 0, start = 0, period = 34,
+                            loop = true, color = YELLOW, width = 5, opacity = 1}) => {
+  if (frame < start) return null;
+  const raw = frame - start;
+  const t = loop ? raw % period : raw;
+  if (!loop && t >= period) return null;
+  const p = Math.min(1, t / period);
+  const r = r0 + (r1 - r0) * p;
+  const op = opacity * (1 - p);
+  if (op <= 0.01) return null;
+  return <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={width} opacity={op} />;
+};
