@@ -64,6 +64,7 @@ import {SectionDiagramCard} from './SectionDiagramCard';
 import {LayerPeelCard} from './LayerPeelCard';
 import {MassingCard} from './MassingCard';
 import {NodeArrayCard} from './NodeArrayCard';
+import {SplitProofCard} from './SplitProofCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -404,6 +405,7 @@ export const RemotionRoot = () => {
         ['LayerPeelCard', LayerPeelCard, {layers: []}],
         ['MassingCard', MassingCard, {}],
         ['NodeArrayCard', NodeArrayCard, {hits: []}],
+        ['SplitProofCard', SplitProofCard, {layers: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}
