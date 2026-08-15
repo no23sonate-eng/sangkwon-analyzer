@@ -19,6 +19,8 @@ python3 youtube_pipeline/scripts/suggest_queries.py $P            # 장면별 �
 python3 youtube_pipeline/scripts/suggest_queries.py $P --collect  # 제안대로 바로 수집
 #     지도 — **좌표는 반드시 --find 로 찾는다. 손으로 찍지 말 것 (§34-4)**
 python3 youtube_pipeline/scripts/fetch_map.py $P --name x --find "녹사평역" --find "용산공원"
+#     주변 건물 3D 매싱 — 발자국은 실제, 높이는 추정이니 화면에 밝힐 것
+python3 youtube_pipeline/scripts/fetch_buildings.py $P --name x --center 37.5341 126.9881 --radius 260
 #     찍히는 bounds 를 MapCard 에 그대로 붙인다
 python3 youtube_pipeline/scripts/fetch_map.py $P --name yongsan \
     --center 37.5326 126.9800 --zoom 15 --style light
@@ -182,6 +184,7 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 | `IsoDiagramCard` | "어떻게 생겼나" — 덩어리·배치. 얕은 3D 축측 |
 | `SectionDiagramCard` | **"얼마나 깊나"** — 깊이·경계. 단면 (주황 채움 + 점선 계획) |
 | `LayerPeelCard` | **"안에 뭐가 들었나"** — 층을 벗기거나 잘라서 본다. 실제 3D (§35-7) |
+| `MassingCard` | **"어떤 동네에 서나"** — OSM 실제 건물 발자국을 세운 3D 매싱 (§35-8) |
 | `BrandCard` | 회사·브랜드가 **처음 나올 때**. 누끼 로고 + 한 줄 (`split`/`mark`) |
 | `TrackRecordCard` | "그 회사가 뭘 해왔는데" — 레퍼런스를 도장 찍듯 떨어뜨린다 |
 | `StrikeSwapCard` | 값이 **대체**될 때. 옛 값 → 취소선 → 새 값 |
