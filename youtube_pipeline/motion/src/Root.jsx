@@ -61,6 +61,7 @@ import {ArticleCard} from './ArticleCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
+import {LayerPeelCard} from './LayerPeelCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -398,6 +399,7 @@ export const RemotionRoot = () => {
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
         ['MapCard', MapCard, {pins: []}],
         ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],
+        ['LayerPeelCard', LayerPeelCard, {layers: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

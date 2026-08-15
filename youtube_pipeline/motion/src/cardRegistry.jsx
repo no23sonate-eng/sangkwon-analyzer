@@ -60,6 +60,7 @@ import {ArticleCard} from './ArticleCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
+import {LayerPeelCard} from './LayerPeelCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -72,6 +73,7 @@ export const CARDS = {
   IsoDiagramCard,
   MapCard,
   SectionDiagramCard,
+  LayerPeelCard,
   BuildingCard,
   StatCard,
   QuoteCard,

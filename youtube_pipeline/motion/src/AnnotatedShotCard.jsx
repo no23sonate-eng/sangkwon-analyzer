@@ -3,7 +3,7 @@ import {AbsoluteFill, Img, staticFile, interpolate, spring, useCurrentFrame, use
 import {useA2ZFonts} from './Fonts';
 import {YELLOW, INK, CONTENT_BOTTOM, fadeIn} from './paper';
 import {estWidth, fit} from './layout';
-import {HandArrow, DashCircle, StampLabel} from './annotate';
+import {HandArrow, DashCircle, DashBox, StampLabel} from './annotate';
 
 // ── 움직이는 카메라 + 현장 주석 ──────────────────────────────────────────
 // 지금까지 43컷이 전부 "정지 화면에 요소가 페이드로 얹히는" 한 문법이었다.
@@ -42,7 +42,9 @@ export const AnnotatedShotCard = ({
   beats = [],
   leadIn = 0.7,             // 첫 지점으로 들어가기 전 넓게 보여 주는 시간(초)
   pointer = 'arrow',        // 'arrow'(B1M 손그림 화살표) | 'ring'(도면식 링+직선)
-                            // 비트별로 b.pointer 로 덮어쓸 수 있다. 'circle' 은 점선 원
+                            // 'circle' 점선 원 = "여기가 문제다"
+                            // 'box'    점선 사각 = **"이게 그거다"** (Cleo, §35-3 ③)
+                            // 비트별로 b.pointer 로 덮어쓸 수 있다
   scrim = 0,                // 바탕을 평평하게 누르는 정도.
                             // 도면·조감도처럼 **원본에 이미 캡션이 박혀 있는 판**은
                             // 0.3~0.4 로 눌러야 내 주석이 위로 올라온다. 사진은 0.
@@ -150,6 +152,16 @@ export const AnnotatedShotCard = ({
           const dir = dirOf(b, i);
           const lineT = done ? 1 : ease(Math.min(1, (settled - RING_F) / LINE_F));
 
+          if (mode === 'box') {
+            // 대상을 사각으로 오려낸다. b.w / b.h 는 원본 이미지 기준 비율
+            const bw = (b.w || 0.18) * imgW, bh = (b.h || 0.18) * imgH;
+            return (
+              <g key={i} opacity={o}>
+                <DashBox x={X - bw / 2} y={Y - bh / 2} w={bw} h={bh}
+                         progress={grow} color={col} frame={frame} />
+              </g>
+            );
+          }
           if (mode === 'circle') {
             // 점선 원 — "여기가 비었다 / 여기가 문제다". 대상을 감싼다
             return (

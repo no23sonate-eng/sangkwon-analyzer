@@ -181,6 +181,7 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 | `ArticleCard` | 기사·보도자료를 인용할 때. **원문 통째 + 형광펜** |
 | `IsoDiagramCard` | "어떻게 생겼나" — 덩어리·배치. 얕은 3D 축측 |
 | `SectionDiagramCard` | **"얼마나 깊나"** — 깊이·경계. 단면 (주황 채움 + 점선 계획) |
+| `LayerPeelCard` | **"안에 뭐가 들었나"** — 층을 벗기거나 잘라서 본다. 실제 3D (§35-7) |
 | `BrandCard` | 회사·브랜드가 **처음 나올 때**. 누끼 로고 + 한 줄 (`split`/`mark`) |
 | `TrackRecordCard` | "그 회사가 뭘 해왔는데" — 레퍼런스를 도장 찍듯 떨어뜨린다 |
 | `StrikeSwapCard` | 값이 **대체**될 때. 옛 값 → 취소선 → 새 값 |
@@ -193,6 +194,7 @@ python3 youtube_pipeline/scripts/make_shorts.py $P --list   # 쇼츠 후보 → 
 - `arrow` **기본** — 손으로 그린 듯 휜 화살표. 사진 위에서는 이게 맞다
 - `ring` — 링 + 직선. **도면·배치도**처럼 한 점을 정확히 찍어야 할 때만
 - `circle` — 점선 원. "여기가 비었다 / 여기가 문제다"
+- `box` — 점선 사각. **"이게 그거다"** — 대상을 지목한다 (§35-3 ③)
 
 실사 문구 처리 (`render_broll.py --style`)
 - `stamp` **기본 권장** — 검정 상자 + 흰 글씨 2단. 스크림을 안 깔아 사진이 산다

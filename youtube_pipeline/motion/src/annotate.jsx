@@ -202,3 +202,38 @@ export const DimLine = ({x1, y1, x2, y2, progress = 1, color = '#FFFFFF',
     </g>
   );
 };
+
+// ── 점선 테두리로 오려내기 ───────────────────────────────────────────────
+// Cleo 가 사진 위에서 대상 하나를 집어낼 때 쓰는 처리 (design_reference §35-3 ③).
+// Atlas 로봇을 흰 점선 사각형으로 감싸 배경에서 떼어 낸다.
+//
+// `DashCircle`(§32-4)과 언제 갈리나:
+//   원  = "여기가 비었다 / 여기가 문제다"   — 지점을 가리킨다
+//   사각 = **"이게 그거다"**                — 대상을 지목한다
+// 모서리만 그리는 게 요령이다. 사각형을 통째로 그으면 액자가 되고,
+// 모서리만 남기면 **조준선**이 된다.
+export const DashBox = ({x, y, w, h, progress = 1, color = '#FFFFFF',
+                          width = 4, corner = 0.26, frame = 0, opacity = 1}) => {
+  const p = Math.max(0, Math.min(1, progress));
+  if (p <= 0.001) return null;
+  const cw = w * corner, ch = h * corner;
+  const g = 1 - p;                                // 들어올 때 살짝 벌어져 있다가 붙는다
+  const ox = w * 0.06 * g, oy = h * 0.06 * g;
+  const L = x - ox, R = x + w + ox, T = y - oy, B = y + h + oy;
+  const seg = (a, b, c, d) => (
+    <line x1={a} y1={b} x2={c} y2={d} stroke={color} strokeWidth={width}
+          strokeLinecap="round" />
+  );
+  return (
+    <g opacity={opacity * p}>
+      {seg(L, T, L + cw, T)}{seg(L, T, L, T + ch)}
+      {seg(R - cw, T, R, T)}{seg(R, T, R, T + ch)}
+      {seg(L, B - ch, L, B)}{seg(L, B, L + cw, B)}
+      {seg(R, B - ch, R, B)}{seg(R - cw, B, R, B)}
+      {/* 모서리 사이는 점선으로 아주 옅게 이어 준다 — 안 이으면 네 조각으로 흩어진다 */}
+      <rect x={L} y={T} width={R - L} height={B - T} fill="none"
+            stroke={color} strokeWidth={2} strokeDasharray="10 12"
+            opacity={0.45} strokeDashoffset={-frame * 0.4} />
+    </g>
+  );
+};
