@@ -61,3 +61,29 @@
 | `bl_installation.mp4` | mixkit 5213 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `bl_coins.mp4` | mixkit 14893 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `bl_city_night2.mp4` | mixkit 31014 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `seongsu_view.jpg` | Seongsu-dong 20220521.jpg (commons) | CHO woohyuck, **CC BY-SA 4.0** | `CHO woohyuck / CC BY-SA 4.0` |
+| `seongsu_storefronts.jpg` | Seongsu-dong storefronts.jpg (commons) | CartoonChess, **CC BY-SA 4.0** | `CartoonChess / CC BY-SA 4.0` |
+| `seongsu_evening.jpg` | Evening street in Seongsu-dong.jpg (commons) | CartoonChess, **CC BY-SA 4.0** | `CartoonChess / CC BY-SA 4.0` |
+| `seongsu_street.jpg` | Seongsu Street.jpg (commons) | Qhairy, **CC BY 4.0** | `Qhairy / CC BY 4.0` |
+| `seongsu_alley2.jpg` | Residential alley in Seongsu-dong with apartment.jpg (commons) | CartoonChess, **CC BY-SA 4.0** | `CartoonChess / CC BY-SA 4.0` |
+| `korea_map.png` | South Korea map clipart, flag (openverse) | ?, **CC0 1.0** | `? / CC0 1.0` |
+| `popup_dior.jpg` | Christian Dior Exhibit (openverse) | Mustang Joe, **CC0 1.0** | `Mustang Joe / CC0 1.0` |
+| `popup_exhibit.jpg` | Fabulous mise-en-scene at the V&A's Dior exhibition, the background of (openverse) | mia!, **BY-SA 2.0** | `mia! / BY-SA 2.0` |
+| `popup_lv.jpg` | Louis Vuitton (openverse) | chooyutshing, **BY 2.0** | `chooyutshing / BY 2.0` |
+| `bl_escalator.mp4` | mixkit 31451 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_city_lights.mp4` | mixkit 20091 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_city_river.mp4` | mixkit 20064 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_arch_hall.mp4` | mixkit 14139 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_vault.mp4` | mixkit 22712 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_street_crowd.mp4` | mixkit 4154 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_station_hall.mp4` | mixkit 4181 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_concourse.mp4` | mixkit 4180 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_topdown_block.mp4` | mixkit 26916 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_topdown_roof.mp4` | mixkit 48394 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_aerial_sunset.mp4` | mixkit 48399 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_crane_site.mp4` | mixkit 18018 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_rooftop.mp4` | mixkit 31678 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_office_talk.mp4` | mixkit 4872 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_desk_top.mp4` | mixkit 4809 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_office_meet.mp4` | mixkit 4607 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_lobby.mp4` | mixkit 33857 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
