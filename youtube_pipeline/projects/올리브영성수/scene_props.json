@@ -5,11 +5,11 @@
   "0": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "2026년 7월, 성수동",
     "sub": "경매 한 건",
     "scrim": 0.44,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
@@ -41,7 +41,14 @@
      }
     ],
     "source": "블로터 2026.07.22",
-    "align": "center"
+    "align": "center",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/money_counter.mp4",
+     "veil": 0.94,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "left",
@@ -59,7 +66,14 @@
     "to": "약 541억",
     "toLabel": "낙찰가",
     "note": "보도된 자릿수까지만 표기",
-    "source": "블로터 2026.07.22"
+    "source": "블로터 2026.07.22",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/cash_closeup.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "left",
@@ -86,7 +100,13 @@
      }
     ],
     "source": "블로터 2026.07.22 · 비율은 자체 계산",
-    "align": "center"
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/cash_closeup.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "up",
@@ -151,11 +171,11 @@
   "7": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    }
   },
   "8": {
@@ -177,7 +197,14 @@
      }
     ],
     "source": "블로터 2026.07.22",
-    "align": "center"
+    "align": "center",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/auction_columns.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "right",
@@ -188,11 +215,11 @@
   "9": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/gentlemonster_art.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Tomás Del Coro / CC BY-SA 4.0"
    }
   },
   "10": {
@@ -260,9 +287,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "center"
    },
@@ -277,9 +304,9 @@
    "props": {
     "title": "2층 · 넓은 주차장",
     "sub": "성수역 4번 출구 도보 5분",
-    "image": "올리브영성수/brand_storefront.jpg",
-    "caption": "이미지는 참고용 · 대상 건물 아님",
-    "source": "Yzen2023 / CC BY 4.0"
+    "image": "올리브영성수/seongsu_bldg1.jpg",
+    "caption": "사진: 성수동 일대 — 대상 건물 아님",
+    "source": "CartoonChess / CC BY-SA 4.0"
    }
   },
   "14": {
@@ -295,11 +322,11 @@
   "15": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/popup_window.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "Herzi Pinki / CC BY-SA 4.0"
    }
   },
   "16": {
@@ -307,9 +334,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
+    "image": "올리브영성수/seongsu_bldg1.jpg",
     "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
+    "source": "CartoonChess / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    },
@@ -334,9 +361,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/popup_crowd.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "玄史生 / CC0",
     "theme": "paper",
     "align": "left"
    },
@@ -349,11 +376,11 @@
   "19": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/seongsu_facade.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Sgroey / CC BY-SA 4.0"
    }
   },
   "20": {
@@ -361,9 +388,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/store_queue.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "Northwest / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    },
@@ -376,11 +403,11 @@
   "21": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_window.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Herzi Pinki / CC BY-SA 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    }
   },
   "22": {
@@ -417,11 +444,11 @@
   "23": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/gentlemonster_art.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "Tomás Del Coro / CC BY-SA 4.0"
    }
   },
   "24": {
@@ -442,11 +469,11 @@
   "25": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/seongsu_shops.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "Sgroey / BY-SA 4.0"
    }
   },
   "26": {
@@ -454,9 +481,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "left"
    },
@@ -469,11 +496,11 @@
   "27": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/seoulforest_deck.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "CartoonChess / CC BY-SA 4.0"
    }
   },
   "28": {
@@ -494,11 +521,11 @@
   "29": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/popup_window.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Herzi Pinki / CC BY-SA 4.0"
    }
   },
   "30": {
@@ -506,9 +533,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/seongsu_bldg1.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "CartoonChess / CC BY-SA 4.0",
     "theme": "paper",
     "align": "left"
    }
@@ -528,9 +555,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/popup_crowd.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "玄史生 / CC0",
     "theme": "paper",
     "align": "center"
    },
@@ -576,9 +603,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
+    "image": "올리브영성수/store_queue.jpg",
     "caption": "",
-    "source": "玄史生 / CC0",
+    "source": "Northwest / CC BY-SA 4.0",
     "theme": "paper",
     "align": "left"
    },
@@ -591,11 +618,11 @@
   "35": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    }
   },
   "36": {
@@ -603,9 +630,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
+    "image": "올리브영성수/popup_space.jpg",
     "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
+    "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "center"
    },
@@ -618,11 +645,11 @@
   "37": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/gentlemonster_art.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "Tomás Del Coro / CC BY-SA 4.0"
    }
   },
   "38": {
@@ -706,9 +733,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "center"
    }
@@ -749,9 +776,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/seongsu_alley.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "Sgroey / CC BY-SA 4.0",
     "theme": "paper",
     "align": "left"
    },
@@ -764,11 +791,11 @@
   "43": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/popup_window.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "Herzi Pinki / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "down",
@@ -781,9 +808,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
+    "image": "올리브영성수/seongsu_bldg1.jpg",
     "caption": "",
-    "source": "玄史生 / CC0",
+    "source": "CartoonChess / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    },
@@ -824,9 +851,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
+    "image": "올리브영성수/popup_crowd.jpg",
     "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
+    "source": "玄史生 / CC0",
     "theme": "paper",
     "align": "left"
    }
@@ -834,11 +861,11 @@
   "47": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/seongsu_facade.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "Sgroey / CC BY-SA 4.0"
    }
   },
   "48": {
@@ -846,9 +873,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/store_queue.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "Northwest / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    },
@@ -878,9 +905,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/popup_space.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "left"
    },
@@ -905,9 +932,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/seoul_towers.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "Ox1997cow / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    },
@@ -932,9 +959,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "玄史生 / CC0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "left"
    },
@@ -947,11 +974,11 @@
   "55": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/seoulforest_deck.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "CartoonChess / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "down",
@@ -977,21 +1004,21 @@
   "57": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/popup_window.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "Herzi Pinki / CC BY-SA 4.0"
    }
   },
   "58": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "경매 = 싸게 사는 것?",
     "sub": "이건 그게 아니었다",
     "scrim": 0.44,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
@@ -1002,11 +1029,11 @@
   "59": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/brand_storefront.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Yzen2023 / CC BY 4.0"
    }
   },
   "60": {
@@ -1014,9 +1041,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/popup_crowd.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "玄史生 / CC0",
     "theme": "paper",
     "align": "center"
    },
@@ -1039,6 +1066,12 @@
     "bidAt": 86,
     "note": "인근 신도리코 부지가 실제로 이 과정을 거쳤다",
     "theme": "paper",
+    "bg": {
+     "backdrop": "올리브영성수/auction_columns.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    },
     "source": "민법 제269조 · 하우징포스트 2025.09"
    },
    "motion": {
@@ -1052,9 +1085,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/store_queue.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "Northwest / CC BY-SA 4.0",
     "theme": "paper",
     "align": "left"
    },
@@ -1067,11 +1100,11 @@
   "63": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    }
   },
   "64": {
@@ -1079,9 +1112,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
+    "image": "올리브영성수/popup_space.jpg",
     "caption": "",
-    "source": "玄史生 / CC0",
+    "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "center"
    },
@@ -1094,11 +1127,11 @@
   "65": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/gentlemonster_art.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "Tomás Del Coro / CC BY-SA 4.0"
    }
   },
   "66": {
@@ -1117,6 +1150,13 @@
       "hot": true
      }
     ],
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/contract_signature.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 3
+    },
     "source": "민법 제269조 · 민사집행법상 형식적 경매"
    },
    "motion": {
@@ -1128,11 +1168,11 @@
   "67": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/seongsu_shops.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "Sgroey / BY-SA 4.0"
    }
   },
   "68": {
@@ -1140,9 +1180,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "center"
    },
@@ -1212,7 +1252,14 @@
      }
     ],
     "source": "하우징포스트 2025.09",
-    "align": "center"
+    "align": "center",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/auction_columns.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "up",
@@ -1234,7 +1281,13 @@
      }
     ],
     "source": "블로터 2026.07.22 · 비율은 자체 계산",
-    "align": "center"
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/money_counter.mp4",
+     "veil": 0.94,
+     "dir": 0,
+     "blur": 4
+    }
    }
   },
   "74": {
@@ -1303,9 +1356,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/popup_space.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "left"
    }
@@ -1396,9 +1449,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "left"
    },
@@ -1411,11 +1464,11 @@
   "83": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/seoulforest_deck.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "CartoonChess / CC BY-SA 4.0"
    }
   },
   "84": {
@@ -1423,9 +1476,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
+    "image": "올리브영성수/seongsu_alley.jpg",
     "caption": "",
-    "source": "玄史生 / CC0",
+    "source": "Sgroey / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    }
@@ -1440,6 +1493,13 @@
     "to": "교보AIM자산운용",
     "toLabel": "2,548억에 인수",
     "note": "연면적 3.3㎡당 4,000만원 — 성수동 오피스 최고가",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/contract_signature.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 3
+    },
     "source": "비즈워치 2026.01.14"
    },
    "motion": {
@@ -1467,7 +1527,13 @@
      }
     ],
     "source": "비즈워치 2026.01.14",
-    "align": "center"
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/money_counter.mp4",
+     "veil": 0.94,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "right",
@@ -1478,11 +1544,11 @@
   "87": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/brand_storefront.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "Yzen2023 / CC BY 4.0"
    }
   },
   "88": {
@@ -1490,9 +1556,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/popup_crowd.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "玄史生 / CC0",
     "theme": "paper",
     "align": "center"
    }
@@ -1500,11 +1566,11 @@
   "89": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/seongsu_facade.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Sgroey / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
@@ -1525,11 +1591,11 @@
   "91": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_window.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Herzi Pinki / CC BY-SA 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
@@ -1542,9 +1608,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/popup_space.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "center"
    }
@@ -1552,11 +1618,11 @@
   "93": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/gentlemonster_art.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0",
+    "source": "Tomás Del Coro / CC BY-SA 4.0",
     "align": "bottom"
    },
    "motion": {
@@ -1584,7 +1650,14 @@
      }
     ],
     "source": "취득세율 적용 자체 계산 — 추정치",
-    "align": "center"
+    "align": "center",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/cash_closeup.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    }
    },
    "motion": {
     "dir": "up",
@@ -1595,11 +1668,11 @@
   "95": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/seongsu_shops.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "Sgroey / BY-SA 4.0"
    },
    "motion": {
     "dir": "right",
@@ -1612,9 +1685,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "center"
    },
@@ -1627,11 +1700,11 @@
   "97": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_space.jpg",
+    "image": "올리브영성수/seoulforest_deck.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "MTAPhotos / BY 2.0"
+    "source": "CartoonChess / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "right",
@@ -1644,9 +1717,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/seongsu_alley.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "Sgroey / CC BY-SA 4.0",
     "theme": "paper",
     "align": "left"
    }
@@ -1683,9 +1756,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/seongsu_bldg1.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "CartoonChess / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    }
@@ -1713,9 +1786,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_shops.jpg",
+    "image": "올리브영성수/popup_crowd.jpg",
     "caption": "",
-    "source": "Sgroey / BY-SA 4.0",
+    "source": "玄史生 / CC0",
     "theme": "paper",
     "align": "left"
    },
@@ -1728,11 +1801,11 @@
   "103": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/seongsu_facade.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "Sgroey / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
@@ -1745,9 +1818,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
+    "image": "올리브영성수/store_queue.jpg",
     "caption": "",
-    "source": "玄史生 / CC0",
+    "source": "Northwest / CC BY-SA 4.0",
     "theme": "paper",
     "align": "center"
    }
@@ -1772,9 +1845,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
+    "image": "올리브영성수/popup_space.jpg",
     "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
+    "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "left"
    }
@@ -1814,11 +1887,11 @@
   "109": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/seongsu_shops.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Sgroey / BY-SA 4.0"
    }
   },
   "110": {
@@ -1826,9 +1899,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
+    "image": "올리브영성수/musinsa_popup.jpg",
     "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
+    "source": "K-POPIT / CC BY 3.0",
     "theme": "paper",
     "align": "left"
    },
@@ -1841,11 +1914,11 @@
   "111": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_window.jpg",
+    "image": "올리브영성수/seoulforest_deck.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Herzi Pinki / CC BY-SA 4.0"
+    "source": "CartoonChess / CC BY-SA 4.0"
    }
   },
   "112": {
@@ -1891,11 +1964,11 @@
   "113": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/brand_storefront.jpg",
+    "image": "올리브영성수/popup_window.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "Herzi Pinki / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "down",
@@ -1906,23 +1979,21 @@
   "114": {
    "card": "PaperImageCard",
    "props": {
-    "title": "",
-    "sub": "",
-    "image": "올리브영성수/popup_crowd.jpg",
-    "caption": "",
-    "source": "玄史生 / CC0",
-    "theme": "paper",
-    "align": "left"
+    "title": "무신사",
+    "sub": "성수동 투자로 유명하다",
+    "image": "올리브영성수/musinsa_popup.jpg",
+    "caption": "사진: 무신사 뷰티 페스타 팝업 — 성수 사옥 아님",
+    "source": "K-POPIT / CC BY 3.0"
    }
   },
   "115": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seongsu_facade.jpg",
+    "image": "올리브영성수/brand_storefront.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "Sgroey / CC BY-SA 4.0"
+    "source": "Yzen2023 / CC BY 4.0"
    },
    "motion": {
     "dir": "left",
@@ -1933,13 +2004,11 @@
   "116": {
    "card": "PaperImageCard",
    "props": {
-    "title": "",
-    "sub": "",
-    "image": "올리브영성수/store_queue.jpg",
-    "caption": "",
-    "source": "Northwest / CC BY-SA 4.0",
-    "theme": "paper",
-    "align": "center"
+    "title": "젠틀몬스터",
+    "sub": "아이코닉한 공간으로 이슈를 만들었다",
+    "image": "올리브영성수/gentlemonster_store.jpg",
+    "caption": "사진: 젠틀몬스터 매장(해외) — 성수 사옥 아님",
+    "source": "Lstae88 / CC BY-SA 4.0"
    }
   },
   "117": {
@@ -1981,9 +2050,9 @@
    "props": {
     "title": "",
     "sub": "",
-    "image": "올리브영성수/seoul_towers.jpg",
+    "image": "올리브영성수/store_queue.jpg",
     "caption": "",
-    "source": "Ox1997cow / CC BY-SA 4.0",
+    "source": "Northwest / CC BY-SA 4.0",
     "theme": "paper",
     "align": "left"
    }
@@ -1991,33 +2060,31 @@
   "119": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/seoulforest_deck.jpg",
+    "image": "올리브영성수/seongsu_industrial.jpg",
     "headline": "",
     "sub": "",
     "scrim": 0.4,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "GeonwooLee / CC BY-SA 4.0"
    }
   },
   "120": {
    "card": "PaperImageCard",
    "props": {
-    "title": "",
-    "sub": "",
-    "image": "올리브영성수/seongsu_alley.jpg",
-    "caption": "",
-    "source": "Sgroey / CC BY-SA 4.0",
-    "theme": "paper",
-    "align": "center"
+    "title": "뷰티 브랜드의 오프라인 경쟁",
+    "sub": "공간이 곧 광고판이 된다",
+    "image": "올리브영성수/amore_sulwhasoo.jpg",
+    "caption": "사진: 설화수 제품 (아모레퍼시픽)",
+    "source": "KOREA.NET / BY-SA 2.0"
    }
   },
   "121": {
    "card": "FullBleedCard",
    "props": {
-    "image": "올리브영성수/popup_window.jpg",
-    "headline": "",
+    "image": "올리브영성수/gentlemonster_art.jpg",
+    "headline": "올리브영만의 공간 콘텐츠를 만들지",
     "sub": "",
-    "scrim": 0.4,
-    "source": "Herzi Pinki / CC BY-SA 4.0"
+    "scrim": 0.44,
+    "source": "Tomás Del Coro / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "right",

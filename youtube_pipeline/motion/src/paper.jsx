@@ -1,5 +1,5 @@
 import React from 'react';
-import {Img, staticFile, useCurrentFrame} from 'remotion';
+import {Img, OffthreadVideo, staticFile, useCurrentFrame} from 'remotion';
 
 // ── 종이 설명 그래픽 공통 토큰 (2026-08-02, Billionaires' Row 레퍼런스) ──
 // B1M의 "밝은 종이 + 그리드 + 플랫 실루엣" 설명 문법을 채널 팔레트로 번역:
@@ -99,24 +99,36 @@ export const themeOf = (t, dark) => THEMES[t] || (dark ? THEMES.ink : THEMES.pap
 // dir 로 방향을 돌린다. 연속된 컷이 같은 방향으로 밀리면 그것대로 눈에 띈다.
 const DRIFT_DIRS = [[1, 0.4], [-1, 0.3], [0.5, -1], [-0.6, -0.8], [0.9, 0.9], [-1, 0.9]];
 
+// 배경은 사진만이 아니라 **영상**도 된다. 경매·계약·현금처럼 "장면 자체가
+// 움직여야 하는" 구간은 정지 사진을 아무리 드리프트시켜도 정지 사진이다.
+// 확장자로 갈라 `OffthreadVideo` 로 넘긴다 — 카드 코드는 하나도 안 바뀐다.
+//
+// 영상일 때 드리프트를 **끄는** 이유: 영상은 이미 스스로 움직인다. 거기에
+// 배율·이동을 또 얹으면 두 개의 움직임이 싸워서 어지럽다. 사진일 때만 민다.
+const isVideo = (src) => /\.(mp4|webm|mov)(\?|$)/i.test(String(src));
+
 export const LiveBackdrop = ({image = '', veil = 0.9, blur = 0, dir = 0,
                               scale = 0.035, shift = 0.014, theme, dark = false}) => {
   const frame = useCurrentFrame();
   const T = themeOf(theme, dark);
   if (!image) return null;
+  const vid = isVideo(image);
   const [dx, dy] = DRIFT_DIRS[Math.abs(dir) % DRIFT_DIRS.length];
   const t = frame / 150;                       // 5초를 1로 본다
-  const k = 1.06 + scale * t;                  // 처음부터 살짝 크게 깔아 여백이 안 생기게
-  const tx = dx * shift * t * 1920;
-  const ty = dy * shift * t * 1080;
+  const k = vid ? 1.02 : 1.06 + scale * t;     // 처음부터 살짝 크게 깔아 여백이 안 생기게
+  const tx = vid ? 0 : dx * shift * t * 1920;
+  const ty = vid ? 0 : dy * shift * t * 1080;
+  const src = /^https?:/.test(image) ? image : staticFile(image);
+  const box = {position: 'absolute', left: '50%', top: '50%', width: 1920, height: 1080,
+               objectFit: 'cover',
+               transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${k})`,
+               filter: blur ? `blur(${blur}px)` : 'none'};
   return (
     <>
       <div style={{position: 'absolute', inset: 0, overflow: 'hidden', background: T.bg}}>
-        <Img src={/^https?:/.test(image) ? image : staticFile(image)}
-             style={{position: 'absolute', left: '50%', top: '50%', width: 1920, height: 1080,
-                     objectFit: 'cover',
-                     transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${k})`,
-                     filter: blur ? `blur(${blur}px)` : 'none'}} />
+        {vid
+          ? <OffthreadVideo src={src} muted style={box} />
+          : <Img src={src} style={box} />}
       </div>
       <div style={{position: 'absolute', inset: 0, background: T.bg, opacity: veil}} />
     </>

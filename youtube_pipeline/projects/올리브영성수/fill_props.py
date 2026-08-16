@@ -30,9 +30,36 @@ CRED = {
     'popup_space.jpg':      'MTAPhotos / BY 2.0',
     'seoul_towers.jpg':     'Ox1997cow / CC BY-SA 4.0',
     'seoulforest_deck.jpg': 'CartoonChess / CC BY-SA 4.0',
+    # 진짜 성수동 사진 — 위치 이야기에는 이쪽을 쓴다
+    'seongsu_bldg1.jpg':      'CartoonChess / CC BY-SA 4.0',
+    'seongsu_industrial.jpg': 'GeonwooLee / CC BY-SA 4.0',
+    # 브랜드 큐. **성수 사옥이 아니다** — 캡션에 어디인지 반드시 밝힌다
+    'gentlemonster_store.jpg': 'Lstae88 / CC BY-SA 4.0',
+    'gentlemonster_art.jpg':   'Tomás Del Coro / CC BY-SA 4.0',
+    'musinsa_popup.jpg':       'K-POPIT / CC BY 3.0',
+    'amore_sulwhasoo.jpg':     'KOREA.NET / BY-SA 2.0',
+    # 배경 영상
+    'auction_columns.mp4':    'Mixkit Free License',
+    'contract_signature.mp4': 'Mixkit Free License',
+    'money_counter.mp4':      'Mixkit Free License',
+    'cash_closeup.mp4':       'Mixkit Free License',
 }
 def img(name):  return f'올리브영성수/{name}'
 def cred(name): return CRED[name]
+
+# 카드 뒤에 깔리는 배경. veil 로 눌러 질감으로만 쓴다 (§32-5).
+# 영상은 스스로 움직이므로 **내용이 움직여야 하는 구간에만** 쓴다 —
+# 아무 데나 깔면 그래픽이 안 읽힌다.
+def bg(name, veil=0.9, dir=0, blur=0):
+    return {'backdrop': img(name), 'veil': veil, 'dir': dir, 'blur': blur}
+
+# veil 은 사진 기준(0.90)보다 **더 세게** 눌러야 한다. 영상은 움직이기 때문에
+# 같은 불투명도라도 눈이 훨씬 더 잡아챈다 — 0.90 으로 두니 배경 인물이
+# 수치와 경쟁했다. blur 를 살짝 걸어 형체만 남기면 "질감"으로 내려앉는다.
+BG_AUCTION  = bg('auction_columns.mp4', veil=0.945, blur=4)
+BG_CONTRACT = bg('contract_signature.mp4', veil=0.945, blur=3)
+BG_MONEY    = bg('money_counter.mp4', veil=0.94, blur=4)
+BG_CASH     = bg('cash_closeup.mp4', veil=0.945, blur=4)
 
 # 검증된 좌표만 쓴다 (fetch_map.py --find · OSM Nominatim).
 # 낙찰 부지의 정확한 필지는 공개 보도에 없다 — "성수역 4번 출구 도보 5분" 이 전부다.
@@ -51,28 +78,30 @@ def photo(name, title, sub='', caption=''):
     return ('PaperImageCard', {'title': title, 'sub': sub, 'image': img(name),
                                'caption': caption, 'source': cred(name)})
 
-def stats(title, sub, items, source='', theme=None, align='center'):
+def stats(title, sub, items, source='', theme=None, align='center', back=None):
     p = {'title': title, 'sub': sub, 'items': items, 'source': source, 'align': align}
     if theme: p['theme'] = theme
+    if back: p['bg'] = back
     return ('BigStatsCard', p)
 
 # ── 장면별 확정 ─────────────────────────────────────────────────────────
 S = {}
 
 # ══ 훅 ══
-S[0]  = full('seongsu_alley.jpg', '2026년 7월, 성수동', '경매 한 건')
+S[0]  = full('seongsu_industrial.jpg', '2026년 7월, 성수동', '경매 한 건')
 S[2]  = stats('낙찰가', '2026년 7월 · 서울동부지법', [
     {'display': '약 541', 'unit': '억', 'label': '낙찰가', 'hot': True}],
-    source='블로터 2026.07.22')
+    source='블로터 2026.07.22', theme='ink', back=BG_MONEY)
 S[3]  = ('StrikeSwapCard', {
     'title': '감정가와 낙찰가', 'sub': '단독 입찰인데 값이 올라갔다',
     'from': '약 396억', 'fromLabel': '감정가',
     'to': '약 541억', 'toLabel': '낙찰가',
-    'note': '보도된 자릿수까지만 표기', 'source': '블로터 2026.07.22'})
+    'note': '보도된 자릿수까지만 표기', 'source': '블로터 2026.07.22',
+    'theme': 'ink', 'bg': BG_CASH})
 S[4]  = stats('차액', '감정가 대비', [
     {'display': '+145', 'unit': '억', 'label': '더 썼다', 'hot': True},
     {'display': '137', 'unit': '%', 'label': '낙찰가율'}],
-    source='블로터 2026.07.22 · 비율은 자체 계산')
+    source='블로터 2026.07.22 · 비율은 자체 계산', back=BG_CASH)
 S[5]  = stats('대지 197평', '약 650㎡', [
     {'display': '197', 'unit': '평', 'label': '대지면적'},
     {'display': '2.75', 'unit': '억/평', 'label': '평당가 · 자체 계산', 'hot': True}],
@@ -86,7 +115,7 @@ S[6]  = ('TrackRecordCard', {
 S[8]  = stats('단독 입찰', '경쟁자가 없는데 감정가를 넘겼다', [
     {'display': '1', 'unit': '곳', 'label': '입찰 참여'},
     {'display': '137', 'unit': '%', 'label': '감정가 대비', 'hot': True}],
-    source='블로터 2026.07.22')
+    source='블로터 2026.07.22', theme='ink', back=BG_AUCTION)
 S[10] = stats('매장은 빌린다', '2025년 4분기 기준', [
     {'display': '1,381', 'unit': '개', 'label': '전국 매장'},
     {'display': '1,166', 'unit': '개', 'label': '이 중 직영'}],
@@ -98,8 +127,8 @@ S[11] = ('MapCard', {
              {'lat': OLIVE_N[0], 'lon': OLIVE_N[1], 'label': '올리브영N 성수', 'hot': True},
              {'lat': SEOULSUP[0], 'lon': SEOULSUP[1], 'label': '서울숲'}],
     'align': 'left', 'source': OSM + ' · 매장 수 ZDNet 2025.11.17'})
-S[13] = photo('brand_storefront.jpg', '2층 · 넓은 주차장',
-              '성수역 4번 출구 도보 5분', '이미지는 참고용 · 대상 건물 아님')
+S[13] = photo('seongsu_bldg1.jpg', '2층 · 넓은 주차장',
+              '성수역 4번 출구 도보 5분', '사진: 성수동 일대 — 대상 건물 아님')
 S[14] = full('popup_crowd.jpg', '팝업스토어 장소로 계속 쓰였다')
 
 # ══ 파사드 ══
@@ -155,18 +184,20 @@ S[56] = photo('popup_crowd.jpg', '돈 한 푼 안 들인 오프라인 테스트'
               '가능성을 이미 눈으로 봤다', '')
 
 # ══ 경매 ══
-S[58] = full('seongsu_facade.jpg', '경매 = 싸게 사는 것?', '이건 그게 아니었다')
+S[58] = full('seongsu_industrial.jpg', '경매 = 싸게 사는 것?', '이건 그게 아니었다')
 S[61] = ('ShareSplitCard', {
     'title': '공유물분할 경매', 'sub': '나눌 수 없으니 통째로 판다',
     'n': 19, 'ownerLabel': '지분권자',
     'cutLabel': '땅은 반으로 못 자른다', 'bidLabel': '법원 경매 · 공개 입찰',
     'cutAt': 40, 'bidAt': 86,
     'note': '인근 신도리코 부지가 실제로 이 과정을 거쳤다',
-    'theme': 'paper', 'source': '민법 제269조 · 하우징포스트 2025.09'})
+    'theme': 'paper', 'bg': BG_AUCTION,
+    'source': '민법 제269조 · 하우징포스트 2025.09'})
 S[66] = ('TrackRecordCard', {
     'title': '소송이 걸리면 두 가지가 확정된다', 'sub': '',
     'items': [{'label': '매각은 무조건 진행된다', 'note': '합의 불필요'},
               {'label': '방식은 공개 입찰이다', 'note': '가격은 시장이 정한다', 'hot': True}],
+    'theme': 'ink', 'bg': BG_CONTRACT,
     'source': '민법 제269조 · 민사집행법상 형식적 경매'})
 S[70] = ('ArticleCard', {
     'outlet': '하우징포스트', 'date': '2025.09',
@@ -178,10 +209,10 @@ S[70] = ('ArticleCard', {
 S[72] = stats('인근 사례', '2025.8.25 · 서울동부지법 · 4,272㎡', [
     {'display': '2,202', 'unit': '억', 'label': '신도리코 낙찰가', 'hot': True},
     {'display': '19', 'unit': '명', 'label': '공유 소유자'}],
-    source='하우징포스트 2025.09')
+    source='하우징포스트 2025.09', theme='ink', back=BG_AUCTION)
 S[73] = stats('싸게 사려던 게 아니다', '반드시 받으려고 웃돈을 썼다', [
     {'display': '137', 'unit': '%', 'label': '감정가 대비 낙찰가', 'hot': True}],
-    source='블로터 2026.07.22 · 비율은 자체 계산')
+    source='블로터 2026.07.22 · 비율은 자체 계산', back=BG_MONEY)
 
 # ══ 성수 올리브영 ══
 S[77] = stats('성수 상권 올리브영', 'K뷰티 관광 코스가 된 동네', [
@@ -207,11 +238,11 @@ S[85] = ('StrikeSwapCard', {
     'from': '이지스자산운용', 'fromLabel': '기존 소유',
     'to': '교보AIM자산운용', 'toLabel': '2,548억에 인수',
     'note': '연면적 3.3㎡당 4,000만원 — 성수동 오피스 최고가',
-    'source': '비즈워치 2026.01.14'})
+    'theme': 'ink', 'bg': BG_CONTRACT, 'source': '비즈워치 2026.01.14'})
 S[86] = stats('성수동 오피스 최고가', '연면적 기준', [
     {'display': '2,548', 'unit': '억', 'label': '거래가'},
     {'display': '4,000', 'unit': '만원/평', 'label': '연면적 평당', 'hot': True}],
-    source='비즈워치 2026.01.14')
+    source='비즈워치 2026.01.14', back=BG_MONEY)
 S[90] = photo('seoul_towers.jpg', '임대료는 올라갈 가능성이 있다',
               '매수자는 수익률을 더 끌어올리려 한다', '화자 판단 — 추정')
 
@@ -219,7 +250,7 @@ S[90] = photo('seoul_towers.jpg', '임대료는 올라갈 가능성이 있다',
 S[94] = stats('취득 총액 (추정)', '취득세 4.6% 등 가산 — 자체 계산', [
     {'display': '541', 'unit': '억', 'label': '낙찰가'},
     {'display': '약 570', 'unit': '억', 'label': '취득세 포함 추정', 'hot': True}],
-    source='취득세율 적용 자체 계산 — 추정치')
+    source='취득세율 적용 자체 계산 — 추정치', theme='ink', back=BG_CASH)
 S[99] = stats('오피스로 지으면 (가정)', '용적률 400~500% 가정 · 실제 지구단위계획 미반영', [
     {'display': '7~8', 'unit': '층', 'label': '층수'},
     {'display': '985', 'unit': '평', 'label': '최대 연면적', 'hot': True}],
@@ -251,6 +282,13 @@ S[117] = ('TrackRecordCard', {
               {'label': '젠틀몬스터', 'note': '성수동 사옥'},
               {'label': '올리브영', 'note': '541억 토지 낙찰', 'hot': True}],
     'source': '비즈워치 2026.01.14 · 이데일리 마켓in'})
+S[114] = photo('musinsa_popup.jpg', '무신사', '성수동 투자로 유명하다',
+               '사진: 무신사 뷰티 페스타 팝업 — 성수 사옥 아님')
+S[116] = photo('gentlemonster_store.jpg', '젠틀몬스터', '아이코닉한 공간으로 이슈를 만들었다',
+               '사진: 젠틀몬스터 매장(해외) — 성수 사옥 아님')
+S[120] = photo('amore_sulwhasoo.jpg', '뷰티 브랜드의 오프라인 경쟁',
+               '공간이 곧 광고판이 된다', '사진: 설화수 제품 (아모레퍼시픽)')
+S[121] = full('gentlemonster_art.jpg', '올리브영만의 공간 콘텐츠를 만들지')
 S[122] = full('seoulforest_deck.jpg', '이곳이 어떻게 바뀔까', '지켜보면 방향이 보인다')
 
 # ── 반영 ────────────────────────────────────────────────────────────────
@@ -260,10 +298,13 @@ by_id = {s['id']: s for s in plan['scenes']}
 
 # 나머지 컷은 실사로 돌린다 — 실사 비중 45% 목표(§34-1). 사진을 돌려 쓰되
 # **연속 두 컷이 같은 사진이면 안 된다** (§29: 반복은 카드 수가 아니라 바탕이 만든다)
-ROTATE = ['seongsu_alley.jpg', 'popup_window.jpg', 'seongsu_shops.jpg',
+# 사진 수가 곧 화면이 바뀌는 횟수다. 14장을 서로 다른 순서로 돌린다 —
+# 목록 길이와 컷 수가 서로소에 가까워야 같은 자리에서 같은 사진이 안 돈다
+ROTATE = ['seongsu_alley.jpg', 'popup_window.jpg', 'seongsu_bldg1.jpg',
           'brand_storefront.jpg', 'popup_crowd.jpg', 'seongsu_facade.jpg',
-          'store_queue.jpg', 'popup_space.jpg', 'seoul_towers.jpg',
-          'seoulforest_deck.jpg']
+          'store_queue.jpg', 'seongsu_industrial.jpg', 'popup_space.jpg',
+          'gentlemonster_art.jpg', 'seoul_towers.jpg', 'seongsu_shops.jpg',
+          'musinsa_popup.jpg', 'seoulforest_deck.jpg']
 THEMES = ['paper', 'ink', 'paper', 'blueprint']
 
 # 챕터 제목 — 자동으로 안 짓는다. 설명문 목차에 그대로 나가므로 손으로 쓴다
