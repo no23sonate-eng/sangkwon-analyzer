@@ -49,6 +49,13 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                 <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                               fontSize: it.hot ? 148 : 124, color: T.ink,
                               fontVariantNumeric: 'tabular-nums'}}>
+                  {/* "약", "최대" 같은 한정어는 **수치보다 작게**. 같은 크기로 두면
+                      한정어가 수치만큼 세게 읽혀서 값이 흐려진다 */}
+                  {it.prefix ? (
+                    <span style={{fontSize: it.hot ? 58 : 50, marginRight: 10,
+                                  color: T.soft,
+                                  fontFamily: 'A2Z Light, sans-serif'}}>{it.prefix}</span>
+                  ) : null}
                   {it.display}
                   <span style={{fontSize: it.hot ? 66 : 56, marginLeft: 6,
                                 color: it.hot ? T.ink : T.soft}}>{it.unit}</span>

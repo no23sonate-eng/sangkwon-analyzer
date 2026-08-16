@@ -208,15 +208,25 @@ export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'cente
   );
 };
 
-// 우하단 출처 캡션 — 화면 오른쪽 아래 **끝**에 붙인다(2026-08-06).
-// 자막은 하단 중앙에 깔리므로 모서리로 완전히 빼야 서로 안 건드린다.
+// ── 출처 표기 (채널 고정 규칙) ───────────────────────────────────────────
+// **우측 위 · `Source : …` 한 형식으로 통일한다.** (2026-08-16 확정)
+// 예전엔 우하단이었는데 두 가지가 걸렸다:
+//   ① 하단은 자막·면책 문구·디스클레이머가 이미 붐빈다
+//   ② 카드마다 아래쪽 여백이 달라 출처 높이가 들쭉날쭉했다
+// 위쪽은 어느 카드든 타이틀 옆이 비어 있어 **항상 같은 자리**가 나온다.
+// 접두어를 붙이는 이유: 출처인지 캡션인지 한눈에 갈리게 하려고.
 export const PaperSource = ({source = '', dark = false, theme}) => {
   const frame = useCurrentFrame();
   if (!source) return null;
   const T = themeOf(theme, dark);
+  const txt = /^\s*source\s*:/i.test(source) ? source : `Source : ${source}`;
   return (
-    <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.06em', color: T.soft, opacity: fadeIn(frame, 40)}}>
-      {source}
+    <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right',
+                 maxWidth: 760,
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: 23,
+                 letterSpacing: '0.04em', lineHeight: 1.3, color: T.soft,
+                 opacity: 0.85 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
+      {txt}
     </div>
   );
 };

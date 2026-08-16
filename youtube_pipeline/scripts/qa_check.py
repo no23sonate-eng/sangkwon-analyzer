@@ -302,16 +302,26 @@ def check_chapters(plan, rep):
             rep.warn('챕터', f'분당 {rate:.2f}개 — B1M {CHAP_PER_MIN}. 챕터가 너무 굵다')
 
 
-def check_live_ratio(plan, rep):
+def check_live_ratio(plan, rep, props=None):
     """카드와 실사의 시간 비중.
 
     이 채널의 결과물이 B1M 과 제일 크게 다른 지점이다.
     도표가 주인공이면 "설명 슬라이드"가 되고, 실사가 주인공이어야 "다큐"가 된다.
     컷 길이·문법 반복은 이미 보고 있었는데 **무엇이 화면을 채우는가**는 안 보고 있었다.
     """
+    # **화면 전체가 실사인 카드**는 실사로 센다. LowerThirdCard 는 사진/영상을
+    # 화면 가득 깔고 그 위에 문구만 얹으므로, 카드로 세면 실사 비중이 실제보다
+    # 훨씬 낮게 나온다 (도입 시 7%로 찍혔는데 눈으로는 화면 대부분이 실사였다).
+    LIVE_CARDS = {'LowerThirdCard', 'FullBleedCard'}
+    props_map = props or {}
     card = live = 0.0
     for sc in plan.get('scenes', []):
-        card += max(0.0, sc.get('cardDur', sc['dur']))
+        cd = max(0.0, sc.get('cardDur', sc['dur']))
+        name = (props_map.get(str(sc['id'])) or {}).get('card') or sc.get('card')
+        if name in LIVE_CARDS:
+            live += cd
+        else:
+            card += cd
         bs = sc.get('broll')
         if bs:
             bs = bs if isinstance(bs, list) else [bs]
@@ -427,7 +437,7 @@ def main():
     check_assets(props, rep)
     check_credits(props, rep)
     check_chapters(plan, rep)
-    check_live_ratio(plan, rep)
+    check_live_ratio(plan, rep, props)
     check_grammar_variety(plan, props, rep)
     cuts = check_clips(plan, os.path.join(projdir, 'clips'), rep)
     if cuts:

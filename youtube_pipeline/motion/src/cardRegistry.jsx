@@ -66,6 +66,10 @@ import {NodeArrayCard} from './NodeArrayCard';
 import {SplitProofCard} from './SplitProofCard';
 import {FrontageCard} from './FrontageCard';
 import {ShareSplitCard} from './ShareSplitCard';
+import {YardViewCard} from './YardViewCard';
+import {SitePlotCard} from './SitePlotCard';
+import {ShapeCompareCard} from './ShapeCompareCard';
+import {LowerThirdCard} from './LowerThirdCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -84,6 +88,10 @@ export const CARDS = {
   SplitProofCard,
   FrontageCard,
   ShareSplitCard,
+  YardViewCard,
+  SitePlotCard,
+  ShapeCompareCard,
+  LowerThirdCard,
   BuildingCard,
   StatCard,
   QuoteCard,
