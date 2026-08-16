@@ -5,7 +5,7 @@
   "0": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_seoul_aerial.mp4",
+    "media": "올리브영성수/seongsu_view.jpg",
     "num": "",
     "label": "2026년 7월, 성수동",
     "sub": "경매 한 건",
@@ -13,18 +13,18 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.46,
-    "source": "Mixkit"
+    "source": "CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "1": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_aisle.mp4",
+    "media": "올리브영성수/seongsu_storefronts.jpg",
     "num": "",
     "label": "낙찰자는 올리브영",
     "sub": "",
@@ -32,7 +32,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "CC BY-SA 4.0"
    }
   },
   "2": {
@@ -45,7 +45,7 @@
       "display": "541",
       "unit": "억",
       "prefix": "약",
-      "label": "",
+      "label": "낙찰가",
       "hot": true
      }
     ],
@@ -62,7 +62,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "3": {
@@ -97,40 +97,34 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "4": {
-   "card": "BigStatsCard",
+   "card": "BarChartCard",
    "props": {
-    "title": "차액",
-    "sub": "감정가 대비",
-    "items": [
+    "title": "감정가 대비 +145억",
+    "sub": "",
+    "bars": [
      {
-      "display": "+145",
-      "unit": "억",
-      "label": "더 썼다",
-      "hot": true
+      "label": "감정가",
+      "value": 396,
+      "unit": "억"
      },
      {
-      "display": "137",
-      "unit": "%",
-      "label": "낙찰가율"
+      "label": "낙찰가",
+      "value": 541,
+      "unit": "억",
+      "hot": true
      }
     ],
-    "source": "블로터 2026.07.22 · 비율은 자체 계산",
-    "align": "center",
-    "bg": {
-     "backdrop": "올리브영성수/cash_closeup.mp4",
-     "veil": 0.945,
-     "dir": 0,
-     "blur": 4
-    }
+    "theme": "ink",
+    "source": "블로터 2026.07.22 · 차액은 자체 계산"
    },
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "5": {
@@ -149,7 +143,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "6": {
@@ -168,7 +162,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "7": {
@@ -216,13 +210,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "9": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_browse.mp4",
+    "media": "올리브영성수/bl_office_dusk.mp4",
     "num": "2",
     "label": "원래 매장 건물을 사지 않는 회사",
     "sub": "",
@@ -248,12 +242,18 @@
     ],
     "theme": "paper",
     "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/korea_map.png",
+     "veil": 0.86,
+     "dir": 0,
+     "blur": 0
+    },
     "source": "오픈애즈 2026.04.03"
    },
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "11": {
@@ -276,6 +276,11 @@
       "hot": true
      },
      {
+      "lat": 37.54439,
+      "lon": 127.05508,
+      "label": "올리브영 성수"
+     },
+     {
       "lat": 37.54541,
       "lon": 127.05359,
       "label": "성수역"
@@ -288,7 +293,7 @@
   "12": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_office_dusk.mp4",
+    "media": "올리브영성수/auction_columns.mp4",
     "num": "",
     "label": "왜 건물을 산 걸까요?",
     "sub": "",
@@ -301,27 +306,27 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "13": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_bldg1.jpg",
+    "media": "올리브영성수/amore_sulwhasoo.jpg",
     "num": "",
-    "label": "2층 · 넓은 주차장",
-    "sub": "사진은 성수동 일대 — 대상 건물 아님",
+    "label": "카페 쎈느가 임차해 온 건물",
+    "sub": "사진은 성수동 카페 거리 — 대상 건물 아님",
     "tone": "dark",
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "KOREA.NET / BY-SA 2.0"
    }
   },
   "14": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/popup_window.jpg",
+    "media": "올리브영성수/popup_exhibit.jpg",
     "num": "",
     "label": "브랜드 팝업이 이어졌다",
     "sub": "",
@@ -329,21 +334,21 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "Herzi Pinki / CC BY-SA 4.0"
+    "source": "CC BY-SA 2.0"
    }
   },
   "15": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/popup_lv.jpg",
     "num": "",
     "label": "루이비통 · 디올 · 지프 · 랄프로렌",
-    "sub": "",
+    "sub": "사진은 브랜드 매장 — 쎈느 팝업 아님",
     "tone": "dark",
     "kicker": "",
     "align": "center",
     "scrim": 0.56,
-    "source": "Mixkit"
+    "source": "CC BY 2.0"
    }
   },
   "16": {
@@ -362,40 +367,43 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "17": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_people.mp4",
+    "media": "올리브영성수/popup_dior.jpg",
     "num": "",
     "label": "평범한 건물이 성지가 된 이유",
-    "sub": "세 가지",
+    "sub": "3가지",
     "tone": "light",
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "CC0"
    }
   },
   "18": {
-   "card": "LowerThirdCard",
+   "card": "ShapeCompareCard",
    "props": {
-    "media": "올리브영성수/seongsu_bldg1.jpg",
-    "num": "1",
-    "label": "건물이 네모반듯하다",
+    "title": "건물이 네모반듯하다",
     "sub": "",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.52,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "items": [
+     {
+      "w": 7.5,
+      "h": 3.0,
+      "label": "",
+      "hot": true
+     }
+    ],
+    "theme": "paper",
+    "source": "도해"
    },
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "19": {
@@ -441,7 +449,7 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "21": {
@@ -451,9 +459,9 @@
     "num": "",
     "label": "팝업스토어는 결국 광고판이다",
     "sub": "",
-    "tone": "light",
+    "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.5,
     "source": "Mixkit"
    }
@@ -486,7 +494,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "23": {
@@ -506,7 +514,7 @@
   "24": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_billboard.mp4",
+    "media": "올리브영성수/seongsu_alley2.jpg",
     "num": "",
     "label": "길에서 보이는 면이 두 배",
     "sub": "",
@@ -514,12 +522,12 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "CC BY-SA 4.0"
    },
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "25": {
@@ -552,7 +560,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "27": {
@@ -572,7 +580,7 @@
   "28": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_billboard.mp4",
+    "media": "올리브영성수/bl_aerial_sunset.mp4",
     "num": "",
     "label": "건물 정면을 어떻게 쓸 것인가",
     "sub": "",
@@ -585,7 +593,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "29": {
@@ -650,7 +658,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "33": {
@@ -676,14 +684,14 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "34": {
    "card": "ShapeCompareCard",
    "props": {
     "title": "한 층만 쓸 수도, 두 층을 통으로 쓸 수도",
-    "sub": "",
+    "sub": "같은 바닥이라도 쓰는 방식이 달라진다",
     "items": [
      {
       "w": 4,
@@ -705,13 +713,13 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "35": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_look.mp4",
+    "media": "올리브영성수/bl_arch_hall.mp4",
     "num": "",
     "label": "위아래 시선이 자유롭다",
     "sub": "",
@@ -725,7 +733,7 @@
   "36": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_white_gallery.mp4",
+    "media": "올리브영성수/bl_city_lights.mp4",
     "num": "",
     "label": "공간 활용도가 높다",
     "sub": "",
@@ -738,13 +746,13 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "37": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_white_gallery.mp4",
+    "media": "올리브영성수/bl_city_night2.mp4",
     "num": "",
     "label": "하얀 도화지가 클수록",
     "sub": "담을 수 있는 게 많아진다",
@@ -771,7 +779,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "39": {
@@ -779,6 +787,11 @@
    "props": {
     "title": "층고가 낮으면",
     "sub": "",
+    "shrink": {
+     "from": 4.6,
+     "at": 18,
+     "dur": 34
+    },
     "items": [
      {
       "w": 7,
@@ -795,7 +808,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "40": {
@@ -828,13 +841,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "42": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_city_river.mp4",
     "num": "",
     "label": "실제 면적보다 커 보인다",
     "sub": "",
@@ -847,56 +860,60 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "43": {
-   "card": "NodeArrayCard",
+   "card": "YFlowCard",
    "props": {
-    "title": "동선을 설계할 수 있다",
-    "sub": "어디서 들어와 어디로 흐를지",
-    "cols": 3,
-    "rows": 3,
-    "perString": 3,
-    "spacingX": 1.0,
-    "spacingY": 0.75,
-    "hits": [
+    "kicker": "동선을 설계할 수 있다",
+    "sub": "층이 열려 있으면 위아래로 흐름을 짠다",
+    "nodes": [
      {
-      "c": 0,
-      "r": 0,
-      "n": 0,
-      "label": "진입"
+      "tag": "01",
+      "label": "진입",
+      "sub": "파사드에서 바로"
      },
      {
-      "c": 1,
-      "r": 1,
-      "n": 1,
-      "label": "메인"
+      "tag": "02",
+      "label": "1층 메인",
+      "sub": "가장 넓은 연출"
      },
      {
-      "c": 2,
-      "r": 2,
-      "n": 2,
-      "label": "2층"
+      "tag": "03",
+      "label": "보이드",
+      "sub": "위가 보인다",
+      "hot": true
+     },
+     {
+      "tag": "04",
+      "label": "2층",
+      "sub": "올라가고 싶어진다"
      }
     ],
-    "trail": true,
-    "pulse": true,
-    "theme": "ink",
-    "note": "층이 열려 있으면 동선을 위아래로 설계할 수 있다",
-    "disclaimer": "도해",
+    "arrows": [
+     {
+      "label": ""
+     },
+     {
+      "label": ""
+     },
+     {
+      "label": ""
+     }
+    ],
     "source": "도해"
    },
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "44": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_columns_room.mp4",
+    "media": "올리브영성수/bl_coins.mp4",
     "num": "",
     "label": "기둥도 마찬가지다",
     "sub": "",
@@ -909,7 +926,7 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "45": {
@@ -929,7 +946,7 @@
   "46": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_concourse.mp4",
     "num": "3",
     "label": "마당이 있다",
     "sub": "",
@@ -970,7 +987,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "49": {
@@ -981,6 +998,7 @@
     "yard": 300,
     "buildingH": 300,
     "buildingW": 210,
+    "center": true,
     "personLabel": "방문객",
     "yardLabel": "마당",
     "buildingLabel": "파사드",
@@ -991,7 +1009,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "50": {
@@ -1002,6 +1020,7 @@
     "yard": 340,
     "buildingH": 320,
     "buildingW": 220,
+    "center": true,
     "personLabel": "방문객",
     "yardLabel": "마당",
     "buildingLabel": "건물",
@@ -1012,7 +1031,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "51": {
@@ -1037,6 +1056,7 @@
     "yard": 360,
     "buildingH": 300,
     "buildingW": 210,
+    "center": true,
     "personLabel": "촬영",
     "yardLabel": "거리",
     "buildingLabel": "파사드",
@@ -1047,13 +1067,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "53": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_people.mp4",
+    "media": "올리브영성수/bl_crane_site.mp4",
     "num": "",
     "label": "내로라하는 브랜드들이 여기서 팝업을 했다",
     "sub": "",
@@ -1080,7 +1100,7 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "55": {
@@ -1108,7 +1128,7 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "56": {
@@ -1127,7 +1147,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "57": {
@@ -1147,7 +1167,7 @@
   "58": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_coins.mp4",
+    "media": "올리브영성수/bl_desk_top.mp4",
     "num": "",
     "label": "경매 = 싸게 사는 것?",
     "sub": "",
@@ -1160,13 +1180,13 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "59": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_lawsuit.mp4",
+    "media": "올리브영성수/bl_discussion.mp4",
     "num": "",
     "label": "이건 그게 아니었다",
     "sub": "",
@@ -1180,7 +1200,7 @@
   "60": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_discussion.mp4",
+    "media": "올리브영성수/bl_escalator.mp4",
     "num": "",
     "label": "공유물분할 경매",
     "sub": "",
@@ -1193,7 +1213,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "61": {
@@ -1220,7 +1240,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "62": {
@@ -1241,13 +1261,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "63": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_discussion.mp4",
+    "media": "올리브영성수/bl_lobby.mp4",
     "num": "",
     "label": "합의도 잘 안 된다",
     "sub": "",
@@ -1261,7 +1281,7 @@
   "64": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_lawsuit.mp4",
+    "media": "올리브영성수/bl_office_meet.mp4",
     "num": "",
     "label": "법원에 소송을 걸면",
     "sub": "법원이 매각을 진행한다",
@@ -1274,13 +1294,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "65": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_lawsuit.mp4",
+    "media": "올리브영성수/bl_office_talk.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -1314,21 +1334,28 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "67": {
-   "card": "LowerThirdCard",
+   "card": "TrackRecordCard",
    "props": {
-    "media": "올리브영성수/bl_discussion.mp4",
-    "num": "",
-    "label": "보통은 주관사가 매수자를 섭외한다",
+    "title": "보통의 매각 vs 경매",
     "sub": "",
-    "tone": "dark",
-    "kicker": "",
+    "items": [
+     {
+      "label": "보통 매각",
+      "note": "주관사가 매수자를 섭외한다"
+     },
+     {
+      "label": "경매",
+      "note": "공고 후 공개 입찰 — 시장이 값을 정한다",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
     "align": "center",
-    "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "민사집행법"
    }
   },
   "68": {
@@ -1347,19 +1374,19 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "69": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_city_night2.mp4",
+    "media": "올리브영성수/bl_phonesnap.mp4",
     "num": "",
     "label": "경매라는 꼬리표가 붙어도 최고가가 나온다",
     "sub": "",
-    "tone": "light",
+    "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
    }
@@ -1373,14 +1400,14 @@
     "sub": "같은 경매 과정을 거쳤다",
     "tone": "dark",
     "kicker": "",
-    "align": "center",
+    "align": "left",
     "scrim": 0.54,
     "source": "Mixkit"
    },
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "71": {
@@ -1401,7 +1428,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "72": {
@@ -1435,7 +1462,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "73": {
@@ -1465,7 +1492,7 @@
   "74": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_coins.mp4",
+    "media": "올리브영성수/bl_retail_browse.mp4",
     "num": "",
     "label": "싸게 사려던 게 아니다",
     "sub": "",
@@ -1492,7 +1519,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "76": {
@@ -1540,7 +1567,7 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "78": {
@@ -1613,7 +1640,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "81": {
@@ -1642,7 +1669,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "82": {
@@ -1661,13 +1688,13 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "83": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_browse.mp4",
+    "media": "올리브영성수/bl_rooftop.mp4",
     "num": "",
     "label": "핵심 사업장",
     "sub": "",
@@ -1714,7 +1741,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "86": {
@@ -1743,13 +1770,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "87": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_office_dusk.mp4",
+    "media": "올리브영성수/bl_seoul_stream.mp4",
     "num": "",
     "label": "건물주가 바뀌면 임차인은?",
     "sub": "",
@@ -1761,42 +1788,62 @@
    }
   },
   "88": {
+   "card": "YFlowCard",
+   "props": {
+    "kicker": "건물주가 바뀌면",
+    "sub": "임차인에게 무슨 일이 생기나",
+    "nodes": [
+     {
+      "tag": "01",
+      "label": "소유주 변경",
+      "sub": "2,548억에 인수"
+     },
+     {
+      "tag": "02",
+      "label": "수익률 개선",
+      "sub": "매수자의 목표"
+     },
+     {
+      "tag": "03",
+      "label": "임대료 인상 압력",
+      "sub": "추정",
+      "hot": true
+     }
+    ],
+    "arrows": [
+     {
+      "label": ""
+     },
+     {
+      "label": ""
+     }
+    ],
+    "source": "화자 판단 — 추정"
+   }
+  },
+  "89": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_planning.mp4",
+    "media": "올리브영성수/bl_station_hall.mp4",
     "num": "",
-    "label": "매수자는 수익률을 더 올리려 한다",
+    "label": "임대료가 올라갈 가능성",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
-  },
-  "89": {
-   "card": "LowerThirdCard",
-   "props": {
-    "media": "올리브영성수/bl_coins.mp4",
-    "num": "",
-    "label": "임대료가 올라갈 가능성",
-    "sub": "",
-    "tone": "light",
-    "kicker": "",
-    "align": "left",
-    "scrim": 0.52,
-    "source": "Mixkit"
    },
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "90": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_thinking2.mp4",
+    "media": "올리브영성수/bl_street_crowd.mp4",
     "num": "",
     "label": "그대로 쓸까?",
     "sub": "",
@@ -1810,20 +1857,20 @@
   "91": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_white_gallery.mp4",
+    "media": "올리브영성수/bl_street_walk.mp4",
     "num": "",
     "label": "성수동 분위기와 잘 맞는 건물",
     "sub": "",
-    "tone": "dark",
+    "tone": "light",
     "kicker": "",
-    "align": "center",
+    "align": "left",
     "scrim": 0.5,
     "source": "Mixkit"
    },
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "92": {
@@ -1865,7 +1912,7 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "94": {
@@ -1895,13 +1942,13 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "95": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_thinking.mp4",
+    "media": "올리브영성수/bl_topdown_block.mp4",
     "num": "",
     "label": "570억을 회수하려면",
     "sub": "",
@@ -1914,13 +1961,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "96": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_billboard.mp4",
+    "media": "올리브영성수/bl_topdown_roof.mp4",
     "num": "",
     "label": "광고 효과나 매출이 나와야 한다",
     "sub": "",
@@ -1933,26 +1980,33 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "97": {
-   "card": "LowerThirdCard",
+   "card": "TrackRecordCard",
    "props": {
-    "media": "올리브영성수/bl_planning.mp4",
-    "num": "",
-    "label": "사업성을 고민할 수밖에 없다",
+    "title": "570억을 회수하는 두 갈래",
     "sub": "",
-    "tone": "light",
-    "kicker": "",
-    "align": "left",
-    "scrim": 0.52,
-    "source": "Mixkit"
+    "items": [
+     {
+      "label": "임대 수익",
+      "note": "오피스로 지어 임대료로"
+     },
+     {
+      "label": "브랜드 효과",
+      "note": "광고판 · 테스트베드로",
+      "hot": true
+     }
+    ],
+    "theme": "blueprint",
+    "align": "center",
+    "source": "화자 판단"
    },
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "98": {
@@ -1995,13 +2049,13 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "100": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_office_dusk.mp4",
+    "media": "올리브영성수/bl_vault.mp4",
     "num": "",
     "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
     "sub": "",
@@ -2027,13 +2081,13 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "102": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_topdown.mp4",
+    "media": "올리브영성수/cash_closeup.mp4",
     "num": "",
     "label": "인근 토지를 더 사는 방법도 있다",
     "sub": "",
@@ -2046,13 +2100,13 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "103": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_seoul_gate.mp4",
+    "media": "올리브영성수/money_counter.mp4",
     "num": "",
     "label": "상징성 있는 위치",
     "sub": "",
@@ -2065,13 +2119,13 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "104": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_billboard.mp4",
+    "media": "올리브영성수/bl_thinking.mp4",
     "num": "",
     "label": "광고 효과를 1순위로 놓고 계산했다",
     "sub": "",
@@ -2085,7 +2139,7 @@
   "105": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_aisle.mp4",
+    "media": "올리브영성수/bl_gallery_look.mp4",
     "num": "",
     "label": "검증은 이미 옆에서 끝났다",
     "sub": "",
@@ -2098,13 +2152,13 @@
    "motion": {
     "dir": "up",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_office_dusk.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2118,7 +2172,7 @@
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_people.mp4",
+    "media": "올리브영성수/auction_columns.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",
@@ -2131,13 +2185,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "108": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_white_gallery.mp4",
+    "media": "올리브영성수/bl_billboard.mp4",
     "num": "",
     "label": "제품과 트렌드를 경험하는 공간",
     "sub": "",
@@ -2150,13 +2204,13 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "109": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_street_people.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2170,7 +2224,7 @@
   "110": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_look.mp4",
+    "media": "올리브영성수/bl_street_evening.mp4",
     "num": "",
     "label": "그런 방향도 가능해 보인다",
     "sub": "",
@@ -2183,7 +2237,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "111": {
@@ -2237,13 +2291,13 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "113": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_towers.mp4",
+    "media": "올리브영성수/bl_installation.mp4",
     "num": "",
     "label": "크래프톤 사옥",
     "sub": "데이비드 치퍼필드 설계",
@@ -2256,7 +2310,7 @@
    "motion": {
     "dir": "down",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "114": {
@@ -2276,7 +2330,7 @@
   "115": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_walk.mp4",
+    "media": "올리브영성수/bl_thinking2.mp4",
     "num": "",
     "label": "성수동 투자로 유명하다",
     "sub": "",
@@ -2289,7 +2343,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "116": {
@@ -2339,7 +2393,7 @@
    "motion": {
     "dir": "left",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "118": {
@@ -2359,7 +2413,7 @@
   "119": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_city_night2.mp4",
+    "media": "올리브영성수/bl_aerial_sunset.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2373,7 +2427,7 @@
   "120": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/amore_sulwhasoo.jpg",
+    "media": "올리브영성수/korea_map.png",
     "num": "",
     "label": "뷰티 브랜드의 오프라인 경쟁",
     "sub": "사진: 설화수 (아모레퍼시픽)",
@@ -2381,13 +2435,13 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "KOREA.NET / BY-SA 2.0"
+    "source": "CC0"
    }
   },
   "121": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_gallery_people.mp4",
     "num": "",
     "label": "올리브영만의 공간 콘텐츠를 만들지",
     "sub": "",
@@ -2400,7 +2454,7 @@
    "motion": {
     "dir": "right",
     "push": 0.035,
-    "exitSec": 0.5
+    "exitSec": 0
    }
   },
   "122": {

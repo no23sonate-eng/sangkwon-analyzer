@@ -20,7 +20,7 @@ export const YardViewCard = ({
   buildingH = 300, buildingW = 200,
   personLabel = '방문객', yardLabel = '마당', buildingLabel = '파사드',
   verdict = '',                // 아래 결론 한 줄
-  clipped = false,             // true 면 "얼굴이 잘린다"를 빨강으로 표시
+  clipped = false, center = false,             // true 면 "얼굴이 잘린다"를 빨강으로 표시
   note = '', theme = 'paper', align = 'center', source = '', bg = {},
 }) => {
   useA2ZFonts();
@@ -29,7 +29,10 @@ export const YardViewCard = ({
   const dark = T.bg !== '#EFEAE3';
 
   const GY = 640;                                  // 지면
-  const PX = 300;                                  // 사람 x
+  // 전체 폭(사람~건물 오른쪽)을 재서 화면 가운데에 놓는다.
+  // 왼쪽에 붙여 두면 오른쪽이 휑해 "그래픽이 한쪽에 몰렸다"로 읽힌다
+  const SPAN = Math.max(60, yard) + buildingW;
+  const PX = center ? Math.round((1920 - SPAN) / 2) : 300;
   const PH = 96;                                   // 사람 키 (스케일 기준)
   const BX = PX + Math.max(60, yard);              // 건물 왼쪽 면
   const EY = GY - PH * 0.88;                       // 눈높이
@@ -91,7 +94,7 @@ export const YardViewCard = ({
         ) : null}
       </svg>
 
-      <div style={{position: 'absolute', left: PX - 130, width: 260, top: GY + 96,
+      <div style={{position: 'absolute', left: PX - 110, width: 220, top: GY + 12,
                    textAlign: 'center', opacity: fadeIn(frame, 14),
                    fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
         {personLabel}

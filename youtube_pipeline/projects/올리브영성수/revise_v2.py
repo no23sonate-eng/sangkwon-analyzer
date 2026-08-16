@@ -32,6 +32,13 @@ CRED = {
     'gentlemonster_art.jpg': 'Tomás Del Coro / CC BY-SA 4.0',
     'musinsa_popup.jpg': 'K-POPIT / CC BY 3.0',
     'amore_sulwhasoo.jpg': 'KOREA.NET / BY-SA 2.0',
+    'seongsu_view.jpg': 'CC BY-SA 4.0',
+    'seongsu_storefronts.jpg': 'CC BY-SA 4.0',
+    'seongsu_alley2.jpg': 'CC BY-SA 4.0',
+    'korea_map.png': 'CC0',
+    'popup_dior.jpg': 'CC0',
+    'popup_exhibit.jpg': 'CC BY-SA 2.0',
+    'popup_lv.jpg': 'CC BY 2.0',
 }
 MIX = 'Mixkit'
 def cred(n): return CRED.get(n, MIX)
@@ -59,13 +66,13 @@ R = {}   # 장면 → (카드, props)
 
 # ══════════ 훅 ══════════
 # #0 성수동 전경
-R[0] = lt('bl_seoul_aerial.mp4', label='2026년 7월, 성수동', sub='경매 한 건', scrim=0.46)
+R[0] = lt('seongsu_view.jpg', label='2026년 7월, 성수동', sub='경매 한 건', scrim=0.46)
 # #1 올리브영 이미지 뒤 + 로고 앞 → 로고는 상표라 못 쓴다. 매장 실사로 대체
-R[1] = lt('bl_retail_aisle.mp4', label='낙찰자는 올리브영', scrim=0.52)
+R[1] = lt('seongsu_storefronts.jpg', label='낙찰자는 올리브영', scrim=0.52)
 # #2 서울동부지법 삭제 · 2026년 7월 크게 가운데 · 맨아래 낙찰가 삭제 · "약" 작게
 R[2] = ('BigStatsCard', {
     'title': '2026년 7월', 'sub': '',
-    'items': [{'display': '541', 'unit': '억', 'prefix': '약', 'label': '', 'hot': True}],
+    'items': [{'display': '541', 'unit': '억', 'prefix': '약', 'label': '낙찰가', 'hot': True}],
     'theme': 'ink', 'align': 'center', 'bg': bg('money_counter.mp4', 0.94, 0, 4),
     'source': '블로터 2026.07.22'})
 # #3 좌 감정가/396억, 우 낙찰가/약 541억. 색은 541억에만
@@ -76,6 +83,14 @@ R[3] = ('BigStatsCard', {
     'theme': 'ink', 'align': 'center', 'bg': bg('cash_closeup.mp4', 0.945, 2, 4),
     'source': '블로터 2026.07.22'})
 # #5 3D 대지 + 197평 중앙 · 평당가 · "자체 계산" 삭제
+# 숫자 두 개를 나란히 두면 차이가 안 보인다. **높이**로 보여 준다.
+# BarChartCard 는 자체 팔레트를 쓰는 구형 카드라 채널 색이 안 나와서,
+# 축척이 이미 맞는 ShapeCompareCard 로 막대를 그린다
+R[4] = ('ShapeCompareCard', {
+    'title': '감정가 대비 +145억', 'sub': '',
+    'items': [{'w': 2.6, 'h': 3.96, 'label': '396억', 'note': '감정가'},
+              {'w': 2.6, 'h': 5.41, 'label': '541억', 'note': '낙찰가', 'hot': True}],
+    'theme': 'ink', 'source': '블로터 2026.07.22 · 차액은 자체 계산'})
 R[5] = ('SitePlotCard', {
     'title': '대지', 'sub': '',
     'area': '197', 'areaUnit': '평', 'ratio': 1.5,
@@ -86,32 +101,39 @@ R[6] = lt('bl_thinking.mp4', label='이상한 점?', scrim=0.55)
 # #7 첫 번째 / 경쟁자가 없었습니다
 R[7] = lt('bl_gallery_look.mp4', num='1', label='경쟁자가 없었습니다', scrim=0.54)
 # #9 두 번째 / 원래 매장 건물을 사지 않는 회사
-R[9] = lt('bl_retail_browse.mp4', num='2', label='원래 매장 건물을 사지 않는 회사', scrim=0.54)
+R[9] = lt('bl_office_dusk.mp4', num='2', label='원래 매장 건물을 사지 않는 회사', scrim=0.54)
 # #10 "매장 대부분 임차로 사용" · 1,381개만 가운데 · 1,166개 삭제
 R[10] = ('BigStatsCard', {
     'title': '매장 대부분 임차로 사용', 'sub': '',
     'items': [{'display': '1,381', 'unit': '개', 'label': '전국 매장', 'hot': True}],
-    'theme': 'paper', 'align': 'center', 'source': '오픈애즈 2026.04.03'})
+    'theme': 'paper', 'align': 'center',
+    'bg': {'backdrop': img('korea_map.png'), 'veil': 0.86, 'dir': 0, 'blur': 0},
+    'source': '오픈애즈 2026.04.03'})
 # #11 성수동 지도 위 올리브영 표기
 R[11] = ('MapCard', {
     'image': MAPZ, 'bounds': BOUNDSZ,
     'title': '성수 상권', 'sub': '올리브영 매장 6곳',
     'pins': [{'lat': OLIVE_N[0], 'lon': OLIVE_N[1], 'label': '올리브영N 성수', 'hot': True},
+             {'lat': 37.54439, 'lon': 127.05508, 'label': '올리브영 성수'},
              {'lat': SEONGSU_ST[0], 'lon': SEONGSU_ST[1], 'label': '성수역'}],
     'align': 'left', 'source': OSM + ' · 매장 수 ZDNet 2025.11.17'})
 # #12 건물 영상 뒤 + 가운데 질문
 R[12] = lt('bl_office_dusk.mp4', label='왜 건물을 산 걸까요?', scrim=0.55)
 # #13 카페 쎈느 → 저작권 자산이라 못 받는다. 성수동 실사로 대체하고 캡션에 밝힘
-R[13] = lt('seongsu_bldg1.jpg', label='2층 · 넓은 주차장',
-           sub='사진은 성수동 일대 — 대상 건물 아님', scrim=0.5)
+R[13] = lt('seongsu_storefronts.jpg', label='카페 쎈느가 임차해 온 건물',
+           sub='사진은 성수동 카페 거리 — 대상 건물 아님', scrim=0.5)
 # #14,15 루이비통·디올·랄프로렌 → 저작권. 팝업 일반 실사로
-R[14] = lt('popup_window.jpg', label='브랜드 팝업이 이어졌다', scrim=0.5)
-R[15] = lt('bl_installation.mp4', label='루이비통 · 디올 · 지프 · 랄프로렌', scrim=0.56)
+R[14] = lt('popup_exhibit.jpg', label='브랜드 팝업이 이어졌다', scrim=0.5)
+R[15] = lt('popup_lv.jpg', label='루이비통 · 디올 · 지프 · 랄프로렌',
+            sub='사진은 브랜드 매장 — 쎈느 팝업 아님', scrim=0.56)
 # #16,17 팝업스토어 연상
 R[16] = lt('popup_crowd.jpg', label='팝업 성지', scrim=0.5)
-R[17] = lt('bl_gallery_people.mp4', label='평범한 건물이 성지가 된 이유', sub='세 가지', scrim=0.54)
+R[17] = lt('popup_dior.jpg', label='평범한 건물이 성지가 된 이유', sub='3가지', scrim=0.54)
 # #18 사용자 첨부 쎈느 사진 → 파일이 오면 여기에 꽂는다. 없으면 성수 실사
-R[18] = lt('seongsu_bldg1.jpg', num='1', label='건물이 네모반듯하다', scrim=0.52)
+R[18] = ('ShapeCompareCard', {
+    'title': '건물이 네모반듯하다', 'sub': '',
+    'items': [{'w': 7.5, 'h': 3.0, 'label': '', 'hot': True}],
+    'theme': 'paper', 'source': '도해'})
 # #19 좌 직사각형 · 우 정사각형 + 아래 양쪽 화살표
 R[19] = ('ShapeCompareCard', {
     'title': '한쪽 면이 길다', 'sub': '',
@@ -130,7 +152,7 @@ R[22] = ('FrontageCard', {
                 {'label': '8 × 2', 'w': 8, 'd': 2, 'note': '광고판 8', 'hot': True}],
     'floors': 2, 'note': '', 'theme': 'paper', 'source': '도해'})
 R[23] = lt('bl_street_people.mp4', label='사람 시선에 더 들어온다', scrim=0.5)
-R[24] = lt('bl_billboard.mp4', label='길에서 보이는 면이 두 배', scrim=0.52)
+R[24] = lt('seongsu_alley2.jpg', label='길에서 보이는 면이 두 배', scrim=0.52)
 # #25 삭제 → 실사만
 R[25] = lt('bl_street_evening.mp4', label='', scrim=0.3)
 R[26] = lt('bl_installation.mp4', label='브랜드는 파사드를 연출한다', scrim=0.52)
@@ -158,7 +180,8 @@ R[33] = ('ShapeCompareCard', {
     'theme': 'ink', 'note': '두 개 층을 하나의 공간으로 쓸 수 있다', 'source': '도해'})
 # #34 좌: 한 색 / 우: 위아래 나눠 다른 색
 R[34] = ('ShapeCompareCard', {
-    'title': '한 층만 쓸 수도, 두 층을 통으로 쓸 수도', 'sub': '',
+    'title': '한 층만 쓸 수도, 두 층을 통으로 쓸 수도',
+    'sub': '같은 바닥이라도 쓰는 방식이 달라진다',
     'items': [{'w': 4, 'h': 4, 'label': '통으로', 'split': 1, 'hot': True},
               {'w': 4, 'h': 4, 'label': '층별로', 'split': 2}],
     'theme': 'ink', 'source': '도해'})
@@ -169,6 +192,7 @@ R[38] = lt('bl_corridor.mp4', label='', scrim=0.3)
 # #39 네모 박스 + 세로 화살표로 층고 낮음
 R[39] = ('ShapeCompareCard', {
     'title': '층고가 낮으면', 'sub': '',
+    'shrink': {'from': 4.6, 'at': 18, 'dur': 34},   # 천장이 내려앉는다
     'items': [{'w': 7, 'h': 1.7, 'label': '낮은 층고', 'dim': 'left', 'dimLabel': '층고'}],
     'theme': 'blueprint',
     'note': '큰 조형물이 안 서고, 조명을 위에서 떨어뜨릴 자리가 안 나온다',
@@ -177,7 +201,7 @@ R[40] = lt('bl_columns_room.mp4', label='할 수 있는 게 줄어든다', scrim
 R[41] = lt('bl_high_ceiling.mp4', label='열려 있으면 달라진다', scrim=0.5)
 R[42] = lt('bl_installation.mp4', label='실제 면적보다 커 보인다', scrim=0.52)
 # #43 동선 설계 그래픽
-R[43] = ('NodeArrayCard', {
+R['_unused43'] = ('NodeArrayCard', {
     'title': '동선을 설계할 수 있다', 'sub': '어디서 들어와 어디로 흐를지',
     'cols': 3, 'rows': 3, 'perString': 3, 'spacingX': 1.0, 'spacingY': 0.75,
     'hits': [{'c': 0, 'r': 0, 'n': 0, 'label': '진입'},
@@ -186,6 +210,14 @@ R[43] = ('NodeArrayCard', {
     'trail': True, 'pulse': True, 'theme': 'ink',
     'note': '층이 열려 있으면 동선을 위아래로 설계할 수 있다',
     'disclaimer': '도해', 'source': '도해'})
+R[43] = ('YFlowCard', {
+    'kicker': '동선을 설계할 수 있다', 'sub': '층이 열려 있으면 위아래로 흐름을 짠다',
+    'nodes': [{'tag': '01', 'label': '진입', 'sub': '파사드에서 바로'},
+              {'tag': '02', 'label': '1층 메인', 'sub': '가장 넓은 연출'},
+              {'tag': '03', 'label': '보이드', 'sub': '위가 보인다', 'hot': True},
+              {'tag': '04', 'label': '2층', 'sub': '올라가고 싶어진다'}],
+    'arrows': [{'label': ''}, {'label': ''}, {'label': ''}],
+    'source': '도해'})
 R[44] = lt('bl_columns_room.mp4', label='기둥도 마찬가지다', scrim=0.5)
 R[45] = lt('bl_columns_dark.mp4', label='기둥이 많으면 잘게 나뉜다', scrim=0.54)
 R[46] = lt('bl_installation.mp4', num='3', label='마당이 있다', scrim=0.54)
@@ -195,14 +227,14 @@ R[47] = lt('store_queue.jpg', label='팝업은 대기 줄이 생긴다', scrim=0
 R[48] = lt('bl_retail_pick.mp4', label='', scrim=0.3)
 R[49] = ('YardViewCard', {
     'title': '마당이 하는 일', 'sub': '',
-    'yard': 300, 'buildingH': 300, 'buildingW': 210,
+    'yard': 300, 'buildingH': 300, 'buildingW': 210, 'center': True,
     'personLabel': '방문객', 'yardLabel': '마당', 'buildingLabel': '파사드',
     'verdict': '건물 얼굴이 온전히 다 담긴다',
     'theme': 'paper', 'source': '도해'})
 # #50 사람 → 마당 → 건물 · 시선 화살표
 R[50] = ('YardViewCard', {
     'title': '내부뿐 아니라 외부까지', 'sub': '',
-    'yard': 340, 'buildingH': 320, 'buildingW': 220,
+    'yard': 340, 'buildingH': 320, 'buildingW': 220, 'center': True,
     'personLabel': '방문객', 'yardLabel': '마당', 'buildingLabel': '건물',
     'verdict': '주변 간섭 없이 파사드를 보여 준다',
     'theme': 'paper', 'source': '도해'})
@@ -210,13 +242,19 @@ R[51] = lt('brand_storefront.jpg', label='마당은 파사드의 거리다', scr
 # #52 인증샷도 같은 방식
 R[52] = ('YardViewCard', {
     'title': '인증샷도 마찬가지', 'sub': '',
-    'yard': 360, 'buildingH': 300, 'buildingW': 210,
+    'yard': 360, 'buildingH': 300, 'buildingW': 210, 'center': True,
     'personLabel': '촬영', 'yardLabel': '거리', 'buildingLabel': '파사드',
     'verdict': '한 프레임에 건물 얼굴이 다 들어온다',
     'theme': 'paper', 'source': '도해'})
 R[53] = lt('bl_gallery_people.mp4', label='내로라하는 브랜드들이 여기서 팝업을 했다', scrim=0.54)
 R[54] = lt('bl_retail_aisle.mp4', label='올리브영 입장에선?', scrim=0.54)
 # #55 테스트 완료 그래픽
+R[56] = ('TrackRecordCard', {
+    'title': '돈 한 푼 안 들인 오프라인 테스트', 'sub': '',
+    'items': [{'label': '임차료 0원', 'note': '브랜드가 냈다'},
+              {'label': '연출 사례 축적', 'note': '여러 브랜드가 실증'},
+              {'label': '반응까지 확인', 'note': '인증샷·대기줄', 'hot': True}],
+    'theme': 'blueprint', 'align': 'center', 'source': '화자 해석'})
 R[55] = ('TrackRecordCard', {
     'title': '이미 검증이 끝났다', 'sub': '',
     'items': [{'label': '파사드 노출', 'note': '여러 브랜드가 실증'},
@@ -247,6 +285,11 @@ R[66] = ('TrackRecordCard', {
               {'label': '방식은 공개 입찰이다', 'note': '가격은 시장이 정한다', 'hot': True}],
     'theme': 'ink', 'align': 'center', 'source': '민법 제269조 · 민사집행법'})
 R[67] = lt('bl_discussion.mp4', label='보통은 주관사가 매수자를 섭외한다', scrim=0.54)
+R[67] = ('TrackRecordCard', {
+    'title': '보통의 매각 vs 경매', 'sub': '',
+    'items': [{'label': '보통 매각', 'note': '주관사가 매수자를 섭외한다'},
+              {'label': '경매', 'note': '공고 후 공개 입찰 — 시장이 값을 정한다', 'hot': True}],
+    'theme': 'ink', 'align': 'center', 'source': '민사집행법'})
 R[68] = lt('bl_seoul_gate.mp4', label='입지가 이 정도로 좋은 물건은', scrim=0.52)
 R[69] = lt('bl_city_night2.mp4', label='경매라는 꼬리표가 붙어도 최고가가 나온다', scrim=0.54)
 R[70] = lt('bl_towers.mp4', label='인근 신도리코 부지', sub='같은 경매 과정을 거쳤다', scrim=0.54)
@@ -315,7 +358,13 @@ R[86] = ('BigStatsCard', {
     'theme': 'ink', 'align': 'center', 'bg': bg('bl_office_dusk.mp4', 0.94, 5, 3),
     'source': '비즈워치 2026.01.14'})
 R[87] = lt('bl_office_dusk.mp4', label='건물주가 바뀌면 임차인은?', scrim=0.55)
-R[88] = lt('bl_planning.mp4', label='매수자는 수익률을 더 올리려 한다', scrim=0.52)
+R[88] = ('YFlowCard', {
+    'kicker': '건물주가 바뀌면', 'sub': '임차인에게 무슨 일이 생기나',
+    'nodes': [{'tag': '01', 'label': '소유주 변경', 'sub': '2,548억에 인수'},
+              {'tag': '02', 'label': '수익률 개선', 'sub': '매수자의 목표'},
+              {'tag': '03', 'label': '임대료 인상 압력', 'sub': '추정', 'hot': True}],
+    'arrows': [{'label': ''}, {'label': ''}],
+    'source': '화자 판단 — 추정'})
 R[89] = lt('bl_coins.mp4', label='임대료가 올라갈 가능성', scrim=0.52)
 R[90] = lt('bl_thinking2.mp4', label='그대로 쓸까?', scrim=0.54)
 R[91] = lt('bl_white_gallery.mp4', label='성수동 분위기와 잘 맞는 건물', scrim=0.5)
@@ -333,7 +382,11 @@ R[94] = ('BigStatsCard', {
     'source': '자체 계산 — 추정치'})
 R[95] = lt('bl_thinking.mp4', label='570억을 회수하려면', scrim=0.54)
 R[96] = lt('bl_billboard.mp4', label='광고 효과나 매출이 나와야 한다', scrim=0.52)
-R[97] = lt('bl_planning.mp4', label='사업성을 고민할 수밖에 없다', scrim=0.52)
+R[97] = ('TrackRecordCard', {
+    'title': '570억을 회수하는 두 갈래', 'sub': '',
+    'items': [{'label': '임대 수익', 'note': '오피스로 지어 임대료로'},
+              {'label': '브랜드 효과', 'note': '광고판 · 테스트베드로', 'hot': True}],
+    'theme': 'blueprint', 'align': 'center', 'source': '화자 판단'})
 R[98] = ('ShapeCompareCard', {
     'title': '오피스로 지으면 (가정)', 'sub': '용적률 400~500% 가정',
     'items': [{'w': 3, 'h': 6.5, 'label': '7~8층', 'dim': 'left', 'dimLabel': '층수', 'hot': True}],
@@ -390,6 +443,56 @@ R[120] = lt('amore_sulwhasoo.jpg', label='뷰티 브랜드의 오프라인 경�
 R[121] = lt('bl_installation.mp4', label='올리브영만의 공간 콘텐츠를 만들지', scrim=0.54)
 R[122] = lt('seoulforest_deck.jpg', label='이곳이 어떻게 바뀔까',
             sub='지켜보면 방향이 보인다', scrim=0.5)
+
+
+# ── 소재 중복 감시 ──────────────────────────────────────────────────────
+# **같은 영상/사진이 두 번 나오면 안 된다** (검수 지적). 컷을 하나씩 고치면
+# 고칠 때마다 다른 데서 또 겹치므로, 배정이 끝난 뒤 **전수로 훑어 강제**한다.
+#
+# 규칙: 이미 쓴 소재가 또 나오면 → 아직 안 쓴 소재 중에서 고른다.
+# 남는 게 없으면 **가장 적게·가장 멀리 떨어져 쓰인 것**을 고른다.
+# 종류(영상/사진)는 유지한다 — 사진 자리에 영상이 들어가면 리듬이 깨진다.
+def dedupe_media(plan, props, pubdir):
+    import collections
+    pool_v, pool_i = [], []
+    base = os.path.join(pubdir, '올리브영성수')
+    for f in sorted(os.listdir(base)):
+        if f.startswith(('seongsu.png', 'seongsu_zoom', 'seongsu_buildings')):
+            continue
+        if f.endswith('.mp4'):
+            pool_v.append(f'올리브영성수/{f}')
+        elif f.endswith(('.jpg', '.png')):
+            pool_i.append(f'올리브영성수/{f}')
+
+    used = collections.Counter()
+    lastAt = {}
+    swapped = 0
+    for idx, sc in enumerate(plan['scenes']):
+        e = props['scenes'].get(str(sc['id']))
+        if not e or e.get('card') != 'LowerThirdCard':
+            continue
+        pr = e['props']
+        cur = pr.get('media', '')
+        if not cur:
+            continue
+        pool = pool_v if cur.endswith('.mp4') else pool_i
+        if used[cur] == 0:
+            used[cur] += 1; lastAt[cur] = idx
+            continue
+        # 중복 — 안 쓴 것 우선, 없으면 가장 적게+가장 오래전에 쓴 것
+        fresh = [m for m in pool if used[m] == 0]
+        pick = fresh[0] if fresh else min(
+            pool, key=lambda m: (used[m], -(idx - lastAt.get(m, -99))))
+        pr['media'] = pick
+        pr['source'] = cred(os.path.basename(pick))
+        used[pick] += 1; lastAt[pick] = idx
+        swapped += 1
+
+    dup = [m for m, c in used.items() if c > 1]
+    print(f'중복 교체 {swapped}컷 · 남은 중복 {len(dup)}종')
+    for m in dup:
+        print(f'   {os.path.basename(m)} × {used[m]}')
+
 
 # ── 반영 ────────────────────────────────────────────────────────────────
 plan = json.load(open(f'{P}/scene_plan.json', encoding='utf-8'))
@@ -455,6 +558,13 @@ for i, s in enumerate(plan['scenes']):
         order = ['paper', 'ink', 'blueprint']
         pr['theme'] = order[(order.index(cur) + 1) % 3] if cur in order else 'ink'
     run, last = 1, (e['card'], pr.get('theme', 'paper'), pr.get('align', 'center'))
+
+json.dump(plan, open(f'{P}/scene_plan.json', 'w', encoding='utf-8'),
+          ensure_ascii=False, indent=1)
+json.dump(props, open(f'{P}/scene_props.json', 'w', encoding='utf-8'),
+          ensure_ascii=False, indent=1)
+
+dedupe_media(plan, props, PUB)
 
 json.dump(plan, open(f'{P}/scene_plan.json', 'w', encoding='utf-8'),
           ensure_ascii=False, indent=1)

@@ -20,6 +20,7 @@ import {fit} from './layout';
 export const ShapeCompareCard = ({
   title = '', sub = '',
   items = [], unit = '',
+  shrink = null,   // {from, at, dur} — 높이가 이 값에서 제 높이로 내려앉는다
   note = '', theme = 'paper', align = 'center', source = '', bg = {},
 }) => {
   useA2ZFonts();
@@ -54,15 +55,25 @@ export const ShapeCompareCard = ({
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.map((o, i) => {
-          const w = o.w * K, h = o.h * K;
-          const cx = colW * (i + 0.5);
-          const x = cx - w / 2, y = baseY - h;
           const t = interpolate(frame, [6 + i * 10, 34 + i * 10], [0, 1],
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
           const e = t * t * (3 - 2 * t);
+          // "층고가 낮다"는 정지 그림으로는 비교 대상이 없어 안 와닿는다.
+          // **높은 데서 내려앉는 걸 보여 주면** 낮다는 게 몸으로 읽힌다
+          const sk = shrink ? interpolate(frame, [shrink.at, shrink.at + (shrink.dur || 30)],
+                                          [1, 0], {extrapolateLeft: 'clamp',
+                                                   extrapolateRight: 'clamp'}) : 0;
+          const es = sk * sk * (3 - 2 * sk);
+
+          const w = o.w * K;
+          // 시작 높이(shrink.from)에서 제 높이로 내려앉는다. 바닥은 고정
+          const h = shrink ? o.h * K * (1 + (shrink.from / o.h - 1) * es) : o.h * K;
+          const cx = colW * (i + 0.5);
+          const x = cx - w / 2, y = baseY - h;
           const n = Math.max(1, o.split || 1);
           return (
             <g key={i} opacity={e}>
+              {/* shrink 가 걸리면 위에서 눌러 내린다 */}
               {Array.from({length: n}, (_, k) => (
                 <rect key={k} x={x} y={y + (h / n) * k} width={w} height={h / n}
                       fill={o.hot ? (k % 2 ? '#E8ED4A' : YELLOW)

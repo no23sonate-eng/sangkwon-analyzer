@@ -383,7 +383,10 @@ def add_motion(plan):
             di = (di + 1) % len(FLOW_DIRS)
         e['motion'] = {'dir': FLOW_DIRS[di], 'push': 0.035,
                        # 뒤에 실사가 붙는 컷은 밀고 나가지 않는다 — 실사가 이어받지 못한다
-                       'exitSec': 0 if e.get('broll') else 0.5}
+                       # 퇴장 모션은 쓰지 않는다. 들어올 때 미는 건 자연스러운데
+                       # 나갈 때 미는 건 컷이 끝나기 전에 화면이 도망가는 것처럼
+                       # 보여 어색하다 (검수에서 지적).
+                       'exitSec': 0}
         run += 1
     return plan
 

@@ -131,7 +131,7 @@
    "end": 18.5,
    "dur": 2.5,
    "text": "146억을 더 쓴 겁니다.",
-   "card": "BigStatsCard",
+   "card": "BarChartCard",
    "key": "cut05",
    "motion": {
     "dir": "up",
@@ -321,7 +321,7 @@
    "end": 81.7,
    "dur": 2.9,
    "text": "첫 번째, 건물이 네모반듯합니다.",
-   "card": "LowerThirdCard",
+   "card": "ShapeCompareCard",
    "key": "cut19",
    "motion": {
     "dir": "right",
@@ -672,7 +672,7 @@
    "end": 192.0,
    "dur": 2.9,
    "text": "동선을 설계할 수 있게 되는 겁니다.",
-   "card": "NodeArrayCard",
+   "card": "YFlowCard",
    "key": "cut44",
    "motion": {
     "dir": "down",
@@ -1003,7 +1003,7 @@
    "end": 300.7,
    "dur": 5.4,
    "text": "보통의 매각은 주관사가 잠재 매수자를 섭외해서 거래가 이뤄집니다.",
-   "card": "LowerThirdCard",
+   "card": "TrackRecordCard",
    "key": "cut68",
    "cardDur": 5.4
   },
@@ -1292,7 +1292,7 @@
    "end": 403.9,
    "dur": 3.4,
    "text": "그런데 기존 수익률이 좋아서 산 건물이라도,",
-   "card": "LowerThirdCard",
+   "card": "YFlowCard",
    "key": "cut89",
    "cardDur": 3.4
   },
@@ -1424,7 +1424,7 @@
    "end": 447.8,
    "dur": 4.8,
    "text": "즉, 투자금 회수 관점에선 사업성을 고민할 수밖에 없습니다.",
-   "card": "LowerThirdCard",
+   "card": "TrackRecordCard",
    "key": "cut98",
    "motion": {
     "dir": "right",

@@ -69,7 +69,10 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
             </div>
             <div style={{marginTop: 26, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 46, color: T.ink, wordBreak: 'keep-all'}}>
-              {it.hot ? <span style={{background: 'rgba(250,255,46,0.8)', padding: '2px 12px'}}>{it.label}</span> : it.label}
+              {it.hot
+                ? <span style={{background: YELLOW, color: '#1B1E24',
+                                padding: '2px 14px'}}>{it.label}</span>
+                : it.label}
             </div>
             {it.sub ? (
               <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft, wordBreak: 'keep-all'}}>

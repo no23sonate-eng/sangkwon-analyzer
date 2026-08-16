@@ -35,11 +35,11 @@ export const FrontageCard = ({
   // 블록을 **위에서부터 흘려** 쌓는다 (layout.jsx flow 와 같은 원칙).
   // 좌표를 하나씩 박으면 한 곳을 고칠 때 옆이 깨진다 — 실제로 첫 렌더에서
   // 안 이름이 부제를 덮고 치수 숫자가 정면 박스를 관통했다.
-  const LABEL_H = 104;      // 안 이름 + 면적 두 줄
-  const GAP = 42;          // 평면 ↔ 정면. 옐로 변이 내려오는 통로
-  const DIM_GAP = 84;      // 정면 ↔ 치수선. DimLine 라벨이 선 **위**에 앉으므로
+  const LABEL_H = 88;      // 안 이름 + 면적 두 줄
+  const GAP = 34;          // 평면 ↔ 정면. 옐로 변이 내려오는 통로
+  const DIM_GAP = 74;      // 정면 ↔ 치수선. DimLine 라벨이 선 **위**에 앉으므로
                            // 이만큼 안 띄우면 숫자가 정면 박스를 뚫는다
-  const NOTE_GAP = 44;
+  const NOTE_GAP = 40;
 
   const maxW = Math.max(...options.map((o) => o.w));
   const maxD = Math.max(...options.map((o) => o.d));
@@ -48,9 +48,9 @@ export const FrontageCard = ({
 
   // 정면 높이를 **칸 크기에서 유도**한다. 상수로 박아 두면 평면만 작아지고
   // 정면만 커져 둘의 축척이 어긋난다 — 같은 건물의 두 투영이라는 게 깨진다.
-  const FL = Math.max(1, floors) * 0.9;
+  const FL = Math.max(1, floors) * 0.72;
   // 칸 크기는 **두 안 공통**이어야 한다. 안마다 다르면 면적 비교가 무너진다
-  const CELL = Math.max(20, Math.min(62, (colW - 190) / maxW,
+  const CELL = Math.max(20, Math.min(86, (colW - 130) / maxW,
                                      (BOT - TOP - fixed) / (maxD + FL)));
 
   const planH = maxD * CELL;
