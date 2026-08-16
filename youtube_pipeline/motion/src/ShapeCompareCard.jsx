@@ -30,7 +30,7 @@ export const ShapeCompareCard = ({
 
   const TOP = title ? (sub ? 300 : 246) : 178;
   const BOT = CONTENT_BOTTOM - (note ? 112 : 56);
-  const LABEL_H = 74, DIM_H = 92;
+  const LABEL_H = 118, DIM_H = 92;
   const colW = 1920 / items.length;
 
   const maxW = Math.max(...items.map((o) => o.w));
@@ -90,7 +90,7 @@ export const ShapeCompareCard = ({
                          label={o.dimLabel || `${o.w}${unit}`} labelSize={38} />
               ) : null}
               {o.dim === 'left' ? (
-                <DimLine x1={x - 46} y1={baseY} x2={x - 46} y2={y}
+                <DimLine x1={x - 74} y1={baseY} x2={x - 74} y2={y}
                          progress={e} color={T.ink} width={3} cap={13}
                          label={o.dimLabel || `${o.h}${unit}`} labelSize={38} />
               ) : null}

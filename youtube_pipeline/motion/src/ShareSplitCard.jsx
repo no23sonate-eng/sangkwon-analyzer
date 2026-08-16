@@ -36,8 +36,9 @@ export const ShareSplitCard = ({
 
   const TOP = title ? (sub ? 300 : 246) : 178;
   const BOT = CONTENT_BOTTOM - 96;
-  const PW = 940, PH = Math.min(360, BOT - TOP - 120);
-  const PX = (1920 - PW) / 2;
+  // 오른쪽에 문구가 앉을 자리를 남긴다 — 필지 안에 쓰면 지분 칸과 겹쳐 안 읽힌다
+  const PW = 760, PH = Math.min(340, BOT - TOP - 120);
+  const PX = 150;
   const PY = TOP + Math.max(0, (BOT - TOP - PH - 60) / 2) + 60;
 
   // 지분 칸 — 격자로 자른다. 실제 지분은 면적이 제각각이지만,
@@ -126,7 +127,7 @@ export const ShareSplitCard = ({
 
       {/* ② 라벨 — 빨강 X 옆. 상자 없이 (한 화면에 도장은 ③ 하나만) */}
       {cutT > 0.96 ? (
-        <div style={{position: 'absolute', left: bx + bw + 44, top: by + bh / 2 - 30,
+        <div style={{position: 'absolute', left: PX + PW + 56, top: by + bh / 2 - 34, width: 720,
                      opacity: fadeIn(frame, cutAt + 26),
                      fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                      fontSize: fit(cutLabel, 42, 620), color: '#D94A2B', whiteSpace: 'nowrap'}}>

@@ -107,7 +107,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 2.8
   },
   {
    "id": 3,
@@ -122,7 +123,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.4
   },
   {
    "id": 4,
@@ -131,13 +133,14 @@
    "end": 18.5,
    "dur": 2.5,
    "text": "146억을 더 쓴 겁니다.",
-   "card": "BarChartCard",
+   "card": "ShapeCompareCard",
    "key": "cut05",
    "motion": {
     "dir": "up",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 2.5
   },
   {
    "id": 5,
@@ -152,7 +155,8 @@
     "dir": "up",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.3
   },
   {
    "id": 6,
@@ -220,7 +224,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.4
   },
   {
    "id": 11,
@@ -231,12 +236,7 @@
    "text": "세 번째, 성수 상권에는 이미 올리브영 매장이 여섯 곳이나 있습니다.",
    "card": "MapCard",
    "key": "cut12",
-   "cardDur": 0,
-   "broll": {
-    "src": "bl_retail_pick.mp4",
-    "ss": 1.7,
-    "dur": 5.4
-   }
+   "cardDur": 5.4
   },
   {
    "id": 12,
@@ -339,12 +339,7 @@
    "text": "직사각형 건물은 정사각형보다 한쪽 면이 깁니다.",
    "card": "ShapeCompareCard",
    "key": "cut20",
-   "cardDur": 0,
-   "broll": {
-    "src": "bl_street_topdown.mp4",
-    "ss": 6.8,
-    "dur": 4.0
-   }
+   "cardDur": 4.0
   },
   {
    "id": 20,
@@ -386,7 +381,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.7
   },
   {
    "id": 23,
@@ -478,12 +474,7 @@
    "text": "파사드가 작다는 건, 보여줄 수 있는 얼굴이 작다는 뜻입니다.",
    "card": "ShapeCompareCard",
    "key": "cut30",
-   "cardDur": 0,
-   "broll": {
-    "src": "bl_street_walk.mp4",
-    "ss": 5.21,
-    "dur": 4.8
-   }
+   "cardDur": 4.8
   },
   {
    "id": 30,
@@ -536,7 +527,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.4
   },
   {
    "id": 34,
@@ -551,7 +543,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.4
   },
   {
    "id": 35,
@@ -620,7 +613,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.9
   },
   {
    "id": 40,
@@ -678,7 +672,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 2.9
   },
   {
    "id": 44,
@@ -758,7 +753,8 @@
     "dir": "up",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.7
   },
   {
    "id": 50,
@@ -773,7 +769,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.4
   },
   {
    "id": 51,
@@ -799,7 +796,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.7
   },
   {
    "id": 53,
@@ -841,7 +839,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.5
   },
   {
    "id": 56,
@@ -941,7 +940,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 3.1
   },
   {
    "id": 63,
@@ -994,7 +994,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.1
   },
   {
    "id": 67,
@@ -1063,7 +1064,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.5
   },
   {
    "id": 72,
@@ -1078,7 +1080,8 @@
     "dir": "up",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 3.1
   },
   {
    "id": 73,
@@ -1089,12 +1092,7 @@
    "text": "올리브영이 단독 입찰인데 감정가의 137%를 쓴 이유가 여기 있습니다.",
    "card": "BigStatsCard",
    "key": "cut74",
-   "cardDur": 0,
-   "broll": {
-    "src": "contract_signature.mp4",
-    "ss": 4.14,
-    "dur": 5.9
-   }
+   "cardDur": 5.9
   },
   {
    "id": 74,
@@ -1147,7 +1145,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 3.1
   },
   {
    "id": 78,
@@ -1169,12 +1168,7 @@
    "text": "그런데 이번에 낙찰받은 부지에서 걸어서 2분 거리에 올리브영N 성수가 있습니다.",
    "card": "MapCard",
    "key": "cut80",
-   "cardDur": 0,
-   "broll": {
-    "src": "bl_retail_pick.mp4",
-    "ss": 6.8,
-    "dur": 6.7
-   }
+   "cardDur": 6.7
   },
   {
    "id": 80,
@@ -1189,7 +1183,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.5
   },
   {
    "id": 81,
@@ -1204,7 +1199,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.3
   },
   {
    "id": 82,
@@ -1257,7 +1253,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.9
   },
   {
    "id": 86,
@@ -1272,7 +1269,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 5.4
   },
   {
    "id": 87,
@@ -1368,7 +1366,8 @@
     "dir": "up",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 3.0
   },
   {
    "id": 94,
@@ -1383,7 +1382,8 @@
     "dir": "up",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 6.9
   },
   {
    "id": 95,
@@ -1442,12 +1442,7 @@
    "text": "용적률을 4~500%로 가정하면 7~8층 규모가 나옵니다.",
    "card": "ShapeCompareCard",
    "key": "cut99",
-   "cardDur": 0,
-   "broll": {
-    "src": "money_counter.mp4",
-    "ss": 5.1,
-    "dur": 5.2
-   }
+   "cardDur": 5.2
   },
   {
    "id": 99,
@@ -1462,7 +1457,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.3
   },
   {
    "id": 100,
@@ -1488,7 +1484,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 6.1
   },
   {
    "id": 102,
@@ -1643,7 +1640,8 @@
     "dir": "down",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 6.7
   },
   {
    "id": 113,
@@ -1712,7 +1710,8 @@
     "dir": "left",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.5
   },
   {
    "id": 118,

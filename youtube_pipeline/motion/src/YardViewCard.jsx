@@ -94,7 +94,7 @@ export const YardViewCard = ({
         ) : null}
       </svg>
 
-      <div style={{position: 'absolute', left: PX - 110, width: 220, top: GY + 12,
+      <div style={{position: 'absolute', left: PX - 110, width: 220, top: GY - 172,
                    textAlign: 'center', opacity: fadeIn(frame, 14),
                    fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
         {personLabel}

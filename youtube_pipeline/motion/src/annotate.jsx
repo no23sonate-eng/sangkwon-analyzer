@@ -188,7 +188,7 @@ export const DimLine = ({x1, y1, x2, y2, progress = 1, color = '#FFFFFF',
         // 화면 오른쪽 끝에 붙은 치수선이면 라벨을 안쪽(왼쪽)으로 뒤집는다.
         // 안 그러면 글자가 프레임 밖으로 나간다.
         const flip = vertical && mx + cap + 16 + String(label).length * labelSize * 0.62 > 1880;
-        const lx = vertical ? (flip ? mx - cap - 16 : mx + cap + 16) : mx;
+        const lx = vertical ? (flip ? mx - cap - 26 : mx + cap + 26) : mx;
         const ly = vertical ? my + labelSize * 0.34 : my - cap - 14;
         return (
           <text x={lx} y={ly} fill={color} fontSize={labelSize}

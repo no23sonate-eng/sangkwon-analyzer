@@ -518,10 +518,12 @@ for sid, (card, pr) in R.items():
     e = props['scenes'].setdefault(str(sid), {})
     e['card'] = card
     e['props'] = pr
-    # 실사 위 문구 카드는 화면 전체를 쓰므로 b-roll 을 따로 붙이지 않는다
-    if card == 'LowerThirdCard':
-        by[sid].pop('broll', None)
-        by[sid]['cardDur'] = by[sid]['dur']
+    # **여기서 지정한 컷은 전부 카드가 화면을 차지한다.**
+    # 원래 순수 b-roll 이던 장면은 cardDur 이 0 이라 카드 렌더가 통째로
+    # 건너뛰어진다 — 지도·도형이 아예 안 나오고 b-roll 만 남는 사고가 났다
+    # (#11 지도, #19·#29 도형이 실사로 나왔다). 종류를 가리지 말고 켠다.
+    by[sid].pop('broll', None)
+    by[sid]['cardDur'] = by[sid]['dur']
     applied += 1
 
 json.dump(plan, open(f'{P}/scene_plan.json', 'w', encoding='utf-8'),

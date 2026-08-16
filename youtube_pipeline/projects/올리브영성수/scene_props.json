@@ -101,20 +101,22 @@
    }
   },
   "4": {
-   "card": "BarChartCard",
+   "card": "ShapeCompareCard",
    "props": {
     "title": "감정가 대비 +145억",
     "sub": "",
-    "bars": [
+    "items": [
      {
-      "label": "감정가",
-      "value": 396,
-      "unit": "억"
+      "w": 2.6,
+      "h": 3.96,
+      "label": "396억",
+      "note": "감정가"
      },
      {
-      "label": "낙찰가",
-      "value": 541,
-      "unit": "억",
+      "w": 2.6,
+      "h": 5.41,
+      "label": "541억",
+      "note": "낙찰가",
       "hot": true
      }
     ],

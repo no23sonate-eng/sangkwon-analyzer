@@ -62,7 +62,7 @@ export const StrikeSwapCard = ({
       <div style={{position: 'absolute', left: anchor(fromW), top,
                    opacity: fadeIn(frame, 2)}}>
         <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                     fontSize: fromSize, color: T.soft, lineHeight: 1.1,
+                     fontSize: fromSize, color: T.ink, opacity: 0.66, lineHeight: 1.1,
                      whiteSpace: 'nowrap', letterSpacing: '-0.02em'}}>
           {from}
         </div>
@@ -96,8 +96,10 @@ export const StrikeSwapCard = ({
                         boxDecorationBreak: 'clone'}}>{to}</span>
         </div>
         {toLabel ? (
-          <div style={{marginTop: 20, fontFamily: 'A2Z Light, sans-serif',
-                       fontSize: 36, color: T.soft, whiteSpace: 'nowrap'}}>
+          <div style={{marginTop: 18,
+                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontSize: 52, color: T.ink, whiteSpace: 'nowrap',
+                       letterSpacing: '-0.01em'}}>
             {toLabel}
           </div>
         ) : null}
