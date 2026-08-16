@@ -28,7 +28,7 @@ export const ShapeCompareCard = ({
   if (!items.length) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const TOP = title ? (sub ? 300 : 246) : 178;
-  const BOT = CONTENT_BOTTOM - (note ? 78 : 30);
+  const BOT = CONTENT_BOTTOM - (note ? 112 : 56);
   const LABEL_H = 74, DIM_H = 92;
   const colW = 1920 / items.length;
 
@@ -108,7 +108,7 @@ export const ShapeCompareCard = ({
       })}
 
       {note ? (
-        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 26,
+        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 62,
                      textAlign: 'center', opacity: fadeIn(frame, 52),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
                      wordBreak: 'keep-all'}}>

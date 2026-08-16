@@ -28,7 +28,7 @@ export const YardViewCard = ({
   const T = themeOf(theme);
   const dark = T.bg !== '#EFEAE3';
 
-  const GY = 700;                                  // 지면
+  const GY = 640;                                  // 지면
   const PX = 300;                                  // 사람 x
   const PH = 96;                                   // 사람 키 (스케일 기준)
   const BX = PX + Math.max(60, yard);              // 건물 왼쪽 면
@@ -105,7 +105,7 @@ export const YardViewCard = ({
       </div>
 
       {verdict ? (
-        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 4,
+        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 76,
                      textAlign: 'center', opacity: fadeIn(frame, 62),
                      fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                      fontSize: fit(verdict, 44, 1500),
@@ -115,7 +115,7 @@ export const YardViewCard = ({
       ) : null}
 
       {note ? (
-        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM + 56,
+        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 18,
                      textAlign: 'center', opacity: fadeIn(frame, 70),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
           {note}

@@ -52,6 +52,7 @@ REPEAT_MAX = 2                      # 같은 카드가 이보다 많이 연속�
 # 저작자 표기가 의무인 자산 → source 에 반드시 들어가야 하는 문자열
 # 배경에 사진/도면을 까는 카드 — 하단 잉크 검사로는 자막 침범을 판단할 수 없다
 PHOTO_CARDS = {
+    'LowerThirdCard',
     'SectionPhotoCard', 'FullBleedCard', 'PaperImageCard', 'ParkCompareCard',
     'PhotoSplitCard', 'PhotoStepsCard', 'NewsQuoteCard',
 }
