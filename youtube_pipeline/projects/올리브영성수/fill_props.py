@@ -353,6 +353,49 @@ for i, s in enumerate(plan['scenes']):
 for ch, name in zip(plan.get('chapters', []), CHAPTERS):
     ch['name'] = name
 
+# ── 실사 b-roll 원본 배정 ───────────────────────────────────────────────
+# plan_from_script.py 는 broll.src 를 'TODO.mp4' 로 남긴다 — 여기서 실제 파일을 꽂는다.
+# **주제에 맞는 통(pool)을 나눠서** 돌린다. 하나로 다 돌리면 경매 이야기에
+# 쇼핑 영상이 걸리는 식으로 화면과 말이 어긋난다.
+POOL_MONEY  = ['auction_columns.mp4', 'contract_signature.mp4',
+               'money_counter.mp4', 'cash_closeup.mp4']
+POOL_RETAIL = ['bl_retail_aisle.mp4', 'bl_retail_browse.mp4',
+               'bl_retail_walk.mp4', 'bl_retail_pick.mp4']
+POOL_CITY   = ['bl_seoul_gate.mp4', 'bl_seoul_aerial.mp4', 'bl_seoul_stream.mp4',
+               'bl_seoul_night.mp4', 'bl_towers.mp4', 'bl_office_dusk.mp4']
+POOL_STREET = ['bl_street_people.mp4', 'bl_street_walk.mp4',
+               'bl_street_evening.mp4', 'bl_street_topdown.mp4']
+
+# 장면 번호 구간 → 어떤 통을 쓸지. 이야기 흐름에 맞춘다
+def pool_for(sid):
+    if 57 <= sid <= 75:   return POOL_MONEY     # 경매·낙찰
+    if 84 <= sid <= 101:  return POOL_MONEY     # 매각·사업성
+    if 9 <= sid <= 16:    return POOL_RETAIL    # 매장·팝업
+    if 47 <= sid <= 56:   return POOL_RETAIL    # 대기줄·팝업
+    if 76 <= sid <= 83:   return POOL_RETAIL    # 올리브영N
+    if 17 <= sid <= 46:   return POOL_STREET    # 파사드·거리
+    return POOL_CITY                            # 도입·결론
+
+FOOT = os.path.join(P, 'footage')
+avail = set(os.listdir(FOOT)) if os.path.isdir(FOOT) else set()
+missing, prev = set(), None
+for i, s in enumerate(plan['scenes']):
+    b = s.get('broll')
+    if not b:
+        continue
+    pool = [f for f in pool_for(s['id']) if f in avail] or \
+           [f for f in POOL_CITY if f in avail]
+    if not pool:
+        missing |= set(pool_for(s['id']))
+        continue
+    pick = pool[i % len(pool)]
+    if pick == prev and len(pool) > 1:          # 같은 원본 연속 금지
+        pick = pool[(i + 1) % len(pool)]
+    prev = pick
+    b['src'] = pick
+    # 같은 원본이라도 **다른 지점**을 쓴다. 매번 0초부터면 같은 그림이 반복된다
+    b['ss'] = round(1.0 + (i % 5) * 1.7, 2)
+
 # ── 껍데기 연속 끊기 ────────────────────────────────────────────────────
 # (카드 + 바탕 + 정렬) 이 3컷 이어지면 화면이 멎은 것처럼 보인다 (§29).
 # 카드를 바꾸는 게 아니라 **껍데기만** 돌린다 — 내용은 그대로 두는 게 핵심이다.

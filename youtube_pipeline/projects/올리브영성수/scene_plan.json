@@ -93,8 +93,8 @@
    "key": "cut02",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_aerial.mp4",
+    "ss": 2.7,
     "dur": 2.7
    }
   },
@@ -184,8 +184,8 @@
    "key": "cut08",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_stream.mp4",
+    "ss": 4.4,
     "dur": 2.7
    }
   },
@@ -215,8 +215,8 @@
    "key": "cut10",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_browse.mp4",
+    "ss": 7.8,
     "dur": 4.8
    }
   },
@@ -246,8 +246,8 @@
    "key": "cut12",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_pick.mp4",
+    "ss": 2.7,
     "dur": 5.4
    }
   },
@@ -277,8 +277,8 @@
    "key": "cut14",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_browse.mp4",
+    "ss": 6.1,
     "dur": 4.1
    }
   },
@@ -293,8 +293,8 @@
    "key": "cut15",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_walk.mp4",
+    "ss": 7.8,
     "dur": 6.3
    }
   },
@@ -309,8 +309,8 @@
    "key": "cut16",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_pick.mp4",
+    "ss": 1.0,
     "dur": 3.0
    }
   },
@@ -340,8 +340,8 @@
    "key": "cut18",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_walk.mp4",
+    "ss": 4.4,
     "dur": 5.8
    }
   },
@@ -371,8 +371,8 @@
    "key": "cut20",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_topdown.mp4",
+    "ss": 7.8,
     "dur": 4.0
    }
   },
@@ -402,8 +402,8 @@
    "key": "cut22",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_walk.mp4",
+    "ss": 2.7,
     "dur": 3.4
    }
   },
@@ -433,8 +433,8 @@
    "key": "cut24",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_topdown.mp4",
+    "ss": 6.1,
     "dur": 4.6
    }
   },
@@ -464,8 +464,8 @@
    "key": "cut26",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_walk.mp4",
+    "ss": 1.0,
     "dur": 2.2
    }
   },
@@ -495,8 +495,8 @@
    "key": "cut28",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_topdown.mp4",
+    "ss": 4.4,
     "dur": 3.2
    }
   },
@@ -526,8 +526,8 @@
    "key": "cut30",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_walk.mp4",
+    "ss": 7.8,
     "dur": 4.8
    }
   },
@@ -542,8 +542,8 @@
    "key": "cut31",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_evening.mp4",
+    "ss": 1.0,
     "dur": 6.1
    }
   },
@@ -558,8 +558,8 @@
    "key": "cut32",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_topdown.mp4",
+    "ss": 2.7,
     "dur": 5.1
    }
   },
@@ -619,8 +619,8 @@
    "key": "cut36",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_people.mp4",
+    "ss": 1.0,
     "dur": 2.3
    }
   },
@@ -650,8 +650,8 @@
    "key": "cut38",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_walk.mp4",
+    "ss": 4.4,
     "dur": 3.8
    }
   },
@@ -696,8 +696,8 @@
    "key": "cut41",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_people.mp4",
+    "ss": 1.0,
     "dur": 5.7
    }
   },
@@ -772,8 +772,8 @@
    "key": "cut46",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_walk.mp4",
+    "ss": 1.0,
     "dur": 4.0
    }
   },
@@ -788,8 +788,8 @@
    "key": "cut47",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_street_evening.mp4",
+    "ss": 2.7,
     "dur": 5.8
    }
   },
@@ -804,8 +804,8 @@
    "key": "cut48",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_pick.mp4",
+    "ss": 4.4,
     "dur": 2.3
    }
   },
@@ -865,8 +865,8 @@
    "key": "cut52",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_aisle.mp4",
+    "ss": 2.7,
     "dur": 7.9
    }
   },
@@ -896,8 +896,8 @@
    "key": "cut54",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_browse.mp4",
+    "ss": 6.1,
     "dur": 4.9
    }
   },
@@ -957,8 +957,8 @@
    "key": "cut58",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "contract_signature.mp4",
+    "ss": 4.4,
     "dur": 2.5
    }
   },
@@ -988,8 +988,8 @@
    "key": "cut60",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "cash_closeup.mp4",
+    "ss": 7.8,
     "dur": 4.5
    }
   },
@@ -1049,8 +1049,8 @@
    "key": "cut64",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "auction_columns.mp4",
+    "ss": 6.1,
     "dur": 4.7
    }
   },
@@ -1080,8 +1080,8 @@
    "key": "cut66",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "contract_signature.mp4",
+    "ss": 1.0,
     "dur": 2.9
    }
   },
@@ -1111,8 +1111,8 @@
    "key": "cut68",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "cash_closeup.mp4",
+    "ss": 4.4,
     "dur": 5.4
    }
   },
@@ -1142,8 +1142,8 @@
    "key": "cut70",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "contract_signature.mp4",
+    "ss": 7.8,
     "dur": 3.8
    }
   },
@@ -1203,8 +1203,8 @@
    "key": "cut74",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "money_counter.mp4",
+    "ss": 6.1,
     "dur": 5.9
    }
   },
@@ -1219,8 +1219,8 @@
    "key": "cut75",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "cash_closeup.mp4",
+    "ss": 7.8,
     "dur": 4.7
    }
   },
@@ -1250,8 +1250,8 @@
    "key": "cut77",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_aisle.mp4",
+    "ss": 2.7,
     "dur": 3.6
    }
   },
@@ -1281,8 +1281,8 @@
    "key": "cut79",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_walk.mp4",
+    "ss": 6.1,
     "dur": 3.8
    }
   },
@@ -1297,8 +1297,8 @@
    "key": "cut80",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_pick.mp4",
+    "ss": 7.8,
     "dur": 6.7
    }
   },
@@ -1358,8 +1358,8 @@
    "key": "cut84",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_retail_aisle.mp4",
+    "ss": 6.1,
     "dur": 4.0
    }
   },
@@ -1374,8 +1374,8 @@
    "key": "cut85",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "auction_columns.mp4",
+    "ss": 7.8,
     "dur": 5.9
    }
   },
@@ -1420,8 +1420,8 @@
    "key": "cut88",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "cash_closeup.mp4",
+    "ss": 4.4,
     "dur": 5.9
    }
   },
@@ -1436,8 +1436,8 @@
    "key": "cut89",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "auction_columns.mp4",
+    "ss": 6.1,
     "dur": 3.4
    }
   },
@@ -1467,8 +1467,8 @@
    "key": "cut91",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "money_counter.mp4",
+    "ss": 1.0,
     "dur": 5.4
    }
   },
@@ -1498,8 +1498,8 @@
    "key": "cut93",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "auction_columns.mp4",
+    "ss": 4.4,
     "dur": 6.3
    }
   },
@@ -1589,8 +1589,8 @@
    "key": "cut99",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "money_counter.mp4",
+    "ss": 6.1,
     "dur": 5.2
    }
   },
@@ -1620,8 +1620,8 @@
    "key": "cut101",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "auction_columns.mp4",
+    "ss": 1.0,
     "dur": 6.1
    }
   },
@@ -1681,8 +1681,8 @@
    "key": "cut105",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_stream.mp4",
+    "ss": 7.8,
     "dur": 6.1
    }
   },
@@ -1712,8 +1712,8 @@
    "key": "cut107",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_towers.mp4",
+    "ss": 2.7,
     "dur": 4.1
    }
   },
@@ -1758,8 +1758,8 @@
    "key": "cut110",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_aerial.mp4",
+    "ss": 7.8,
     "dur": 3.6
    }
   },
@@ -1789,8 +1789,8 @@
    "key": "cut112",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_night.mp4",
+    "ss": 2.7,
     "dur": 3.8
    }
   },
@@ -1835,8 +1835,8 @@
    "key": "cut115",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_gate.mp4",
+    "ss": 7.8,
     "dur": 3.1
    }
   },
@@ -1866,8 +1866,8 @@
    "key": "cut117",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_stream.mp4",
+    "ss": 2.7,
     "dur": 5.8
    }
   },
@@ -1897,8 +1897,8 @@
    "key": "cut119",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_towers.mp4",
+    "ss": 6.1,
     "dur": 3.2
    }
   },
@@ -1913,8 +1913,8 @@
    "key": "cut120",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_office_dusk.mp4",
+    "ss": 7.8,
     "dur": 6.0
    }
   },
@@ -1929,8 +1929,8 @@
    "key": "cut121",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_gate.mp4",
+    "ss": 1.0,
     "dur": 3.6
    }
   },
@@ -1960,8 +1960,8 @@
    "key": "cut123",
    "cardDur": 0,
    "broll": {
-    "src": "TODO.mp4",
-    "ss": 0.0,
+    "src": "bl_seoul_stream.mp4",
+    "ss": 4.4,
     "dur": 5.6
    }
   }

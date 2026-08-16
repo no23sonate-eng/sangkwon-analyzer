@@ -30,3 +30,17 @@
 | `musinsa_popup.jpg` | A-na di Musinsa Beauty Festa Pop-Up Store 2025.jpg (commons) | K-POPIT 케이팝잇 TV10, **CC BY 3.0** | `K-POPIT 케이팝잇 TV10 / CC BY 3.0` |
 | `amore_sulwhasoo.jpg` | Sulwhasoo_01 (openverse) | KOREA.NET - Official page of the Republic of Korea, **BY-SA 2.0** | `KOREA.NET - Official page of the Republic of Korea / BY-SA 2.0` |
 | `logo_krafton.png` | Krafton Full Logo.png (commons) | Wizone009, **Public domain** | `Wizone009 / Public domain` |
+| `bl_seoul_gate.mp4` | mixkit 20089 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_seoul_aerial.mp4` | mixkit 20087 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_seoul_stream.mp4` | mixkit 20096 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_seoul_night.mp4` | mixkit 28707 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_retail_aisle.mp4` | mixkit 45055 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_retail_browse.mp4` | mixkit 49381 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_retail_walk.mp4` | mixkit 49382 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_retail_pick.mp4` | mixkit 49384 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_towers.mp4` | mixkit 4168 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_office_dusk.mp4` | mixkit 4489 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_street_people.mp4` | mixkit 4437 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_street_walk.mp4` | mixkit 62 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_street_evening.mp4` | mixkit 28616 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `bl_street_topdown.mp4` | mixkit 56 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
