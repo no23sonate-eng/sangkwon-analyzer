@@ -1,0 +1,1969 @@
+{
+ "project": "올리브영성수",
+ "chapters": [
+  {
+   "start": 0.0,
+   "name": "541억, 단독 입찰",
+   "hint": "2026년 7월, 성수동에서 경매가 하나 진행됐습니다.",
+   "end": 65.6,
+   "dur": 65.6,
+   "ts": "0:00"
+  },
+  {
+   "start": 65.6,
+   "name": "팝업 성지가 된 건물",
+   "hint": "루이비통, 디올, 지프, 랄프로렌.",
+   "end": 139.4,
+   "dur": 73.8,
+   "ts": "1:05"
+  },
+  {
+   "start": 139.4,
+   "name": "층고와 보이드",
+   "hint": "두 번째, 내부 레이아웃이 좋습니다.",
+   "end": 205.1,
+   "dur": 65.7,
+   "ts": "2:19"
+  },
+  {
+   "start": 205.1,
+   "name": "마당이 하는 일",
+   "hint": "세 번째, 마당이 있습니다.",
+   "end": 282.2,
+   "dur": 77.1,
+   "ts": "3:25"
+  },
+  {
+   "start": 282.2,
+   "name": "왜 경매였나",
+   "hint": "그래서 한 사람이 법원에 소송을 걸면, 법원이 매각을 진행합니다.",
+   "end": 350.1,
+   "dur": 67.9,
+   "ts": "4:42"
+  },
+  {
+   "start": 350.1,
+   "name": "성수의 올리브영",
+   "hint": "그런데 이번에 낙찰받은 부지에서 걸어서 2분 거리에 올리브영N 성수가 있습니다.",
+   "end": 417.9,
+   "dur": 67.8,
+   "ts": "5:50"
+  },
+  {
+   "start": 417.9,
+   "name": "570억을 회수하려면",
+   "hint": "이미 많은 브랜드가 가능성을 보여줬고, 성수동 분위기와도 잘 맞는 건물입니다.",
+   "end": 500.0,
+   "dur": 82.1,
+   "ts": "6:57"
+  },
+  {
+   "start": 500.0,
+   "name": "성수동을 사들이는 브랜드들",
+   "hint": "예를 들면 넷플릭스가 해외에서 하는 넷플릭스 하우스처럼,",
+   "end": 568.2,
+   "dur": 68.2,
+   "ts": "8:20"
+  }
+ ],
+ "scenes": [
+  {
+   "id": 0,
+   "act": 1,
+   "start": 0.0,
+   "end": 5.2,
+   "dur": 5.2,
+   "text": "2026년 7월, 성수동에서 경매가 하나 진행됐습니다.",
+   "card": "FullBleedCard",
+   "key": "cut01",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 1,
+   "act": 1,
+   "start": 5.4,
+   "end": 8.1,
+   "dur": 2.7,
+   "text": "낙찰자는 올리브영이었습니다.",
+   "card": "FullBleedCard",
+   "key": "cut02",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.7
+   }
+  },
+  {
+   "id": 2,
+   "act": 2,
+   "start": 8.5,
+   "end": 11.2,
+   "dur": 2.8,
+   "text": "낙찰가 541억 5천만원.",
+   "card": "BigStatsCard",
+   "key": "cut03",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 3,
+   "act": 2,
+   "start": 11.4,
+   "end": 15.8,
+   "dur": 4.4,
+   "text": "그런데 감정가는 395억 9천만원이었습니다.",
+   "card": "StrikeSwapCard",
+   "key": "cut04",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 4,
+   "act": 2,
+   "start": 16.0,
+   "end": 18.5,
+   "dur": 2.5,
+   "text": "146억을 더 쓴 겁니다.",
+   "card": "BigStatsCard",
+   "key": "cut05",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 5,
+   "act": 3,
+   "start": 18.9,
+   "end": 24.2,
+   "dur": 5.3,
+   "text": "대지는 197평. 평당 2억 7,500만원입니다.",
+   "card": "BigStatsCard",
+   "key": "cut06",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 6,
+   "act": 4,
+   "start": 24.6,
+   "end": 28.2,
+   "dur": 3.6,
+   "text": "그런데 여기서 이상한 점이 세 가지 있습니다.",
+   "card": "TrackRecordCard",
+   "key": "cut07",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 7,
+   "act": 5,
+   "start": 28.6,
+   "end": 31.2,
+   "dur": 2.7,
+   "text": "첫 번째, 경쟁자가 없었습니다.",
+   "card": "FullBleedCard",
+   "key": "cut08",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.7
+   }
+  },
+  {
+   "id": 8,
+   "act": 5,
+   "start": 31.4,
+   "end": 35.4,
+   "dur": 4.0,
+   "text": "단독 입찰인데 감정가보다 37%를 더 썼습니다.",
+   "card": "BigStatsCard",
+   "key": "cut09",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 9,
+   "act": 6,
+   "start": 35.8,
+   "end": 40.6,
+   "dur": 4.8,
+   "text": "두 번째, 올리브영은 원래 매장 건물을 사지 않는 회사입니다.",
+   "card": "FullBleedCard",
+   "key": "cut10",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.8
+   }
+  },
+  {
+   "id": 10,
+   "act": 6,
+   "start": 40.7,
+   "end": 45.1,
+   "dur": 4.4,
+   "text": "전국 1,370여 개 매장을 임차로 운영합니다.",
+   "card": "BigStatsCard",
+   "key": "cut11",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 11,
+   "act": 7,
+   "start": 45.5,
+   "end": 50.9,
+   "dur": 5.4,
+   "text": "세 번째, 성수 상권에는 이미 올리브영 매장이 여섯 곳이나 있습니다.",
+   "card": "MapCard",
+   "key": "cut12",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.4
+   }
+  },
+  {
+   "id": 12,
+   "act": 8,
+   "start": 51.3,
+   "end": 54.2,
+   "dur": 2.9,
+   "text": "그런데 왜 갑자기 건물을 산 걸까요?",
+   "card": "PaperImageCard",
+   "key": "cut13",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 13,
+   "act": 9,
+   "start": 54.6,
+   "end": 58.7,
+   "dur": 4.1,
+   "text": "이 건물은 카페 쎈느가 임차해서 운영해 온 곳입니다.",
+   "card": "PaperImageCard",
+   "key": "cut14",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.1
+   }
+  },
+  {
+   "id": 14,
+   "act": 9,
+   "start": 58.9,
+   "end": 65.2,
+   "dur": 6.3,
+   "text": "넓은 주차 공간을 갖추고 있어서, 브랜드 팝업스토어 장소로 계속 쓰여 왔습니다.",
+   "card": "FullBleedCard",
+   "key": "cut15",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.3
+   }
+  },
+  {
+   "id": 15,
+   "act": 10,
+   "start": 65.6,
+   "end": 68.6,
+   "dur": 3.0,
+   "text": "루이비통, 디올, 지프, 랄프로렌.",
+   "card": "FullBleedCard",
+   "key": "cut16",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.0
+   }
+  },
+  {
+   "id": 16,
+   "act": 10,
+   "start": 68.8,
+   "end": 72.2,
+   "dur": 3.4,
+   "text": "이런 브랜드들이 여기서 팝업을 했습니다.",
+   "card": "PaperImageCard",
+   "key": "cut17",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 17,
+   "act": 11,
+   "start": 72.6,
+   "end": 78.4,
+   "dur": 5.8,
+   "text": "평범해 보이는 건물이 팝업 성지가 된 이유. 세 가지로 나눠보겠습니다.",
+   "card": "FullBleedCard",
+   "key": "cut18",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.8
+   }
+  },
+  {
+   "id": 18,
+   "act": 12,
+   "start": 78.8,
+   "end": 81.7,
+   "dur": 2.9,
+   "text": "첫 번째, 건물이 네모반듯합니다.",
+   "card": "PaperImageCard",
+   "key": "cut19",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 19,
+   "act": 13,
+   "start": 82.1,
+   "end": 86.1,
+   "dur": 4.0,
+   "text": "직사각형 건물은 정사각형보다 한쪽 면이 깁니다.",
+   "card": "FullBleedCard",
+   "key": "cut20",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.0
+   }
+  },
+  {
+   "id": 20,
+   "act": 13,
+   "start": 86.2,
+   "end": 90.0,
+   "dur": 3.8,
+   "text": "그 말은, 파사드가 노출되기 좋다는 뜻입니다.",
+   "card": "PaperImageCard",
+   "key": "cut21",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 21,
+   "act": 14,
+   "start": 90.4,
+   "end": 93.8,
+   "dur": 3.4,
+   "text": "브랜드 팝업스토어는 결국 광고판입니다.",
+   "card": "FullBleedCard",
+   "key": "cut22",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.4
+   }
+  },
+  {
+   "id": 22,
+   "act": 14,
+   "start": 94.0,
+   "end": 98.7,
+   "dur": 4.7,
+   "text": "같은 면적이라도 직사각형일 때 보여지는 면이 더 넓습니다.",
+   "card": "FrontageCard",
+   "key": "cut23",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 23,
+   "act": 14,
+   "start": 98.8,
+   "end": 103.4,
+   "dur": 4.6,
+   "text": "4×4 정사각형보다 8×2 직사각형이 더 길게 보이죠.",
+   "card": "FullBleedCard",
+   "key": "cut24",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.6
+   }
+  },
+  {
+   "id": 24,
+   "act": 14,
+   "start": 103.6,
+   "end": 105.9,
+   "dur": 2.3,
+   "text": "사람 시선에 더 들어옵니다.",
+   "card": "FullBleedCard",
+   "key": "cut25",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 25,
+   "act": 15,
+   "start": 106.3,
+   "end": 108.5,
+   "dur": 2.2,
+   "text": "그리고 하나 더 있습니다.",
+   "card": "FullBleedCard",
+   "key": "cut26",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.2
+   }
+  },
+  {
+   "id": 26,
+   "act": 16,
+   "start": 108.9,
+   "end": 113.6,
+   "dur": 4.7,
+   "text": "파사드가 길면 브랜드가 연출할 수 있는 면적이 넓어집니다.",
+   "card": "PaperImageCard",
+   "key": "cut27",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 27,
+   "act": 16,
+   "start": 113.7,
+   "end": 116.9,
+   "dur": 3.2,
+   "text": "팝업을 기획할 때는 이런 걸 고민합니다.",
+   "card": "FullBleedCard",
+   "key": "cut28",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.2
+   }
+  },
+  {
+   "id": 28,
+   "act": 16,
+   "start": 117.1,
+   "end": 122.3,
+   "dur": 5.2,
+   "text": "건물 정면을 래핑할지, 구조물을 세울지, 어떻게 임팩트를 줄지.",
+   "card": "PaperImageCard",
+   "key": "cut29",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 29,
+   "act": 16,
+   "start": 122.4,
+   "end": 127.2,
+   "dur": 4.8,
+   "text": "파사드가 작다는 건, 보여줄 수 있는 얼굴이 작다는 뜻입니다.",
+   "card": "FullBleedCard",
+   "key": "cut30",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.8
+   }
+  },
+  {
+   "id": 30,
+   "act": 17,
+   "start": 127.6,
+   "end": 133.7,
+   "dur": 6.1,
+   "text": "이 면적이 크면 방문객이 인증샷을 올리느냐, 몇 번 올리느냐까지 달라집니다.",
+   "card": "PaperImageCard",
+   "key": "cut31",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.1
+   }
+  },
+  {
+   "id": 31,
+   "act": 17,
+   "start": 133.9,
+   "end": 139.0,
+   "dur": 5.1,
+   "text": "여러 앵글에서 파사드를 찍어 올리게 만드는 유인이 생기니까요.",
+   "card": "FullBleedCard",
+   "key": "cut32",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.1
+   }
+  },
+  {
+   "id": 32,
+   "act": 18,
+   "start": 139.4,
+   "end": 142.4,
+   "dur": 3.0,
+   "text": "두 번째, 내부 레이아웃이 좋습니다.",
+   "card": "PaperImageCard",
+   "key": "cut33",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 33,
+   "act": 19,
+   "start": 142.8,
+   "end": 147.2,
+   "dur": 4.4,
+   "text": "쎈느에 들어가 보시면 1층과 2층이 뚫려 있습니다.",
+   "card": "LayerPeelCard",
+   "key": "cut34",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 34,
+   "act": 19,
+   "start": 147.3,
+   "end": 152.7,
+   "dur": 5.4,
+   "text": "어떤 공간은 한 개 층만, 어떤 공간은 두 개 층을 쓸 수 있다는 뜻입니다.",
+   "card": "PaperImageCard",
+   "key": "cut35",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 35,
+   "act": 19,
+   "start": 152.9,
+   "end": 155.2,
+   "dur": 2.3,
+   "text": "위아래 시선도 자유롭고요.",
+   "card": "FullBleedCard",
+   "key": "cut36",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.3
+   }
+  },
+  {
+   "id": 36,
+   "act": 20,
+   "start": 155.6,
+   "end": 158.3,
+   "dur": 2.7,
+   "text": "공간 활용도가 그만큼 높습니다.",
+   "card": "PaperImageCard",
+   "key": "cut37",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 37,
+   "act": 20,
+   "start": 158.4,
+   "end": 162.2,
+   "dur": 3.8,
+   "text": "하얀 도화지가 클수록 담을 수 있는 게 많아지죠.",
+   "card": "FullBleedCard",
+   "key": "cut38",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.8
+   }
+  },
+  {
+   "id": 38,
+   "act": 21,
+   "start": 162.6,
+   "end": 165.3,
+   "dur": 2.7,
+   "text": "이게 실무에선 생각보다 큽니다.",
+   "card": "PaperImageCard",
+   "key": "cut39",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 39,
+   "act": 21,
+   "start": 165.5,
+   "end": 171.4,
+   "dur": 5.9,
+   "text": "층고가 낮으면 브랜드가 할 수 있는 게 확 줄어듭니다. 큰 조형물을 못 세우고,",
+   "card": "SectionDiagramCard",
+   "key": "cut40",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 40,
+   "act": 21,
+   "start": 171.5,
+   "end": 177.2,
+   "dur": 5.7,
+   "text": "조명을 위에서 떨어뜨릴 공간이 안 나오고, 영상을 크게 걸 벽이 없습니다.",
+   "card": "PaperImageCard",
+   "key": "cut41",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.7
+   }
+  },
+  {
+   "id": 41,
+   "act": 22,
+   "start": 177.6,
+   "end": 183.6,
+   "dur": 6.0,
+   "text": "반대로 층고가 열려 있으면 1층에 들어선 순간 2층까지 한눈에 보입니다.",
+   "card": "LayerPeelCard",
+   "key": "cut42",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 42,
+   "act": 22,
+   "start": 183.8,
+   "end": 189.0,
+   "dur": 5.2,
+   "text": "공간이 실제 면적보다 커 보이고, 위층으로 올라가고 싶어집니다.",
+   "card": "PaperImageCard",
+   "key": "cut43",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 43,
+   "act": 22,
+   "start": 189.1,
+   "end": 192.0,
+   "dur": 2.9,
+   "text": "동선을 설계할 수 있게 되는 겁니다.",
+   "card": "FullBleedCard",
+   "key": "cut44",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 44,
+   "act": 23,
+   "start": 192.4,
+   "end": 194.6,
+   "dur": 2.2,
+   "text": "기둥도 마찬가지입니다.",
+   "card": "PaperImageCard",
+   "key": "cut45",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 45,
+   "act": 23,
+   "start": 194.8,
+   "end": 198.8,
+   "dur": 4.0,
+   "text": "기둥이 많으면 공간을 잘게 나눌 수밖에 없습니다.",
+   "card": "FrontageCard",
+   "key": "cut46",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.0
+   }
+  },
+  {
+   "id": 46,
+   "act": 23,
+   "start": 198.9,
+   "end": 204.7,
+   "dur": 5.8,
+   "text": "기둥이 적으면 브랜드가 원하는 대로 벽을 세웠다 허물었다 할 수 있습니다.",
+   "card": "PaperImageCard",
+   "key": "cut47",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.8
+   }
+  },
+  {
+   "id": 47,
+   "act": 24,
+   "start": 205.1,
+   "end": 207.4,
+   "dur": 2.3,
+   "text": "세 번째, 마당이 있습니다.",
+   "card": "FullBleedCard",
+   "key": "cut48",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.3
+   }
+  },
+  {
+   "id": 48,
+   "act": 25,
+   "start": 207.8,
+   "end": 210.7,
+   "dur": 2.9,
+   "text": "브랜드 팝업은 대기 줄이 생깁니다.",
+   "card": "PaperImageCard",
+   "key": "cut49",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 49,
+   "act": 25,
+   "start": 210.9,
+   "end": 216.6,
+   "dur": 5.7,
+   "text": "이때 마당을 대기 공간으로 쓸 수도 있고, 주차장으로 돌릴 수도 있습니다.",
+   "card": "FullBleedCard",
+   "key": "cut50",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 50,
+   "act": 26,
+   "start": 217.0,
+   "end": 222.4,
+   "dur": 5.4,
+   "text": "브랜드 입장에선 건물 내부뿐 아니라 외부까지 덤으로 받는 셈입니다.",
+   "card": "PaperImageCard",
+   "key": "cut51",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 51,
+   "act": 26,
+   "start": 222.5,
+   "end": 230.4,
+   "dur": 7.9,
+   "text": "설령 안 쓰더라도, 건물 앞 마당은 공들여 만든 파사드를 주변 간섭 없이 보여줄 수 있는 메리트가 됩니다.",
+   "card": "PaperImageCard",
+   "key": "cut52",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 7.9
+   }
+  },
+  {
+   "id": 52,
+   "act": 27,
+   "start": 230.8,
+   "end": 235.5,
+   "dur": 4.7,
+   "text": "인증샷도 마찬가지죠. 건물 얼굴이 온전히 다 담깁니다.",
+   "card": "PaperImageCard",
+   "key": "cut53",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 53,
+   "act": 28,
+   "start": 235.9,
+   "end": 240.8,
+   "dur": 4.9,
+   "text": "이런 이유로 내로라하는 브랜드들이 여기서 팝업을 했습니다.",
+   "card": "FullBleedCard",
+   "key": "cut54",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.9
+   }
+  },
+  {
+   "id": 54,
+   "act": 29,
+   "start": 241.2,
+   "end": 244.1,
+   "dur": 2.9,
+   "text": "그럼 올리브영 입장에선 어떨까요?",
+   "card": "PaperImageCard",
+   "key": "cut55",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 55,
+   "act": 29,
+   "start": 244.3,
+   "end": 248.8,
+   "dur": 4.5,
+   "text": "이 건물로 할 수 있는 모든 가능성을 이미 눈으로 본 겁니다.",
+   "card": "FullBleedCard",
+   "key": "cut56",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 56,
+   "act": 29,
+   "start": 248.9,
+   "end": 253.8,
+   "dur": 4.9,
+   "text": "돈 한 푼 안 들이고 오프라인 테스트를 끝낸 거나 다름없습니다.",
+   "card": "PaperImageCard",
+   "key": "cut57",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 57,
+   "act": 30,
+   "start": 254.2,
+   "end": 256.7,
+   "dur": 2.5,
+   "text": "그런데 왜 하필 경매였을까요?",
+   "card": "FullBleedCard",
+   "key": "cut58",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.5
+   }
+  },
+  {
+   "id": 58,
+   "act": 31,
+   "start": 257.1,
+   "end": 261.8,
+   "dur": 4.7,
+   "text": "보통 경매라고 하면 빚을 못 갚아 넘어간 물건, 싸게 사는 것.",
+   "card": "FullBleedCard",
+   "key": "cut59",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 59,
+   "act": 31,
+   "start": 262.0,
+   "end": 266.5,
+   "dur": 4.5,
+   "text": "이렇게 생각하시죠. 그런데 이건 그게 아니었습니다.",
+   "card": "FullBleedCard",
+   "key": "cut60",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.5
+   }
+  },
+  {
+   "id": 60,
+   "act": 32,
+   "start": 266.9,
+   "end": 269.2,
+   "dur": 2.3,
+   "text": "공유물분할 경매였습니다.",
+   "card": "PaperImageCard",
+   "key": "cut61",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 61,
+   "act": 33,
+   "start": 269.6,
+   "end": 273.7,
+   "dur": 4.1,
+   "text": "건물 하나를 여러 명이 지분으로 나눠 갖고 있습니다.",
+   "card": "ShareSplitCard",
+   "key": "cut62",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 62,
+   "act": 33,
+   "start": 273.8,
+   "end": 276.9,
+   "dur": 3.1,
+   "text": "그런데 실제로 나누기가 어렵습니다.",
+   "card": "PaperImageCard",
+   "key": "cut63",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 63,
+   "act": 33,
+   "start": 277.1,
+   "end": 281.8,
+   "dur": 4.7,
+   "text": "땅을 반으로 자를 수도 없고, 합의도 생각보다 잘 안 됩니다.",
+   "card": "FullBleedCard",
+   "key": "cut64",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.7
+   }
+  },
+  {
+   "id": 64,
+   "act": 34,
+   "start": 282.2,
+   "end": 287.4,
+   "dur": 5.2,
+   "text": "그래서 한 사람이 법원에 소송을 걸면, 법원이 매각을 진행합니다.",
+   "card": "PaperImageCard",
+   "key": "cut65",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 65,
+   "act": 35,
+   "start": 287.8,
+   "end": 290.7,
+   "dur": 2.9,
+   "text": "이렇게 되면 두 가지가 확정됩니다.",
+   "card": "FullBleedCard",
+   "key": "cut66",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 2.9
+   }
+  },
+  {
+   "id": 66,
+   "act": 35,
+   "start": 290.8,
+   "end": 294.9,
+   "dur": 4.1,
+   "text": "매각은 무조건 진행되고, 방식은 공개 입찰입니다.",
+   "card": "TrackRecordCard",
+   "key": "cut67",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 67,
+   "act": 36,
+   "start": 295.3,
+   "end": 300.7,
+   "dur": 5.4,
+   "text": "보통의 매각은 주관사가 잠재 매수자를 섭외해서 거래가 이뤄집니다.",
+   "card": "FullBleedCard",
+   "key": "cut68",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.4
+   }
+  },
+  {
+   "id": 68,
+   "act": 36,
+   "start": 300.9,
+   "end": 303.8,
+   "dur": 2.9,
+   "text": "하지만 입지가 이 정도로 좋은 물건은,",
+   "card": "PaperImageCard",
+   "key": "cut69",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 69,
+   "act": 36,
+   "start": 303.9,
+   "end": 307.7,
+   "dur": 3.8,
+   "text": "경매라는 꼬리표가 붙어도 최고가가 나옵니다.",
+   "card": "FullBleedCard",
+   "key": "cut70",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.8
+   }
+  },
+  {
+   "id": 70,
+   "act": 37,
+   "start": 308.1,
+   "end": 314.1,
+   "dur": 6.0,
+   "text": "실제로 인근 신도리코가 매수한 부지도 같은 경매 과정을 거쳐 거래됐습니다.",
+   "card": "ArticleCard",
+   "key": "cut71",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 71,
+   "act": 37,
+   "start": 314.2,
+   "end": 318.7,
+   "dur": 4.5,
+   "text": "소유자 19명의 공유물분할 소송 끝에 나온 물건이었고,",
+   "card": "FullBleedCard",
+   "key": "cut72",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 72,
+   "act": 37,
+   "start": 318.9,
+   "end": 322.0,
+   "dur": 3.1,
+   "text": "2,202억에 낙찰됐습니다.",
+   "card": "BigStatsCard",
+   "key": "cut73",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 73,
+   "act": 38,
+   "start": 322.4,
+   "end": 328.3,
+   "dur": 5.9,
+   "text": "올리브영이 단독 입찰인데 감정가의 137%를 쓴 이유가 여기 있습니다.",
+   "card": "BigStatsCard",
+   "key": "cut74",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.9
+   }
+  },
+  {
+   "id": 74,
+   "act": 38,
+   "start": 328.4,
+   "end": 333.1,
+   "dur": 4.7,
+   "text": "싸게 사려던 게 아니라, 반드시 받으려고 웃돈을 쓴 겁니다.",
+   "card": "PaperImageCard",
+   "key": "cut75",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.7
+   }
+  },
+  {
+   "id": 75,
+   "act": 39,
+   "start": 333.5,
+   "end": 338.2,
+   "dur": 4.7,
+   "text": "여기까지 유익하셨다면 구독과 좋아요 부탁드리겠습니다.",
+   "card": "FullBleedCard",
+   "key": "cut76",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 76,
+   "act": 40,
+   "start": 338.6,
+   "end": 342.2,
+   "dur": 3.6,
+   "text": "성수 권역에 올리브영이 몇 개인지 아시나요?",
+   "card": "PaperImageCard",
+   "key": "cut77",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.6
+   }
+  },
+  {
+   "id": 77,
+   "act": 41,
+   "start": 342.6,
+   "end": 345.7,
+   "dur": 3.1,
+   "text": "여섯 개입니다. 한 상권에 여섯 개.",
+   "card": "BigStatsCard",
+   "key": "cut78",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 78,
+   "act": 41,
+   "start": 345.9,
+   "end": 349.7,
+   "dur": 3.8,
+   "text": "그만큼 성수동이 중요한 권역이라는 뜻이겠죠.",
+   "card": "PaperImageCard",
+   "key": "cut79",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.8
+   }
+  },
+  {
+   "id": 79,
+   "act": 42,
+   "start": 350.1,
+   "end": 356.8,
+   "dur": 6.7,
+   "text": "그런데 이번에 낙찰받은 부지에서 걸어서 2분 거리에 올리브영N 성수가 있습니다.",
+   "card": "MapCard",
+   "key": "cut80",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.7
+   }
+  },
+  {
+   "id": 80,
+   "act": 42,
+   "start": 356.9,
+   "end": 362.4,
+   "dur": 5.5,
+   "text": "팩토리얼 성수 1층부터 5층까지, 1,400평을 씁니다.",
+   "card": "BigStatsCard",
+   "key": "cut81",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 81,
+   "act": 43,
+   "start": 362.8,
+   "end": 368.1,
+   "dur": 5.3,
+   "text": "올리브영 발표에 따르면 개점 1년 누적 방문객이 250만 명.",
+   "card": "BigStatsCard",
+   "key": "cut82",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 82,
+   "act": 43,
+   "start": 368.3,
+   "end": 371.5,
+   "dur": 3.2,
+   "text": "전국 매장 중 내국인 방문 1위입니다.",
+   "card": "PaperImageCard",
+   "key": "cut83",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 83,
+   "act": 43,
+   "start": 371.6,
+   "end": 375.6,
+   "dur": 4.0,
+   "text": "올리브영 입장에선 핵심 사업장이라는 뜻입니다.",
+   "card": "FullBleedCard",
+   "key": "cut84",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.0
+   }
+  },
+  {
+   "id": 84,
+   "act": 44,
+   "start": 376.0,
+   "end": 381.9,
+   "dur": 5.9,
+   "text": "그런데 2025년 12월 24일, 그 건물의 주인이 바뀝니다.",
+   "card": "PaperImageCard",
+   "key": "cut85",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.9
+   }
+  },
+  {
+   "id": 85,
+   "act": 45,
+   "start": 382.3,
+   "end": 388.2,
+   "dur": 5.9,
+   "text": "이지스자산운용에서 교보AIM자산운용으로, 2,548억.",
+   "card": "StrikeSwapCard",
+   "key": "cut86",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 86,
+   "act": 45,
+   "start": 388.4,
+   "end": 393.8,
+   "dur": 5.4,
+   "text": "연면적 평당 4,000만원, 성수동 오피스 최고가였습니다.",
+   "card": "BigStatsCard",
+   "key": "cut87",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 87,
+   "act": 46,
+   "start": 394.2,
+   "end": 400.1,
+   "dur": 5.9,
+   "text": "건물주가 바뀐 게 임차인이랑 무슨 상관이냐, 이렇게 생각하실 수 있습니다.",
+   "card": "FullBleedCard",
+   "key": "cut88",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.9
+   }
+  },
+  {
+   "id": 88,
+   "act": 47,
+   "start": 400.5,
+   "end": 403.9,
+   "dur": 3.4,
+   "text": "그런데 기존 수익률이 좋아서 산 건물이라도,",
+   "card": "PaperImageCard",
+   "key": "cut89",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.4
+   }
+  },
+  {
+   "id": 89,
+   "act": 47,
+   "start": 404.0,
+   "end": 408.1,
+   "dur": 4.1,
+   "text": "매수자는 결국 수익률을 더 끌어올리고 싶어 합니다.",
+   "card": "FullBleedCard",
+   "key": "cut90",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 90,
+   "act": 47,
+   "start": 408.3,
+   "end": 413.7,
+   "dur": 5.4,
+   "text": "그렇다면 올리브영이 내는 임대료도 향후 올라갈 가능성이 있습니다.",
+   "card": "PaperImageCard",
+   "key": "cut91",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.4
+   }
+  },
+  {
+   "id": 91,
+   "act": 48,
+   "start": 414.1,
+   "end": 417.5,
+   "dur": 3.4,
+   "text": "그럼 올리브영은 이 건물을 그대로 쓸까요?",
+   "card": "FullBleedCard",
+   "key": "cut92",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 92,
+   "act": 49,
+   "start": 417.9,
+   "end": 424.2,
+   "dur": 6.3,
+   "text": "이미 많은 브랜드가 가능성을 보여줬고, 성수동 분위기와도 잘 맞는 건물입니다.",
+   "card": "PaperImageCard",
+   "key": "cut93",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.3
+   }
+  },
+  {
+   "id": 93,
+   "act": 50,
+   "start": 424.6,
+   "end": 427.6,
+   "dur": 3.0,
+   "text": "하지만 500억대 자산입니다.",
+   "card": "FullBleedCard",
+   "key": "cut94",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 94,
+   "act": 50,
+   "start": 427.7,
+   "end": 434.6,
+   "dur": 6.9,
+   "text": "낙찰가 541억 5천에 취득세와 기타 비용을 더하면 570억 정도가 됩니다.",
+   "card": "BigStatsCard",
+   "key": "cut95",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 95,
+   "act": 51,
+   "start": 435.0,
+   "end": 437.0,
+   "dur": 2.0,
+   "text": "이 건물을 그대로 쓴다면,",
+   "card": "FullBleedCard",
+   "key": "cut96",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 96,
+   "act": 51,
+   "start": 437.2,
+   "end": 442.6,
+   "dur": 5.4,
+   "text": "그 570억을 회수할 만큼의 광고 효과나 매출이 나와야 합니다.",
+   "card": "PaperImageCard",
+   "key": "cut97",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 97,
+   "act": 52,
+   "start": 443.0,
+   "end": 447.8,
+   "dur": 4.8,
+   "text": "즉, 투자금 회수 관점에선 사업성을 고민할 수밖에 없습니다.",
+   "card": "FullBleedCard",
+   "key": "cut98",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 98,
+   "act": 53,
+   "start": 448.2,
+   "end": 453.4,
+   "dur": 5.2,
+   "text": "용적률을 4~500%로 가정하면 7~8층 규모가 나옵니다.",
+   "card": "PaperImageCard",
+   "key": "cut99",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.2
+   }
+  },
+  {
+   "id": 99,
+   "act": 53,
+   "start": 453.5,
+   "end": 457.8,
+   "dur": 4.3,
+   "text": "단순 오피스로 지었을 때 최대 연면적은 985평.",
+   "card": "BigStatsCard",
+   "key": "cut100",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 100,
+   "act": 53,
+   "start": 458.0,
+   "end": 464.1,
+   "dur": 6.1,
+   "text": "전용률을 높게 잡아도 오피스 임대료만으로 수익성을 맞추기는 쉽지 않습니다.",
+   "card": "PaperImageCard",
+   "key": "cut101",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.1
+   }
+  },
+  {
+   "id": 101,
+   "act": 53,
+   "start": 464.2,
+   "end": 470.3,
+   "dur": 6.1,
+   "text": "게다가 대지가 200평이 채 안 되기 때문에 자주식 주차도 쉽지 않습니다.",
+   "card": "MassingCard",
+   "key": "cut102",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 102,
+   "act": 54,
+   "start": 470.7,
+   "end": 475.9,
+   "dur": 5.2,
+   "text": "물론 인근 토지를 추가로 사서 사업성을 개선하는 방법도 있습니다.",
+   "card": "PaperImageCard",
+   "key": "cut103",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 103,
+   "act": 55,
+   "start": 476.3,
+   "end": 480.4,
+   "dur": 4.1,
+   "text": "하지만 브랜드가 이 정도 규모의 토지를 직접 산다는 건,",
+   "card": "FullBleedCard",
+   "key": "cut104",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 104,
+   "act": 55,
+   "start": 480.6,
+   "end": 486.7,
+   "dur": 6.1,
+   "text": "상징성 있는 위치와 광고 효과를 1순위로 놓고 계산했다는 뜻으로 보입니다.",
+   "card": "PaperImageCard",
+   "key": "cut105",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.1
+   }
+  },
+  {
+   "id": 105,
+   "act": 55,
+   "start": 486.8,
+   "end": 490.9,
+   "dur": 4.1,
+   "text": "검증은 이미 옆의 올리브영N에서 끝냈으니까요.",
+   "card": "FullBleedCard",
+   "key": "cut106",
+   "motion": {
+    "dir": "up",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 106,
+   "act": 55,
+   "start": 491.1,
+   "end": 495.2,
+   "dur": 4.1,
+   "text": "그렇다면 이 건물은 매장보다는 소비자를 위한 놀이터,",
+   "card": "PaperImageCard",
+   "key": "cut107",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 4.1
+   }
+  },
+  {
+   "id": 107,
+   "act": 55,
+   "start": 495.3,
+   "end": 499.6,
+   "dur": 4.3,
+   "text": "그리고 테스트베드 쪽으로 접근할 가능성이 있습니다.",
+   "card": "PaperImageCard",
+   "key": "cut108",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 108,
+   "act": 56,
+   "start": 500.0,
+   "end": 504.5,
+   "dur": 4.5,
+   "text": "예를 들면 넷플릭스가 해외에서 하는 넷플릭스 하우스처럼,",
+   "card": "PaperImageCard",
+   "key": "cut109",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 109,
+   "act": 56,
+   "start": 504.7,
+   "end": 508.3,
+   "dur": 3.6,
+   "text": "제품과 트렌드를 직접 경험하게 만드는 공간.",
+   "card": "FullBleedCard",
+   "key": "cut110",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.6
+   }
+  },
+  {
+   "id": 110,
+   "act": 56,
+   "start": 508.4,
+   "end": 510.9,
+   "dur": 2.5,
+   "text": "그런 방향도 가능해 보입니다.",
+   "card": "PaperImageCard",
+   "key": "cut111",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 111,
+   "act": 57,
+   "start": 511.3,
+   "end": 515.1,
+   "dur": 3.8,
+   "text": "성수동에서 땅을 산 건 올리브영만이 아닙니다.",
+   "card": "FullBleedCard",
+   "key": "cut112",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.8
+   }
+  },
+  {
+   "id": 112,
+   "act": 58,
+   "start": 515.5,
+   "end": 522.2,
+   "dur": 6.7,
+   "text": "크래프톤은 옛 이마트 부지를 매입해 데이비드 치퍼필드 설계로 사옥을 짓고 있습니다.",
+   "card": "MapCard",
+   "key": "cut113",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 113,
+   "act": 58,
+   "start": 522.4,
+   "end": 526.0,
+   "dur": 3.6,
+   "text": "준공되면 성수의 또 다른 랜드마크가 되겠죠.",
+   "card": "FullBleedCard",
+   "key": "cut114",
+   "motion": {
+    "dir": "down",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 114,
+   "act": 59,
+   "start": 526.4,
+   "end": 529.5,
+   "dur": 3.1,
+   "text": "무신사는 성수동 투자로 유명합니다.",
+   "card": "PaperImageCard",
+   "key": "cut115",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.1
+   }
+  },
+  {
+   "id": 115,
+   "act": 59,
+   "start": 529.6,
+   "end": 534.3,
+   "dur": 4.7,
+   "text": "성수동을 무신사랜드라고 불러도 과언이 아닐 정도입니다.",
+   "card": "FullBleedCard",
+   "key": "cut116",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 116,
+   "act": 60,
+   "start": 534.7,
+   "end": 540.5,
+   "dur": 5.8,
+   "text": "젠틀몬스터도 아이코닉한 사옥으로 성수의 또 다른 이슈를 만들었습니다.",
+   "card": "PaperImageCard",
+   "key": "cut117",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.8
+   }
+  },
+  {
+   "id": 117,
+   "act": 61,
+   "start": 540.9,
+   "end": 545.4,
+   "dur": 4.5,
+   "text": "브랜드마다 부동산 투자 전략과 방향은 조금씩 다릅니다.",
+   "card": "TrackRecordCard",
+   "key": "cut118",
+   "motion": {
+    "dir": "left",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 118,
+   "act": 62,
+   "start": 545.8,
+   "end": 549.0,
+   "dur": 3.2,
+   "text": "그리고 올리브영이 성수동에 토지를 산 건,",
+   "card": "PaperImageCard",
+   "key": "cut119",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.2
+   }
+  },
+  {
+   "id": 119,
+   "act": 62,
+   "start": 549.2,
+   "end": 555.2,
+   "dur": 6.0,
+   "text": "이 격전지에 브랜드로서도 부동산으로서도 적극 가담하겠다는 신호입니다.",
+   "card": "FullBleedCard",
+   "key": "cut120",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 6.0
+   }
+  },
+  {
+   "id": 120,
+   "act": 62,
+   "start": 555.3,
+   "end": 558.9,
+   "dur": 3.6,
+   "text": "이미 다른 브랜드들이 보여준 방식을 따라갈지,",
+   "card": "PaperImageCard",
+   "key": "cut121",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 3.6
+   }
+  },
+  {
+   "id": 121,
+   "act": 62,
+   "start": 559.1,
+   "end": 562.2,
+   "dur": 3.1,
+   "text": "올리브영만의 공간 콘텐츠를 만들지.",
+   "card": "FullBleedCard",
+   "key": "cut122",
+   "motion": {
+    "dir": "right",
+    "push": 0.035,
+    "exitSec": 0.5
+   }
+  },
+  {
+   "id": 122,
+   "act": 63,
+   "start": 562.6,
+   "end": 568.2,
+   "dur": 5.6,
+   "text": "이곳이 어떻게 바뀌는지 지켜보면, 그 방향성이 조금 보이지 않을까요?",
+   "card": "FullBleedCard",
+   "key": "cut123",
+   "cardDur": 0,
+   "broll": {
+    "src": "TODO.mp4",
+    "ss": 0.0,
+    "dur": 5.6
+   }
+  }
+ ]
+}

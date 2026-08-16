@@ -71,7 +71,10 @@ def fetch(lat0, lon0, radius, levels, keep):
                     'est': hm is None,           # 추정 높이인지 — 화면에 밝히려고 남긴다
                     'name': tags.get('name', '')})
 
-    out.sort(key=lambda b: -sum(math.hypot(x, z) for x, z in b['ring']) / len(b['ring']))
+    # **중심에서 가까운 것부터** 남긴다. 예전엔 부호가 반대라 먼 것부터 남겼고,
+    # 그 결과 매싱 한가운데가 텅 빈 도넛이 됐다 (성수 렌더에서 발견).
+    # 매싱은 "대상 주변이 어떤가"를 보는 그림이라 중심이 비면 아무 말도 못 한다.
+    out.sort(key=lambda b: sum(math.hypot(x, z) for x, z in b['ring']) / len(b['ring']))
     return out[:keep]
 
 

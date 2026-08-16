@@ -47,7 +47,14 @@ export const MassingCard = ({
 
   const dark = T.bg !== '#EFEAE3';
   const blds = set?.buildings ?? [];
-  const R = set?.radius ?? 250;
+  // 지면 반경은 **실제로 그려지는 건물 범위**에서 뽑는다. 요청 반경(set.radius)을
+  // 그대로 쓰면 keep 으로 잘린 만큼 바닥만 넓어져 매스가 접시 위 부스러기처럼 보인다
+  const R = React.useMemo(() => {
+    if (!blds.length) return set?.radius ?? 250;
+    const far = Math.max(...blds.map(
+      (b) => Math.max(...b.ring.map(([x, z]) => Math.hypot(x, z)))));
+    return Math.max(40, far * 1.12);
+  }, [blds, set]);
 
   // 발자국(미터) → three Shape. y 위, xz 평면
   const shapeOf = (ring) => {
@@ -60,7 +67,9 @@ export const MassingCard = ({
   // 카메라 — 반경에 맞춰 뒤로. 아주 천천히 돈다
   const a = (spin * Math.PI / 180) * interpolate(frame, [0, 150], [-0.5, 0.5],
                                                  {extrapolateRight: 'extend'});
-  const rad = dist || R * 2.05;
+  // 뒤로 충분히 빼야 매스가 타이틀을 안 덮는다. 2.05 로 두면 화면 위쪽 건물이
+  // 부제를 가린다 (성수 렌더에서 발견) — 카메라 각도가 낮을수록 더 밀어야 한다
+  const rad = dist || R * 2.75;
   const camPos = [Math.sin(a) * rad, tilt * rad, Math.cos(a) * rad];
   const proj = projector({pos: camPos, target: [0, 0, 0], fov: 38});
 
