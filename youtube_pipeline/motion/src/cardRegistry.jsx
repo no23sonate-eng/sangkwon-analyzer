@@ -64,6 +64,8 @@ import {LayerPeelCard} from './LayerPeelCard';
 import {MassingCard} from './MassingCard';
 import {NodeArrayCard} from './NodeArrayCard';
 import {SplitProofCard} from './SplitProofCard';
+import {FrontageCard} from './FrontageCard';
+import {ShareSplitCard} from './ShareSplitCard';
 
 export const CARDS = {
   AnnotatedShotCard,
@@ -80,6 +82,8 @@ export const CARDS = {
   MassingCard,
   NodeArrayCard,
   SplitProofCard,
+  FrontageCard,
+  ShareSplitCard,
   BuildingCard,
   StatCard,
   QuoteCard,

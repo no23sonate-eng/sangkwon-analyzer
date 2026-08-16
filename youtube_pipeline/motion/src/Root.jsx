@@ -65,6 +65,8 @@ import {LayerPeelCard} from './LayerPeelCard';
 import {MassingCard} from './MassingCard';
 import {NodeArrayCard} from './NodeArrayCard';
 import {SplitProofCard} from './SplitProofCard';
+import {FrontageCard} from './FrontageCard';
+import {ShareSplitCard} from './ShareSplitCard';
 
 const FPS = 30;
 const durationFromProps = ({props}) => ({
@@ -406,6 +408,8 @@ export const RemotionRoot = () => {
         ['MassingCard', MassingCard, {}],
         ['NodeArrayCard', NodeArrayCard, {hits: []}],
         ['SplitProofCard', SplitProofCard, {layers: []}],
+        ['FrontageCard', FrontageCard, {options: []}],
+        ['ShareSplitCard', ShareSplitCard, {}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}
