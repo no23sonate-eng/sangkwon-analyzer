@@ -7,3 +7,7 @@ projects/*
 
 # 로컬 whisper 모델 (대용량 — scripts/setup_model.py 로 재다운로드)
 models/
+
+# 수집 후보는 임시물 — fetch_sources.py 를 다시 돌리면 새로 받아지고,
+# 수집할 때마다 통째로 덮인다. 채택한 자산만 커밋한다
+motion/public/*/_candidates/
