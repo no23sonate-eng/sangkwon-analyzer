@@ -9,7 +9,7 @@ plan_from_script.py 초안은 "도식 불가 → 실사" 로 뭉뚱그린 컷이
   - 자체 계산·시뮬레이션은 화면에 "추정 / 가정" 을 명시한다
   - 브랜드 로고는 팝업 이력이 확인된 것만. 지금은 **하나도 없으므로 안 쓴다**
 """
-import json, os
+import json, os, re, subprocess
 
 P = os.path.dirname(os.path.abspath(__file__))
 MAP = '올리브영성수/seongsu.png'
@@ -378,23 +378,42 @@ def pool_for(sid):
 
 FOOT = os.path.join(P, 'footage')
 avail = set(os.listdir(FOOT)) if os.path.isdir(FOOT) else set()
-missing, prev = set(), None
+
+# **원본 길이를 실제로 잰다.** 안 재고 시작점을 돌렸다가 6초짜리 클립에
+# ss=7.8 을 꽂아 렌더가 통째로 멎었다 (ffmpeg 가 프레임을 못 받고 무한 대기).
+# 스톡 영상은 6초짜리와 37초짜리가 섞여 있어 길이를 가정하면 안 된다.
+FF = '/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2'
+def duration(name):
+    try:
+        out = subprocess.run([FF, '-i', os.path.join(FOOT, name)],
+                             capture_output=True, text=True).stderr
+        m = re.search(r'Duration: (\d+):(\d+):([\d.]+)', out)
+        return int(m[1]) * 3600 + int(m[2]) * 60 + float(m[3]) if m else 0.0
+    except Exception:
+        return 0.0
+
+DUR = {f: duration(f) for f in sorted(avail) if f.endswith('.mp4')}
+
+prev = None
 for i, s in enumerate(plan['scenes']):
     b = s.get('broll')
     if not b:
         continue
-    pool = [f for f in pool_for(s['id']) if f in avail] or \
-           [f for f in POOL_CITY if f in avail]
+    need = b['dur']
+    pool = [f for f in pool_for(s['id']) if DUR.get(f, 0) >= need] or \
+           [f for f in POOL_CITY if DUR.get(f, 0) >= need] or \
+           [f for f in DUR if DUR[f] >= need] or list(DUR)
     if not pool:
-        missing |= set(pool_for(s['id']))
         continue
     pick = pool[i % len(pool)]
     if pick == prev and len(pool) > 1:          # 같은 원본 연속 금지
         pick = pool[(i + 1) % len(pool)]
     prev = pick
     b['src'] = pick
-    # 같은 원본이라도 **다른 지점**을 쓴다. 매번 0초부터면 같은 그림이 반복된다
-    b['ss'] = round(1.0 + (i % 5) * 1.7, 2)
+    # 같은 원본이라도 **다른 지점**을 쓴다. 매번 0초부터면 같은 그림이 반복된다.
+    # 단, 남은 길이 안에서만 — 넘기면 렌더가 멎는다
+    room = max(0.0, DUR.get(pick, 0) - need)
+    b['ss'] = round(min(room, (i % 5) * 1.7), 2)
 
 # ── 껍데기 연속 끊기 ────────────────────────────────────────────────────
 # (카드 + 바탕 + 정렬) 이 3컷 이어지면 화면이 멎은 것처럼 보인다 (§29).

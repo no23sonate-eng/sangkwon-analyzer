@@ -141,7 +141,17 @@ def overlay_png(text='', sub='', key='credit', credit=CREDIT, style='center'):
 
 
 def cut(src, ss, dur, out, overlay):
-    avail = probe_duration(src) - ss
+    total = probe_duration(src)
+    # **ss 가 원본 끝을 넘으면 ffmpeg 가 영원히 멈춘다.**
+    # 첫 입력에서 프레임이 하나도 안 나오는데 두 번째 입력(-loop 1 PNG)은
+    # 무한히 공급되므로, -frames:v 에 영영 도달하지 못하고 매달린다.
+    # 실제로 6.04초짜리 원본에 ss=7.8 이 배정돼 렌더가 통째로 멎었다.
+    # 여기서 잘라 준다 — 호출자가 실수해도 파이프라인이 죽지는 않게.
+    if ss >= total - 0.2:
+        ss = max(0.0, total - dur) if total > dur else 0.0
+        print(f'  [warn] {os.path.basename(src)} 는 {total:.1f}초뿐 — '
+              f'시작점을 {ss:.1f}s 로 당김')
+    avail = total - ss
     # 모자라면 느리게 재생해 채운다. 1.25배까지만 — 그 이상은 부자연스러움
     slow = max(1.0, dur / avail) if avail < dur else 1.0
     if slow > 1.25:
