@@ -87,3 +87,40 @@
 | `bl_desk_top.mp4` | mixkit 4809 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `bl_office_meet.mp4` | mixkit 4607 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `bl_lobby.mp4` | mixkit 33857 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `oliveyoung_myeongdong.jpg` | 181027 변요한 올리브영 명동본점 팬싸인회 03.jpg (commons) | Explicit, **CC BY-SA 4.0** | `Explicit / CC BY-SA 4.0` |
+| `px_seoul_night.jpg` | Pexels photo 18495178 | Pexels License | (표기 의무 없음) |
+| `px_seoul_street1.jpg` | Pexels photo 28494398 | Pexels License | (표기 의무 없음) |
+| `px_seoul_street2.jpg` | Pexels photo 19271577 | Pexels License | (표기 의무 없음) |
+| `px_seoul_billboard.jpg` | Pexels photo 21418683 | Pexels License | (표기 의무 없음) |
+| `px_seoul_alley.jpg` | Pexels photo 34569782 | Pexels License | (표기 의무 없음) |
+| `px_seoul_life.jpg` | Pexels photo 31680640 | Pexels License | (표기 의무 없음) |
+| `px_library.jpg` | Pexels photo 23106807 | Pexels License | (표기 의무 없음) |
+| `px_seoul_busy.jpg` | Pexels photo 16395526 | Pexels License | (표기 의무 없음) |
+| `px_seoul_downtown.jpg` | Pexels photo 32014956 | Pexels License | (표기 의무 없음) |
+| `px_buildings_night.mp4` | Pexels video 5396825 | Pexels License | (표기 의무 없음) |
+| `px_street.mp4` | Pexels video 3571264 | Pexels License | (표기 의무 없음) |
+| `korea.png` | 지도 타일 z6 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `seongsu_oy.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `px_escalator.mp4` | Pexels video 4750049 | Pexels License | (표기 의무 없음) |
+| `px_mall_walk.mp4` | Pexels video 4750076 | Pexels License | (표기 의무 없음) |
+| `px_mall_esc2.mp4` | Pexels video 1338590 | Pexels License | (표기 의무 없음) |
+| `px_mall_interior.mp4` | Pexels video 5764594 | Pexels License | (표기 의무 없음) |
+| `px_mall_bangkok.mp4` | Pexels video 18340072 | Pexels License | (표기 의무 없음) |
+| `px_makeup.mp4` | Pexels video 7291773 | Pexels License | (표기 의무 없음) |
+| `px_crane2.mp4` | Pexels video 14134210 | Pexels License | (표기 의무 없음) |
+| `px_credit.mp4` | Pexels video 5849608 | Pexels License | (표기 의무 없음) |
+| `px_mall2.mp4` | Pexels video 5764594 | Pexels License | (표기 의무 없음) |
+| `px_blueprint.mp4` | Pexels video 4457865 | Pexels License | (표기 의무 없음) |
+| `px_blueprint2.mp4` | Pexels video 8471104 | Pexels License | (표기 의무 없음) |
+| `px_architect2.mp4` | Pexels video 6285698 | Pexels License | (표기 의무 없음) |
+| `px_aerial_land.mp4` | Pexels video 30728164 | Pexels License | (표기 의무 없음) |
+| `px_receipts.mp4` | Pexels video 5981287 | Pexels License | (표기 의무 없음) |
+| `px_mall_entrance.mp4` | Pexels video 30383469 | Pexels License | (표기 의무 없음) |
+| `px_mall_high.mp4` | Pexels video 15007111 | Pexels License | (표기 의무 없음) |
+| `px_gavel.mp4` | Pexels video 6101343 | Pexels License | (표기 의무 없음) |
+| `px_gavel2.mp4` | Pexels video 6699964 | Pexels License | (표기 의무 없음) |
+| `px_window_shop.mp4` | Pexels video 5266573 | Pexels License | (표기 의무 없음) |
+| `px_mall_view.mp4` | Pexels video 5266057 | Pexels License | (표기 의무 없음) |
+| `px_handshake.mp4` | Pexels video 7735499 | Pexels License | (표기 의무 없음) |
+| `px_contract_sign.mp4` | Pexels video 6952022 | Pexels License | (표기 의무 없음) |
+| `px_sign_close.mp4` | Pexels video 8440326 | Pexels License | (표기 의무 없음) |

@@ -45,7 +45,6 @@ CRED = {
     'px_street.mp4': 'Pexels', 'px_escalator.mp4': 'Pexels',
     'px_mall_walk.mp4': 'Pexels', 'px_mall_esc2.mp4': 'Pexels',
     'px_mall_interior.mp4': 'Pexels', 'px_mall_bangkok.mp4': 'Pexels',
-    'korea_map.png': 'CC0',
     'popup_dior.jpg': 'CC0',
     'popup_exhibit.jpg': 'CC BY-SA 2.0',
     'popup_lv.jpg': 'CC BY 2.0',
