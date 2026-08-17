@@ -35,6 +35,14 @@ CRED = {
     'seongsu_view.jpg': 'CC BY-SA 4.0',
     'seongsu_storefronts.jpg': 'CC BY-SA 4.0',
     'seongsu_alley2.jpg': 'CC BY-SA 4.0',
+    'oliveyoung_store.png': 'Pkccccj / CC BY-SA 4.0',
+    'korea.png': '© OpenStreetMap contributors © CARTO',
+    'px_seoul_night.jpg': 'Pexels', 'px_seoul_street1.jpg': 'Pexels',
+    'px_seoul_street2.jpg': 'Pexels', 'px_seoul_billboard.jpg': 'Pexels',
+    'px_seoul_alley.jpg': 'Pexels', 'px_seoul_life.jpg': 'Pexels',
+    'px_library.jpg': 'Pexels', 'px_seoul_busy.jpg': 'Pexels',
+    'px_seoul_downtown.jpg': 'Pexels', 'px_buildings_night.mp4': 'Pexels',
+    'px_street.mp4': 'Pexels',
     'korea_map.png': 'CC0',
     'popup_dior.jpg': 'CC0',
     'popup_exhibit.jpg': 'CC BY-SA 2.0',
@@ -45,6 +53,9 @@ def cred(n): return CRED.get(n, MIX)
 
 OSM = '© OpenStreetMap contributors © CARTO'
 MAP, MAPZ = '올리브영성수/seongsu.png', '올리브영성수/seongsu_zoom.png'
+# 매장 6곳이 다 들어오는 범위 (z16). z17 은 좌우 끝 두 곳이 잘렸다
+MAPOY = '올리브영성수/seongsu_oy.png'
+BOUNDSOY = [127.030301, 37.535812, 127.071499, 37.554187]
 BOUNDS = [127.011301, 37.525923, 127.093699, 37.562672]
 BOUNDSZ = [127.0432, 37.539406, 127.0638, 37.548593]
 SEONGSU_ST = (37.545410, 127.053590)
@@ -68,7 +79,7 @@ R = {}   # 장면 → (카드, props)
 # #0 성수동 전경
 R[0] = lt('seongsu_view.jpg', label='2026년 7월, 성수동', sub='경매 한 건', scrim=0.46)
 # #1 올리브영 이미지 뒤 + 로고 앞 → 로고는 상표라 못 쓴다. 매장 실사로 대체
-R[1] = lt('seongsu_storefronts.jpg', label='낙찰자는 올리브영', scrim=0.52)
+R[1] = lt('oliveyoung_store.png', label='낙찰자는 올리브영', scrim=0.5)
 # #2 서울동부지법 삭제 · 2026년 7월 크게 가운데 · 맨아래 낙찰가 삭제 · "약" 작게
 R[2] = ('BigStatsCard', {
     'title': '2026년 7월', 'sub': '',
@@ -88,8 +99,9 @@ R[3] = ('BigStatsCard', {
 # 축척이 이미 맞는 ShapeCompareCard 로 막대를 그린다
 R[4] = ('ShapeCompareCard', {
     'title': '감정가 대비 +145억', 'sub': '',
-    'items': [{'w': 2.6, 'h': 3.96, 'label': '396억', 'note': '감정가'},
-              {'w': 2.6, 'h': 5.41, 'label': '541억', 'note': '낙찰가', 'hot': True}],
+    'items': [{'w': 1.9, 'h': 3.96, 'label': '396억', 'note': '감정가'},
+              {'w': 1.9, 'h': 5.41, 'label': '541억', 'note': '낙찰가', 'hot': True}],
+    'numbered': True,
     'theme': 'ink', 'source': '블로터 2026.07.22 · 차액은 자체 계산'})
 R[5] = ('SitePlotCard', {
     'title': '대지', 'sub': '',
@@ -107,16 +119,20 @@ R[10] = ('BigStatsCard', {
     'title': '매장 대부분 임차로 사용', 'sub': '',
     'items': [{'display': '1,381', 'unit': '개', 'label': '전국 매장', 'hot': True}],
     'theme': 'paper', 'align': 'center',
-    'bg': {'backdrop': img('korea_map.png'), 'veil': 0.86, 'dir': 0, 'blur': 0},
+    'bg': {'backdrop': img('korea.png'), 'veil': 0.74, 'dir': 0, 'blur': 0},
     'source': '오픈애즈 2026.04.03'})
 # #11 성수동 지도 위 올리브영 표기
 R[11] = ('MapCard', {
-    'image': MAPZ, 'bounds': BOUNDSZ,
+    'image': MAPOY, 'bounds': BOUNDSOY,
     'title': '성수 상권', 'sub': '올리브영 매장 6곳',
-    'pins': [{'lat': OLIVE_N[0], 'lon': OLIVE_N[1], 'label': '올리브영N 성수', 'hot': True},
-             {'lat': 37.54439, 'lon': 127.05508, 'label': '올리브영 성수'},
-             {'lat': SEONGSU_ST[0], 'lon': SEONGSU_ST[1], 'label': '성수역'}],
-    'align': 'left', 'source': OSM + ' · 매장 수 ZDNet 2025.11.17'})
+    'pins': [
+             {'lat': 37.54526, 'lon': 127.05449, 'label': '성수역점', 'hot': False},
+             {'lat': 37.54823, 'lon': 127.04345, 'label': '뚝섬역점', 'hot': False},
+             {'lat': 37.54412, 'lon': 127.05492, 'label': '올리브영N 성수', 'hot': True},
+             {'lat': 37.54446, 'lon': 127.0577, 'label': '뷰티 맨션 성수', 'hot': False},
+             {'lat': 37.54173, 'lon': 127.04618, 'label': '서울숲역점', 'hot': False},
+             {'lat': 37.54172, 'lon': 127.0584, 'label': '성수연방점', 'hot': False}],
+    'align': 'left', 'source': OSM + ' · 위치 네이버지도 대조'})
 # #12 건물 영상 뒤 + 가운데 질문
 R[12] = lt('bl_office_dusk.mp4', label='왜 건물을 산 걸까요?', scrim=0.55)
 # #13 카페 쎈느 → 저작권 자산이라 못 받는다. 성수동 실사로 대체하고 캡션에 밝힘
@@ -247,7 +263,7 @@ R[52] = ('YardViewCard', {
     'verdict': '한 프레임에 건물 얼굴이 다 들어온다',
     'theme': 'paper', 'source': '도해'})
 R[53] = lt('bl_gallery_people.mp4', label='내로라하는 브랜드들이 여기서 팝업을 했다', scrim=0.54)
-R[54] = lt('bl_retail_aisle.mp4', label='올리브영 입장에선?', scrim=0.54)
+R[54] = lt('oliveyoung_store.png', label='올리브영 입장에선?', scrim=0.56)
 # #55 테스트 완료 그래픽
 R[56] = ('TrackRecordCard', {
     'title': '돈 한 푼 안 들인 오프라인 테스트', 'sub': '',
@@ -320,11 +336,16 @@ R[76] = lt('bl_street_topdown.mp4', label='', scrim=0.25)
 
 # ══════════ 성수의 올리브영 ══════════
 R[77] = ('MapCard', {
-    'image': MAPZ, 'bounds': BOUNDSZ,
+    'image': MAPOY, 'bounds': BOUNDSOY,
     'title': '한 상권에 여섯 곳', 'sub': '',
-    'pins': [{'lat': OLIVE_N[0], 'lon': OLIVE_N[1], 'label': '올리브영N 성수', 'hot': True},
-             {'lat': SEONGSU_ST[0], 'lon': SEONGSU_ST[1], 'label': '성수역'}],
-    'align': 'left', 'source': OSM + ' · ZDNet 2025.11.17'})
+    'pins': [
+             {'lat': 37.54526, 'lon': 127.05449, 'label': '성수역점', 'hot': False},
+             {'lat': 37.54823, 'lon': 127.04345, 'label': '뚝섬역점', 'hot': False},
+             {'lat': 37.54412, 'lon': 127.05492, 'label': '올리브영N 성수', 'hot': True},
+             {'lat': 37.54446, 'lon': 127.0577, 'label': '뷰티 맨션 성수', 'hot': False},
+             {'lat': 37.54173, 'lon': 127.04618, 'label': '서울숲역점', 'hot': False},
+             {'lat': 37.54172, 'lon': 127.0584, 'label': '성수연방점', 'hot': False}],
+    'align': 'left', 'source': OSM + ' · ZDNet 2025.11.17 · 위치 네이버지도 대조'})
 R[78] = lt('seongsu_shops.jpg', label='성수동이 그만큼 중요한 권역', scrim=0.5)
 R[79] = ('MapCard', {
     'image': MAPZ, 'bounds': BOUNDSZ,

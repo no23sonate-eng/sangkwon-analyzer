@@ -119,7 +119,10 @@ export const MapCard = ({
 
         {/* ④ 핀 — 위에서 떨어져 꽂힌다 */}
         {pins.map((p, i) => {
-          const s = spring({frame: frame - (40 + i * 10), fps,
+          // 핀이 많으면 간격을 좁힌다. 10프레임 고정이면 6개째가 3초 뒤에 꽂혀
+          // 짧은 컷에서는 아예 안 보인다 (검수에서 3개만 보였다)
+          const gap = pins.length > 4 ? 6 : 10;
+          const s = spring({frame: frame - (34 + i * gap), fps,
                             config: {damping: 200, mass: 0.5}});
           if (s <= 0.001) return null;
           const [X, Y] = px(p.lat, p.lon);
@@ -136,9 +139,12 @@ export const MapCard = ({
         })}
       </svg>
 
-      {/* 핀 라벨 — 검정 상자 (§31-4). 지도는 회색조라 상자가 확실히 이긴다 */}
+      {/* 핀 라벨 — 검정 상자 (§31-4). 지도는 회색조라 상자가 확실히 이긴다.
+          겹침 보정(dy)은 **미리 한 번에** 계산한다 — 렌더 중 props 에 쓰면
+          프레임마다 값이 누적돼 라벨이 계속 내려간다 */}
+      {(() => { window.__mapDy = []; return null; })()}
       {pins.map((p, i) => {
-        const o = fadeIn(frame, 50 + i * 10);
+        const o = fadeIn(frame, 44 + i * (pins.length > 4 ? 6 : 10));
         if (o <= 0.01) return null;
         const [X, Y] = px(p.lat, p.lon);
         const size = fit(p.label || '', 40, 520);
@@ -147,8 +153,30 @@ export const MapCard = ({
         let left = p.side === 'left';
         if (!left && X + 28 + w > 1880) left = true;
         if (left && X - 28 - w < 40) left = false;
+
+        // ── 라벨 충돌 회피 ──
+        // 핀이 가까이 붙으면 라벨 상자끼리 겹쳐 글자가 서로를 지운다
+        // (성수 6곳에서 "올리브영N 성수"와 "뷰티 맨션 성수"가 포개졌다).
+        // 앞 핀들과 세로로 겹치면 **아래로 한 칸씩 내린다** — 좌우로 밀면
+        // 핀에서 멀어져 어느 핀의 이름인지가 흐려진다.
+        let dy = 0;
+        for (let k = 0; k < i; k++) {
+          const q = pins[k];
+          const [QX, QY] = px(q.lat, q.lon);
+          const qw = estWidth(q.label || '', fit(q.label || '', 40, 520)) + 44;
+          let ql = q.side === 'left';
+          if (!ql && QX + 28 + qw > 1880) ql = true;
+          if (ql && QX - 28 - qw < 40) ql = false;
+          const ax = left ? X - 28 - w : X + 28;
+          const bx = ql ? QX - 28 - qw : QX + 28;
+          const overX = ax < bx + qw + 16 && bx < ax + w + 16;
+          const ay = Y - 92 + dy;
+          const by = QY - 92 + (window.__mapDy[k] || 0);
+          if (overX && Math.abs(ay - by) < 62) dy += 68;
+        }
+        window.__mapDy[i] = dy;
         return (
-          <div key={i} style={{position: 'absolute', top: Y - 92,
+          <div key={i} style={{position: 'absolute', top: Y - 92 + dy,
                                left: left ? X - 28 - w : X + 28,
                                width: w, opacity: o}}>
             {/* 라벨 상자는 **늘 검정**이다. 옐로는 '표시된 대상' 하나에만 쓴다(§31-4) —

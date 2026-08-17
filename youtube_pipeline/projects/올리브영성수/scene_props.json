@@ -24,15 +24,15 @@
   "1": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_storefronts.jpg",
+    "media": "올리브영성수/oliveyoung_store.png",
     "num": "",
     "label": "낙찰자는 올리브영",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.52,
-    "source": "CC BY-SA 4.0"
+    "scrim": 0.5,
+    "source": "Pkccccj / CC BY-SA 4.0"
    }
   },
   "2": {
@@ -107,19 +107,20 @@
     "sub": "",
     "items": [
      {
-      "w": 2.6,
+      "w": 1.9,
       "h": 3.96,
       "label": "396억",
       "note": "감정가"
      },
      {
-      "w": 2.6,
+      "w": 1.9,
       "h": 5.41,
       "label": "541억",
       "note": "낙찰가",
       "hot": true
      }
     ],
+    "numbered": true,
     "theme": "ink",
     "source": "블로터 2026.07.22 · 차액은 자체 계산"
    },
@@ -245,8 +246,8 @@
     "theme": "paper",
     "align": "center",
     "bg": {
-     "backdrop": "올리브영성수/korea_map.png",
-     "veil": 0.86,
+     "backdrop": "올리브영성수/korea.png",
+     "veil": 0.74,
      "dir": 0,
      "blur": 0
     },
@@ -261,35 +262,55 @@
   "11": {
    "card": "MapCard",
    "props": {
-    "image": "올리브영성수/seongsu_zoom.png",
+    "image": "올리브영성수/seongsu_oy.png",
     "bounds": [
-     127.0432,
-     37.539406,
-     127.0638,
-     37.548593
+     127.030301,
+     37.535812,
+     127.071499,
+     37.554187
     ],
     "title": "성수 상권",
     "sub": "올리브영 매장 6곳",
     "pins": [
      {
-      "lat": 37.543793,
-      "lon": 127.05472,
+      "lat": 37.54526,
+      "lon": 127.05449,
+      "label": "성수역점",
+      "hot": false
+     },
+     {
+      "lat": 37.54823,
+      "lon": 127.04345,
+      "label": "뚝섬역점",
+      "hot": false
+     },
+     {
+      "lat": 37.54412,
+      "lon": 127.05492,
       "label": "올리브영N 성수",
       "hot": true
      },
      {
-      "lat": 37.54439,
-      "lon": 127.05508,
-      "label": "올리브영 성수"
+      "lat": 37.54446,
+      "lon": 127.0577,
+      "label": "뷰티 맨션 성수",
+      "hot": false
      },
      {
-      "lat": 37.54541,
-      "lon": 127.05359,
-      "label": "성수역"
+      "lat": 37.54173,
+      "lon": 127.04618,
+      "label": "서울숲역점",
+      "hot": false
+     },
+     {
+      "lat": 37.54172,
+      "lon": 127.0584,
+      "label": "성수연방점",
+      "hot": false
      }
     ],
     "align": "left",
-    "source": "© OpenStreetMap contributors © CARTO · 매장 수 ZDNet 2025.11.17"
+    "source": "© OpenStreetMap contributors © CARTO · 위치 네이버지도 대조"
    }
   },
   "12": {
@@ -314,7 +335,7 @@
   "13": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/amore_sulwhasoo.jpg",
+    "media": "올리브영성수/seongsu_storefronts.jpg",
     "num": "",
     "label": "카페 쎈느가 임차해 온 건물",
     "sub": "사진은 성수동 카페 거리 — 대상 건물 아님",
@@ -322,7 +343,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "KOREA.NET / BY-SA 2.0"
+    "source": "CC BY-SA 4.0"
    }
   },
   "14": {
@@ -1089,15 +1110,15 @@
   "54": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_aisle.mp4",
+    "media": "올리브영성수/amore_sulwhasoo.jpg",
     "num": "",
     "label": "올리브영 입장에선?",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.54,
-    "source": "Mixkit"
+    "scrim": 0.56,
+    "source": "KOREA.NET / BY-SA 2.0"
    },
    "motion": {
     "dir": "down",
@@ -1494,7 +1515,7 @@
   "74": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_browse.mp4",
+    "media": "올리브영성수/bl_retail_aisle.mp4",
     "num": "",
     "label": "싸게 사려던 게 아니다",
     "sub": "",
@@ -1541,30 +1562,55 @@
   "77": {
    "card": "MapCard",
    "props": {
-    "image": "올리브영성수/seongsu_zoom.png",
+    "image": "올리브영성수/seongsu_oy.png",
     "bounds": [
-     127.0432,
-     37.539406,
-     127.0638,
-     37.548593
+     127.030301,
+     37.535812,
+     127.071499,
+     37.554187
     ],
     "title": "한 상권에 여섯 곳",
     "sub": "",
     "pins": [
      {
-      "lat": 37.543793,
-      "lon": 127.05472,
+      "lat": 37.54526,
+      "lon": 127.05449,
+      "label": "성수역점",
+      "hot": false
+     },
+     {
+      "lat": 37.54823,
+      "lon": 127.04345,
+      "label": "뚝섬역점",
+      "hot": false
+     },
+     {
+      "lat": 37.54412,
+      "lon": 127.05492,
       "label": "올리브영N 성수",
       "hot": true
      },
      {
-      "lat": 37.54541,
-      "lon": 127.05359,
-      "label": "성수역"
+      "lat": 37.54446,
+      "lon": 127.0577,
+      "label": "뷰티 맨션 성수",
+      "hot": false
+     },
+     {
+      "lat": 37.54173,
+      "lon": 127.04618,
+      "label": "서울숲역점",
+      "hot": false
+     },
+     {
+      "lat": 37.54172,
+      "lon": 127.0584,
+      "label": "성수연방점",
+      "hot": false
      }
     ],
     "align": "left",
-    "source": "© OpenStreetMap contributors © CARTO · ZDNet 2025.11.17"
+    "source": "© OpenStreetMap contributors © CARTO · ZDNet 2025.11.17 · 위치 네이버지도 대조"
    },
    "motion": {
     "dir": "down",
@@ -1696,7 +1742,7 @@
   "83": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_rooftop.mp4",
+    "media": "올리브영성수/bl_retail_browse.mp4",
     "num": "",
     "label": "핵심 사업장",
     "sub": "",
@@ -1778,7 +1824,7 @@
   "87": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_seoul_stream.mp4",
+    "media": "올리브영성수/bl_rooftop.mp4",
     "num": "",
     "label": "건물주가 바뀌면 임차인은?",
     "sub": "",
@@ -1826,7 +1872,7 @@
   "89": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_station_hall.mp4",
+    "media": "올리브영성수/bl_seoul_stream.mp4",
     "num": "",
     "label": "임대료가 올라갈 가능성",
     "sub": "",
@@ -1845,7 +1891,7 @@
   "90": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_crowd.mp4",
+    "media": "올리브영성수/bl_station_hall.mp4",
     "num": "",
     "label": "그대로 쓸까?",
     "sub": "",
@@ -1859,7 +1905,7 @@
   "91": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_walk.mp4",
+    "media": "올리브영성수/bl_street_crowd.mp4",
     "num": "",
     "label": "성수동 분위기와 잘 맞는 건물",
     "sub": "",
@@ -1950,7 +1996,7 @@
   "95": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_topdown_block.mp4",
+    "media": "올리브영성수/bl_street_walk.mp4",
     "num": "",
     "label": "570억을 회수하려면",
     "sub": "",
@@ -1969,7 +2015,7 @@
   "96": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_topdown_roof.mp4",
+    "media": "올리브영성수/bl_topdown_block.mp4",
     "num": "",
     "label": "광고 효과나 매출이 나와야 한다",
     "sub": "",
@@ -2057,7 +2103,7 @@
   "100": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_vault.mp4",
+    "media": "올리브영성수/bl_topdown_roof.mp4",
     "num": "",
     "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
     "sub": "",
@@ -2089,7 +2135,7 @@
   "102": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/cash_closeup.mp4",
+    "media": "올리브영성수/bl_vault.mp4",
     "num": "",
     "label": "인근 토지를 더 사는 방법도 있다",
     "sub": "",
@@ -2108,7 +2154,7 @@
   "103": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/money_counter.mp4",
+    "media": "올리브영성수/cash_closeup.mp4",
     "num": "",
     "label": "상징성 있는 위치",
     "sub": "",
@@ -2127,7 +2173,7 @@
   "104": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_thinking.mp4",
+    "media": "올리브영성수/money_counter.mp4",
     "num": "",
     "label": "광고 효과를 1순위로 놓고 계산했다",
     "sub": "",
@@ -2141,7 +2187,7 @@
   "105": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_look.mp4",
+    "media": "올리브영성수/px_buildings_night.mp4",
     "num": "",
     "label": "검증은 이미 옆에서 끝났다",
     "sub": "",
@@ -2149,7 +2195,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "up",
@@ -2160,7 +2206,7 @@
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_office_dusk.mp4",
+    "media": "올리브영성수/px_street.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2168,13 +2214,13 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "Pexels"
    }
   },
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/auction_columns.mp4",
+    "media": "올리브영성수/bl_thinking.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",
@@ -2193,7 +2239,7 @@
   "108": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_billboard.mp4",
+    "media": "올리브영성수/bl_gallery_look.mp4",
     "num": "",
     "label": "제품과 트렌드를 경험하는 공간",
     "sub": "",
@@ -2212,7 +2258,7 @@
   "109": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_people.mp4",
+    "media": "올리브영성수/bl_office_dusk.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2226,7 +2272,7 @@
   "110": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_evening.mp4",
+    "media": "올리브영성수/auction_columns.mp4",
     "num": "",
     "label": "그런 방향도 가능해 보인다",
     "sub": "",
@@ -2299,7 +2345,7 @@
   "113": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_billboard.mp4",
     "num": "",
     "label": "크래프톤 사옥",
     "sub": "데이비드 치퍼필드 설계",
@@ -2332,7 +2378,7 @@
   "115": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_thinking2.mp4",
+    "media": "올리브영성수/bl_street_people.mp4",
     "num": "",
     "label": "성수동 투자로 유명하다",
     "sub": "",
@@ -2415,7 +2461,7 @@
   "119": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_aerial_sunset.mp4",
+    "media": "올리브영성수/bl_street_evening.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2429,7 +2475,7 @@
   "120": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/korea_map.png",
+    "media": "올리브영성수/korea.png",
     "num": "",
     "label": "뷰티 브랜드의 오프라인 경쟁",
     "sub": "사진: 설화수 (아모레퍼시픽)",
@@ -2437,13 +2483,13 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "CC0"
+    "source": "© OpenStreetMap contributors © CARTO"
    }
   },
   "121": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_people.mp4",
+    "media": "올리브영성수/bl_installation.mp4",
     "num": "",
     "label": "올리브영만의 공간 콘텐츠를 만들지",
     "sub": "",

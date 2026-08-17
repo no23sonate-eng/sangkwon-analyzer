@@ -19,7 +19,7 @@ import {fit} from './layout';
 // 원칙은 그대로다: 단색 채움 + 외곽선, 강조는 옐로 하나 (§32-3).
 export const ShapeCompareCard = ({
   title = '', sub = '',
-  items = [], unit = '',
+  items = [], unit = '', numbered = false,   // true 면 막대 오른쪽에 01·02
   shrink = null,   // {from, at, dur} — 높이가 이 값에서 제 높이로 내려앉는다
   note = '', theme = 'paper', align = 'center', source = '', bg = {},
 }) => {
@@ -30,14 +30,14 @@ export const ShapeCompareCard = ({
 
   const TOP = title ? (sub ? 300 : 246) : 178;
   const BOT = CONTENT_BOTTOM - (note ? 112 : 56);
-  const LABEL_H = 118, DIM_H = 92;
+  const LABEL_H = numbered ? 24 : 118, DIM_H = 92;
   const colW = 1920 / items.length;
 
   const maxW = Math.max(...items.map((o) => o.w));
   const maxH = Math.max(...items.map((o) => o.h));
   // 같은 축척 — 항목마다 배율이 다르면 "둘을 비교"가 성립하지 않는다
   // 한 칸짜리면 화면을 훨씬 넉넉히 쓴다 — 둘을 나란히 놓을 때만 좁혀야 한다
-  const pad = items.length > 1 ? 230 : 620;
+  const pad = numbered ? 620 : (items.length > 1 ? 230 : 620);
   const K = Math.min((colW - pad) / maxW, (BOT - TOP - LABEL_H - DIM_H) / maxH);
 
   const blockH = LABEL_H + maxH * K + DIM_H;
@@ -103,6 +103,32 @@ export const ShapeCompareCard = ({
         const cx = 1920 / items.length * (i + 0.5);
         const op = fadeIn(frame, 8 + i * 10);
         if (!o.label) return null;
+        const w = o.w * K;
+        const h = shrink ? o.h * K : o.h * K;
+        // **값을 막대 위에 올리지 않는다.** 막대 꼭대기에 얹으면 도형과 글자가
+        // 붙어 둘 다 답답해지고, 막대가 짧을 때는 아예 겹친다.
+        // 값은 막대 **오른쪽 옆**에 세로 가운데로 놓고, 순번은 그 위에 작게.
+        if (numbered) {
+          const bx = cx + w / 2 + 30;
+          return (
+            <div key={i} style={{position: 'absolute', left: bx, width: 460,
+                                 top: baseY - h / 2 - 52, opacity: op, textAlign: 'left'}}>
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+                           letterSpacing: '0.16em', color: T.soft, marginBottom: 2}}>
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                           fontSize: fit(o.label, 56, 420),
+                           color: o.hot ? T.ink : T.soft, letterSpacing: '-0.01em'}}>
+                {o.label}
+              </div>
+              {o.note ? (
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
+                             fontSize: 27, color: T.soft}}>{o.note}</div>
+              ) : null}
+            </div>
+          );
+        }
         return (
           <div key={i} style={{position: 'absolute', left: cx - 420, width: 840, top: y0,
                                textAlign: 'center', opacity: op,
