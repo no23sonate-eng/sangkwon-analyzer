@@ -411,7 +411,9 @@ R[97] = ('TrackRecordCard', {
     'theme': 'blueprint', 'align': 'center', 'source': '화자 판단'})
 R[98] = ('ShapeCompareCard', {
     'title': '오피스로 지으면 (가정)', 'sub': '용적률 400~500% 가정',
-    'items': [{'w': 3, 'h': 6.5, 'label': '7~8층', 'dim': 'left', 'dimLabel': '층수', 'hot': True}],
+    # 민무늬 막대는 "7~8층" 이라는 말을 못 받아 준다. 층 선을 그어 세게 한다
+    'items': [{'w': 3, 'h': 6.5, 'label': '7~8층', 'dim': 'left', 'dimLabel': '층수',
+               'split': 8, 'hot': True}],
     'theme': 'blueprint', 'note': '실제 지구단위계획 미반영 — 자체 시뮬레이션',
     'source': '자체 시뮬레이션 — 가정값'})
 R[99] = ('BigStatsCard', {
@@ -458,7 +460,10 @@ R[117] = ('TrackRecordCard', {
               {'label': '젠틀몬스터', 'note': '성수동 사옥'},
               {'label': '올리브영', 'note': '541억 토지 낙찰', 'hot': True}],
     'theme': 'ink', 'align': 'center', 'source': '비즈워치 2026.01.14'})
-R[118] = lt('gentlemonster_art.jpg', label='적극 가담하겠다는 신호', scrim=0.52)
+# 젠틀몬스터 아트(마네킹 두상)를 쓰고 있었는데, "성수동에 적극 가담하겠다는
+# 신호" 라는 결론 문장 옆에 놓기엔 그림이 너무 튄다. 성수 거리로 바꾼다
+R[118] = lt('seongsu_industrial.jpg', label='적극 가담하겠다는 신호',
+            sub='', scrim=0.52)
 R[119] = lt('bl_city_night2.mp4', label='', scrim=0.3)
 R[120] = lt('amore_sulwhasoo.jpg', label='뷰티 브랜드의 오프라인 경쟁',
             sub='사진: 설화수 (아모레퍼시픽)', scrim=0.5)
@@ -648,21 +653,21 @@ def dedupe_media(plan, props, pubdir):
         if e:
             pr = e['props']
             if pr.get('media'):
-                slots.append((idx, lambda pr=pr, v=None: pr, 'media', pr['media']))
+                slots.append((idx, sc['id'], lambda pr=pr: pr, 'media', pr['media']))
             b = pr.get('bg') or {}
             if b.get('backdrop'):
-                slots.append((idx, lambda b=b: b, 'backdrop', b['backdrop']))
+                slots.append((idx, sc['id'], lambda b=b: b, 'backdrop', b['backdrop']))
         br = sc.get('broll')
         # b-roll 은 {src, ss, dur} 꼴이고 src 에 폴더가 안 붙어 있다.
         # 다른 두 자리와 표기가 달라 그대로 비교하면 같은 클립을 못 알아본다
         if br and br.get('src'):
-            slots.append((idx, lambda br=br: br, 'src', f"올리브영성수/{br['src']}"))
+            slots.append((idx, sc['id'], lambda br=br: br, 'src', f"올리브영성수/{br['src']}"))
 
     used = collections.Counter()
     lastAt = {}
     famAt = {}
     swapped = 0
-    for idx, holder, key, cur in slots:
+    for idx, sid, holder, key, cur in slots:
         if any(os.path.basename(cur).startswith(d) for d in DATA):
             continue
         pool = pool_v if cur.endswith('.mp4') else pool_i
@@ -675,18 +680,24 @@ def dedupe_media(plan, props, pubdir):
         if used[cur] == 0:
             # 파일은 처음 쓰지만 계열이 앞 컷과 붙는다 — 바꿀 수 있으면 바꾼다
             alt = [m for m in (pool_v if cur.endswith('.mp4') else pool_i)
-                   if used[m] == 0 and family(m) not in near0]
+                   if used[m] == 0 and family(m) not in near0
+                   and family(m) == family(cur)]
             if not alt:
                 used[cur] += 1
                 lastAt[cur] = idx
                 famAt[idx] = family(cur)
                 continue
         fresh = [m for m in pool if used[m] == 0]
-        # 앞 두 컷과 **계열이 겹치지 않는 것**을 먼저 고른다
+        # **뜻을 먼저 지킨다.** 원래 고른 소재와 같은 계열 안에서 바꾼다 —
+        # 겹치지 않는 것만 보고 고르게 뒀더니 "파사드가 작다" 컷에 마네킹
+        # 두상이 들어갔다 (#29). 화면이 다양해도 문장과 안 맞으면 못 쓴다.
+        want = family(cur)
+        same = [m for m in fresh if family(m) == want]
+        # 같은 계열 안에서, 앞 두 컷과 겹치지 않는 걸 우선
         near = {famAt.get(idx - 1), famAt.get(idx - 2)}
-        best = [m for m in fresh if family(m) not in near]
-        # 안 쓴 게 없으면 가장 적게 · 가장 오래전에 쓴 것. 바로 앞뒤 컷은 피한다
-        pick = (best or fresh or [None])[0] or min(
+        best = [m for m in fresh if family(m) not in near and family(m) == want]
+        pick = (best or same or [m for m in fresh if family(m) not in near]
+                or fresh or [None])[0] or min(
             pool, key=lambda m: (used[m], -(idx - lastAt.get(m, -99))))
         d = holder()
         d[key] = os.path.basename(pick) if key == 'src' else pick

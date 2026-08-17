@@ -30,7 +30,13 @@ export const ShapeCompareCard = ({
 
   const TOP = title ? (sub ? 300 : 246) : 178;
   const BOT = CONTENT_BOTTOM - (note ? 112 : 56);
-  const LABEL_H = numbered ? 24 : 118, DIM_H = 92;
+  // 아래 치수선 자리는 **쓸 때만** 뗀다. 늘 92px 를 떼 놨더니 dim='left' 만
+  // 쓰는 카드에서 그 자리가 통째로 놀고 도형만 작아졌다 (#98 은 도형이
+  // 화면 높이의 18% 였다). 라벨 줄도 마찬가지로 있을 때만 센다.
+  const hasLabel = items.some((o) => o.label || o.note);
+  const hasBottomDim = items.some((o) => o.dim === 'bottom');
+  const LABEL_H = hasLabel ? (numbered ? 24 : 118) : 0;
+  const DIM_H = hasBottomDim ? 92 : 24;
   const colW = 1920 / items.length;
 
   const maxW = Math.max(...items.map((o) => o.w));
