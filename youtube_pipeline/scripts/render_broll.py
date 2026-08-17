@@ -15,6 +15,7 @@ import argparse, json, os, subprocess, sys, zlib
 import imageio_ffmpeg
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PUBLIC = os.path.join(ROOT, 'motion', 'public')
 DEFAULT_PROJECT = '더파크사이드서울'
 PROJ = os.path.join(ROOT, 'projects', DEFAULT_PROJECT)   # main() 에서 --project 로 교체
 FONT = os.path.join(ROOT, 'motion', 'public', 'fonts', 'Pretendard-Bold.otf')
@@ -197,26 +198,43 @@ def main():
     plan = json.load(open(os.path.join(PROJ, 'scene_plan.json'), encoding='utf-8'))
     outdir = os.path.join(PROJ, 'clips')
     os.makedirs(outdir, exist_ok=True)
-    n = 0
+    n, bad = 0, 0
     for sc in plan['scenes']:
         bs = sc.get('broll')
         if not bs or (a.ids and sc['id'] not in a.ids):
             continue
         bs = bs if isinstance(bs, list) else [bs]      # 한 장면에 실사 여러 컷 가능
         for j, b in enumerate(bs):
+            # 소재는 두 군데에 산다 — 프로젝트 footage/ 와 렌더용 public/.
+            # 새로 받은 클립이 public/ 에만 있고 footage/ 엔 없어서 통째로
+            # 죽은 적이 있다. 없으면 public/ 을 본다 (한 곳만 채우면 되게).
             src = os.path.join(PROJ, 'footage', b['src'])
+            if not os.path.exists(src):
+                alt = os.path.join(PUBLIC, os.path.basename(PROJ), b['src'])
+                if os.path.exists(alt):
+                    src = alt
             sfx = '_b' if len(bs) == 1 else f'_b{j + 1}'
             out = os.path.join(outdir, f"sec{sc['id']:02d}_{sc['key']}{sfx}.mp4")
             cr = b.get('credit', CREDIT)
             st = b.get('style', 'center')
             key = (f"c{zlib.crc32(cr.encode()) % 99999}" if not b.get('text')
                    else f"t{sc['id']:02d}_{j}_{st}")
-            cut(src, b['ss'], b['dur'], out,
-                overlay_png(b.get('text', ''), b.get('sub', ''), key, cr, st))
+            # **한 컷이 죽어도 나머지는 뽑는다.** 예전엔 소스 하나를 못 읽으면
+            # 예외가 위로 올라가 그 뒤 실사가 전부 안 나왔다. 어차피 빠진 클립은
+            # qa_check 이 파일 없음으로 잡으니, 여기선 이유만 남기고 넘어간다.
+            try:
+                cut(src, b['ss'], b['dur'], out,
+                    overlay_png(b.get('text', ''), b.get('sub', ''), key, cr, st))
+            except Exception as e:
+                print(f"[FAIL] #{sc['id']:02d} {sc['key']:12s} {b['src']} — {e}", flush=True)
+                bad += 1
+                continue
             print(f"[ok] #{sc['id']:02d} {sc['key']:12s} {sfx[1:]:3s} {b['dur']:5.1f}s "
                   f"{b['src'][:10]}@{b['ss']}s  {os.path.getsize(out)//1024}KB", flush=True)
             n += 1
-    print(f'실사 {n}컷 → {outdir}', flush=True)
+    print(f'실사 {n}컷 → {outdir}' + (f' · 실패 {bad}컷' if bad else ''), flush=True)
+    if bad:
+        sys.exit(1)
 
 
 if __name__ == '__main__':

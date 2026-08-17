@@ -36,13 +36,17 @@ def load(proj):
             continue
         # `motion` 이 있으면 카드를 MotionShell 로 감싸는 컴포지션으로 돌린다.
         # 카드 코드는 그대로 두고 전환·강조 모션만 얹는다 (design_reference §23).
-        motion = entry.get('motion')
-        if motion:
-            out.append((sc['id'], 'MotionWrap',
-                        {'card': entry['card'], 'props': dict(entry['props']), 'motion': motion},
-                        dur, sc['key']))
-        else:
-            out.append((sc['id'], entry['card'], dict(entry['props']), dur, sc['key']))
+        #
+        # **항상 MotionWrap 을 거친다.** 예전엔 motion 이 없으면 카드 이름을
+        # 컴포지션으로 직접 불렀는데, 그러려면 카드를 cardRegistry 와 Root.jsx
+        # **두 곳**에 등록해야 했다. 한 곳만 등록하면 그 컷이 조용히 렌더에서
+        # 빠지고 — 파일이 없다는 것만 QA 에 잡힌다. 실제로 #23·#120 이 그렇게
+        # 통째로 사라졌다. MotionWrap 은 cardRegistry 한 곳만 보므로 이제 못 어긋난다.
+        # motion 이 없으면 MotionShell 이 기본값(아주 느린 푸시인)으로 돈다.
+        out.append((sc['id'], 'MotionWrap',
+                    {'card': entry['card'], 'props': dict(entry['props']),
+                     'motion': entry.get('motion') or {}},
+                    dur, sc['key']))
     return out
 
 
