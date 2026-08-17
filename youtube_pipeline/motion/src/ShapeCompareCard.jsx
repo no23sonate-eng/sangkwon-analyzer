@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -85,7 +85,7 @@ export const ShapeCompareCard = ({
                     stroke={T.ink} strokeWidth={4} opacity={0.35} />
 
               {o.dim === 'bottom' ? (
-                <DimLine x1={x} y1={baseY + 62} x2={x + w} y2={baseY + 62}
+                <DimLine x1={x} y1={baseY + SP.BLOCK} x2={x + w} y2={baseY + SP.BLOCK}
                          progress={e} color={T.ink} width={3} cap={13}
                          label={o.dimLabel || `${o.w}${unit}`} labelSize={38} />
               ) : null}
@@ -109,12 +109,12 @@ export const ShapeCompareCard = ({
         // 붙어 둘 다 답답해지고, 막대가 짧을 때는 아예 겹친다.
         // 값은 막대 **오른쪽 옆**에 세로 가운데로 놓고, 순번은 그 위에 작게.
         if (numbered) {
-          const bx = cx + w / 2 + 30;
+          const bx = cx + w / 2 + SP.GAP;
           return (
             <div key={i} style={{position: 'absolute', left: bx, width: 460,
                                  top: baseY - h / 2 - 52, opacity: op, textAlign: 'left'}}>
               <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
-                           letterSpacing: '0.16em', color: T.soft, marginBottom: 2}}>
+                           letterSpacing: '0.16em', color: T.soft, marginBottom: SP.TIGHT}}>
                 {String(i + 1).padStart(2, '0')}
               </div>
               <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
@@ -123,7 +123,7 @@ export const ShapeCompareCard = ({
                 {o.label}
               </div>
               {o.note ? (
-                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
+                <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
                              fontSize: 27, color: T.soft}}>{o.note}</div>
               ) : null}
             </div>
@@ -137,7 +137,7 @@ export const ShapeCompareCard = ({
                                color: o.hot ? T.ink : T.soft, wordBreak: 'keep-all'}}>
             {o.label}
             {o.note ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif',
+              <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
                            fontSize: 27, color: T.soft}}>{o.note}</div>
             ) : null}
           </div>

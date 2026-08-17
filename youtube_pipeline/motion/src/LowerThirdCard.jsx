@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn} from './paper';
+import {YELLOW, fadeIn, SP} from './paper';
 import {fit, estWidth} from './layout';
 
 // ── 실사 위에 얹는 번호 + 문구 ──────────────────────────────────────────
@@ -82,7 +82,7 @@ export const LowerThirdCard = ({
         ) : null}
 
         {label ? (
-          <div style={{marginTop: num ? 18 : 0,
+          <div style={{marginTop: num ? SP.NEAR : 0,
                        fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                        fontSize: labSize, lineHeight: 1.2, color: fg,
                        letterSpacing: '-0.015em', wordBreak: 'keep-all',
@@ -95,7 +95,7 @@ export const LowerThirdCard = ({
         ) : null}
 
         {sub ? (
-          <div style={{marginTop: 20, fontFamily: 'A2Z Light, sans-serif',
+          <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Light, sans-serif',
                        fontSize: 36, lineHeight: 1.4,
                        color: dark ? 'rgba(255,255,255,0.82)' : 'rgba(27,30,36,0.72)',
                        wordBreak: 'keep-all', maxWidth: 1400,

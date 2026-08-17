@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -23,7 +23,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   // 쓸 수 있는 띠는 [타이틀 아래 ~ 자막 안전영역 위] 이고, 그 한가운데에 블록을 놓는다.
   const bandTop = title ? (sub ? 300 : 246) : 150;
   const hasSub = items.some((it) => it.sub);
-  const blockH = 148 + 26 + 56 + (hasSub ? 44 : 0);      // 수치 + 라벨 (+ 보조줄)
+  const blockH = 148 + SP.GAP + 56 + (hasSub ? 44 : 0);      // 수치 + 라벨 (+ 보조줄)
   const TOPY = Math.round(bandTop + Math.max(0, (CONTENT_BOTTOM - bandTop - blockH) / 2));
 
   return (
@@ -67,7 +67,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                           underline={it.hot ? YELLOW : null} />
               )}
             </div>
-            <div style={{marginTop: 26, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            <div style={{marginTop: SP.GAP, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 46, color: T.ink, wordBreak: 'keep-all'}}>
               {it.hot
                 ? <span style={{background: YELLOW, color: '#1B1E24',
@@ -75,7 +75,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                 : it.label}
             </div>
             {it.sub ? (
-              <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft, wordBreak: 'keep-all'}}>
+              <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft, wordBreak: 'keep-all'}}>
                 {it.sub}
               </div>
             ) : null}

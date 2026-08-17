@@ -2206,7 +2206,7 @@
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_street.mp4",
+    "media": "올리브영성수/px_escalator.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2220,7 +2220,7 @@
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_thinking.mp4",
+    "media": "올리브영성수/px_mall_bangkok.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",
@@ -2228,7 +2228,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "right",
@@ -2239,7 +2239,7 @@
   "108": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_gallery_look.mp4",
+    "media": "올리브영성수/px_mall_esc2.mp4",
     "num": "",
     "label": "제품과 트렌드를 경험하는 공간",
     "sub": "",
@@ -2247,7 +2247,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "right",
@@ -2258,7 +2258,7 @@
   "109": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_office_dusk.mp4",
+    "media": "올리브영성수/px_mall_interior.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2266,13 +2266,13 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.3,
-    "source": "Mixkit"
+    "source": "Pexels"
    }
   },
   "110": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/auction_columns.mp4",
+    "media": "올리브영성수/px_mall_walk.mp4",
     "num": "",
     "label": "그런 방향도 가능해 보인다",
     "sub": "",
@@ -2280,7 +2280,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "right",
@@ -2345,7 +2345,7 @@
   "113": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_billboard.mp4",
+    "media": "올리브영성수/px_street.mp4",
     "num": "",
     "label": "크래프톤 사옥",
     "sub": "데이비드 치퍼필드 설계",
@@ -2353,7 +2353,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "down",
@@ -2378,7 +2378,7 @@
   "115": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_people.mp4",
+    "media": "올리브영성수/bl_thinking.mp4",
     "num": "",
     "label": "성수동 투자로 유명하다",
     "sub": "",
@@ -2461,7 +2461,7 @@
   "119": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_evening.mp4",
+    "media": "올리브영성수/bl_gallery_look.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2489,7 +2489,7 @@
   "121": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_installation.mp4",
+    "media": "올리브영성수/bl_office_dusk.mp4",
     "num": "",
     "label": "올리브영만의 공간 콘텐츠를 만들지",
     "sub": "",

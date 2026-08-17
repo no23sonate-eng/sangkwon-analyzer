@@ -12,6 +12,23 @@ export const INK_SOFT = '#6E747C'; // 보조 텍스트
 export const YELLOW = '#FAFF2E'; // 강조 채움 (외곽선은 항상 INK와 병용)
 export const PAPER_LINE = 'rgba(35,38,43,0.10)'; // 그리드선
 
+
+// ── 간격 규칙 (B1M 기준, 2026-08-16 확정) ────────────────────────────────
+// 지금까지 카드마다 여백을 눈대중으로 박아 넣었더니 어떤 카드는 라벨이 도형에
+// 달라붙고 어떤 카드는 붕 떴다. **한 척도에서 고른다.**
+//
+// B1M 판을 보고 잡은 원칙:
+//   ① **라벨과 대상 사이는 넉넉하다.** 붙으면 라벨이 도형의 일부처럼 읽힌다
+//   ② **위계 차이는 크게 벌린다.** 수치 148 / 라벨 46 처럼 3배 이상
+//   ③ 같은 묶음 안은 촘촘하게(TIGHT), 묶음끼리는 확실하게(BLOCK)
+//
+//   TIGHT  8   같은 덩어리 안 (수치와 단위, 라벨 두 줄)
+//   NEAR   20  붙어 있어야 하지만 겹치면 안 되는 것 (라벨 ↔ 보조설명)
+//   GAP    36  요소와 요소 (도형 ↔ 라벨)
+//   BLOCK  64  묶음과 묶음 (제목 블록 ↔ 본문 블록)
+//   BAND   96  단과 단 (평면 ↔ 정면)
+export const SP = {TIGHT: 8, NEAR: 20, GAP: 36, BLOCK: 64, BAND: 96};
+
 export const SUBTITLE_SAFE_BOTTOM = 260;
 export const CONTENT_BOTTOM = 1080 - SUBTITLE_SAFE_BOTTOM; // 820
 

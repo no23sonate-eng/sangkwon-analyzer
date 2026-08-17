@@ -3,7 +3,7 @@ import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 import {fit} from './layout';
 
 // ── 대지 한 필지 (실제 3D) ──────────────────────────────────────────────
@@ -88,7 +88,7 @@ export const SitePlotCard = ({
             {second}
           </div>
           {secondLabel ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
+            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
                          fontSize: 28, color: T.soft}}>{secondLabel}</div>
           ) : null}
         </div>
