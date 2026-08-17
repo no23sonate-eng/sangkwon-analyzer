@@ -25,7 +25,7 @@ CRED = {
     'brand_storefront.jpg': 'Yzen2023 / CC BY 4.0',
     'popup_crowd.jpg': '玄史生 / CC0',
     'store_queue.jpg': 'Northwest / CC BY-SA 4.0',
-    'popup_space.jpg': 'MTAPhotos / BY 2.0',
+    'popup_space.jpg': 'Pexels',
     'seoul_towers.jpg': 'Ox1997cow / CC BY-SA 4.0',
     'seoulforest_deck.jpg': 'CartoonChess / CC BY-SA 4.0',
     'gentlemonster_store.jpg': 'Lstae88 / CC BY-SA 4.0',
@@ -37,6 +37,16 @@ CRED = {
     'seongsu_alley2.jpg': 'CC BY-SA 4.0',
     'oliveyoung_store.png': 'Pkccccj / CC BY-SA 4.0',
     'korea.png': 'Wikimedia Commons / CC BY-SA 3.0',
+    # ── 실제 대상물 사진. 저작권이 있는 보도·기업 제공 사진이라
+    #    화면에 출처를 반드시 띄운다 (PaperSource 우측 상단) ──
+    'oliveyoung_myeongdong.jpg': 'Sgroey / CC BY-SA 4.0',
+    'oliveyoungn_atrium.jpg': '사진=CJ올리브영 / CJ뉴스룸',
+    'oliveyoungn_kpop.jpg': '사진=CJ올리브영 / CJ뉴스룸',
+    'oliveyoungn_floor.jpg': '사진=CJ올리브영 / CJ뉴스룸',
+    'factorial_exterior.jpg': '사진=팩토리얼 성수 / heyPOP',
+    'factorial_facade.jpg': '사진=팩토리얼 성수 / heyPOP',
+    'krafton_rendering.jpg': '조감도=K-프로젝트 / 더벨',
+    'gentlemonster_haus.jpg': '사진=디에디트 the-edit.co.kr',
     'px_seoul_night.jpg': 'Pexels', 'px_seoul_street1.jpg': 'Pexels',
     'px_seoul_street2.jpg': 'Pexels', 'px_seoul_billboard.jpg': 'Pexels',
     'px_seoul_alley.jpg': 'Pexels', 'px_seoul_life.jpg': 'Pexels',
@@ -45,9 +55,9 @@ CRED = {
     'px_street.mp4': 'Pexels', 'px_escalator.mp4': 'Pexels',
     'px_mall_walk.mp4': 'Pexels', 'px_mall_esc2.mp4': 'Pexels',
     'px_mall_interior.mp4': 'Pexels', 'px_mall_bangkok.mp4': 'Pexels',
-    'popup_dior.jpg': 'CC0',
-    'popup_exhibit.jpg': 'CC BY-SA 2.0',
-    'popup_lv.jpg': 'CC BY 2.0',
+    'popup_jewel.jpg': 'Pexels',
+    'popup_exhibit.jpg': 'Pexels',
+    'popup_lv.jpg': 'Wikimedia Commons / CC BY 4.0',
 }
 MIX = 'Mixkit'
 def cred(n): return CRED.get(n, MIX)
@@ -80,7 +90,9 @@ R = {}   # 장면 → (카드, props)
 # #0 성수동 전경
 R[0] = lt('seongsu_view.jpg', label='2026년 7월, 성수동', sub='경매 한 건', scrim=0.46)
 # #1 올리브영 이미지 뒤 + 로고 앞 → 로고는 상표라 못 쓴다. 매장 실사로 대체
-R[1] = lt('oliveyoung_store.png', label='낙찰자는 올리브영', scrim=0.5)
+# 매장 간판 사진(1280px)이 원본 최대치라 1920 캔버스에서 물렁했다.
+# 명동점 사진이 1920px 원본이고 간판도 더 크게 잡힌다
+R[1] = lt('oliveyoung_myeongdong.jpg', label='낙찰자는 올리브영', scrim=0.52)
 # #2 서울동부지법 삭제 · 2026년 7월 크게 가운데 · 맨아래 낙찰가 삭제 · "약" 작게
 R[2] = ('BigStatsCard', {
     'title': '2026년 7월', 'sub': '',
@@ -145,7 +157,7 @@ R[15] = lt('popup_lv.jpg', label='루이비통 · 디올 · 지프 · 랄프로�
             sub='사진은 브랜드 매장 — 쎈느 팝업 아님', scrim=0.56)
 # #16,17 팝업스토어 연상
 R[16] = lt('popup_crowd.jpg', label='팝업 성지', scrim=0.5)
-R[17] = lt('popup_dior.jpg', label='평범한 건물이 성지가 된 이유', sub='3가지', scrim=0.54)
+R[17] = lt('popup_jewel.jpg', label='평범한 건물이 성지가 된 이유', sub='3가지', scrim=0.54)
 # #18 사용자 첨부 쎈느 사진 → 파일이 오면 여기에 꽂는다. 없으면 성수 실사
 R[18] = ('ShapeCompareCard', {
     'title': '건물이 네모반듯하다', 'sub': '',
@@ -649,13 +661,48 @@ R[113] = lt('seoul_towers.jpg', label='크래프톤 사옥',
             sub='데이비드 치퍼필드 설계 · 사진은 대상 건물 아님', scrim=0.54)
 
 
+# ══════════ 실제 대상물 사진 교체 ══════════
+# 그동안 "성수동 어딘가" 로 때우던 자리에 **진짜 그 건물** 사진을 넣는다.
+# 전부 저작권이 있는 사진이라 출처를 화면 우측 상단에 그대로 띄운다.
+
+# #80 올리브영N 성수 1,400평 — 실제 매장 아트리움을 뒤에 깐다
+R[80] = ('BigStatsCard', {
+    'title': '올리브영N 성수', 'sub': '팩토리얼 성수 지상 1~5층',
+    'items': [{'display': '1,400', 'unit': '평', 'label': '약 4,628㎡', 'hot': True}],
+    'theme': 'ink', 'align': 'center',
+    'bg': {'backdrop': img('oliveyoungn_atrium.jpg'), 'veil': 0.72, 'dir': 0, 'blur': 2},
+    'source': 'CJ올리브영 · 사진=CJ올리브영 / CJ뉴스룸'})
+
+# #105 "검증은 이미 옆의 올리브영N에서 끝냈다" — 바로 그 매장
+R[105] = lt('oliveyoungn_kpop.jpg', label='검증은 이미 옆에서 끝났다',
+            sub='올리브영N 성수', scrim=0.5)
+
+# #81 개점 1년 250만 명 — 매장 실사 위에
+# 아트리움은 #80 이 배경으로 쓴다. 여기는 다른 층 실사로
+R[81] = lt('oliveyoungn_floor.jpg', label='개점 1년 누적 250만 명',
+           sub='전국 매장 중 내국인 방문 1위', scrim=0.55)
+
+# #79 지도 컷 다음, 팩토리얼 성수 외관을 한 번 보여 준다
+R[78] = lt('factorial_exterior.jpg', label='팩토리얼 성수',
+           sub='올리브영N 성수가 1~5층을 쓴다', scrim=0.5)
+
+# #113 크래프톤 사옥 — 서울 스카이라인 대신 실제 조감도
+R[113] = lt('krafton_rendering.jpg', label='크래프톤 사옥',
+            sub='데이비드 치퍼필드 설계 · 2027년 준공 예정', scrim=0.5)
+
+# #116 젠틀몬스터 — 해외 매장 사진 대신 성수 신사옥
+R[116] = lt('gentlemonster_haus.jpg', label='젠틀몬스터',
+            sub='하우스 노웨어 서울 · 성수', scrim=0.5)
+
+
 # ── 바꾸면 안 되는 소재 ─────────────────────────────────────────────────
 # 계열만 맞추면 되는 소재가 있고, **그 컷에서만 뜻이 통하는** 소재가 있다.
 # 젠틀몬스터 매장 사진은 젠틀몬스터를 말할 때만 맞고, 다른 데로 옮기면
 # 그냥 이상한 그림이다 (실제로 마네킹 두상이 마지막 컷으로 옮겨 갔다).
 # 고유명사·특정 장소가 찍힌 것은 자리에서 못 움직이게 한다.
 IDENTITY = ('gentlemonster', 'musinsa', 'amore_', 'oliveyoung', 'brand_storefront',
-            'seongsu_', 'seoulforest', 'popup_', 'store_queue', 'seoul_towers')
+            'seongsu_', 'seoulforest', 'popup_', 'store_queue', 'seoul_towers',
+            'factorial_', 'krafton_')
 
 
 def is_identity(name):

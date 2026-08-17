@@ -129,3 +129,6 @@
 | `px_cafe3.mp4` | Pexels video 6828711 | Pexels License | (표기 의무 없음) |
 | `px_cafe_interior.mp4` | Pexels video 7652196 | Pexels License | (표기 의무 없음) |
 | `px_mall_view.mp4` | Pexels video 5266057 | Pexels License | (표기 의무 없음) |
+| `popup_dior.jpg` | Pexels photo 33257665 | Pexels License | (표기 의무 없음) |
+| `popup_exhibit.jpg` | Pexels photo 15306470 | Pexels License | (표기 의무 없음) |
+| `popup_space.jpg` | Pexels photo 34375523 | Pexels License | (표기 의무 없음) |

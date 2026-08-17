@@ -24,15 +24,15 @@
   "1": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/oliveyoung_store.png",
+    "media": "올리브영성수/oliveyoung_myeongdong.jpg",
     "num": "",
     "label": "낙찰자는 올리브영",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.5,
-    "source": "Pkccccj / CC BY-SA 4.0"
+    "scrim": 0.52,
+    "source": "Sgroey / CC BY-SA 4.0"
    }
   },
   "2": {
@@ -341,7 +341,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "CC BY-SA 2.0"
+    "source": "Pexels"
    }
   },
   "15": {
@@ -355,7 +355,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.56,
-    "source": "CC BY 2.0"
+    "source": "Wikimedia Commons / CC BY 4.0"
    }
   },
   "16": {
@@ -380,7 +380,7 @@
   "17": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/popup_dior.jpg",
+    "media": "올리브영성수/popup_jewel.jpg",
     "num": "",
     "label": "평범한 건물이 성지가 된 이유",
     "sub": "3가지",
@@ -388,7 +388,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "CC0"
+    "source": "Pexels"
    }
   },
   "18": {
@@ -1577,15 +1577,15 @@
   "78": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_library.jpg",
+    "media": "올리브영성수/factorial_exterior.jpg",
     "num": "",
-    "label": "성수동이 그만큼 중요한 권역",
-    "sub": "",
+    "label": "팩토리얼 성수",
+    "sub": "올리브영N 성수가 1~5층을 쓴다",
     "tone": "dark",
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "Pexels"
+    "source": "사진=팩토리얼 성수 / heyPOP"
    }
   },
   "79": {
@@ -1631,15 +1631,15 @@
       "hot": true
      }
     ],
-    "theme": "paper",
+    "theme": "ink",
     "align": "center",
     "bg": {
-     "backdrop": "올리브영성수/bl_retail_aisle.mp4",
-     "veil": 0.93,
-     "dir": 2,
-     "blur": 3
+     "backdrop": "올리브영성수/oliveyoungn_atrium.jpg",
+     "veil": 0.72,
+     "dir": 0,
+     "blur": 2
     },
-    "source": "한국경제 2024.11.21"
+    "source": "CJ올리브영 · 사진=CJ올리브영 / CJ뉴스룸"
    },
    "motion": {
     "dir": "left",
@@ -1650,7 +1650,7 @@
   "81": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_mall_high.mp4",
+    "media": "올리브영성수/oliveyoungn_floor.jpg",
     "num": "",
     "label": "개점 1년 누적 250만 명",
     "sub": "전국 매장 중 내국인 방문 1위",
@@ -1658,7 +1658,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.55,
-    "source": "Mixkit"
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
    },
    "motion": {
     "dir": "left",
@@ -1754,7 +1754,7 @@
     "theme": "ink",
     "align": "center",
     "bg": {
-     "backdrop": "올리브영성수/bl_rooftop.mp4",
+     "backdrop": "올리브영성수/bl_retail_aisle.mp4",
      "veil": 0.94,
      "dir": 5,
      "blur": 3
@@ -1770,7 +1770,7 @@
   "87": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_crowd.mp4",
+    "media": "올리브영성수/bl_rooftop.mp4",
     "num": "",
     "label": "건물주가 바뀌면 임차인은?",
     "sub": "",
@@ -1851,7 +1851,7 @@
   "91": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_people.mp4",
+    "media": "올리브영성수/bl_street_crowd.mp4",
     "num": "",
     "label": "성수동 분위기와 잘 맞는 건물",
     "sub": "",
@@ -1948,7 +1948,7 @@
   "95": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_walk.mp4",
+    "media": "올리브영성수/bl_street_people.mp4",
     "num": "",
     "label": "570억을 회수하려면",
     "sub": "",
@@ -2056,7 +2056,7 @@
   "100": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_topdown_roof.mp4",
+    "media": "올리브영성수/bl_street_walk.mp4",
     "num": "",
     "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
     "sub": "",
@@ -2126,7 +2126,7 @@
   "104": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_buildings_night.mp4",
+    "media": "올리브영성수/bl_topdown_roof.mp4",
     "num": "",
     "label": "광고 효과를 1순위로 놓고 계산했다",
     "sub": "",
@@ -2134,21 +2134,21 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Pexels"
+    "source": "Mixkit"
    }
   },
   "105": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_escalator.mp4",
+    "media": "올리브영성수/oliveyoungn_kpop.jpg",
     "num": "",
     "label": "검증은 이미 옆에서 끝났다",
-    "sub": "",
+    "sub": "올리브영N 성수",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.52,
-    "source": "Pexels"
+    "scrim": 0.5,
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
    },
    "motion": {
     "dir": "up",
@@ -2159,7 +2159,7 @@
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe.mp4",
+    "media": "올리브영성수/px_escalator.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2167,13 +2167,13 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "Pexels"
    }
   },
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_sign_close.mp4",
+    "media": "올리브영성수/px_buildings_night.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",
@@ -2181,7 +2181,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "right",
@@ -2192,7 +2192,7 @@
   "108": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_mall2.mp4",
+    "media": "올리브영성수/px_cafe.mp4",
     "num": "",
     "label": "제품과 트렌드를 경험하는 공간",
     "sub": "",
@@ -2211,7 +2211,7 @@
   "109": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe2.mp4",
+    "media": "올리브영성수/px_mall2.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2225,7 +2225,7 @@
   "110": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe3.mp4",
+    "media": "올리브영성수/px_sign_close.mp4",
     "num": "",
     "label": "그런 방향도 가능해 보인다",
     "sub": "",
@@ -2298,15 +2298,15 @@
   "113": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seoul_towers.jpg",
+    "media": "올리브영성수/krafton_rendering.jpg",
     "num": "",
     "label": "크래프톤 사옥",
-    "sub": "데이비드 치퍼필드 설계 · 사진은 대상 건물 아님",
+    "sub": "데이비드 치퍼필드 설계 · 2027년 준공 예정",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.54,
-    "source": "Ox1997cow / CC BY-SA 4.0"
+    "scrim": 0.5,
+    "source": "조감도=K-프로젝트 / 더벨"
    },
    "motion": {
     "dir": "down",
@@ -2350,15 +2350,15 @@
   "116": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/gentlemonster_store.jpg",
+    "media": "올리브영성수/gentlemonster_haus.jpg",
     "num": "",
     "label": "젠틀몬스터",
-    "sub": "사진: 젠틀몬스터 매장(해외) — 성수 사옥 아님",
+    "sub": "하우스 노웨어 서울 · 성수",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.52,
-    "source": "Lstae88 / CC BY-SA 4.0"
+    "scrim": 0.5,
+    "source": "사진=디에디트 the-edit.co.kr"
    }
   },
   "117": {
@@ -2400,7 +2400,7 @@
   "118": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_seoul_billboard.jpg",
+    "media": "올리브영성수/px_library.jpg",
     "num": "",
     "label": "적극 가담하겠다는 신호",
     "sub": "",
@@ -2414,7 +2414,7 @@
   "119": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe_interior.mp4",
+    "media": "올리브영성수/px_cafe2.mp4",
     "num": "",
     "label": "",
     "sub": "",

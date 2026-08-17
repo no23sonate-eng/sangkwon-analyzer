@@ -36,7 +36,11 @@ export const ShapeCompareCard = ({
   const hasLabel = items.some((o) => o.label || o.note);
   const hasBottomDim = items.some((o) => o.dim === 'bottom');
   const LABEL_H = hasLabel ? (numbered ? 24 : 118) : 0;
-  const DIM_H = hasBottomDim ? 92 : 24;
+  // 치수선 라벨은 선 **위**에 앉는다. 바닥선과 치수선이 64px 밖에 안 떨어져
+  // 있으면 글자 윗머리가 바닥선을 물어 안 읽힌다 (#18 "한 변이 곧다" 가
+  // 바닥선 위에 얹혔다). 글자 한 줄 높이만큼 더 내린다.
+  const DIM_DROP = 112;
+  const DIM_H = hasBottomDim ? DIM_DROP + 52 : 24;
   const colW = 1920 / items.length;
 
   const maxW = Math.max(...items.map((o) => o.w));
@@ -91,7 +95,7 @@ export const ShapeCompareCard = ({
                     stroke={T.ink} strokeWidth={4} opacity={0.35} />
 
               {o.dim === 'bottom' ? (
-                <DimLine x1={x} y1={baseY + SP.BLOCK} x2={x + w} y2={baseY + SP.BLOCK}
+                <DimLine x1={x} y1={baseY + DIM_DROP} x2={x + w} y2={baseY + DIM_DROP}
                          progress={e} color={T.ink} width={3} cap={13}
                          label={o.dimLabel || `${o.w}${unit}`} labelSize={38} />
               ) : null}
