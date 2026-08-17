@@ -747,7 +747,7 @@
    "end": 216.6,
    "dur": 5.7,
    "text": "이때 마당을 대기 공간으로 쓸 수도 있고, 주차장으로 돌릴 수도 있습니다.",
-   "card": "YardViewCard",
+   "card": "LowerThirdCard",
    "key": "cut50",
    "motion": {
     "dir": "up",
@@ -1348,7 +1348,7 @@
    "key": "cut93",
    "cardDur": 0,
    "broll": {
-    "src": "bl_topdown_block.mp4",
+    "src": "bl_street_crowd.mp4",
     "ss": 3.4,
     "dur": 6.3
    }

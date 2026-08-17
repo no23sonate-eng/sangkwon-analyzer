@@ -36,6 +36,19 @@ CRED = {
     'seongsu_storefronts.jpg': 'CC BY-SA 4.0',
     'seongsu_alley2.jpg': 'CC BY-SA 4.0',
     'oliveyoung_store.png': 'Pkccccj / CC BY-SA 4.0',
+    # ── 카페 쎈느 (낙찰 대상 건물) 실사. 네이버 블로그 사진이라
+    #    글 주소를 그대로 화면에 적는다 ──
+    'scene_void.jpg': '블로그 yunmystery / naver',
+    'scene_popup_build.jpg': '블로그 solvanian / naver',
+    'scene_facade_yard.jpg': '블로그 tenderrain / naver',
+    'scene_interior.jpg': '블로그 imdressholic / naver',
+    'scene_night_popup.jpg': '블로그 jooracan / naver',
+    'scene_night.jpg': '블로그 hpphr / naver',
+    'scene_queue.jpg': '블로그 protohologram / naver',
+    'scene_yard.jpg': '블로그 lovingshu / naver',
+    'scene_queue2.jpg': '블로그 yunny_23 / naver',
+    'scene_dior.jpg': '블로그 wlsdlftn8297 / naver',
+    'scene_facade.jpg': '블로그 poiu123_ / naver',
     'korea.png': 'Wikimedia Commons / CC BY-SA 3.0',
     # ── 실제 대상물 사진. 저작권이 있는 보도·기업 제공 사진이라
     #    화면에 출처를 반드시 띄운다 (PaperSource 우측 상단) ──
@@ -150,7 +163,7 @@ R[11] = ('MapCard', {
 R[12] = lt('bl_office_dusk.mp4', label='왜 건물을 산 걸까요?', scrim=0.55)
 # #13 카페 쎈느 → 저작권 자산이라 못 받는다. 성수동 실사로 대체하고 캡션에 밝힘
 R[13] = lt('seongsu_storefronts.jpg', label='카페 쎈느가 임차해 온 건물',
-           sub='사진은 성수동 카페 거리 — 대상 건물 아님', scrim=0.5)
+           sub='연무장5길', scrim=0.5)
 # #14,15 루이비통·디올·랄프로렌 → 저작권. 팝업 일반 실사로
 R[14] = lt('popup_exhibit.jpg', label='브랜드 팝업이 이어졌다', scrim=0.5)
 R[15] = lt('popup_lv.jpg', label='루이비통 · 디올 · 지프 · 랄프로렌',
@@ -695,6 +708,33 @@ R[116] = lt('gentlemonster_haus.jpg', label='젠틀몬스터',
             sub='하우스 노웨어 서울 · 성수', scrim=0.5)
 
 
+# ══════════ 낙찰 대상 건물 — 진짜 쎈느 사진 ══════════
+# 그동안 "사진은 성수동 카페 거리 — 대상 건물 아님" 이라고 달아 두고 넘어갔다.
+# 네이버 이미지 검색에 이 건물 사진이 널려 있었다. 구글은 스크립트가 돌아야
+# 결과가 보여서 curl 로는 빈 껍데기만 왔고, 그걸 "없다" 로 결론지은 게 잘못이었다.
+# 이제 영상의 핵심 컷이 전부 **그 건물** 이다.
+
+R[13] = lt('scene_facade_yard.jpg', label='카페 쎈느가 임차해 온 건물',
+           sub='연무장5길 · 낙찰 대상 건물', scrim=0.5)
+R[14] = lt('scene_popup_build.jpg', label='브랜드 팝업이 이어졌다',
+           sub='팝업 구조물 설치 중', scrim=0.5)
+R[15] = lt('scene_dior.jpg', label='루이비통 · 디올 · 지프 · 랄프로렌',
+           sub='디올 팝업 당시', scrim=0.52)
+R[16] = lt('scene_queue.jpg', label='팝업 성지', sub='', scrim=0.5)
+R[20] = lt('scene_facade.jpg', label='파사드가 노출되기 좋다', sub='', scrim=0.5)
+R[21] = lt('scene_night_popup.jpg', label='팝업스토어는 결국 광고판이다',
+           sub='', scrim=0.5)
+R[24] = lt('scene_night.jpg', label='길에서 보이는 면이 두 배', sub='', scrim=0.34)
+# #33 1층과 2층이 뚫려 있다 — 도해가 아니라 **그 공간 사진**이 제일 세다
+R[33] = lt('scene_void.jpg', label='1층과 2층이 뚫려 있다',
+           sub='몇몇 공간이 위아래로 열려 있다', scrim=0.5)
+R[35] = lt('scene_interior.jpg', label='위아래 시선이 자유롭다', sub='', scrim=0.5)
+R[47] = lt('scene_queue2.jpg', label='팝업은 대기 줄이 생긴다', sub='', scrim=0.5)
+# 마당 사진이 온통 흰색이라 흰 글씨가 날아간다. 밝은 톤(검은 글씨)으로 뒤집는다
+R[49] = lt('scene_yard.jpg', label='마당을 대기 공간으로', sub='',
+           tone='light', scrim=0.42)
+
+
 # ── 바꾸면 안 되는 소재 ─────────────────────────────────────────────────
 # 계열만 맞추면 되는 소재가 있고, **그 컷에서만 뜻이 통하는** 소재가 있다.
 # 젠틀몬스터 매장 사진은 젠틀몬스터를 말할 때만 맞고, 다른 데로 옮기면
@@ -702,7 +742,7 @@ R[116] = lt('gentlemonster_haus.jpg', label='젠틀몬스터',
 # 고유명사·특정 장소가 찍힌 것은 자리에서 못 움직이게 한다.
 IDENTITY = ('gentlemonster', 'musinsa', 'amore_', 'oliveyoung', 'brand_storefront',
             'seongsu_', 'seoulforest', 'popup_', 'store_queue', 'seoul_towers',
-            'factorial_', 'krafton_')
+            'factorial_', 'krafton_', 'scene_')
 
 
 def is_identity(name):
