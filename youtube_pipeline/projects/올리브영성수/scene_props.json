@@ -401,6 +401,8 @@
       "w": 7.5,
       "h": 3.0,
       "label": "",
+      "dim": "bottom",
+      "dimLabel": "한 변이 곧다",
       "hot": true
      }
     ],
@@ -605,7 +607,7 @@
   "29": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/brand_storefront.jpg",
+    "media": "올리브영성수/px_seoul_alley.jpg",
     "num": "",
     "label": "보여줄 수 있는 얼굴이 작다",
     "sub": "파사드가 작다는 건",
@@ -613,7 +615,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Yzen2023 / CC BY 4.0"
+    "source": "Pexels"
    }
   },
   "30": {
@@ -1010,7 +1012,7 @@
   "50": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seoulforest_deck.jpg",
+    "media": "올리브영성수/seongsu_shops.jpg",
     "num": "",
     "label": "내부뿐 아니라 외부까지",
     "sub": "건물 밖까지 덤으로 받는다",
@@ -1018,7 +1020,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "source": "Sgroey / BY-SA 4.0"
    },
    "motion": {
     "dir": "right",
@@ -1029,7 +1031,7 @@
   "51": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_library.jpg",
+    "media": "올리브영성수/brand_storefront.jpg",
     "num": "",
     "label": "마당은 파사드의 거리다",
     "sub": "",
@@ -1037,7 +1039,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "Pexels"
+    "source": "Yzen2023 / CC BY 4.0"
    }
   },
   "52": {
@@ -1076,15 +1078,15 @@
   "54": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/amore_sulwhasoo.jpg",
+    "media": "올리브영성수/px_makeup.mp4",
     "num": "",
     "label": "올리브영 입장에선?",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.56,
-    "source": "KOREA.NET / BY-SA 2.0"
+    "scrim": 0.5,
+    "source": "Mixkit"
    },
    "motion": {
     "dir": "down",
@@ -1409,7 +1411,7 @@
     "cutAt": 26,
     "bidAt": 62,
     "note": "2025.8.25 · 서울동부지법 · 4,272㎡",
-    "theme": "paper",
+    "theme": "ink",
     "source": "하우징포스트 2025.09"
    },
    "motion": {
@@ -1575,7 +1577,7 @@
   "78": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_shops.jpg",
+    "media": "올리브영성수/px_library.jpg",
     "num": "",
     "label": "성수동이 그만큼 중요한 권역",
     "sub": "",
@@ -1583,7 +1585,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "Sgroey / BY-SA 4.0"
+    "source": "Pexels"
    }
   },
   "79": {
@@ -2086,7 +2088,7 @@
   "102": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_street.mp4",
+    "media": "올리브영성수/px_crane2.mp4",
     "num": "",
     "label": "인근 토지를 더 사는 방법도 있다",
     "sub": "",
@@ -2094,7 +2096,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Pexels"
+    "source": "Mixkit"
    },
    "motion": {
     "dir": "left",
@@ -2105,7 +2107,7 @@
   "103": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_buildings_night.mp4",
+    "media": "올리브영성수/px_street.mp4",
     "num": "",
     "label": "상징성 있는 위치",
     "sub": "",
@@ -2124,7 +2126,7 @@
   "104": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_crane2.mp4",
+    "media": "올리브영성수/px_buildings_night.mp4",
     "num": "",
     "label": "광고 효과를 1순위로 놓고 계산했다",
     "sub": "",
@@ -2132,7 +2134,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "Pexels"
    }
   },
   "105": {
@@ -2190,7 +2192,7 @@
   "108": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_makeup.mp4",
+    "media": "올리브영성수/px_mall2.mp4",
     "num": "",
     "label": "제품과 트렌드를 경험하는 공간",
     "sub": "",
@@ -2296,15 +2298,15 @@
   "113": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe_interior.mp4",
+    "media": "올리브영성수/seoul_towers.jpg",
     "num": "",
     "label": "크래프톤 사옥",
-    "sub": "데이비드 치퍼필드 설계",
+    "sub": "데이비드 치퍼필드 설계 · 사진은 대상 건물 아님",
     "tone": "dark",
     "kicker": "",
     "align": "center",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "Ox1997cow / CC BY-SA 4.0"
    },
    "motion": {
     "dir": "down",
@@ -2329,7 +2331,7 @@
   "115": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_mall2.mp4",
+    "media": "올리브영성수/px_mall_bangkok.mp4",
     "num": "",
     "label": "성수동 투자로 유명하다",
     "sub": "",
@@ -2337,7 +2339,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "left",
@@ -2412,7 +2414,7 @@
   "119": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_mall_bangkok.mp4",
+    "media": "올리브영성수/px_cafe_interior.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2420,7 +2422,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.3,
-    "source": "Pexels"
+    "source": "Mixkit"
    }
   },
   "120": {
@@ -2466,7 +2468,7 @@
   "122": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/gentlemonster_art.jpg",
+    "media": "올리브영성수/seoulforest_deck.jpg",
     "num": "",
     "label": "이곳이 어떻게 바뀔까",
     "sub": "지켜보면 방향이 보인다",
@@ -2474,7 +2476,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "Tomás Del Coro / CC BY-SA 4.0"
+    "source": "CartoonChess / CC BY-SA 4.0"
    }
   }
  }

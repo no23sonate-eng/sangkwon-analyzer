@@ -317,7 +317,9 @@ R[71] = ('ShareSplitCard', {
     'cutLabel': '분할 불가', 'bidLabel': '2,202억 낙찰',
     'cutAt': 26, 'bidAt': 62,
     'note': '2025.8.25 · 서울동부지법 · 4,272㎡',
-    'theme': 'paper', 'source': '하우징포스트 2025.09'})
+    # #61 과 그림이 똑같다. 열 컷 떨어져 있어도 같은 종이 바탕이면 같은 장면이
+    # 다시 나온 것처럼 읽혀서, 테마라도 갈라 둔다
+    'theme': 'ink', 'source': '하우징포스트 2025.09'})
 # #72 서울동부지법 삭제
 R[72] = ('BigStatsCard', {
     'title': '인근 사례', 'sub': '4,272㎡ · 단독 응찰',
@@ -462,7 +464,7 @@ R[117] = ('TrackRecordCard', {
     'theme': 'ink', 'align': 'center', 'source': '비즈워치 2026.01.14'})
 # 젠틀몬스터 아트(마네킹 두상)를 쓰고 있었는데, "성수동에 적극 가담하겠다는
 # 신호" 라는 결론 문장 옆에 놓기엔 그림이 너무 튄다. 성수 거리로 바꾼다
-R[118] = lt('seongsu_industrial.jpg', label='적극 가담하겠다는 신호',
+R[118] = lt('seongsu_bldg1.jpg', label='적극 가담하겠다는 신호',
             sub='', scrim=0.52)
 R[119] = lt('bl_city_night2.mp4', label='', scrim=0.3)
 R[120] = lt('amore_sulwhasoo.jpg', label='뷰티 브랜드의 오프라인 경쟁',
@@ -539,7 +541,8 @@ R[23] = ('FrontageCard', {
 # #29 다섯 번째 도형 카드가 될 자리였다. 파사드 얘기는 #22·#23 에서
 # 평면·입면으로 이미 다 그렸고, 여기서 또 네모를 그리면 같은 그림 반복이다.
 # 좁은 파사드 실사로 내리고 그래픽 밀도를 이 구간에서 낮춘다.
-R[29] = lt('seongsu_storefronts.jpg', label='보여줄 수 있는 얼굴이 작다',
+# #13 이 seongsu_storefronts 를 쓰고 있다. 좁은 파사드는 골목 상가가 더 맞다
+R[29] = lt('seongsu_alley2.jpg', label='보여줄 수 있는 얼굴이 작다',
            sub='파사드가 작다는 건', scrim=0.54)
 
 # ══════════ 같은 카드가 세 번씩 나오던 구간 ══════════
@@ -548,7 +551,8 @@ R[29] = lt('seongsu_storefronts.jpg', label='보여줄 수 있는 얼굴이 작�
 # 겹치면 같은 그림이 두 번 지나간 것으로 읽힌다. 각 계열에서 하나씩만 남긴다.
 
 # #50 마당 얘기는 #49 도해로 끝났다. 여기선 실제 외부 공간을 보여 준다
-R[50] = lt('seoulforest_deck.jpg', label='내부뿐 아니라 외부까지',
+# 마지막 컷(#122)이 서울숲 데크를 쓴다. 여기선 건물 앞 외부 공간으로
+R[50] = lt('seongsu_shops.jpg', label='내부뿐 아니라 외부까지',
            sub='건물 밖까지 덤으로 받는다', scrim=0.5)
 # #52 인증샷 — 도해보다 사람이 찍는 장면이 낫다
 R[52] = lt('bl_phonesnap.mp4', label='건물 얼굴이 온전히 다 담긴다',
@@ -589,6 +593,20 @@ R[81] = lt('px_mall_high.mp4', label='개점 1년 누적 250만 명',
            sub='전국 매장 중 내국인 방문 1위', scrim=0.55)
 
 
+# ══════════ 3차 검수 ══════════
+# #54 "올리브영 입장에선?" 자리에 설화수 제품 사진이 있었다. 아모레 제품이라
+# 문장과 정반대다. 화장품 매대 실사로 바꾼다
+R[54] = lt('px_makeup.mp4', label='올리브영 입장에선?', sub='', scrim=0.5)
+
+# #18 큰 옐로 사각형 하나뿐이라 도형이 아니라 색면으로 읽혔다.
+# 아래 치수선을 그어 "평면"이라는 걸 알린다
+R[18] = ('ShapeCompareCard', {
+    'title': '건물이 네모반듯하다', 'sub': '',
+    'items': [{'w': 7.5, 'h': 3.0, 'label': '', 'dim': 'bottom',
+               'dimLabel': '한 변이 곧다', 'hot': True}],
+    'theme': 'paper', 'source': '도해'})
+
+
 # ── 시각 계열 ──────────────────────────────────────────────────────────
 # 파일이 다르다고 화면이 달라지는 게 아니다. 야경 항공샷 셋이 연달아 나오면
 # 소재는 서로 다른데 보는 사람에겐 **같은 그림이 세 번**이다 (#30·#31·#32 가
@@ -621,6 +639,30 @@ def family(name):
     return 'etc'
 
 
+# #102 "인근 토지를 더 사는 방법" 자리에 바다 항공샷이 들어가 있었다.
+# 빈 땅이 보이는 항공샷으로 바꾼다
+R[102] = lt('px_aerial_land.mp4', label='인근 토지를 더 사는 방법도 있다',
+            sub='', scrim=0.52)
+# #113 "크래프톤 사옥" 자리에 거실 소파가 있었다. 사옥 사진은 없으니
+# 최소한 업무용 건물군으로 받는다 (사진이 대상 건물이 아님은 자막에 적혀 있다)
+R[113] = lt('seoul_towers.jpg', label='크래프톤 사옥',
+            sub='데이비드 치퍼필드 설계 · 사진은 대상 건물 아님', scrim=0.54)
+
+
+# ── 바꾸면 안 되는 소재 ─────────────────────────────────────────────────
+# 계열만 맞추면 되는 소재가 있고, **그 컷에서만 뜻이 통하는** 소재가 있다.
+# 젠틀몬스터 매장 사진은 젠틀몬스터를 말할 때만 맞고, 다른 데로 옮기면
+# 그냥 이상한 그림이다 (실제로 마네킹 두상이 마지막 컷으로 옮겨 갔다).
+# 고유명사·특정 장소가 찍힌 것은 자리에서 못 움직이게 한다.
+IDENTITY = ('gentlemonster', 'musinsa', 'amore_', 'oliveyoung', 'brand_storefront',
+            'seongsu_', 'seoulforest', 'popup_', 'store_queue', 'seoul_towers')
+
+
+def is_identity(name):
+    n = os.path.basename(name).lower()
+    return any(k in n for k in IDENTITY)
+
+
 # ── 소재 중복 감시 ──────────────────────────────────────────────────────
 # **같은 영상/사진이 두 번 나오면 안 된다** (검수 지적). 컷을 하나씩 고치면
 # 고칠 때마다 다른 데서 또 겹치므로, 배정이 끝난 뒤 **전수로 훑어 강제**한다.
@@ -636,7 +678,7 @@ def dedupe_media(plan, props, pubdir):
     DATA = ('seongsu.png', 'seongsu_zoom', 'seongsu_oy', 'seongsu_buildings', 'korea')
     pool_v, pool_i = [], []
     for f in sorted(os.listdir(base)):
-        if f.startswith(DATA):
+        if f.startswith(DATA) or is_identity(f):
             continue
         if f.endswith('.mp4'):
             pool_v.append(f'올리브영성수/{f}')
@@ -669,6 +711,14 @@ def dedupe_media(plan, props, pubdir):
     swapped = 0
     for idx, sid, holder, key, cur in slots:
         if any(os.path.basename(cur).startswith(d) for d in DATA):
+            continue
+        # 고유명사 소재는 **처음 나온 자리에서만** 잠근다. 무조건 잠그면 R 표가
+        # 같은 사진을 두 군데에 걸어 놨을 때 둘 다 고정돼 중복이 남는다 —
+        # 손으로 하나씩 갈아 끼우다 보면 또 다른 자리와 부딪친다.
+        if is_identity(cur) and used[cur] == 0:
+            used[cur] += 1
+            lastAt[cur] = idx
+            famAt[idx] = family(cur)
             continue
         pool = pool_v if cur.endswith('.mp4') else pool_i
         near0 = {famAt.get(idx - 1), famAt.get(idx - 2)}
