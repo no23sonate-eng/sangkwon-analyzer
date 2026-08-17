@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -35,9 +35,9 @@ export const FrontageCard = ({
   // 블록을 **위에서부터 흘려** 쌓는다 (layout.jsx flow 와 같은 원칙).
   // 좌표를 하나씩 박으면 한 곳을 고칠 때 옆이 깨진다 — 실제로 첫 렌더에서
   // 안 이름이 부제를 덮고 치수 숫자가 정면 박스를 관통했다.
-  const LABEL_H = 88;      // 안 이름 + 면적 두 줄
+  const LABEL_H = 112;     // 안 이름 + 면적 두 줄. 88 이면 두 줄이 서로 붙는다
   const GAP = 34;          // 평면 ↔ 정면. 옐로 변이 내려오는 통로
-  const DIM_GAP = 74;      // 정면 ↔ 치수선. DimLine 라벨이 선 **위**에 앉으므로
+  const DIM_GAP = 84;      // 정면 ↔ 치수선. DimLine 라벨이 선 **위**에 앉으므로
                            // 이만큼 안 띄우면 숫자가 정면 박스를 뚫는다
   const NOTE_GAP = 40;
 
@@ -155,9 +155,10 @@ export const FrontageCard = ({
                          fontSize: fit(o.label, 46, 560), color: o.hot ? T.ink : T.soft}}>
               {o.label}
             </div>
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
+            {/* 이름 바로 밑에 4px 로 붙여 놨더니 두 줄이 한 덩어리로 뭉쳤다 */}
+            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
                          color: T.soft}}>
-              면적 {o.w * o.d}칸 · 동일
+              면적 {o.w * o.d}칸 (동일)
             </div>
           </div>
         );
@@ -172,8 +173,8 @@ export const FrontageCard = ({
           <div key={oi} style={{position: 'absolute', left: cx - 300, width: 600,
                                 top: noteTop, textAlign: 'center', opacity: op,
                                 fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                                fontSize: fit(o.note, 34, 560),
-                                color: o.hot ? T.ink : T.soft}}>
+                                fontSize: fit(o.note, 38, 560),
+                                color: T.ink, opacity: o.hot ? 1 : 0.72}}>
             {o.note}
           </div>
         );

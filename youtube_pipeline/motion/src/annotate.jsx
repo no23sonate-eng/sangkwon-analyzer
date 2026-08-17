@@ -185,9 +185,15 @@ export const DimLine = ({x1, y1, x2, y2, progress = 1, color = '#FFFFFF',
         // 치수선이 글자 한가운데를 관통한다 (실제로 겪음).
         const vertical = Math.abs(dy) > Math.abs(dx);
         const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-        // 화면 오른쪽 끝에 붙은 치수선이면 라벨을 안쪽(왼쪽)으로 뒤집는다.
-        // 안 그러면 글자가 프레임 밖으로 나간다.
-        const flip = vertical && mx + cap + 16 + String(label).length * labelSize * 0.62 > 1880;
+        // 세로 치수선의 라벨은 **바깥쪽**(화면 중앙 반대편)으로 뺀다.
+        // 예전엔 무조건 오른쪽에 놨는데, 도형 왼쪽에 그은 치수선이면 라벨이
+        // 도형 위로 올라탔다 — 옐로 면에 흰 글씨가 얹혀 안 읽혔다 (#33).
+        // 치수선은 늘 도형 바깥에 긋고 도형은 대개 가운데 있으니, 중앙에서
+        // 멀어지는 쪽이 곧 도형 반대편이다.
+        const wide = String(label).length * labelSize * 0.62;
+        let flip = vertical && mx < 960;              // 왼쪽 치수선 → 라벨도 왼쪽
+        if (vertical && flip && mx - cap - 26 - wide < 24) flip = false;   // 프레임 밖 방지
+        if (vertical && !flip && mx + cap + 26 + wide > 1896) flip = true;
         const lx = vertical ? (flip ? mx - cap - 26 : mx + cap + 26) : mx;
         const ly = vertical ? my + labelSize * 0.34 : my - cap - 14;
         return (

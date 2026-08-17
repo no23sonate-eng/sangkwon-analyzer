@@ -36,7 +36,7 @@ CRED = {
     'seongsu_storefronts.jpg': 'CC BY-SA 4.0',
     'seongsu_alley2.jpg': 'CC BY-SA 4.0',
     'oliveyoung_store.png': 'Pkccccj / CC BY-SA 4.0',
-    'korea.png': '© OpenStreetMap contributors © CARTO',
+    'korea.png': 'Wikimedia Commons / CC BY-SA 3.0',
     'px_seoul_night.jpg': 'Pexels', 'px_seoul_street1.jpg': 'Pexels',
     'px_seoul_street2.jpg': 'Pexels', 'px_seoul_billboard.jpg': 'Pexels',
     'px_seoul_alley.jpg': 'Pexels', 'px_seoul_life.jpg': 'Pexels',
@@ -120,8 +120,8 @@ R[10] = ('BigStatsCard', {
     'title': '매장 대부분 임차로 사용', 'sub': '',
     'items': [{'display': '1,381', 'unit': '개', 'label': '전국 매장', 'hot': True}],
     'theme': 'paper', 'align': 'center',
-    'bg': {'backdrop': img('korea.png'), 'veil': 0.74, 'dir': 0, 'blur': 0},
-    'source': '오픈애즈 2026.04.03'})
+    'bg': {'backdrop': img('korea.png'), 'veil': 0.79, 'dir': 0, 'blur': 0},
+    'source': '오픈애즈 2026.04.03 · 지도 Wikimedia Commons CC BY-SA 3.0'})
 # #11 성수동 지도 위 올리브영 표기
 R[11] = ('MapCard', {
     'image': MAPOY, 'bounds': BOUNDSOY,
@@ -479,7 +479,7 @@ R[23] = ('AspectRatioCard', {
     'items': [{'w': 8, 'h': 2, 'label': '길게 보인다', 'hot': True},
               {'w': 4, 'h': 4, 'label': '짧게 보인다'}],
     'frontLabel': '전면 폭',
-    'theme': 'paper', 'caption': '두 도형 면적 동일 (16㎡) — 도해',
+    'theme': 'paper', 'caption': '',
     'source': '도해'})
 
 # #94 낙찰가 + 취득세 + 기타 = 570억. 숫자 나열이 아니라 쌓아 올린다
@@ -500,6 +500,120 @@ R[120] = ('ForkPathCard', {
                  {'label': '만든다', 'note': '올리브영만의 공간 콘텐츠'}],
     'question': '어느 쪽?',
     'theme': 'blueprint', 'source': '도해'})
+
+
+# ══════════ 같은 논지가 두 번 그려지던 구간 정리 ══════════
+# #18 네모반듯 / #19 직사각형vs정사각형 / #22 같은면적 / #23 같은면적 —
+# 여덟 컷 안에 도형 비교 카드가 넷이고, #22 와 #23 은 **제목까지 같았다**
+# ("같은 면적, 다른 얼굴"). 같은 그림을 두 번 그린 셈이라 하나로 합치고
+# 대신 논지를 한 단계 진행시킨다: 평면(땅) → 입면(광고판).
+
+# #19 는 실사로 내린다 — 도형은 #22·#23 두 장이면 충분하다
+R[19] = lt('seongsu_bldg1.jpg', label='한쪽 면이 길다',
+           sub='정사각형보다 한 변이 길다', scrim=0.52)
+
+# #22 평면 — 땅 넓이는 같은데 길에 닿는 변이 두 배
+R[22] = ('AspectRatioCard', {
+    'title': '같은 면적, 다른 전면', 'sub': '둘 다 16㎡ — 땅 넓이는 같다',
+    'unit': 'm',
+    'items': [{'w': 8, 'h': 2, 'label': '길게 보인다', 'hot': True},
+              {'w': 4, 'h': 4, 'label': '짧게 보인다'}],
+    'frontLabel': '길에 닿는 변',
+    'theme': 'paper', 'caption': '',
+    'source': '도해'})
+
+# #23 입면 — 그 변이 그대로 광고판 폭이 된다 (평면에서 입면으로 한 칸 진행)
+R[23] = ('FrontageCard', {
+    'title': '그만큼 광고판이 넓어진다', 'sub': '',
+    # 치수선이 이미 4·8 을 재고 있다. 아래 줄까지 '광고판 4/8' 이면 같은 수를
+    # 두 번 적는 셈이라, 아래 줄은 **비교 결과**만 말하게 둔다
+    'options': [{'label': '4 × 4', 'w': 4, 'd': 4, 'note': ''},
+                {'label': '8 × 2', 'w': 8, 'd': 2, 'note': '광고판 폭 2배', 'hot': True}],
+    'floors': 2, 'unit': 'm', 'note': '', 'theme': 'ink', 'source': '도해'})
+
+# #29 다섯 번째 도형 카드가 될 자리였다. 파사드 얘기는 #22·#23 에서
+# 평면·입면으로 이미 다 그렸고, 여기서 또 네모를 그리면 같은 그림 반복이다.
+# 좁은 파사드 실사로 내리고 그래픽 밀도를 이 구간에서 낮춘다.
+R[29] = lt('seongsu_storefronts.jpg', label='보여줄 수 있는 얼굴이 작다',
+           sub='파사드가 작다는 건', scrim=0.54)
+
+# ══════════ 같은 카드가 세 번씩 나오던 구간 ══════════
+# YardView ×3 (#49·50·52), ShareSplit ×3 (#61·62·71), TrackRecord ×3 (#55·66·67).
+# 게다가 #61→#62, #66→#67 은 **바로 붙어** 있었다. 소재는 안 겹쳐도 화면 구조가
+# 겹치면 같은 그림이 두 번 지나간 것으로 읽힌다. 각 계열에서 하나씩만 남긴다.
+
+# #50 마당 얘기는 #49 도해로 끝났다. 여기선 실제 외부 공간을 보여 준다
+R[50] = lt('seoulforest_deck.jpg', label='내부뿐 아니라 외부까지',
+           sub='건물 밖까지 덤으로 받는다', scrim=0.5)
+# #52 인증샷 — 도해보다 사람이 찍는 장면이 낫다
+R[52] = lt('bl_phonesnap.mp4', label='건물 얼굴이 온전히 다 담긴다',
+           sub='인증샷도 마찬가지', scrim=0.5)
+# #62 나눌 수 없다는 건 #61 도해가 이미 말했다. 여기선 그래서 간 곳 — 법원
+R[62] = lt('px_gavel.mp4', label='나눌 수 없으니 법원으로 간다',
+           sub='', tone='dark', scrim=0.55)
+
+# #67 "보통 매각 vs 경매" 는 목록이 아니라 **갈림길**이다. 게다가 결말이 정해져
+# 있으니 (#120 과 달리) 한쪽을 확정해 보여 준다 — 같은 카드도 상태가 다르면
+# 다른 그림이 된다
+R[67] = ('ForkPathCard', {
+    'title': '건물을 파는 두 가지 방법', 'sub': '',
+    'trunkLabel': '신도리코 부지',
+    'branches': [{'label': '보통 매각', 'note': '주관사가 매수자를 섭외한다'},
+                 {'label': '경매', 'note': '공고 후 공개 입찰 — 시장이 값을 정한다'}],
+    'decided': 1,
+    'theme': 'ink', 'source': '도해'})
+
+# #73 137% 는 #8 에서 이미 크게 썼다. 같은 수를 같은 카드로 두 번 띄우지 않는다
+R[73] = lt('px_receipts.mp4', label='반드시 받으려고 웃돈을 썼다',
+           sub='싸게 사려던 게 아니다', scrim=0.55)
+
+
+# ══════════ 같은 카드가 바로 붙어 있던 세 쌍 ══════════
+# #3 감정가 396 vs 낙찰가 541 을 큰 수로 띄우고, 바로 다음 #4 가 **같은 두 수를**
+# 막대로 다시 그렸다. 같은 비교를 두 번 한 셈이라 #3 은 말만 받아 주고
+# 비교는 #4 막대에 맡긴다
+R[3] = lt('cash_closeup.mp4', label='감정가는 396억이었다',
+          sub='', tone='dark', scrim=0.55)
+
+# #33·#34 도형 카드가 붙어 있었다. 뚫린 층은 실사가 훨씬 잘 보여 준다
+R[33] = lt('bl_high_ceiling.mp4', label='1층과 2층이 뚫려 있다',
+           sub='몇몇 공간이 위아래로 열려 있다', scrim=0.52)
+
+# #80·#81 수치 카드가 붙어 있었다. 방문객 수는 매장 실사 위에 얹는다
+R[81] = lt('px_mall_high.mp4', label='개점 1년 누적 250만 명',
+           sub='전국 매장 중 내국인 방문 1위', scrim=0.55)
+
+
+# ── 시각 계열 ──────────────────────────────────────────────────────────
+# 파일이 다르다고 화면이 달라지는 게 아니다. 야경 항공샷 셋이 연달아 나오면
+# 소재는 서로 다른데 보는 사람에겐 **같은 그림이 세 번**이다 (#30·#31·#32 가
+# 그랬다). 그래서 파일 중복과 별개로 **계열이 붙는 것**도 막는다.
+FAMILY = [
+    ('night',   ('city_night', 'city_lights', 'seoul_night', 'buildings_night',
+                 'seoul_aerial', 'aerial_sunset', 'towers', 'city_river',
+                 'seoul_stream', 'rooftop', 'topdown_roof', 'seoul_downtown')),
+    ('street',  ('street_', 'seongsu_alley', 'seoul_alley', 'seoul_street',
+                 'seoul_busy', 'seoul_life', 'px_street', 'seoul_gate')),
+    ('retail',  ('retail_', 'mall', 'store_queue', 'brand_storefront', 'escalator',
+                 'window_shop', 'makeup', 'beauty', 'storefronts')),
+    ('gallery', ('gallery', 'installation', 'white_gallery', 'exhibit',
+                 'arch_hall', 'high_ceiling', 'columns', 'concourse', 'corridor',
+                 'lobby', 'station_hall', 'library')),
+    ('office',  ('office_', 'desk_top', 'planning', 'discussion', 'thinking',
+                 'phonesnap', 'blueprint', 'architect', 'lawsuit')),
+    ('money',   ('money_', 'cash_', 'coins', 'vault', 'credit', 'receipts',
+                 'contract', 'handshake', 'sign_', 'gavel', 'auction_')),
+    ('site',    ('crane', 'construction', 'aerial_land', 'topdown_block',
+                 'industrial', 'billboard')),
+]
+
+
+def family(name):
+    n = os.path.basename(name).lower()
+    for fam, keys in FAMILY:
+        if any(k in n for k in keys):
+            return fam
+    return 'etc'
 
 
 # ── 소재 중복 감시 ──────────────────────────────────────────────────────
@@ -546,18 +660,33 @@ def dedupe_media(plan, props, pubdir):
 
     used = collections.Counter()
     lastAt = {}
+    famAt = {}
     swapped = 0
     for idx, holder, key, cur in slots:
         if any(os.path.basename(cur).startswith(d) for d in DATA):
             continue
         pool = pool_v if cur.endswith('.mp4') else pool_i
-        if used[cur] == 0:
+        near0 = {famAt.get(idx - 1), famAt.get(idx - 2)}
+        if used[cur] == 0 and family(cur) not in near0:
             used[cur] += 1
             lastAt[cur] = idx
+            famAt[idx] = family(cur)
             continue
+        if used[cur] == 0:
+            # 파일은 처음 쓰지만 계열이 앞 컷과 붙는다 — 바꿀 수 있으면 바꾼다
+            alt = [m for m in (pool_v if cur.endswith('.mp4') else pool_i)
+                   if used[m] == 0 and family(m) not in near0]
+            if not alt:
+                used[cur] += 1
+                lastAt[cur] = idx
+                famAt[idx] = family(cur)
+                continue
         fresh = [m for m in pool if used[m] == 0]
+        # 앞 두 컷과 **계열이 겹치지 않는 것**을 먼저 고른다
+        near = {famAt.get(idx - 1), famAt.get(idx - 2)}
+        best = [m for m in fresh if family(m) not in near]
         # 안 쓴 게 없으면 가장 적게 · 가장 오래전에 쓴 것. 바로 앞뒤 컷은 피한다
-        pick = fresh[0] if fresh else min(
+        pick = (best or fresh or [None])[0] or min(
             pool, key=lambda m: (used[m], -(idx - lastAt.get(m, -99))))
         d = holder()
         d[key] = os.path.basename(pick) if key == 'src' else pick
@@ -565,6 +694,7 @@ def dedupe_media(plan, props, pubdir):
             d['source'] = cred(os.path.basename(pick))
         used[pick] += 1
         lastAt[pick] = idx
+        famAt[idx] = family(pick)
         swapped += 1
 
     dup = [m for m, c in used.items() if c > 1]

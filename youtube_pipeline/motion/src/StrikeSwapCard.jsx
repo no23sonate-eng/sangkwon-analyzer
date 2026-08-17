@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
-import {fit, estWidth} from './layout';
+import {fit} from './layout';
 
 // ── 값이 갈아치워지는 카드 ────────────────────────────────────────────────
 // B1M 썸네일에서 가장 강한 한 장이 "~~30 HOURS~~ / 6 HOURS" 였다.
@@ -42,10 +42,10 @@ export const StrikeSwapCard = ({
 
   const fromSize = fit(from, 96, 1300);
   const toSize = fit(to, 168, 1500);
-  const fromW = estWidth(from, fromSize);
   const top = title ? (sub ? 330 : 280) : 250;
-  const X = center ? 960 : 150;
-  const anchor = (w) => (center ? X - w / 2 : X);
+  // 아래 한 줄(note)은 블록 바닥을 따라간다 — 자막 안전영역 안에서만
+  const blockBot = top + fromSize * 1.62 + toSize * 1.05 + (toLabel ? 16 + 48 : 0);
+  const noteTop = Math.min(CONTENT_BOTTOM - 44, blockBot + 40);
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -58,34 +58,40 @@ export const StrikeSwapCard = ({
       ) : null}
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
-      {/* ① 옛 값 */}
-      <div style={{position: 'absolute', left: anchor(fromW), top,
+      {/* ① 옛 값 + ② 취소선.
+          선을 SVG 로 따로 그었더니 estWidth 추정이 한글에서 25% 넘게 커서
+          글자 끝을 120px 지나 뻗었다. 선을 **글자 안에** inline-block 자식으로
+          넣으면 실제 글자 폭을 그대로 따라간다 — 추정이 필요 없다. */}
+      <div style={{position: 'absolute', left: 0, right: 0, top,
+                   textAlign: center ? 'center' : 'left',
+                   paddingLeft: center ? 0 : 150,
                    opacity: fadeIn(frame, 2)}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <div style={{position: 'relative', display: 'inline-block',
+                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                      fontSize: fromSize, color: T.ink, opacity: 0.66, lineHeight: 1.1,
                      whiteSpace: 'nowrap', letterSpacing: '-0.02em'}}>
           {from}
+          <div style={{position: 'absolute', left: -10, top: '52%',
+                       width: `calc((100% + 20px) * ${s2})`, height: 7,
+                       background: T.ink, opacity: 1}} />
         </div>
       </div>
       {fromLabel ? (
-        <div style={{position: 'absolute', left: anchor(estWidth(fromLabel, 30)),
-                     top: top - 42, opacity: fadeIn(frame, 6),
+        <div style={{position: 'absolute', left: 0, right: 0, top: top - 42,
+                     textAlign: center ? 'center' : 'left',
+                     paddingLeft: center ? 0 : 150, opacity: fadeIn(frame, 6),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
                      whiteSpace: 'nowrap'}}>
           {fromLabel}
         </div>
       ) : null}
 
-      {/* ② 취소선 — 왼쪽에서 오른쪽으로. 지우는 동작이라 반드시 한 방향 */}
-      <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <line x1={anchor(fromW) - 14} y1={top + fromSize * 0.56}
-              x2={anchor(fromW) - 14 + (fromW + 28) * s2} y2={top + fromSize * 0.56}
-              stroke={T.ink} strokeWidth={7} strokeLinecap="butt" />
-      </svg>
-
-      {/* ③ 새 값이 아래에서 올라온다 */}
+      {/* ③ 새 값이 아래에서 올라온다.
+          간격이 fromSize×1.24 였는데 옛 값 줄높이가 1.1 이라 **14px 밖에 안 남았다.**
+          한글은 받침까지 꽉 차고 새 값은 옐로 배경까지 있어서, 두 줄이 서로
+          물려 보였다 (#85 이지스↔교보AIM). 한 줄 높이만큼 확실히 띄운다. */}
       <div style={{position: 'absolute', left: 0, right: 0,
-                   top: top + fromSize * 1.24,
+                   top: top + fromSize * 1.62,
                    textAlign: center ? 'center' : 'left',
                    paddingLeft: center ? 0 : 150,
                    opacity: r2, transform: `translateY(${(1 - r2) * 26}px)`}}>
@@ -96,9 +102,9 @@ export const StrikeSwapCard = ({
                         boxDecorationBreak: 'clone'}}>{to}</span>
         </div>
         {toLabel ? (
-          <div style={{marginTop: 18,
+          <div style={{marginTop: 16,
                        fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                       fontSize: 52, color: T.ink, whiteSpace: 'nowrap',
+                       fontSize: 48, color: T.ink, whiteSpace: 'nowrap',
                        letterSpacing: '-0.01em'}}>
             {toLabel}
           </div>
@@ -107,7 +113,7 @@ export const StrikeSwapCard = ({
 
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150,
-                     top: CONTENT_BOTTOM - 66, textAlign: center ? 'center' : 'left',
+                     top: noteTop, textAlign: center ? 'center' : 'left',
                      opacity: fadeIn(frame, READ + STRIKE + 30),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
                      wordBreak: 'keep-all'}}>
