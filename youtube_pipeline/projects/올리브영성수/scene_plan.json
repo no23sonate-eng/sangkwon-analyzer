@@ -117,7 +117,7 @@
    "end": 15.8,
    "dur": 4.4,
    "text": "그런데 감정가는 395억 9천만원이었습니다.",
-   "card": "BigStatsCard",
+   "card": "LowerThirdCard",
    "key": "cut04",
    "motion": {
     "dir": "left",
@@ -337,7 +337,7 @@
    "end": 86.1,
    "dur": 4.0,
    "text": "직사각형 건물은 정사각형보다 한쪽 면이 깁니다.",
-   "card": "ShapeCompareCard",
+   "card": "LowerThirdCard",
    "key": "cut20",
    "cardDur": 4.0
   },
@@ -375,7 +375,7 @@
    "end": 98.7,
    "dur": 4.7,
    "text": "같은 면적이라도 직사각형일 때 보여지는 면이 더 넓습니다.",
-   "card": "FrontageCard",
+   "card": "AspectRatioCard",
    "key": "cut23",
    "motion": {
     "dir": "left",
@@ -391,7 +391,7 @@
    "end": 103.4,
    "dur": 4.6,
    "text": "4×4 정사각형보다 8×2 직사각형이 더 길게 보이죠.",
-   "card": "AspectRatioCard",
+   "card": "FrontageCard",
    "key": "cut24",
    "cardDur": 4.6
   },
@@ -472,7 +472,7 @@
    "end": 127.2,
    "dur": 4.8,
    "text": "파사드가 작다는 건, 보여줄 수 있는 얼굴이 작다는 뜻입니다.",
-   "card": "ShapeCompareCard",
+   "card": "LowerThirdCard",
    "key": "cut30",
    "cardDur": 4.8
   },
@@ -521,7 +521,7 @@
    "end": 147.2,
    "dur": 4.4,
    "text": "쎈느에 들어가 보시면 1층과 2층이 뚫려 있습니다.",
-   "card": "ShapeCompareCard",
+   "card": "LowerThirdCard",
    "key": "cut34",
    "motion": {
     "dir": "left",
@@ -763,7 +763,7 @@
    "end": 222.4,
    "dur": 5.4,
    "text": "브랜드 입장에선 건물 내부뿐 아니라 외부까지 덤으로 받는 셈입니다.",
-   "card": "YardViewCard",
+   "card": "LowerThirdCard",
    "key": "cut51",
    "motion": {
     "dir": "right",
@@ -790,7 +790,7 @@
    "end": 235.5,
    "dur": 4.7,
    "text": "인증샷도 마찬가지죠. 건물 얼굴이 온전히 다 담깁니다.",
-   "card": "YardViewCard",
+   "card": "LowerThirdCard",
    "key": "cut53",
    "motion": {
     "dir": "right",
@@ -934,7 +934,7 @@
    "end": 276.9,
    "dur": 3.1,
    "text": "그런데 실제로 나누기가 어렵습니다.",
-   "card": "ShareSplitCard",
+   "card": "LowerThirdCard",
    "key": "cut63",
    "motion": {
     "dir": "right",
@@ -1004,7 +1004,7 @@
    "end": 300.7,
    "dur": 5.4,
    "text": "보통의 매각은 주관사가 잠재 매수자를 섭외해서 거래가 이뤄집니다.",
-   "card": "TrackRecordCard",
+   "card": "ForkPathCard",
    "key": "cut68",
    "cardDur": 5.4
   },
@@ -1090,7 +1090,7 @@
    "end": 328.3,
    "dur": 5.9,
    "text": "올리브영이 단독 입찰인데 감정가의 137%를 쓴 이유가 여기 있습니다.",
-   "card": "BigStatsCard",
+   "card": "LowerThirdCard",
    "key": "cut74",
    "cardDur": 5.9
   },
@@ -1193,7 +1193,7 @@
    "end": 368.1,
    "dur": 5.3,
    "text": "올리브영 발표에 따르면 개점 1년 누적 방문객이 250만 명.",
-   "card": "BigStatsCard",
+   "card": "LowerThirdCard",
    "key": "cut82",
    "motion": {
     "dir": "left",
@@ -1348,7 +1348,7 @@
    "key": "cut93",
    "cardDur": 0,
    "broll": {
-    "src": "px_blueprint2.mp4",
+    "src": "px_blueprint.mp4",
     "ss": 3.4,
     "dur": 6.3
    }

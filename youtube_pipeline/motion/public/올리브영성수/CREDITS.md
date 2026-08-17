@@ -124,3 +124,8 @@
 | `px_handshake.mp4` | Pexels video 7735499 | Pexels License | (표기 의무 없음) |
 | `px_contract_sign.mp4` | Pexels video 6952022 | Pexels License | (표기 의무 없음) |
 | `px_sign_close.mp4` | Pexels video 8440326 | Pexels License | (표기 의무 없음) |
+| `px_cafe.mp4` | Pexels video 3135925 | Pexels License | (표기 의무 없음) |
+| `px_cafe2.mp4` | Pexels video 3135924 | Pexels License | (표기 의무 없음) |
+| `px_cafe3.mp4` | Pexels video 6828711 | Pexels License | (표기 의무 없음) |
+| `px_cafe_interior.mp4` | Pexels video 7652196 | Pexels License | (표기 의무 없음) |
+| `px_dup_check.mp4` | Pexels video 5266057 | Pexels License | (표기 의무 없음) |
