@@ -29,19 +29,41 @@ export const TrackRecordCard = ({
   const T = themeOf(theme);
   const n = items.length;
 
+  const TOP = title ? (sub ? 300 : 244) : 190;
+  const BOT = CONTENT_BOTTOM - 20;
   const L = flow({
     blocks: [
       {key: 'name', text: name, size: 76, maxWidth: 1500, lh: 1.15},
       {key: 'role', text: role, size: 36, maxWidth: 1400, gapBefore: 12},
       {key: 'list', height: n * 96, gapBefore: 46},
     ],
-    top: title ? (sub ? 300 : 244) : 190,
-    bottom: CONTENT_BOTTOM - 20,
+    top: TOP,
+    bottom: BOT,
     gap: 24,
   });
+  // flow 는 위에서부터 쌓기만 해서 항목이 적으면 아래가 통째로 빈다.
+  // 쓴 높이를 재서 남는 만큼 절반 내린다 — 띠 한가운데에 앉게.
+  const usedBot = L.list.top + n * 96 - 40;
+  const DY = Math.max(0, Math.round((BOT - usedBot) / 2));
 
-  const X = 300;                              // 기준선
-  const rowY = (i) => L.list.top + i * 96;
+  // ── 가로 위치 ──
+  // 예전엔 X=300 에 왼쪽으로 박아 놨더니 오른쪽이 휑했다. 가장 긴 줄을 재서
+  // 덩어리째 가운데에 놓는다.
+  const rowW = (it) => {
+    const sz = fit(it.label || '', 56, 1100);
+    return estWidth(it.label || '', sz) + (it.note ? 34 + estWidth(it.note, 30) : 0);
+  };
+  const widest = Math.max(estWidth(name, fit(name, 76, 1440)),
+                          ...(n ? items.map(rowW) : [0]));
+  // 덩어리의 실제 왼쪽 끝은 세로선(X-104), 오른쪽 끝은 X+widest.
+  // 그 한가운데가 960 이 되도록 X 를 푼다.
+  const X = Math.min(900, Math.max(220, Math.round(1012 - widest / 2)));
+
+  // 순번은 **세로선 오른쪽**에 놓는다. 예전엔 선 한가운데에 겹쳐 찍혀서
+  // 01·02 가 선에 먹혀 안 보였다 (검수 지적).
+  const RULE_X = X - 104;
+  const NUM_X = RULE_X + 16;
+  const rowY = (i) => L.list.top + DY + i * 96;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -49,7 +71,7 @@ export const TrackRecordCard = ({
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
 
       {/* 주체 이름 — 이력의 주어. 가장 크게 */}
-      <div style={{position: 'absolute', left: X, width: 1500, top: L.name.top,
+      <div style={{position: 'absolute', left: X, width: 1500, top: L.name.top + DY,
                    opacity: fadeIn(frame, 4)}}>
         <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                      fontSize: fit(name, 76, 1440), color: T.ink, lineHeight: 1.15,
@@ -58,7 +80,7 @@ export const TrackRecordCard = ({
         </div>
       </div>
       {role ? (
-        <div style={{position: 'absolute', left: X, width: 1400, top: L.role.top,
+        <div style={{position: 'absolute', left: X, width: 1400, top: L.role.top + DY,
                      opacity: fadeIn(frame, 12), fontFamily: 'A2Z Light, sans-serif',
                      fontSize: 36, color: T.soft, wordBreak: 'keep-all'}}>
           {role}
@@ -68,8 +90,8 @@ export const TrackRecordCard = ({
       {/* 기준선 — 항목이 여기 걸린다. 위에서 아래로 그어진다 */}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {n > 0 ? (
-        <line x1={X - 34} y1={L.list.top + 10} x2={X - 34}
-              y2={L.list.top + 10 + (n * 96 - 40) * interpolate(
+        <line x1={RULE_X} y1={L.list.top + DY + 10} x2={RULE_X}
+              y2={L.list.top + DY + 10 + (n * 96 - 40) * interpolate(
                 frame, [26, 26 + Math.max(1, n * 8)], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}
               stroke={T.ink} strokeWidth={3} opacity={0.35} />
@@ -85,8 +107,8 @@ export const TrackRecordCard = ({
         return (
           <React.Fragment key={i}>
             {/* 순번이 먼저 찍히고 */}
-            <div style={{position: 'absolute', left: X - 58, top: y + 4, width: 48,
-                         textAlign: 'center', opacity: e,
+            <div style={{position: 'absolute', left: NUM_X, top: y + 4, width: 56,
+                         textAlign: 'left', opacity: e,
                          fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: T.soft}}>
               {String(i + 1).padStart(2, '0')}
             </div>

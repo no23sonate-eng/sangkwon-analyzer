@@ -72,6 +72,7 @@ import {ShapeCompareCard} from './ShapeCompareCard';
 import {AspectRatioCard} from './AspectRatioCard';
 import {CostStackCard} from './CostStackCard';
 import {ForkPathCard} from './ForkPathCard';
+import {TwoPanelCard} from './TwoPanelCard';
 import {LowerThirdCard} from './LowerThirdCard';
 
 export const CARDS = {
@@ -97,6 +98,7 @@ export const CARDS = {
   AspectRatioCard,
   CostStackCard,
   ForkPathCard,
+  TwoPanelCard,
   LowerThirdCard,
   BuildingCard,
   StatCard,

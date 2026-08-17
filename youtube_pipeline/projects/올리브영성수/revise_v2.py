@@ -49,6 +49,13 @@ CRED = {
     'scene_queue2.jpg': '블로그 yunny_23 / naver',
     'scene_dior.jpg': '블로그 wlsdlftn8297 / naver',
     'scene_facade.jpg': '블로그 poiu123_ / naver',
+    'sindoh_hq.jpg': '블로그 realtyincome___ / naver',
+    'netflix_house.jpg': 'Netflix House 공식 이미지 / 블로그 artlife',
+    'musinsa_campus.jpg': '블로그 onomdear / naver',
+    'seongsu_aerial.jpg': '블로그 tomoekunn / naver',
+    'seongsu_aerial2.jpg': '블로그 tomoekunn / naver',
+    'seongsu_street_crowd.jpg': '블로그 9zlog / naver',
+    'seongsu_brickst.jpg': '블로그 9zlog / naver',
     'korea.png': 'Wikimedia Commons / CC BY-SA 3.0',
     # ── 실제 대상물 사진. 저작권이 있는 보도·기업 제공 사진이라
     #    화면에 출처를 반드시 띄운다 (PaperSource 우측 상단) ──
@@ -82,11 +89,16 @@ MAPOY = '올리브영성수/seongsu_oy.png'
 BOUNDSOY = [127.030301, 37.535812, 127.071499, 37.554187]
 BOUNDS = [127.011301, 37.525923, 127.093699, 37.562672]
 BOUNDSZ = [127.0432, 37.539406, 127.0638, 37.548593]
-SEONGSU_ST = (37.545410, 127.053590)
-OLIVE_N = (37.543793, 127.054720)
+# ── 좌표 (OSM Nominatim 로 다시 확인함) ────────────────────────────────
+# 성수역과 크래프톤 부지가 틀려 있었다. 성수역을 올리브영N 서북쪽에 찍어 놨는데
+# 실제로는 **동쪽**이고, 크래프톤은 450m 남쪽에 가 있었다.
+# 검산: 쎈느 ↔ 올리브영N = 168m → 도보 2.2분. 스크립트의 "걸어서 2분"과 맞는다.
+SEONGSU_ST = (37.543979, 127.056966)   # 2호선 성수역
+OLIVE_N = (37.543793, 127.054720)      # 연무장7길 13 · 팩토리얼 성수
+SITE = (37.544182, 127.052880)         # 연무장5길 20 · 카페 쎈느 = **낙찰 부지**
 SEOULSUP = (37.543592, 127.044740)
 TTUKSEOM = (37.547503, 127.046197)
-KRAFTON = (37.540480, 127.056010)
+KRAFTON = (37.544569, 127.056102)      # 아차산로 100 · 옛 이마트 성수 부지
 
 def lt(media, num='', label='', sub='', tone='dark', kicker='', align='center', scrim=0.5):
     """실사 위 번호+문구 (LowerThirdCard)."""
@@ -378,9 +390,12 @@ R[78] = lt('seongsu_shops.jpg', label='성수동이 그만큼 중요한 권역',
 R[79] = ('MapCard', {
     'image': MAPZ, 'bounds': BOUNDSZ,
     'title': '걸어서 2분', 'sub': '낙찰 부지 바로 옆',
-    'pins': [{'lat': SEONGSU_ST[0], 'lon': SEONGSU_ST[1], 'label': '성수역',
-              'sub': '낙찰 부지는 4번 출구 도보 5분 일대'},
-             {'lat': OLIVE_N[0], 'lon': OLIVE_N[1], 'label': '올리브영N 성수', 'hot': True}],
+    # **낙찰 부지가 지도에 아예 없었다.** 이 컷의 요점이 '그 부지에서 2분' 인데
+    # 정작 그 부지가 안 찍혀 있었으니 말이 안 됐다
+    'pins': [{'lat': SITE[0], 'lon': SITE[1], 'label': '낙찰 부지',
+              'sub': '카페 쎈느 · 연무장5길', 'hot': True},
+             {'lat': OLIVE_N[0], 'lon': OLIVE_N[1], 'label': '올리브영N 성수'},
+             {'lat': SEONGSU_ST[0], 'lon': SEONGSU_ST[1], 'label': '성수역'}],
     'align': 'left', 'source': OSM + ' · 블로터 2026.07.22'})
 R[80] = ('BigStatsCard', {
     'title': '올리브영N 성수', 'sub': '팩토리얼 성수 지상 1~5층',
@@ -741,6 +756,96 @@ R[49] = lt('scene_yard.jpg', label='마당을 대기 공간으로', sub='',
            tone='light', scrim=0.42)
 
 
+# ══════════ 컷별 검수 반영 (레이아웃) ══════════
+# #18 도형과 치수선이 위로 몰려 있었다 — 통째로 아래로
+R[18] = ('ShapeCompareCard', {
+    'title': '건물이 네모반듯하다', 'sub': '',
+    'items': [{'w': 7.5, 'h': 3.0, 'label': '', 'dim': 'bottom',
+               'dimLabel': '한 변이 곧다', 'hot': True}],
+    'nudge': 56, 'theme': 'paper', 'source': '도해'})
+
+# #71 #61 과 그림이 똑같았다. 지분으로 쪼개진 한 필지를 **네모 안 분할선**으로
+#     보여 준다 — 같은 사실을 다른 그림으로
+R[71] = ('ShapeCompareCard', {
+    'title': '신도리코 부지', 'sub': '소유자 19명 · 한 필지',
+    'items': [{'w': 7.6, 'h': 3.4, 'label': '분할 불가', 'dim': 'bottom',
+               'dimLabel': '4,272㎡', 'hot': True}],
+    'divide': 19, 'nudge': 30,
+    'note': '2025.8.25 · 서울동부지법 · 2,202억 낙찰',
+    'theme': 'ink', 'source': '하우징포스트 2025.09'})
+
+# #97 목록 카드가 네 번째였다. 두 갈래는 좌우 판이 맞다 — 둘 다 살아 있는 구조
+R[97] = ('TwoPanelCard', {
+    'title': '570억을 회수하는 두 갈래', 'sub': '',
+    'panels': [{'tag': '01', 'label': '임대 수익', 'note': '오피스로 지어 임대료로'},
+               {'tag': '02', 'label': '브랜드 효과', 'note': '광고판 · 테스트베드로', 'hot': True}],
+    'divider': '동시에', 'theme': 'blueprint', 'source': '화자 판단'})
+
+# #117 목록 카드 대신 **표** — 브랜드마다 방식이 다르다는 건 표가 제일 잘 보인다
+R[117] = ('YTableCard', {
+    'title': '브랜드마다 전략이 다르다', 'sub': '성수동 · 브랜드 부동산 격전지',
+    'rows': [{'label': '크래프톤', 'value': '사옥 신축', 'note': '옛 이마트 부지'},
+             {'label': '무신사', 'value': '캠퍼스', 'note': '평당 3,500만원'},
+             {'label': '젠틀몬스터', 'value': '사옥', 'note': '하우스 노웨어 서울'},
+             {'label': '올리브영', 'value': '토지 낙찰', 'note': '541억', 'hot': True}],
+    'theme': 'ink', 'source': '비즈워치 2026.01.14'})
+
+# #120 갈림길 방식은 살리되 그림을 바꾼다 — 좌우 판 + 가운데 물음
+R[120] = ('TwoPanelCard', {
+    'title': '앞으로의 두 갈래', 'sub': '올리브영 성수 부지',
+    'panels': [{'tag': 'A', 'label': '따라간다', 'note': '다른 브랜드가 이미 보여준 방식'},
+               {'tag': 'B', 'label': '만든다', 'note': '올리브영만의 공간 콘텐츠'}],
+    'divider': '어느 쪽?', 'theme': 'ink', 'source': '도해'})
+
+# #98 도형이 화면 높이의 20% 밖에 안 됐다 — 부제를 빼서 띠를 넓히고 키운다
+R[98] = ('ShapeCompareCard', {
+    'title': '오피스로 지으면 7~8층', 'sub': '',
+    'items': [{'w': 3.4, 'h': 7.4, 'label': '', 'dim': 'left', 'dimLabel': '층수',
+               'split': 8, 'hot': True}],
+    'theme': 'blueprint',
+    'note': '용적률 400~500% 가정 · 실제 지구단위계획 미반영 — 자체 시뮬레이션',
+    'source': '자체 시뮬레이션 — 가정값'})
+
+# #101 매싱이 뜬금없다는 지적. 문구를 아래 가운데로 내리고 도형을 키운다
+R[101] = ('MassingCard', {
+    'data': img('seongsu_buildings.json'),
+    'title': '어떤 동네에 서게 되나', 'sub': '성수 일대 실제 건물 발자국',
+    'spin': 14, 'tilt': 0.52, 'scale': 1.25, 'theme': 'ink',
+    'note': '대지가 200평이 채 안 돼 자주식 주차도 쉽지 않다',
+    'source': '© OpenStreetMap contributors'})
+
+# #23 내용이 위로 몰려 있었다 (FrontageCard 안에서 y0 +40 · 좌우 당김 처리)
+# #34 두 도형이 양 끝에 붙어 있었다 (ShapeCompareCard PULL 처리)
+# #4  막대 두 개도 같은 처리
+# #55 #66 순번이 세로선 위에 겹쳤다 (TrackRecordCard 에서 선 오른쪽으로)
+# #61 판이 왼쪽에 쏠렸다 (ShareSplitCard PX 가운데 정렬)
+# #85 화살표 추가 · 간격 확대 · 새 값 축소 (StrikeSwapCard)
+
+
+# ══════════ 컷별 검수 반영 (소재) ══════════
+R[0] = lt('seongsu_aerial.jpg', label='2026년 7월, 성수동', sub='경매 한 건', scrim=0.46)
+R[19] = lt('px_buildings_night.mp4', label='한쪽 면이 길다',
+           sub='정사각형보다 한 변이 길다', scrim=0.5)
+R[29] = lt('px_drone_roofs.mp4', label='보여줄 수 있는 얼굴이 작다',
+           sub='파사드가 작다는 건', scrim=0.5)
+R[50] = lt('seongsu_street_crowd.jpg', label='내부뿐 아니라 외부까지',
+           sub='건물 밖까지 덤으로 받는다', scrim=0.5)
+# 낙찰 부지는 신도리코 본사에서 50m — 그 관계를 자막에 적어 사진과 사실을 맞춘다
+R[70] = lt('sindoh_hq.jpg', label='인근 신도리코 부지',
+           sub='낙찰 부지는 신도리코 본사에서 50m · 같은 경매 과정', scrim=0.54)
+R[82] = lt('px_drone_urban.mp4', label='전국 매장 중 내국인 방문 1위', sub='', scrim=0.52)
+R[90] = lt('oliveyoungn_kpop.jpg', label='매장보다는 놀이터', sub='', scrim=0.5)
+R[91] = lt('seongsu_brickst.jpg', label='성수동 분위기와 잘 맞는 건물', sub='', scrim=0.52)
+R[108] = lt('netflix_house.jpg', label='넷플릭스 하우스',
+            sub='체험형 공간의 대표 사례', scrim=0.46)
+R[109] = lt('px_mall_high.mp4', label='그런 방향도 가능해 보인다', sub='', scrim=0.5)
+R[111] = lt('seongsu_aerial2.jpg', label='땅을 산 건 올리브영만이 아니다', sub='', scrim=0.52)
+R[114] = lt('musinsa_campus.jpg', label='무신사', sub='성수 무신사 캠퍼스', scrim=0.5)
+R[118] = lt('px_drone_roofs2.mp4', label='적극 가담하겠다는 신호', sub='', scrim=0.52)
+# 성수 거리 사진은 #50 이 먼저 쓴다. 여기는 사람 몰린 거리(스트릿마켓 결) 로
+R[119] = lt('px_seoul_busy.jpg', label='', sub='', scrim=0.34)
+
+
 # ── 바꾸면 안 되는 소재 ─────────────────────────────────────────────────
 # 계열만 맞추면 되는 소재가 있고, **그 컷에서만 뜻이 통하는** 소재가 있다.
 # 젠틀몬스터 매장 사진은 젠틀몬스터를 말할 때만 맞고, 다른 데로 옮기면
@@ -748,7 +853,7 @@ R[49] = lt('scene_yard.jpg', label='마당을 대기 공간으로', sub='',
 # 고유명사·특정 장소가 찍힌 것은 자리에서 못 움직이게 한다.
 IDENTITY = ('gentlemonster', 'musinsa', 'amore_', 'oliveyoung', 'brand_storefront',
             'seongsu_', 'seoulforest', 'popup_', 'store_queue', 'seoul_towers',
-            'factorial_', 'krafton_', 'scene_')
+            'factorial_', 'krafton_', 'scene_', 'sindoh_', 'netflix_', 'musinsa_')
 
 
 def is_identity(name):

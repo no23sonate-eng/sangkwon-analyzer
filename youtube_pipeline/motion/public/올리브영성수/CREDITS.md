@@ -132,3 +132,6 @@
 | `popup_dior.jpg` | Pexels photo 33257665 | Pexels License | (표기 의무 없음) |
 | `popup_exhibit.jpg` | Pexels photo 15306470 | Pexels License | (표기 의무 없음) |
 | `popup_space.jpg` | Pexels photo 34375523 | Pexels License | (표기 의무 없음) |
+| `px_drone_roofs.mp4` | Pexels video 5667291 | Pexels License | (표기 의무 없음) |
+| `px_drone_roofs2.mp4` | Pexels video 2248532 | Pexels License | (표기 의무 없음) |
+| `px_drone_urban.mp4` | Pexels video 8319683 | Pexels License | (표기 의무 없음) |

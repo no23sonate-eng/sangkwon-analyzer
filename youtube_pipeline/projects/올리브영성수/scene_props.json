@@ -5,7 +5,7 @@
   "0": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_view.jpg",
+    "media": "올리브영성수/seongsu_aerial.jpg",
     "num": "",
     "label": "2026년 7월, 성수동",
     "sub": "경매 한 건",
@@ -13,7 +13,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.46,
-    "source": "CC BY-SA 4.0"
+    "source": "블로그 tomoekunn / naver"
    },
    "motion": {
     "dir": "left",
@@ -406,6 +406,7 @@
       "hot": true
      }
     ],
+    "nudge": 56,
     "theme": "paper",
     "source": "도해"
    },
@@ -418,15 +419,15 @@
   "19": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_bldg1.jpg",
+    "media": "올리브영성수/px_buildings_night.mp4",
     "num": "",
     "label": "한쪽 면이 길다",
     "sub": "정사각형보다 한 변이 길다",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.52,
-    "source": "CartoonChess / CC BY-SA 4.0"
+    "scrim": 0.5,
+    "source": "Pexels"
    }
   },
   "20": {
@@ -607,15 +608,15 @@
   "29": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_alley2.jpg",
+    "media": "올리브영성수/px_drone_roofs.mp4",
     "num": "",
     "label": "보여줄 수 있는 얼굴이 작다",
     "sub": "파사드가 작다는 건",
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.54,
-    "source": "CC BY-SA 4.0"
+    "scrim": 0.5,
+    "source": "Mixkit"
    }
   },
   "30": {
@@ -1009,7 +1010,7 @@
   "50": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_shops.jpg",
+    "media": "올리브영성수/seongsu_street_crowd.jpg",
     "num": "",
     "label": "내부뿐 아니라 외부까지",
     "sub": "건물 밖까지 덤으로 받는다",
@@ -1017,7 +1018,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "Sgroey / BY-SA 4.0"
+    "source": "블로그 9zlog / naver"
    },
    "motion": {
     "dir": "right",
@@ -1380,15 +1381,15 @@
   "70": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_towers.mp4",
+    "media": "올리브영성수/sindoh_hq.jpg",
     "num": "",
     "label": "인근 신도리코 부지",
-    "sub": "같은 경매 과정을 거쳤다",
+    "sub": "낙찰 부지는 신도리코 본사에서 50m · 같은 경매 과정",
     "tone": "dark",
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Mixkit"
+    "source": "블로그 realtyincome___ / naver"
    },
    "motion": {
     "dir": "left",
@@ -1397,17 +1398,23 @@
    }
   },
   "71": {
-   "card": "ShareSplitCard",
+   "card": "ShapeCompareCard",
    "props": {
     "title": "신도리코 부지",
-    "sub": "소유자 19명의 공유물분할 소송",
-    "n": 19,
-    "ownerLabel": "소유자",
-    "cutLabel": "분할 불가",
-    "bidLabel": "2,202억 낙찰",
-    "cutAt": 26,
-    "bidAt": 62,
-    "note": "2025.8.25 · 서울동부지법 · 4,272㎡",
+    "sub": "소유자 19명 · 한 필지",
+    "items": [
+     {
+      "w": 7.6,
+      "h": 3.4,
+      "label": "분할 불가",
+      "dim": "bottom",
+      "dimLabel": "4,272㎡",
+      "hot": true
+     }
+    ],
+    "divide": 19,
+    "nudge": 30,
+    "note": "2025.8.25 · 서울동부지법 · 2,202억 낙찰",
     "theme": "ink",
     "source": "하우징포스트 2025.09"
    },
@@ -1599,16 +1606,21 @@
     "sub": "낙찰 부지 바로 옆",
     "pins": [
      {
-      "lat": 37.54541,
-      "lon": 127.05359,
-      "label": "성수역",
-      "sub": "낙찰 부지는 4번 출구 도보 5분 일대"
+      "lat": 37.544182,
+      "lon": 127.05288,
+      "label": "낙찰 부지",
+      "sub": "카페 쎈느 · 연무장5길",
+      "hot": true
      },
      {
       "lat": 37.543793,
       "lon": 127.05472,
-      "label": "올리브영N 성수",
-      "hot": true
+      "label": "올리브영N 성수"
+     },
+     {
+      "lat": 37.543979,
+      "lon": 127.056966,
+      "label": "성수역"
      }
     ],
     "align": "left",
@@ -1666,14 +1678,14 @@
   "82": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_walk.mp4",
+    "media": "올리브영성수/px_drone_urban.mp4",
     "num": "",
-    "label": "",
+    "label": "전국 매장 중 내국인 방문 1위",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.3,
+    "scrim": 0.52,
     "source": "Mixkit"
    },
    "motion": {
@@ -1834,29 +1846,29 @@
   "90": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_aisle.mp4",
+    "media": "올리브영성수/oliveyoungn_kpop.jpg",
     "num": "",
-    "label": "그대로 쓸까?",
+    "label": "매장보다는 놀이터",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.54,
-    "source": "Mixkit"
+    "scrim": 0.5,
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
    }
   },
   "91": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_rooftop.mp4",
+    "media": "올리브영성수/seongsu_brickst.jpg",
     "num": "",
     "label": "성수동 분위기와 잘 맞는 건물",
     "sub": "",
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.5,
-    "source": "Mixkit"
+    "scrim": 0.52,
+    "source": "블로그 9zlog / naver"
    },
    "motion": {
     "dir": "left",
@@ -1981,23 +1993,25 @@
    }
   },
   "97": {
-   "card": "TrackRecordCard",
+   "card": "TwoPanelCard",
    "props": {
     "title": "570억을 회수하는 두 갈래",
     "sub": "",
-    "items": [
+    "panels": [
      {
+      "tag": "01",
       "label": "임대 수익",
       "note": "오피스로 지어 임대료로"
      },
      {
+      "tag": "02",
       "label": "브랜드 효과",
       "note": "광고판 · 테스트베드로",
       "hot": true
      }
     ],
+    "divider": "동시에",
     "theme": "blueprint",
-    "align": "center",
     "source": "화자 판단"
    },
    "motion": {
@@ -2009,13 +2023,13 @@
   "98": {
    "card": "ShapeCompareCard",
    "props": {
-    "title": "오피스로 지으면 (가정)",
-    "sub": "용적률 400~500% 가정",
+    "title": "오피스로 지으면 7~8층",
+    "sub": "",
     "items": [
      {
-      "w": 3,
-      "h": 6.5,
-      "label": "7~8층",
+      "w": 3.4,
+      "h": 7.4,
+      "label": "",
       "dim": "left",
       "dimLabel": "층수",
       "split": 8,
@@ -2023,7 +2037,7 @@
      }
     ],
     "theme": "blueprint",
-    "note": "실제 지구단위계획 미반영 — 자체 시뮬레이션",
+    "note": "용적률 400~500% 가정 · 실제 지구단위계획 미반영 — 자체 시뮬레이션",
     "source": "자체 시뮬레이션 — 가정값"
    }
   },
@@ -2053,7 +2067,7 @@
   "100": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_seoul_stream.mp4",
+    "media": "올리브영성수/bl_retail_walk.mp4",
     "num": "",
     "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
     "sub": "",
@@ -2070,8 +2084,9 @@
     "data": "올리브영성수/seongsu_buildings.json",
     "title": "어떤 동네에 서게 되나",
     "sub": "성수 일대 실제 건물 발자국",
-    "spin": 18,
-    "tilt": 0.4,
+    "spin": 14,
+    "tilt": 0.52,
+    "scale": 1.25,
     "theme": "ink",
     "note": "대지가 200평이 채 안 돼 자주식 주차도 쉽지 않다",
     "source": "© OpenStreetMap contributors"
@@ -2104,7 +2119,7 @@
   "103": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_people.mp4",
+    "media": "올리브영성수/bl_street_crowd.mp4",
     "num": "",
     "label": "상징성 있는 위치",
     "sub": "",
@@ -2137,7 +2152,7 @@
   "105": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/oliveyoungn_kpop.jpg",
+    "media": "올리브영성수/px_library.jpg",
     "num": "",
     "label": "검증은 이미 옆에서 끝났다",
     "sub": "올리브영N 성수",
@@ -2145,7 +2160,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.5,
-    "source": "사진=CJ올리브영 / CJ뉴스룸"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "up",
@@ -2156,7 +2171,7 @@
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_walk.mp4",
+    "media": "올리브영성수/bl_rooftop.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2170,7 +2185,7 @@
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_topdown_roof.mp4",
+    "media": "올리브영성수/bl_street_people.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",
@@ -2189,15 +2204,15 @@
   "108": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe.mp4",
+    "media": "올리브영성수/netflix_house.jpg",
     "num": "",
-    "label": "제품과 트렌드를 경험하는 공간",
-    "sub": "",
+    "label": "넷플릭스 하우스",
+    "sub": "체험형 공간의 대표 사례",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.52,
-    "source": "Mixkit"
+    "scrim": 0.46,
+    "source": "Netflix House 공식 이미지 / 블로그 artlife"
    },
    "motion": {
     "dir": "right",
@@ -2208,21 +2223,21 @@
   "109": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_escalator.mp4",
+    "media": "올리브영성수/px_mall_high.mp4",
     "num": "",
-    "label": "",
+    "label": "그런 방향도 가능해 보인다",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.3,
-    "source": "Pexels"
+    "scrim": 0.5,
+    "source": "Mixkit"
    }
   },
   "110": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_buildings_night.mp4",
+    "media": "올리브영성수/bl_seoul_stream.mp4",
     "num": "",
     "label": "그런 방향도 가능해 보인다",
     "sub": "",
@@ -2230,7 +2245,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.52,
-    "source": "Pexels"
+    "source": "Mixkit"
    },
    "motion": {
     "dir": "right",
@@ -2241,7 +2256,7 @@
   "111": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/seongsu_industrial.jpg",
+    "media": "올리브영성수/seongsu_aerial2.jpg",
     "num": "",
     "label": "땅을 산 건 올리브영만이 아니다",
     "sub": "",
@@ -2249,7 +2264,7 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "GeonwooLee / CC BY-SA 4.0"
+    "source": "블로그 tomoekunn / naver"
    }
   },
   "112": {
@@ -2266,15 +2281,15 @@
     "sub": "",
     "pins": [
      {
-      "lat": 37.54048,
-      "lon": 127.05601,
+      "lat": 37.544569,
+      "lon": 127.056102,
       "label": "크래프톤 사옥",
       "sub": "2028 준공 예정",
       "hot": true
      },
      {
-      "lat": 37.54541,
-      "lon": 127.05359,
+      "lat": 37.543979,
+      "lon": 127.056966,
       "label": "성수역"
      },
      {
@@ -2314,21 +2329,21 @@
   "114": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/musinsa_popup.jpg",
+    "media": "올리브영성수/musinsa_campus.jpg",
     "num": "",
     "label": "무신사",
-    "sub": "사진: 무신사 뷰티 페스타 — 성수 사옥 아님",
+    "sub": "성수 무신사 캠퍼스",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.52,
-    "source": "K-POPIT / CC BY 3.0"
+    "scrim": 0.5,
+    "source": "블로그 onomdear / naver"
    }
   },
   "115": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_street.mp4",
+    "media": "올리브영성수/bl_street_walk.mp4",
     "num": "",
     "label": "성수동 투자로 유명하다",
     "sub": "",
@@ -2336,7 +2351,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "Pexels"
+    "source": "Mixkit"
    },
    "motion": {
     "dir": "left",
@@ -2359,33 +2374,34 @@
    }
   },
   "117": {
-   "card": "TrackRecordCard",
+   "card": "YTableCard",
    "props": {
     "title": "브랜드마다 전략이 다르다",
-    "sub": "",
-    "name": "성수동",
-    "role": "브랜드 부동산 격전지",
-    "items": [
+    "sub": "성수동 · 브랜드 부동산 격전지",
+    "rows": [
      {
       "label": "크래프톤",
-      "note": "옛 이마트 부지 · 사옥 신축"
+      "value": "사옥 신축",
+      "note": "옛 이마트 부지"
      },
      {
       "label": "무신사",
-      "note": "캠퍼스 · 평당 3,500만원"
+      "value": "캠퍼스",
+      "note": "평당 3,500만원"
      },
      {
       "label": "젠틀몬스터",
-      "note": "성수동 사옥"
+      "value": "사옥",
+      "note": "하우스 노웨어 서울"
      },
      {
       "label": "올리브영",
-      "note": "541억 토지 낙찰",
+      "value": "토지 낙찰",
+      "note": "541억",
       "hot": true
      }
     ],
     "theme": "ink",
-    "align": "center",
     "source": "비즈워치 2026.01.14"
    },
    "motion": {
@@ -2397,7 +2413,7 @@
   "118": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_library.jpg",
+    "media": "올리브영성수/px_drone_roofs2.mp4",
     "num": "",
     "label": "적극 가담하겠다는 신호",
     "sub": "",
@@ -2405,48 +2421,49 @@
     "kicker": "",
     "align": "center",
     "scrim": 0.52,
-    "source": "Pexels"
+    "source": "Mixkit"
    }
   },
   "119": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_cafe2.mp4",
+    "media": "올리브영성수/px_seoul_alley.jpg",
     "num": "",
     "label": "",
     "sub": "",
     "tone": "dark",
     "kicker": "",
     "align": "center",
-    "scrim": 0.3,
-    "source": "Mixkit"
+    "scrim": 0.34,
+    "source": "Pexels"
    }
   },
   "120": {
-   "card": "ForkPathCard",
+   "card": "TwoPanelCard",
    "props": {
     "title": "앞으로의 두 갈래",
-    "sub": "",
-    "trunkLabel": "올리브영 성수 부지",
-    "branches": [
+    "sub": "올리브영 성수 부지",
+    "panels": [
      {
+      "tag": "A",
       "label": "따라간다",
       "note": "다른 브랜드가 이미 보여준 방식"
      },
      {
+      "tag": "B",
       "label": "만든다",
       "note": "올리브영만의 공간 콘텐츠"
      }
     ],
-    "question": "어느 쪽?",
-    "theme": "blueprint",
+    "divider": "어느 쪽?",
+    "theme": "ink",
     "source": "도해"
    }
   },
   "121": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_handshake.mp4",
+    "media": "올리브영성수/bl_topdown_roof.mp4",
     "num": "",
     "label": "올리브영만의 공간 콘텐츠를 만들지",
     "sub": "",

@@ -44,6 +44,9 @@ export const FrontageCard = ({
   const maxW = Math.max(...options.map((o) => o.w));
   const maxD = Math.max(...options.map((o) => o.d));
   const colW = 1920 / options.length;
+  // 두 안이 화면 양 끝에 붙어 있었다 — 가운데로 당긴다
+  const PULL = 0.66;
+  const cxOf = (i) => Math.round(960 + (colW * (i + 0.5) - 960) * PULL);
   const fixed = LABEL_H + GAP + DIM_GAP + NOTE_GAP;
 
   // 정면 높이를 **칸 크기에서 유도**한다. 상수로 박아 두면 평면만 작아지고
@@ -56,7 +59,8 @@ export const FrontageCard = ({
   const planH = maxD * CELL;
   const ELEV_H = FL * CELL;
   const blockH = fixed + planH + ELEV_H;
-  const y0 = TOP + Math.max(0, (BOT - TOP - blockH) / 2);
+  // 위쪽에 몰려 있어서 아래가 비었다 (검수 지적 #23). 띠 한가운데 + 조금 더 아래
+  const y0 = TOP + Math.max(0, (BOT - TOP - blockH) / 2) + 40;
   const labelTop = y0;
   const planBot = y0 + LABEL_H + planH;
   const elevTop = planBot + GAP;
@@ -70,7 +74,7 @@ export const FrontageCard = ({
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {options.map((o, oi) => {
-          const cx = colW * (oi + 0.5);
+          const cx = cxOf(oi);
           const pw = o.w * CELL, pd = o.d * CELL;
           const px = cx - pw / 2, py = planBot - pd;
           const ew = o.w * CELL;           // **정면 폭 = 접도 변 길이.** 이게 요점이다
@@ -146,7 +150,7 @@ export const FrontageCard = ({
 
       {/* 안 이름 · 면적 — 면적을 나란히 찍어야 "같다"가 확인된다 */}
       {options.map((o, oi) => {
-        const cx = 1920 / options.length * (oi + 0.5);
+        const cx = cxOf(oi);
         const op = fadeIn(frame, oi * 10 + 8);
         return (
           <div key={oi} style={{position: 'absolute', left: cx - 300, width: 600, top: labelTop,
@@ -166,7 +170,7 @@ export const FrontageCard = ({
 
       {/* 정면 아래 한 줄 — "이만큼이 광고판" */}
       {options.map((o, oi) => {
-        const cx = 1920 / options.length * (oi + 0.5);
+        const cx = cxOf(oi);
         const op = fadeIn(frame, oi * 10 + 76);
         if (op <= 0.01 || !o.note) return null;
         return (

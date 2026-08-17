@@ -1058,7 +1058,7 @@
    "end": 318.7,
    "dur": 4.5,
    "text": "소유자 19명의 공유물분할 소송 끝에 나온 물건이었고,",
-   "card": "ShareSplitCard",
+   "card": "ShapeCompareCard",
    "key": "cut72",
    "motion": {
     "dir": "left",
@@ -1348,7 +1348,7 @@
    "key": "cut93",
    "cardDur": 0,
    "broll": {
-    "src": "bl_street_crowd.mp4",
+    "src": "bl_retail_aisle.mp4",
     "ss": 3.4,
     "dur": 6.3
    }
@@ -1424,7 +1424,7 @@
    "end": 447.8,
    "dur": 4.8,
    "text": "즉, 투자금 회수 관점에선 사업성을 고민할 수밖에 없습니다.",
-   "card": "TrackRecordCard",
+   "card": "TwoPanelCard",
    "key": "cut98",
    "motion": {
     "dir": "right",
@@ -1704,7 +1704,7 @@
    "end": 545.4,
    "dur": 4.5,
    "text": "브랜드마다 부동산 투자 전략과 방향은 조금씩 다릅니다.",
-   "card": "TrackRecordCard",
+   "card": "YTableCard",
    "key": "cut118",
    "motion": {
     "dir": "left",
@@ -1742,7 +1742,7 @@
    "end": 558.9,
    "dur": 3.6,
    "text": "이미 다른 브랜드들이 보여준 방식을 따라갈지,",
-   "card": "ForkPathCard",
+   "card": "TwoPanelCard",
    "key": "cut121",
    "cardDur": 3.6
   },

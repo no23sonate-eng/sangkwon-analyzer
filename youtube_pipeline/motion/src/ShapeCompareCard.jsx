@@ -21,6 +21,8 @@ export const ShapeCompareCard = ({
   title = '', sub = '',
   items = [], unit = '', numbered = false,   // true 면 막대 오른쪽에 01·02
   shrink = null,   // {from, at, dur} — 높이가 이 값에서 제 높이로 내려앉는다
+  nudge = 0,       // 덩어리를 통째로 세로로 밀 픽셀 (+면 아래로)
+  divide = 0,      // >0 이면 도형 안을 세로선으로 N 등분 (지분으로 쪼개진 필지)
   note = '', theme = 'paper', align = 'center', source = '', bg = {},
 }) => {
   useA2ZFonts();
@@ -42,6 +44,10 @@ export const ShapeCompareCard = ({
   const DIM_DROP = 112;
   const DIM_H = hasBottomDim ? DIM_DROP + 52 : 24;
   const colW = 1920 / items.length;
+  // 칸 한가운데에 그대로 세우면 두 막대가 480 / 1440 으로 화면 양 끝에 붙는다.
+  // 가운데 쪽으로 당겨 한 덩어리로 읽히게 한다 (검수 지적 #4·#34).
+  const PULL = items.length > 1 ? 0.62 : 1;
+  const cxOf = (i) => Math.round(960 + (colW * (i + 0.5) - 960) * PULL);
 
   const maxW = Math.max(...items.map((o) => o.w));
   const maxH = Math.max(...items.map((o) => o.h));
@@ -51,7 +57,7 @@ export const ShapeCompareCard = ({
   const K = Math.min((colW - pad) / maxW, (BOT - TOP - LABEL_H - DIM_H) / maxH);
 
   const blockH = LABEL_H + maxH * K + DIM_H;
-  const y0 = TOP + Math.max(0, (BOT - TOP - blockH) / 2);
+  const y0 = TOP + Math.max(0, (BOT - TOP - blockH) / 2) + nudge;
   const baseY = y0 + LABEL_H + maxH * K;      // 바닥선 — 전부 여기 맞춰 세운다
 
   const dark = T.bg !== '#EFEAE3';
@@ -78,7 +84,7 @@ export const ShapeCompareCard = ({
           const w = o.w * K;
           // 시작 높이(shrink.from)에서 제 높이로 내려앉는다. 바닥은 고정
           const h = shrink ? o.h * K * (1 + (shrink.from / o.h - 1) * es) : o.h * K;
-          const cx = colW * (i + 0.5);
+          const cx = cxOf(i);
           const x = cx - w / 2, y = baseY - h;
           const n = Math.max(1, o.split || 1);
           return (
@@ -93,6 +99,18 @@ export const ShapeCompareCard = ({
               {/* 바닥선 — 둘이 같은 지면에 서 있다는 걸 보여야 높이 비교가 된다 */}
               <line x1={x - 46} y1={baseY} x2={x + w + 46} y2={baseY}
                     stroke={T.ink} strokeWidth={4} opacity={0.35} />
+
+              {/* 지분 분할 — 한 필지가 여러 명 것이라는 걸 칸으로 보여 준다.
+                  ShareSplitCard 와 같은 말을 하되 그림이 겹치지 않게 (검수 지적 #71) */}
+              {divide > 1 ? (
+                <g opacity={0.55 * e}>
+                  {Array.from({length: divide - 1}, (_, k) => (
+                    <line key={k} x1={x + (w * (k + 1)) / divide} y1={y}
+                          x2={x + (w * (k + 1)) / divide} y2={baseY}
+                          stroke={T.ink} strokeWidth={2} strokeDasharray="6 5" />
+                  ))}
+                </g>
+              ) : null}
 
               {o.dim === 'bottom' ? (
                 <DimLine x1={x} y1={baseY + DIM_DROP} x2={x + w} y2={baseY + DIM_DROP}
@@ -110,7 +128,7 @@ export const ShapeCompareCard = ({
       </svg>
 
       {items.map((o, i) => {
-        const cx = 1920 / items.length * (i + 0.5);
+        const cx = cxOf(i);
         const op = fadeIn(frame, 8 + i * 10);
         if (!o.label) return null;
         const w = o.w * K;

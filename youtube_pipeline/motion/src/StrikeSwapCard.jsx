@@ -40,12 +40,17 @@ export const StrikeSwapCard = ({
                            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const r2 = rise * rise * (3 - 2 * rise);
 
-  const fromSize = fit(from, 96, 1300);
-  const toSize = fit(to, 168, 1500);
+  const fromSize = fit(from, 82, 1200);
+  // 새 값이 너무 커서 화면을 다 먹었다 (검수 지적) — 한 단 줄인다
+  const toSize = fit(to, 104, 1240);
   const top = title ? (sub ? 330 : 280) : 250;
   // 아래 한 줄(note)은 블록 바닥을 따라간다 — 자막 안전영역 안에서만
-  const blockBot = top + fromSize * 1.62 + toSize * 1.05 + (toLabel ? 16 + 48 : 0);
-  const noteTop = Math.min(CONTENT_BOTTOM - 44, blockBot + 40);
+  // 옛 값 → 화살표 → 새 값. 화살표가 들어갈 자리를 사이에 확보한다
+  const ARROW_H = 118;
+  const toTop = top + fromSize * 1.35 + ARROW_H;
+  const blockBot = toTop + toSize * 1.05 + (toLabel ? 16 + 48 : 0);
+  // 아래 한 줄(금액)은 블록에서 더 떼어 놓는다 — 붙어 있으면 새 값의 일부로 읽힌다
+  const noteTop = Math.min(CONTENT_BOTTOM - 40, blockBot + 72);
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -86,19 +91,33 @@ export const StrikeSwapCard = ({
         </div>
       ) : null}
 
+      {/* ②-b 갈아치운다는 걸 화살표로 못 박는다. 취소선만으론 '지웠다' 까지고
+          '이걸로 바뀌었다' 가 안 남는다 (검수 지적 #85) */}
+      <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+        <g opacity={s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0}>
+          <line x1={center ? 960 : 190} y1={top + fromSize * 1.35 + 12}
+                x2={center ? 960 : 190} y2={top + fromSize * 1.35 + ARROW_H - 40}
+                stroke={T.ink} strokeWidth={6} opacity={0.75} />
+          <path d={`M ${(center ? 960 : 190) - 20} ${top + fromSize * 1.35 + ARROW_H - 50}
+                    L ${center ? 960 : 190} ${top + fromSize * 1.35 + ARROW_H - 20}
+                    L ${(center ? 960 : 190) + 20} ${top + fromSize * 1.35 + ARROW_H - 50} Z`}
+                fill={T.ink} opacity={0.75} />
+        </g>
+      </svg>
+
       {/* ③ 새 값이 아래에서 올라온다.
           간격이 fromSize×1.24 였는데 옛 값 줄높이가 1.1 이라 **14px 밖에 안 남았다.**
           한글은 받침까지 꽉 차고 새 값은 옐로 배경까지 있어서, 두 줄이 서로
           물려 보였다 (#85 이지스↔교보AIM). 한 줄 높이만큼 확실히 띄운다. */}
       <div style={{position: 'absolute', left: 0, right: 0,
-                   top: top + fromSize * 1.62,
+                   top: toTop,
                    textAlign: center ? 'center' : 'left',
                    paddingLeft: center ? 0 : 150,
                    opacity: r2, transform: `translateY(${(1 - r2) * 26}px)`}}>
         <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                      fontSize: toSize, color: T.ink, lineHeight: 1.05,
                      letterSpacing: '-0.03em', whiteSpace: 'nowrap'}}>
-          <span style={{background: YELLOW, color: '#23262B', padding: '2px 20px 8px',
+          <span style={{background: YELLOW, color: '#23262B', padding: '0 12px 4px',
                         boxDecorationBreak: 'clone'}}>{to}</span>
         </div>
         {toLabel ? (
