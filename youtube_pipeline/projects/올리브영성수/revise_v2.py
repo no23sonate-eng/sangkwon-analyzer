@@ -679,12 +679,18 @@ R[113] = lt('seoul_towers.jpg', label='크래프톤 사옥',
 # 전부 저작권이 있는 사진이라 출처를 화면 우측 상단에 그대로 띄운다.
 
 # #80 올리브영N 성수 1,400평 — 실제 매장 아트리움을 뒤에 깐다
+# 여기가 "팩토리얼 성수" 를 입으로 말하는 컷이다. #78 에서 건물 전경을 봤으니
+# 여기선 파사드 접사로 붙는다 — 넓게 보여 준 뒤 가까이 가는 순서 (B1M 문법).
 R[80] = ('BigStatsCard', {
     'title': '올리브영N 성수', 'sub': '팩토리얼 성수 지상 1~5층',
     'items': [{'display': '1,400', 'unit': '평', 'label': '약 4,628㎡', 'hot': True}],
     'theme': 'ink', 'align': 'center',
-    'bg': {'backdrop': img('oliveyoungn_atrium.jpg'), 'veil': 0.72, 'dir': 0, 'blur': 2},
-    'source': 'CJ올리브영 · 사진=CJ올리브영 / CJ뉴스룸'})
+    'bg': {'backdrop': img('factorial_facade.jpg'), 'veil': 0.74, 'dir': 0, 'blur': 1},
+    'source': 'CJ올리브영 · 사진=팩토리얼 성수 / heyPOP'})
+
+# 아트리움은 여기로 내린다 — "핵심 사업장" 은 매장 안이 받아 주는 게 맞다
+R[83] = lt('oliveyoungn_atrium.jpg', label='핵심 사업장',
+           sub='올리브영N 성수', scrim=0.5)
 
 # #105 "검증은 이미 옆의 올리브영N에서 끝냈다" — 바로 그 매장
 R[105] = lt('oliveyoungn_kpop.jpg', label='검증은 이미 옆에서 끝났다',

@@ -1631,12 +1631,12 @@
     "theme": "ink",
     "align": "center",
     "bg": {
-     "backdrop": "올리브영성수/oliveyoungn_atrium.jpg",
-     "veil": 0.72,
+     "backdrop": "올리브영성수/factorial_facade.jpg",
+     "veil": 0.74,
      "dir": 0,
-     "blur": 2
+     "blur": 1
     },
-    "source": "CJ올리브영 · 사진=CJ올리브영 / CJ뉴스룸"
+    "source": "CJ올리브영 · 사진=팩토리얼 성수 / heyPOP"
    },
    "motion": {
     "dir": "left",
@@ -1685,15 +1685,15 @@
   "83": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_browse.mp4",
+    "media": "올리브영성수/oliveyoungn_atrium.jpg",
     "num": "",
     "label": "핵심 사업장",
-    "sub": "",
+    "sub": "올리브영N 성수",
     "tone": "light",
     "kicker": "",
     "align": "left",
     "scrim": 0.5,
-    "source": "Mixkit"
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
    }
   },
   "84": {
@@ -1945,7 +1945,7 @@
   "95": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_seoul_stream.mp4",
+    "media": "올리브영성수/bl_retail_browse.mp4",
     "num": "",
     "label": "570억을 회수하려면",
     "sub": "",
@@ -2053,7 +2053,7 @@
   "100": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_people.mp4",
+    "media": "올리브영성수/bl_seoul_stream.mp4",
     "num": "",
     "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
     "sub": "",
@@ -2104,7 +2104,7 @@
   "103": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_walk.mp4",
+    "media": "올리브영성수/bl_street_people.mp4",
     "num": "",
     "label": "상징성 있는 위치",
     "sub": "",
@@ -2156,7 +2156,7 @@
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_topdown_roof.mp4",
+    "media": "올리브영성수/bl_street_walk.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2170,7 +2170,7 @@
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_escalator.mp4",
+    "media": "올리브영성수/bl_topdown_roof.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",
@@ -2178,7 +2178,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.54,
-    "source": "Pexels"
+    "source": "Mixkit"
    },
    "motion": {
     "dir": "right",
@@ -2208,7 +2208,7 @@
   "109": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_buildings_night.mp4",
+    "media": "올리브영성수/px_escalator.mp4",
     "num": "",
     "label": "",
     "sub": "",
@@ -2222,7 +2222,7 @@
   "110": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_handshake.mp4",
+    "media": "올리브영성수/px_buildings_night.mp4",
     "num": "",
     "label": "그런 방향도 가능해 보인다",
     "sub": "",
@@ -2230,7 +2230,7 @@
     "kicker": "",
     "align": "left",
     "scrim": 0.52,
-    "source": "Mixkit"
+    "source": "Pexels"
    },
    "motion": {
     "dir": "right",
@@ -2446,7 +2446,7 @@
   "121": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_mall2.mp4",
+    "media": "올리브영성수/px_handshake.mp4",
     "num": "",
     "label": "올리브영만의 공간 콘텐츠를 만들지",
     "sub": "",
