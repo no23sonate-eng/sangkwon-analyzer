@@ -468,6 +468,41 @@ R[122] = lt('seoulforest_deck.jpg', label='이곳이 어떻게 바뀔까',
             sub='지켜보면 방향이 보인다', scrim=0.5)
 
 
+# ══════════ 개념 그래픽으로 바꾸는 컷 ══════════
+# 실사를 깔아 봐야 **말을 못 받아 주는** 컷들이다. 거리 영상 위에
+# "8×2 가 4×4 보다 길어 보인다"고 써 봐야 아무것도 안 보인다.
+# 도형으로 바꾸면 한 번에 끝난다 — 그래픽을 더 쓰라는 지적의 핵심.
+
+# #23 같은 면적인데 전면 폭이 두 배 — 도형 아니면 설명이 안 된다
+R[23] = ('AspectRatioCard', {
+    'title': '같은 면적, 다른 얼굴', 'sub': '땅이 같아도 보이는 길이는 다르다',
+    'unit': 'm',
+    'items': [{'w': 8, 'h': 2, 'label': '길게 보인다', 'hot': True},
+              {'w': 4, 'h': 4, 'label': '짧게 보인다'}],
+    'frontLabel': '전면 폭',
+    'theme': 'paper', 'caption': '두 도형 면적 동일 (16㎡) — 도해',
+    'source': '도해'})
+
+# #94 낙찰가 + 취득세 + 기타 = 570억. 숫자 나열이 아니라 쌓아 올린다
+R[94] = ('CostStackCard', {
+    'title': '실제로 나간 돈', 'sub': '낙찰가만이 전부가 아니다', 'unit': '억원',
+    'parts': [{'value': 541.5, 'display': '541.5', 'label': '낙찰가'},
+              {'value': 25, 'display': '25', 'prefix': '약', 'label': '취득세 (4.6% 가정)'},
+              {'value': 3.5, 'display': '3.5', 'prefix': '약', 'label': '기타 비용 (추정)'}],
+    'totalLabel': '취득 총액 (추정)', 'totalDisplay': '570',
+    'theme': 'ink',
+    'source': '낙찰가=법원 공고 · 세율=지방세법 / 나머지 추정'})
+
+# #120 따라갈지 / 만들지 — 마지막 질문. 답을 정해 주지 않는 갈림길로
+R[120] = ('ForkPathCard', {
+    'title': '앞으로의 두 갈래', 'sub': '',
+    'trunkLabel': '올리브영 성수 부지',
+    'branches': [{'label': '따라간다', 'note': '다른 브랜드가 이미 보여준 방식'},
+                 {'label': '만든다', 'note': '올리브영만의 공간 콘텐츠'}],
+    'question': '어느 쪽?',
+    'theme': 'blueprint', 'source': '도해'})
+
+
 # ── 소재 중복 감시 ──────────────────────────────────────────────────────
 # **같은 영상/사진이 두 번 나오면 안 된다** (검수 지적). 컷을 하나씩 고치면
 # 고칠 때마다 다른 데서 또 겹치므로, 배정이 끝난 뒤 **전수로 훑어 강제**한다.
@@ -477,44 +512,67 @@ R[122] = lt('seoulforest_deck.jpg', label='이곳이 어떻게 바뀔까',
 # 종류(영상/사진)는 유지한다 — 사진 자리에 영상이 들어가면 리듬이 깨진다.
 def dedupe_media(plan, props, pubdir):
     import collections
-    pool_v, pool_i = [], []
     base = os.path.join(pubdir, '올리브영성수')
+    # 지도·건물 데이터는 **소재가 아니라 자료**다. 같은 지도를 두 번 쓰는 건
+    # 반복이 아니라 같은 지역을 두 번 보는 것이므로 교체 대상에서 뺀다.
+    DATA = ('seongsu.png', 'seongsu_zoom', 'seongsu_oy', 'seongsu_buildings', 'korea')
+    pool_v, pool_i = [], []
     for f in sorted(os.listdir(base)):
-        if f.startswith(('seongsu.png', 'seongsu_zoom', 'seongsu_buildings')):
+        if f.startswith(DATA):
             continue
         if f.endswith('.mp4'):
             pool_v.append(f'올리브영성수/{f}')
         elif f.endswith(('.jpg', '.png')):
             pool_i.append(f'올리브영성수/{f}')
 
+    # 화면에 나오는 자리는 세 군데다 — 전면 실사(media), 카드 뒷배경(bg.backdrop),
+    # 순수 b-roll. 예전 판은 media 만 봤고, 그래서 뒷배경으로 돌려 쓴 클립이
+    # 네 번씩 나오는 걸 못 잡았다 (money_counter ×4, auction_columns ×4).
+    # **한 화면에 보이는 이상 전부 같은 판에서 센다.**
+    slots = []
+    for idx, sc in enumerate(plan['scenes']):
+        e = props['scenes'].get(str(sc['id']))
+        if e:
+            pr = e['props']
+            if pr.get('media'):
+                slots.append((idx, lambda pr=pr, v=None: pr, 'media', pr['media']))
+            b = pr.get('bg') or {}
+            if b.get('backdrop'):
+                slots.append((idx, lambda b=b: b, 'backdrop', b['backdrop']))
+        br = sc.get('broll')
+        # b-roll 은 {src, ss, dur} 꼴이고 src 에 폴더가 안 붙어 있다.
+        # 다른 두 자리와 표기가 달라 그대로 비교하면 같은 클립을 못 알아본다
+        if br and br.get('src'):
+            slots.append((idx, lambda br=br: br, 'src', f"올리브영성수/{br['src']}"))
+
     used = collections.Counter()
     lastAt = {}
     swapped = 0
-    for idx, sc in enumerate(plan['scenes']):
-        e = props['scenes'].get(str(sc['id']))
-        if not e or e.get('card') != 'LowerThirdCard':
-            continue
-        pr = e['props']
-        cur = pr.get('media', '')
-        if not cur:
+    for idx, holder, key, cur in slots:
+        if any(os.path.basename(cur).startswith(d) for d in DATA):
             continue
         pool = pool_v if cur.endswith('.mp4') else pool_i
         if used[cur] == 0:
-            used[cur] += 1; lastAt[cur] = idx
+            used[cur] += 1
+            lastAt[cur] = idx
             continue
-        # 중복 — 안 쓴 것 우선, 없으면 가장 적게+가장 오래전에 쓴 것
         fresh = [m for m in pool if used[m] == 0]
+        # 안 쓴 게 없으면 가장 적게 · 가장 오래전에 쓴 것. 바로 앞뒤 컷은 피한다
         pick = fresh[0] if fresh else min(
             pool, key=lambda m: (used[m], -(idx - lastAt.get(m, -99))))
-        pr['media'] = pick
-        pr['source'] = cred(os.path.basename(pick))
-        used[pick] += 1; lastAt[pick] = idx
+        d = holder()
+        d[key] = os.path.basename(pick) if key == 'src' else pick
+        if key == 'media':
+            d['source'] = cred(os.path.basename(pick))
+        used[pick] += 1
+        lastAt[pick] = idx
         swapped += 1
 
     dup = [m for m, c in used.items() if c > 1]
-    print(f'중복 교체 {swapped}컷 · 남은 중복 {len(dup)}종')
+    print(f'중복 교체 {swapped}자리 · 화면 소재 {len(used)}종 · 남은 중복 {len(dup)}종')
     for m in dup:
         print(f'   {os.path.basename(m)} × {used[m]}')
+    return len(dup)
 
 
 # ── 반영 ────────────────────────────────────────────────────────────────

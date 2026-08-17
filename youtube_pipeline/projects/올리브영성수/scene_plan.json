@@ -391,7 +391,7 @@
    "end": 103.4,
    "dur": 4.6,
    "text": "4×4 정사각형보다 8×2 직사각형이 더 길게 보이죠.",
-   "card": "LowerThirdCard",
+   "card": "AspectRatioCard",
    "key": "cut24",
    "cardDur": 4.6
   },
@@ -1348,7 +1348,7 @@
    "key": "cut93",
    "cardDur": 0,
    "broll": {
-    "src": "auction_columns.mp4",
+    "src": "px_blueprint2.mp4",
     "ss": 3.4,
     "dur": 6.3
    }
@@ -1376,7 +1376,7 @@
    "end": 434.6,
    "dur": 6.9,
    "text": "낙찰가 541억 5천에 취득세와 기타 비용을 더하면 570억 정도가 됩니다.",
-   "card": "BigStatsCard",
+   "card": "CostStackCard",
    "key": "cut95",
    "motion": {
     "dir": "up",
@@ -1742,7 +1742,7 @@
    "end": 558.9,
    "dur": 3.6,
    "text": "이미 다른 브랜드들이 보여준 방식을 따라갈지,",
-   "card": "LowerThirdCard",
+   "card": "ForkPathCard",
    "key": "cut121",
    "cardDur": 3.6
   },

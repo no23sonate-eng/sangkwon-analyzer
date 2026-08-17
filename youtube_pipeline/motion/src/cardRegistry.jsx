@@ -69,6 +69,9 @@ import {ShareSplitCard} from './ShareSplitCard';
 import {YardViewCard} from './YardViewCard';
 import {SitePlotCard} from './SitePlotCard';
 import {ShapeCompareCard} from './ShapeCompareCard';
+import {AspectRatioCard} from './AspectRatioCard';
+import {CostStackCard} from './CostStackCard';
+import {ForkPathCard} from './ForkPathCard';
 import {LowerThirdCard} from './LowerThirdCard';
 
 export const CARDS = {
@@ -91,6 +94,9 @@ export const CARDS = {
   YardViewCard,
   SitePlotCard,
   ShapeCompareCard,
+  AspectRatioCard,
+  CostStackCard,
+  ForkPathCard,
   LowerThirdCard,
   BuildingCard,
   StatCard,
