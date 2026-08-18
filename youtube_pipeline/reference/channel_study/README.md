@@ -13,7 +13,18 @@
 장편만 걸러 최신순·조회순 상위를 뽑고, 원본 해상도 썸네일을 내려받아
 컨택트 시트로 합성 + 픽셀 단위 색 통계를 냈다.
 
-**영상 본편·스토리보드 프레임은 받지 못했다** — 작업 환경 IP가 유튜브
-봇차단(429/Sign-in 요구)에 걸려 yt-dlp 전 클라이언트, Piped/Invidious
-인스턴스, 워치페이지 직접 파싱이 모두 막혔다. 네트워크가 열린 환경에서
-다시 시도하면 프레임 단위 분석으로 §20 을 보강할 수 있다.
+1차 시점엔 영상 프레임을 못 받았다(봇차단). **원인은 JS 런타임 부재였고
+2차에서 해결됨** — 아래 참고.
+
+## 2차 — 영상 본편 프레임 (2026-08-18)
+
+`video_*.jpg` = 실제 영상에서 뽑은 프레임 컨택트 시트 (B1M 3편 / SH 3편,
+편당 18프레임). 1차 썸네일 분석보다 **이쪽이 제작 기준**이다 →
+`design_reference.md` §21.
+
+수집 스크립트: `youtube_pipeline/scripts/grab_video_frames.py`
+전제: `deno` 설치 필요 (없으면 유튜브가 봇으로 차단).
+```
+curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y
+python3 youtube_pipeline/scripts/grab_video_frames.py <video_id> <out_prefix> 18
+```
