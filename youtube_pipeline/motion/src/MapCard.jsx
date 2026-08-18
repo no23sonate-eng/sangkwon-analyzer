@@ -174,6 +174,21 @@ export const MapCard = ({
           const by = QY - 92 + (window.__mapDy[k] || 0);
           if (overX && Math.abs(ay - by) < 62) dy += 68;
         }
+        // 라벨 상자가 **다른 핀을 덮는** 경우도 내린다. 라벨끼리만 보다가
+        // "뷰티 맨션 성수" 라벨이 옆 핀을 통째로 가려서 핀이 사라진 것처럼
+        // 보였다 (검수 지적 #11). 상자 밑에 핀이 들어오면 한 칸 더 내린다.
+        for (let pass = 0; pass < 3; pass++) {
+          const bx0 = left ? X - 28 - w : X + 28;
+          const by0 = Y - 92 + dy;
+          const hit = pins.some((q, k) => {
+            if (k === i) return false;
+            const [QX, QY] = px(q.lat, q.lon);
+            return QX > bx0 - 18 && QX < bx0 + w + 18
+                   && QY > by0 - 10 && QY < by0 + 76;
+          });
+          if (!hit) break;
+          dy += 68;
+        }
         window.__mapDy[i] = dy;
         return (
           <div key={i} style={{position: 'absolute', top: Y - 92 + dy,

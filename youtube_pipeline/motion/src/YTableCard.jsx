@@ -26,7 +26,12 @@ export const YTableCard = ({
 
   const n = rows.length || 1;
   const rowH = n > 3 ? 118 : 138;
-  const tableW = 1280;
+  // 1280 은 너무 넓어서 왼쪽 이름과 오른쪽 값이 화면 양 끝으로 갈라졌다
+  // ("크래프톤" 과 "사옥 신축" 이 서로 남처럼 보였다 — 검수 지적 #117).
+  const tableW = 860;
+  // 이름은 왼쪽 끝, 값은 오른쪽 끝 — 이러면 둘이 화면 양쪽으로 갈라져 한 줄로
+  // 안 읽힌다. **이름 칸 폭을 정해 두고 값은 그 바로 옆에서 시작**하게 바꾼다.
+  const NAMEW = 250;
   const left = (1920 - tableW) / 2;
   const closingSpace = closingLine ? 110 : 0;
   // 제목이 붙으면 그 아래 띠 한가운데에 표를 앉힌다
@@ -66,8 +71,8 @@ export const YTableCard = ({
             </div>
             <div
               style={{
-                position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 10,
-                textAlign: 'right',
+                position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+                left: NAMEW, textAlign: 'left',
               }}
             >
               <span
