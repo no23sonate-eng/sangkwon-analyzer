@@ -25,6 +25,8 @@ import {UnitBlocksCard} from './UnitBlocksCard';
 import {TrendCard} from './TrendCard';
 import {TimelineBarsCard} from './TimelineBarsCard';
 import {SphereHeroCard} from './SphereHeroCard';
+import {IconCountCard} from './IconCountCard';
+import {FloorStackCard} from './FloorStackCard';
 import {YQuoteCard} from './YQuoteCard';
 import {YCompareCard} from './YCompareCard';
 
@@ -203,6 +205,8 @@ export const RemotionRoot = () => {
         ['TrendCard', TrendCard, {series: []}],
         ['TimelineBarsCard', TimelineBarsCard, {bars: []}],
         ['SphereHeroCard', SphereHeroCard, {annotations: []}],
+        ['IconCountCard', IconCountCard, {count: 6}],
+        ['FloorStackCard', FloorStackCard, {floors: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

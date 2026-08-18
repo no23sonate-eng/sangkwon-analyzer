@@ -1,0 +1,267 @@
+{
+  "project": "성수올리브영",
+  "design": "v2 + §21 위계 (기본 B1M 문법, 필요 시 SH 확장)",
+  "note": "3막 대본을 §21-6 판단 순서로 매핑. 수치는 대본에 있는 것만 사용(추정·창작 금지).",
+  "scenes": [
+    {
+      "id": 0,
+      "line": "성수 권역에 올리브영이 몇 개인지 아시나요?",
+      "card": "YHeadlineCard",
+      "props": {
+        "durationSec": 4.5,
+        "kicker": "3막 — 성수동",
+        "lines": [
+          [
+            {
+              "t": "올리브영이 ",
+              "hot": false
+            },
+            {
+              "t": "몇 개",
+              "hot": true
+            },
+            {
+              "t": "일까요?",
+              "hot": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "line": "여섯 개입니다. 한 상권에 여섯 개.",
+      "card": "IconCountCard",
+      "props": {
+        "durationSec": 8.0,
+        "kicker": "성수 권역 올리브영",
+        "count": 6,
+        "label": "개",
+        "caption": "한 상권에 여섯 개 — 그만큼 중요한 권역"
+      }
+    },
+    {
+      "id": 2,
+      "line": "낙찰받은 부지에서 걸어서 2분 거리에 올리브영N 성수가 있습니다.",
+      "card": "YFlowCard",
+      "props": {
+        "durationSec": 7.0,
+        "kicker": "거리",
+        "nodes": [
+          {
+            "tag": "SITE",
+            "label": "낙찰받은 부지",
+            "value": "기준점"
+          },
+          {
+            "tag": "OLIVE YOUNG N",
+            "label": "올리브영N 성수",
+            "value": "도보 2분",
+            "hot": true
+          }
+        ],
+        "arrows": [
+          {
+            "label": "걸어서"
+          }
+        ],
+        "floor": false
+      }
+    },
+    {
+      "id": 3,
+      "line": "팩토리얼 성수 1~5층, 1,400평을 사용하죠.",
+      "card": "FloorStackCard",
+      "props": {
+        "durationSec": 8.5,
+        "kicker": "팩토리얼 성수",
+        "sub": "올리브영N 성수가 쓰는 층",
+        "floors": [
+          {
+            "name": "1F",
+            "tenant": "올리브영N 성수",
+            "hot": true
+          },
+          {
+            "name": "2F",
+            "tenant": "올리브영N 성수",
+            "hot": true
+          },
+          {
+            "name": "3F",
+            "tenant": "올리브영N 성수",
+            "hot": true
+          },
+          {
+            "name": "4F",
+            "tenant": "올리브영N 성수",
+            "hot": true
+          },
+          {
+            "name": "5F",
+            "tenant": "올리브영N 성수",
+            "hot": true
+          },
+          {
+            "name": "…",
+            "tenant": "상층부",
+            "hot": false
+          }
+        ],
+        "dimension": {
+          "label": "1,400평",
+          "sub": "1 ~ 5층"
+        }
+      },
+      "note": "6층 이상 구성은 대본에 없어 '상층부'로만 표기 (창작 금지)"
+    },
+    {
+      "id": 4,
+      "line": "개점 1년 누적 방문객 250만 명, 전국 매장 중 내국인 방문 1위입니다.",
+      "card": "CleoStatCard",
+      "props": {
+        "durationSec": 9.0,
+        "kicker": "개점 1년 누적 방문객",
+        "label": "올리브영N 성수",
+        "valueTarget": 250,
+        "decimals": 0,
+        "valueSuffix": "만 명",
+        "caption": "전국 매장 중 내국인 방문 1위",
+        "source": "자료: 올리브영 발표"
+      }
+    },
+    {
+      "id": 5,
+      "line": "그런데 2025년 12월 24일, 그 건물의 주인이 바뀝니다.",
+      "card": "YHeadlineCard",
+      "props": {
+        "durationSec": 5.5,
+        "kicker": "2025년 12월 24일",
+        "lines": [
+          [
+            {
+              "t": "그 건물의 ",
+              "hot": false
+            },
+            {
+              "t": "주인이 바뀝니다",
+              "hot": true
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "line": "이지스자산운용에서 교보AIM자산운용으로 2,548억.",
+      "card": "YFlowCard",
+      "props": {
+        "durationSec": 8.0,
+        "kicker": "소유권 이전",
+        "sub": "팩토리얼 성수",
+        "nodes": [
+          {
+            "tag": "매도",
+            "label": "이지스자산운용",
+            "value": "매각"
+          },
+          {
+            "tag": "매수",
+            "label": "교보AIM자산운용",
+            "value": "2,548억",
+            "hot": true
+          }
+        ],
+        "arrows": [
+          {
+            "label": "2025.12.24"
+          }
+        ],
+        "floor": false
+      }
+    },
+    {
+      "id": 7,
+      "line": "연면적 평당 4,000만원, 성수동 오피스 최고가였습니다.",
+      "card": "CleoStatCard",
+      "props": {
+        "durationSec": 7.0,
+        "kicker": "거래가 — 연면적 기준",
+        "label": "평당",
+        "valueTarget": 4000,
+        "decimals": 0,
+        "valueSuffix": "만원",
+        "caption": "성수동 오피스 최고가"
+      }
+    },
+    {
+      "id": 8,
+      "line": "건물 주인 바뀐 게 임차인과 무슨 상관? 이라고 생각하실 수 있는데요.",
+      "card": "YHeadlineCard",
+      "props": {
+        "durationSec": 5.0,
+        "lines": [
+          [
+            {
+              "t": "주인이 바뀐 게",
+              "hot": false
+            }
+          ],
+          [
+            {
+              "t": "임차인과 ",
+              "hot": false
+            },
+            {
+              "t": "무슨 상관",
+              "hot": true
+            },
+            {
+              "t": "일까요?",
+              "hot": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "line": "기존 수익률이 좋아서 산 건물이라도, 매수자는 결국 수익률을 더 개선시키고 싶을 수밖에 없습니다. 그렇기 때문에 올리브영의 임대료도 향후 높아질 가능성이 있죠.",
+      "card": "YFlowCard",
+      "props": {
+        "durationSec": 12.0,
+        "kicker": "높은 가격에 산 건물의 다음 수순",
+        "nodes": [
+          {
+            "tag": "매입",
+            "label": "매입가",
+            "value": "2,548억",
+            "sub": "평당 4,000만원"
+          },
+          {
+            "tag": "요구",
+            "label": "수익률 개선",
+            "value": "필요",
+            "sub": "매수자 입장"
+          },
+          {
+            "tag": "결과",
+            "label": "임차인 임대료",
+            "value": "인상 압력",
+            "hot": true
+          }
+        ],
+        "arrows": [
+          {
+            "label": "높은 매입가"
+          },
+          {
+            "label": "그래서"
+          }
+        ],
+        "caption": "기존 수익률이 좋아서 샀더라도, 더 개선하고 싶을 수밖에",
+        "floor": false
+      }
+    }
+  ]
+}
