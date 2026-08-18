@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
 import {Highlighter, HL_YELLOW} from './annotate';
 import {fit} from './layout';
 
@@ -121,12 +121,9 @@ export const ArticleCard = ({
         </div>
       </div>
 
-      {source ? (
-        <div style={{position: 'absolute', right: 88, bottom: 74, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, color: '#9AA0A8'}}>
-          {source}
-        </div>
-      ) : null}
+      {/* 출처는 채널 규칙대로 **우측 상단 · Source :**. 예전엔 이 카드만
+          지면 하단에 넣어서 다른 카드와 자리가 달랐다 */}
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

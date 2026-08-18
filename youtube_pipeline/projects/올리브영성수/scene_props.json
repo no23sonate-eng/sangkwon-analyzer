@@ -42,10 +42,10 @@
     "sub": "",
     "items": [
      {
-      "display": "541",
+      "display": "541.5",
       "unit": "억",
-      "prefix": "약",
       "label": "낙찰가",
+      "sub": "541억 5,290만원 · 단독 입찰",
       "hot": true
      }
     ],
@@ -57,7 +57,7 @@
      "dir": 0,
      "blur": 4
     },
-    "source": "블로터 2026.07.22"
+    "source": "뉴스스페이스 · 블로터 2026.07.22"
    },
    "motion": {
     "dir": "left",
@@ -66,17 +66,13 @@
    }
   },
   "3": {
-   "card": "LowerThirdCard",
+   "card": "ArticleCard",
    "props": {
-    "media": "올리브영성수/cash_closeup.mp4",
-    "num": "",
-    "label": "감정가는 396억이었다",
-    "sub": "",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.55,
-    "source": "Mixkit"
+    "outlet": "뉴스스페이스",
+    "date": "2026.07",
+    "body": "CJ올리브영은 성동구 성수동2가 314-2번지 토지면적 651㎡(약 197평) 규모 2층 건물 경매에 단독 입찰해 «541억 5,290만원»을 써냈다. 이는 «감정가 395억 9,288만원» 대비 136.77%에 달하는 금액으로, 평당 약 2억 7,000만원 수준이다.",
+    "theme": "ink",
+    "source": "뉴스스페이스 · 블로터 2026.07.22"
    },
    "motion": {
     "dir": "left",
@@ -178,21 +174,21 @@
       "label": "입찰 참여"
      },
      {
-      "display": "137",
+      "display": "136.77",
       "unit": "%",
       "label": "감정가 대비",
       "hot": true
      }
     ],
-    "source": "블로터 2026.07.22",
-    "align": "center",
     "theme": "ink",
+    "align": "center",
     "bg": {
      "backdrop": "올리브영성수/auction_columns.mp4",
-     "veil": 0.945,
+     "veil": 0.93,
      "dir": 0,
-     "blur": 4
-    }
+     "blur": 3
+    },
+    "source": "뉴스스페이스 · 블로터 2026.07.22"
    },
    "motion": {
     "dir": "right",
@@ -1365,17 +1361,13 @@
    }
   },
   "69": {
-   "card": "LowerThirdCard",
+   "card": "ArticleCard",
    "props": {
-    "media": "올리브영성수/bl_city_river.mp4",
-    "num": "",
-    "label": "경매라는 꼬리표가 붙어도 최고가가 나온다",
-    "sub": "",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.54,
-    "source": "Mixkit"
+    "outlet": "뉴스1",
+    "date": "2025.09",
+    "body": "지난달 25일 서울동부지방법원 경매에서 성수동2가 준공업지역 토지 4,274㎡와 건물 2,503㎡가 «2,202억 100만원»에 낙찰됐다. 2021년 강남 논현동 빌딩의 1,055억원을 뛰어넘는 «국내 경매 시장 사상 최고 기록»이다.",
+    "theme": "ink",
+    "source": "뉴스1 2025.09 · 헤럴드경제"
    }
   },
   "70": {
@@ -1387,7 +1379,7 @@
     "sub": "낙찰 부지는 신도리코 본사에서 50m · 같은 경매 과정",
     "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.54,
     "source": "블로그 realtyincome___ / naver"
    },
@@ -1445,7 +1437,7 @@
     "theme": "ink",
     "align": "center",
     "bg": {
-     "backdrop": "올리브영성수/bl_crane_site.mp4",
+     "backdrop": "올리브영성수/bl_city_river.mp4",
      "veil": 0.945,
      "dir": 3,
      "blur": 4
@@ -1709,17 +1701,13 @@
    }
   },
   "84": {
-   "card": "LowerThirdCard",
+   "card": "ArticleCard",
    "props": {
-    "media": "올리브영성수/contract_signature.mp4",
-    "num": "",
-    "label": "2025년 12월 24일",
-    "sub": "건물 주인이 바뀐다",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.55,
-    "source": "Mixkit"
+    "outlet": "비즈워치",
+    "date": "2026.01.14",
+    "body": "팩토리얼 성수가 «2,548억원»에 새 주인을 찾았다. 이지스자산운용에서 교보AIM자산운용으로 소유주가 바뀌며, 연면적 3.3㎡당 «4,000만원» 수준으로 «성수동 오피스 최고가»를 새로 썼다.",
+    "theme": "ink",
+    "source": "비즈워치 2026.01.14"
    }
   },
   "85": {
@@ -1734,7 +1722,7 @@
     "note": "",
     "theme": "ink",
     "bg": {
-     "backdrop": "올리브영성수/px_contract_sign.mp4",
+     "backdrop": "올리브영성수/contract_signature.mp4",
      "veil": 0.945,
      "dir": 1,
      "blur": 3
@@ -1779,7 +1767,7 @@
   "87": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_escalator.mp4",
+    "media": "올리브영성수/bl_crane_site.mp4",
     "num": "",
     "label": "건물주가 바뀌면 임차인은?",
     "sub": "",
@@ -1827,7 +1815,7 @@
   "89": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/px_credit.mp4",
+    "media": "올리브영성수/cash_closeup.mp4",
     "num": "",
     "label": "임대료가 올라갈 가능성",
     "sub": "",
@@ -1905,7 +1893,7 @@
     "theme": "ink",
     "align": "center",
     "bg": {
-     "backdrop": "올리브영성수/px_gavel2.mp4",
+     "backdrop": "올리브영성수/px_contract_sign.mp4",
      "veil": 0.945,
      "dir": 0,
      "blur": 4
@@ -1957,7 +1945,7 @@
   "95": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_browse.mp4",
+    "media": "올리브영성수/bl_retail_aisle.mp4",
     "num": "",
     "label": "570억을 회수하려면",
     "sub": "",
@@ -2067,7 +2055,7 @@
   "100": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_retail_walk.mp4",
+    "media": "올리브영성수/bl_retail_browse.mp4",
     "num": "",
     "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
     "sub": "",
@@ -2171,7 +2159,7 @@
   "106": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_rooftop.mp4",
+    "media": "올리브영성수/bl_retail_walk.mp4",
     "num": "",
     "label": "매장보다는 놀이터",
     "sub": "",
@@ -2185,7 +2173,7 @@
   "107": {
    "card": "LowerThirdCard",
    "props": {
-    "media": "올리브영성수/bl_street_people.mp4",
+    "media": "올리브영성수/bl_rooftop.mp4",
     "num": "",
     "label": "테스트베드",
     "sub": "활용 계획은 미확정",

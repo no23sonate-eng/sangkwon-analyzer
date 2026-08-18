@@ -117,7 +117,7 @@
    "end": 15.8,
    "dur": 4.4,
    "text": "그런데 감정가는 395억 9천만원이었습니다.",
-   "card": "LowerThirdCard",
+   "card": "ArticleCard",
    "key": "cut04",
    "motion": {
     "dir": "left",
@@ -198,7 +198,8 @@
     "dir": "right",
     "push": 0.035,
     "exitSec": 0.5
-   }
+   },
+   "cardDur": 4.0
   },
   {
    "id": 9,
@@ -1031,7 +1032,7 @@
    "end": 307.7,
    "dur": 3.8,
    "text": "경매라는 꼬리표가 붙어도 최고가가 나옵니다.",
-   "card": "LowerThirdCard",
+   "card": "ArticleCard",
    "key": "cut70",
    "cardDur": 3.8
   },
@@ -1236,7 +1237,7 @@
    "end": 381.9,
    "dur": 5.9,
    "text": "그런데 2025년 12월 24일, 그 건물의 주인이 바뀝니다.",
-   "card": "LowerThirdCard",
+   "card": "ArticleCard",
    "key": "cut85",
    "cardDur": 5.9
   },
@@ -1348,7 +1349,7 @@
    "key": "cut93",
    "cardDur": 0,
    "broll": {
-    "src": "bl_retail_aisle.mp4",
+    "src": "bl_escalator.mp4",
     "ss": 3.4,
     "dur": 6.3
    }
