@@ -1,7 +1,7 @@
 {
   "project": "성수올리브영_b1m",
-  "design": "v4 — The B1M 본편 실측 기반 (PAPER/FOOTAGE 2표면)",
-  "note": "실사가 기본, 그래픽은 밝은 지면. 옐로는 형광펜·실사 위 강조 단어에만.",
+  "design": "v4 중앙정렬 + 장치 다양화 (10장면 = 8종 장치)",
+  "note": "같은 장치 반복 금지. 실사 3 / 지면 7.",
   "scenes": [
     {
       "id": 0,
@@ -11,7 +11,9 @@
         "durationSec": 4.5,
         "image": "demo/yongsan.jpg",
         "place": "SEONGSU · SEOUL",
-        "credit": "이미지 예시 — 실제 성수 실사로 교체",
+        "credit": "이미지 예시 — 성수 실사로 교체",
+        "align": "center",
+        "scrim": "full",
         "label": "3막",
         "segs": [
           {
@@ -32,43 +34,35 @@
     {
       "id": 1,
       "line": "여섯 개입니다. 한 상권에 여섯 개.",
-      "card": "PaperStatCard",
+      "card": "PaperCountCard",
       "props": {
         "durationSec": 8.0,
-        "eyebrow": "성수 권역 · 올리브영 매장 수",
-        "label": "한 상권 안에",
-        "valueTarget": 6,
-        "valueSuffix": "개",
-        "caption": "그만큼 중요한 권역",
-        "markCaption": true
+        "eyebrow": "성수 권역",
+        "title": "올리브영 매장 수",
+        "count": 6,
+        "unit": "개",
+        "caption": "한 상권에 여섯 개",
+        "markCaption": true,
+        "note": "그만큼 중요한 권역"
       }
     },
     {
       "id": 2,
       "line": "낙찰받은 부지에서 걸어서 2분 거리에 올리브영N 성수가 있습니다.",
-      "card": "PaperFlowCard",
+      "card": "FootageAnnotateCard",
       "props": {
         "durationSec": 7.0,
-        "eyebrow": "거리",
-        "title": "낙찰 부지에서 올리브영N 성수까지",
-        "nodes": [
-          {
-            "tag": "SITE",
-            "label": "낙찰받은 부지",
-            "value": "기준점"
-          },
-          {
-            "tag": "OLIVE YOUNG N",
-            "label": "올리브영N 성수",
-            "value": "도보 2분",
-            "hot": true
-          }
-        ],
-        "arrows": [
-          {
-            "label": "걸어서"
-          }
-        ]
+        "image": "demo/yongsan.jpg",
+        "place": "도보 2분",
+        "credit": "이미지 예시 — 항공사진으로 교체",
+        "box": {
+          "x": 700,
+          "y": 380,
+          "w": 420,
+          "h": 260
+        },
+        "label": "올리브영N 성수",
+        "sub": "낙찰 부지에서 걸어서 2분"
       }
     },
     {
@@ -135,48 +129,40 @@
     {
       "id": 5,
       "line": "그런데 2025년 12월 24일, 그 건물의 주인이 바뀝니다.",
-      "card": "FootageCard",
+      "card": "PaperArticleCard",
       "props": {
         "durationSec": 5.5,
-        "image": "demo/yongsan.jpg",
-        "place": "2025 · 12 · 24",
-        "credit": "이미지 예시 — 실제 건물 실사로 교체",
-        "segs": [
-          {
-            "t": "그 건물의 ",
-            "hot": false
-          },
-          {
-            "t": "주인이 바뀝니다",
-            "hot": true
-          }
-        ]
+        "outlet": "팩토리얼 성수 · 소유권 변동",
+        "date": "2025.12.24",
+        "headline": "그 건물의 주인이 바뀝니다",
+        "mark": "주인이 바뀝니다",
+        "deck": "이지스자산운용 → 교보AIM자산운용"
       }
     },
     {
       "id": 6,
       "line": "이지스자산운용에서 교보AIM자산운용으로 2,548억.",
-      "card": "PaperFlowCard",
+      "card": "PaperTimelineCard",
       "props": {
         "durationSec": 8.0,
-        "eyebrow": "소유권 이전 · 팩토리얼 성수",
+        "eyebrow": "소유권 이전",
         "title": "2025년 12월 24일",
-        "nodes": [
+        "activeIndex": 2,
+        "steps": [
           {
-            "tag": "매도",
-            "label": "이지스자산운용",
-            "value": "매각"
+            "label": "매도",
+            "value": "이지스자산운용",
+            "sub": "기존 소유"
           },
           {
-            "tag": "매수",
-            "label": "교보AIM자산운용",
+            "label": "거래",
             "value": "2,548억",
-            "hot": true
-          }
-        ],
-        "arrows": [
+            "sub": "연면적 평당 4,000만원"
+          },
           {
-            "label": "거래"
+            "label": "매수",
+            "value": "교보AIM자산운용",
+            "sub": "새 소유"
           }
         ]
       }
@@ -184,15 +170,24 @@
     {
       "id": 7,
       "line": "연면적 평당 4,000만원, 성수동 오피스 최고가였습니다.",
-      "card": "PaperStatCard",
+      "card": "PaperCompareCard",
       "props": {
         "durationSec": 7.0,
         "eyebrow": "거래가 · 연면적 기준",
-        "label": "평당",
-        "valueTarget": 4000,
-        "valueSuffix": "만원",
-        "caption": "성수동 오피스 최고가",
-        "markCaption": true
+        "title": "성수동 오피스 최고가",
+        "left": {
+          "title": "거래 총액",
+          "value": "2,548억"
+        },
+        "right": {
+          "title": "연면적 평당",
+          "value": "4,000만원",
+          "hot": true,
+          "lines": [
+            "성수동 오피스 최고가"
+          ]
+        },
+        "vs": "= "
       }
     },
     {
@@ -203,7 +198,7 @@
         "durationSec": 5.0,
         "image": "demo/yongsan.jpg",
         "credit": "이미지 예시",
-        "align": "left",
+        "align": "center",
         "scrim": "full",
         "segs": [
           {
@@ -228,7 +223,6 @@
       "props": {
         "durationSec": 12.0,
         "eyebrow": "높은 가격에 산 건물의 다음 수순",
-        "title": "",
         "nodes": [
           {
             "tag": "매입",

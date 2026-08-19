@@ -104,7 +104,7 @@ export const PaperFlowCard = ({
       )}
 
       {note ? (
-        <div style={{position: 'absolute', left: M, top: SAFE_BOTTOM - 56, opacity: fade(frame, stagger(n, 10, 24))}}>
+        <div style={{position: 'absolute', left: 0, right: 0, textAlign: 'center', top: SAFE_BOTTOM - 56, opacity: fade(frame, stagger(n, 10, 24))}}>
           <span style={P.caption}>{note}</span>
         </div>
       ) : null}

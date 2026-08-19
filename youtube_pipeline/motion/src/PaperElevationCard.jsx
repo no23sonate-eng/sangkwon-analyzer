@@ -22,8 +22,8 @@ export const PaperElevationCard = ({
   const frame = useCurrentFrame();
   const n = floors.length || 1;
   const fh = Math.min(84, Math.round(480 / n));
-  const bw = 520;
-  const bx = M + 300;
+  const bw = 500;
+  const bx = (1920 - bw) / 2; // 건물을 화면 중앙에
   const baseY = 736;
 
   const hotIdx = floors.map((f, i) => (f.hot ? i : -1)).filter((i) => i >= 0);
@@ -112,7 +112,7 @@ export const PaperElevationCard = ({
       {/* 치수 값 */}
       {dimension && hotIdx.length ? (
         <div style={{
-          position: 'absolute', left: M, width: bx - 130 - M, top: (hotTop + hotBottom) / 2 - 44,
+          position: 'absolute', left: M, width: bx - 140 - M, top: (hotTop + hotBottom) / 2 - 44,
           textAlign: 'right', whiteSpace: 'nowrap', ...dimIn,
         }}>
           <div style={{...P.valueM, fontSize: 62}}>{dimension.label}</div>
@@ -121,7 +121,7 @@ export const PaperElevationCard = ({
       ) : null}
 
       {note ? (
-        <div style={{position: 'absolute', left: M, top: SAFE_BOTTOM - 56, opacity: fade(frame, 48)}}>
+        <div style={{position: 'absolute', left: 0, right: 0, textAlign: 'center', top: SAFE_BOTTOM - 56, opacity: fade(frame, 48)}}>
           <span style={P.caption}>{note}</span>
         </div>
       ) : null}

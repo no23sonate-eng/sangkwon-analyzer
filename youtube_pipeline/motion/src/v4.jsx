@@ -128,12 +128,19 @@ export const Credit = ({text, dark = true, opacity = 1}) =>
     </div>
   ) : null;
 
-// 지면 헤더 — 아이브로우 + 얇은 규칙선 (도면 표제란 느낌)
-export const PaperHead = ({eyebrow = '', title = '', opacity = 1}) => (
-  <div style={{position: 'absolute', top: 104, left: M, right: M, opacity}}>
+// 지면 헤더 — 기본 중앙 정렬 (B1M 지면은 대개 가운데로 모은다)
+export const PaperHead = ({eyebrow = '', title = '', opacity = 1, align = 'center'}) => (
+  <div style={{position: 'absolute', top: 104, left: M, right: M, opacity, textAlign: align}}>
     {eyebrow ? <div style={P.eyebrow}>{eyebrow}</div> : null}
     {title ? <div style={{...P.title, marginTop: 12}}>{title}</div> : null}
-    <div style={{marginTop: 22, height: 1, background: HAIR}} />
+    <div style={{margin: align === 'center' ? '24px auto 0' : '24px 0 0', width: align === 'center' ? 220 : '100%', height: 1, background: HAIR}} />
+  </div>
+);
+
+// 중앙 콘텐츠 무대 — 킥커 아래 ~ 자막 안전영역 사이를 세로 가운데로 쓴다
+export const Stage = ({top = 300, children, style}) => (
+  <div style={{position: 'absolute', left: 0, right: 0, top, textAlign: 'center', ...style}}>
+    {children}
   </div>
 );
 

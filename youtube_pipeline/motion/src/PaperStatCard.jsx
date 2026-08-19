@@ -44,26 +44,26 @@ export const PaperStatCard = ({
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
 
       {label ? (
-        <div style={{position: 'absolute', left: M, top: numY - 56, ...labelIn}}>
+        <div style={{position: 'absolute', left: 0, right: 0, top: numY - 58, textAlign: 'center', ...labelIn}}>
           <span style={{...P.label, fontSize: 30}}>{label}</span>
         </div>
       ) : null}
 
-      <div style={{position: 'absolute', left: M, top: numY, ...valueIn}}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: numY, textAlign: 'center', ...valueIn}}>
         <span style={{...P.valueXL, fontSize: size}}>{shown}</span>
         <span style={{...P.valueXL, fontSize: size * 0.4, color: INK2, marginLeft: 12}}>{valueSuffix}</span>
       </div>
 
-      {/* 앰버 규칙선 — 숫자 아래를 받쳐준다 (도면의 치수선 감각) */}
+      {/* 앰버 규칙선 — 숫자 아래 중앙 */}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         <DrawPath
-          d={`M ${M} ${numY + size * 0.94} L ${M + 420} ${numY + size * 0.94}`}
-          start={26} dur={30} length={520} stroke={AMBER} strokeWidth={4}
+          d={`M 760 ${numY + size * 0.98} L 1160 ${numY + size * 0.98}`}
+          start={26} dur={30} length={420} stroke={AMBER} strokeWidth={4}
         />
       </svg>
 
       {caption ? (
-        <div style={{position: 'absolute', left: M, top: numY + size * 0.94 + 34, ...capIn}}>
+        <div style={{position: 'absolute', left: 0, right: 0, top: numY + size * 0.98 + 36, textAlign: 'center', ...capIn}}>
           <span style={{...P.body, fontSize: 34}}>
             {markCaption ? <Mark on={markOn}>{caption}</Mark> : caption}
           </span>
@@ -71,7 +71,7 @@ export const PaperStatCard = ({
       ) : null}
 
       {note ? (
-        <div style={{position: 'absolute', left: M, top: SAFE_BOTTOM - 60, opacity: fade(frame, 52)}}>
+        <div style={{position: 'absolute', left: 0, right: 0, top: SAFE_BOTTOM - 60, textAlign: 'center', opacity: fade(frame, 52)}}>
           <span style={P.caption}>{note}</span>
         </div>
       ) : null}
