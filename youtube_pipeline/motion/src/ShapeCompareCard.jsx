@@ -4,6 +4,7 @@ import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
+import {up} from './upgrade';
 
 // ── 도형 두 개를 나란히 놓고 재기 ───────────────────────────────────────
 // `FrontageCard`(§38)가 평면+정면 두 단을 쌓는 무거운 카드라면, 이건 **한 단**이다.
@@ -92,9 +93,12 @@ export const ShapeCompareCard = ({
               {/* shrink 가 걸리면 위에서 눌러 내린다 */}
               {Array.from({length: n}, (_, k) => (
                 <rect key={k} x={x} y={y + (h / n) * k} width={w} height={h / n}
-                      fill={o.hot ? (k % 2 ? '#E8ED4A' : YELLOW)
-                                  : (k % 2 ? FILL2 : FILL)}
-                      stroke={T.ink} strokeWidth={3} />
+                      // Y — 큰 면을 옐로로 채우면 어두운 판에선 올리브색이 된다.
+                      // 채움은 중립으로 두고 굵은 옐로 테두리로 "이쪽"을 표시한다.
+                      fill={o.hot && !up('Y') ? (k % 2 ? '#E8ED4A' : YELLOW)
+                                              : (k % 2 ? FILL2 : FILL)}
+                      stroke={o.hot && up('Y') ? YELLOW : T.ink}
+                      strokeWidth={o.hot && up('Y') ? 6 : 3} />
               ))}
               {/* 바닥선 — 둘이 같은 지면에 서 있다는 걸 보여야 높이 비교가 된다 */}
               <line x1={x - 46} y1={baseY} x2={x + w + 46} y2={baseY}

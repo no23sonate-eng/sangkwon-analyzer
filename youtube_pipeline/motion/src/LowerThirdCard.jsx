@@ -3,6 +3,7 @@ import {AbsoluteFill, Img, OffthreadVideo, staticFile, interpolate, useCurrentFr
 import {useA2ZFonts} from './Fonts';
 import {YELLOW, fadeIn, SP} from './paper';
 import {fit, estWidth} from './layout';
+import {tsize, up} from './upgrade';
 
 // ── 실사 위에 얹는 번호 + 문구 ──────────────────────────────────────────
 // "첫 번째, 경쟁자가 없었습니다" 같은 **열거형 문장**이 이 영상에 계속 나온다.
@@ -108,8 +109,8 @@ export const LowerThirdCard = ({
 
       {/* 출처는 채널 규칙대로 **우측 위 · Source :** (paper.jsx PaperSource 와 같은 자리) */}
       {source ? (
-        <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right', maxWidth: 760,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.04em',
+        <div style={{position: 'absolute', right: 44, ...(up('S') ? {bottom: 26} : {top: 34}), textAlign: 'right', maxWidth: 760,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: tsize(23), letterSpacing: '0.04em',
                      lineHeight: 1.3, color: dark ? 'rgba(255,255,255,0.7)' : 'rgba(27,30,36,0.55)',
                      opacity: fadeIn(frame, 40), wordBreak: 'keep-all'}}>
           {/^\s*source\s*:/i.test(source) ? source : `Source : ${source}`}

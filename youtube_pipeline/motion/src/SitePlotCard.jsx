@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 import {fit} from './layout';
+import {up} from './upgrade';
 
 // ── 대지 한 필지 (실제 3D) ──────────────────────────────────────────────
 // "대지 197평" 을 숫자만 띄우면 크기가 안 남는다. **땅 한 장을 실제로 눕혀 놓고**
@@ -51,7 +52,7 @@ export const SitePlotCard = ({
           {/* 필지 판 — 얇은 상자. 두께가 있어야 "땅 한 덩어리"로 보인다 */}
           <mesh position={[0, 0, 0]} scale={[e, 1, e]}>
             <boxGeometry args={[W, 0.42, D]} />
-            <meshStandardMaterial color={YELLOW} roughness={0.85} metalness={0} />
+            <meshStandardMaterial color={up('Y') ? '#E9E4D8' : YELLOW} roughness={0.85} metalness={0} />
           </mesh>
           <lineSegments scale={[e, 1, e]}>
             <edgesGeometry args={[new THREE.BoxGeometry(W, 0.42, D)]} />

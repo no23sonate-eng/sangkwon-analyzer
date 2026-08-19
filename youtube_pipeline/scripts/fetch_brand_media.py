@@ -126,9 +126,16 @@ def record(entry):
 def download(item, slug, height=720):
     os.makedirs(MEDIA_DIR, exist_ok=True)
     out = os.path.join(MEDIA_DIR, f'{slug}.%(ext)s')
-    so, se, rc = ytdlp(['-f', f'bv*[height<={height}][ext=mp4]+ba[ext=m4a]/b[height<={height}]',
-                        '--merge-output-format', 'mp4', '-o', out,
-                        f'https://www.youtube.com/watch?v={item["id"]}'], timeout=900)
+    # mweb 클라이언트는 포맷 목록이 좁다. 엄격한 조합부터 느슨한 순으로 내려간다.
+    fmts = [f'bv*[height<={height}][ext=mp4]+ba[ext=m4a]/b[height<={height}][ext=mp4]',
+            f'bv*[height<={height}]+ba/b[height<={height}]',
+            'bv*+ba/b', 'best']
+    rc, se = 1, ''
+    for f_ in fmts:
+        so, se, rc = ytdlp(['-f', f_, '--merge-output-format', 'mp4', '-o', out,
+                            f'https://www.youtube.com/watch?v={item["id"]}'], timeout=900)
+        if rc == 0:
+            break
     path = os.path.join(MEDIA_DIR, f'{slug}.mp4')
     if rc != 0 or not os.path.exists(path):
         print(f'  내려받기 실패: {se.strip()[-160:]}', flush=True)

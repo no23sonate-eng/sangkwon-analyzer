@@ -4,6 +4,7 @@ import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
 import {Highlighter, HL_YELLOW} from './annotate';
 import {fit} from './layout';
+import {tsize, up} from './upgrade';
 
 // ── 기사 발췌 판 ─────────────────────────────────────────────────────────
 // B1M 이 근거를 댈 때 쓰는 판. (Chicago Sun-Times 2022-04-26 인용 프레임에서 그대로 읽었다)
