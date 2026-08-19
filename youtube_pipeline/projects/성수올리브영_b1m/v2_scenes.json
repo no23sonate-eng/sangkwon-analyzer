@@ -1,7 +1,7 @@
 {
   "project": "성수올리브영_b1m",
   "design": "v4 중앙정렬 + 장치 다양화 (10장면 = 9종 장치)",
-  "note": "같은 장치 반복 금지. 실사 3 / 지면 7. 실사는 모두 성수동 실제 촬영본(Wikimedia Commons).",
+  "note": "같은 장치 반복 금지. 실사 3 / 지면 7. 실사는 모두 성수동 실제 촬영본(Wikimedia Commons). 모션은 강조가 있는 장면에만 — full 1 / accent 6 / still 3",
   "scenes": [
     {
       "id": 0,
@@ -28,7 +28,8 @@
             "t": "일까요?",
             "hot": false
           }
-        ]
+        ],
+        "motion": "full"
       }
     },
     {
@@ -43,7 +44,8 @@
         "unit": "개",
         "caption": "한 상권에 여섯 개",
         "markCaption": true,
-        "note": "그만큼 중요한 권역"
+        "note": "그만큼 중요한 권역",
+        "motion": "accent"
       }
     },
     {
@@ -76,7 +78,8 @@
           ]
         ],
         "duration": "도보 2분",
-        "note": "블록은 개념 도해 — 실제 필지 형상과 다름"
+        "note": "블록은 개념 도해 — 실제 필지 형상과 다름",
+        "motion": "accent"
       }
     },
     {
@@ -122,7 +125,8 @@
           "label": "1,400평",
           "sub": "1 ~ 5층"
         },
-        "note": "6층 이상 구성은 확인되지 않아 표기하지 않음"
+        "note": "6층 이상 구성은 확인되지 않아 표기하지 않음",
+        "motion": "accent"
       }
     },
     {
@@ -137,7 +141,8 @@
         "valueTarget": 250,
         "unit": "만 명",
         "caption": "전국 매장 중 내국인 방문 1위",
-        "credit": "자료: 올리브영 발표 · 이미지 Wikimedia Commons"
+        "credit": "자료: 올리브영 발표 · 이미지 Wikimedia Commons",
+        "motion": "accent"
       }
     },
     {
@@ -150,7 +155,8 @@
         "date": "2025.12.24",
         "headline": "그 건물의 주인이 바뀝니다",
         "mark": "주인이 바뀝니다",
-        "deck": "이지스자산운용 → 교보AIM자산운용"
+        "deck": "이지스자산운용 → 교보AIM자산운용",
+        "motion": "still"
       }
     },
     {
@@ -178,7 +184,8 @@
             "value": "교보AIM자산운용",
             "sub": "새 소유"
           }
-        ]
+        ],
+        "motion": "accent"
       }
     },
     {
@@ -201,7 +208,8 @@
             "성수동 오피스 최고가"
           ]
         },
-        "vs": "= "
+        "vs": "= ",
+        "motion": "still"
       }
     },
     {
@@ -227,7 +235,8 @@
             "t": "일까요?",
             "hot": false
           }
-        ]
+        ],
+        "motion": "still"
       }
     },
     {
@@ -265,7 +274,8 @@
             "label": "그래서"
           }
         ],
-        "note": "기존 수익률이 좋아서 샀더라도, 더 개선하고 싶을 수밖에"
+        "note": "기존 수익률이 좋아서 샀더라도, 더 개선하고 싶을 수밖에",
+        "motion": "accent"
       }
     }
   ]

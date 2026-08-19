@@ -1,5 +1,6 @@
 import React from 'react';
 import {Img, OffthreadVideo, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {genericFadeLen} from './anim';
 
 // ── v4 디자인 시스템 — The B1M 본편 실측 기반 (2026-08-19) ─────────────
 // v2/v3(검정+네온옐로)는 실은 Cleo/Stewart Hicks 계열이었다. B1M 본편
@@ -47,8 +48,11 @@ export const W = {
   caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 22, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.72)'},
 };
 
+// 일반 요소의 등장 페이드. 모션 예산에 따라 길이가 줄어든다.
+// accent(기본)에서는 6프레임 = 0.2초 — 사실상 컷이다. 움직임은 주인공에게만.
 export const fade = (frame, start, len = 14) =>
-  interpolate(frame, [start, start + len], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  interpolate(frame, [start, start + genericFadeLen(len)], [0, 1],
+    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 
 // ── 지면(PAPER) 표면 ──────────────────────────────────────────────────
 // 아주 옅은 종이 결 + 미세한 비네팅. 격자는 도면 카드에서만 켠다.

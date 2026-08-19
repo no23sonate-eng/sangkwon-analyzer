@@ -34,6 +34,8 @@ ARCHIVE_CARDS = {'ArchiveCard', 'SourceClipCard', 'ThenNowCard'}
 GROUP_HOT_CARDS = {'FloorStackCard', 'PaperElevationCard', 'PaperSectionCard'}
 # 자리 채우기용 예시 이미지 — 실사 원칙 위반
 PLACEHOLDER_RE = re.compile(r'^(demo|sample|placeholder)/')
+# 모션 예산 — 'accent' 가 기본. 'full' 은 막의 첫 장면처럼 드물게만
+MOTION_MODES = ('still', 'accent', 'full')
 # 킥커·출처 역할을 하는 v4 prop 이름
 KICKER_KEYS = ('kicker', 'eyebrow', 'label', 'title')
 SOURCE_KEYS = ('source', 'credit')
@@ -83,6 +85,7 @@ def lint(scenes):
     n = len(scenes)
     text_only = 0
     prev_cards = []
+    prev_modes = []
     # 창작 판정은 대본 "전체" 기준 — 앞 장면에서 이어받은 수치는 정상이다
     script_numbers = set()
     for s in scenes:
@@ -154,7 +157,24 @@ def lint(scenes):
         if card in DATA_CARDS and 0 < dur < 6:
             findings.append((tag, 'RHY', f'데이터 카드가 {dur:.0f}초 — 등장 애니메이션이 다 안 보임(6초 이상 권장)', 'warn'))
 
+        mode = props.get('motion') or 'accent'
+        if mode not in MOTION_MODES:
+            findings.append((tag, 'MOT', f'motion "{mode}" 은 없는 값 — still/accent/full 중 하나', 'warn'))
+        prev_modes.append(mode)
         prev_cards.append(card)
+
+    # 모션 리듬 — 전부 같은 모드면 "다 똑같이 움직인다"가 된다 (사용자 지시)
+    if n >= 6:
+        from collections import Counter
+        cnt = Counter(prev_modes)
+        top, top_n = cnt.most_common(1)[0]
+        if top_n / n > 0.85:
+            findings.append(('전체', 'MOT',
+                             f'{top_n}/{n} 장면이 motion="{top}" — 강약이 없다. '
+                             '빠른 구간은 still, 막의 첫 장면만 full 로', 'warn'))
+        if cnt.get('full', 0) / n > 0.2:
+            findings.append(('전체', 'MOT',
+                             f'motion="full" 이 {cnt["full"]}장 — 전개 연출은 드물어야 한다 (20% 이하)', 'warn'))
 
     # 리듬 — 같은 카드 3연속
     for i in range(2, n):

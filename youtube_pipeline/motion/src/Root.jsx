@@ -41,7 +41,23 @@ import {PaperFormulaCard, PaperShareCard, PaperOrgCard, PaperListCard, PaperPres
 import {YQuoteCard} from './YQuoteCard';
 import {YCompareCard} from './YCompareCard';
 
+import {setMotionMode} from './anim';
+
 const FPS = 30;
+
+// 모션 예산 — 장면 props 의 motion('still'|'accent'|'full')을 렌더 직전에 심는다.
+// 컴포넌트 정체성이 매 프레임 바뀌면 리마운트되므로 한 번 만든 래퍼를 캐시한다.
+const wrapped = new Map();
+const withMotion = (Comp) => {
+  if (!wrapped.has(Comp)) {
+    const W = (props) => {
+      setMotionMode(props.motion);
+      return <Comp {...props} />;
+    };
+    wrapped.set(Comp, W);
+  }
+  return wrapped.get(Comp);
+};
 const durationFromProps = ({props}) => ({
   durationInFrames: Math.round((props.durationSec ?? 10) * FPS),
 });
@@ -254,7 +270,7 @@ export const RemotionRoot = () => {
         <Composition
           key={id}
           id={id}
-          component={comp}
+          component={withMotion(comp)}
           fps={FPS}
           width={1920}
           height={1080}
