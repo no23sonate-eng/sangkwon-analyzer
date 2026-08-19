@@ -50,6 +50,7 @@ export const FootageStatCard = ({
 // route: [[lon,lat], ...] 를 주면 파선 루트를 그린다.
 export const PaperWorldMapCard = ({
   eyebrow = '', title = '', focus = [110, 20, 145, 48],
+  geo = 'geo/world.geo.json', // 한국 상세도는 'geo/korea_provinces.geo.json'
   markers = [], route = null, note = '', credit = '',
 }) => {
   useA2ZFonts();
@@ -62,16 +63,27 @@ export const PaperWorldMapCard = ({
     return [((lon - x0) / (x1 - x0)) * W_, ((y1 - lat) / (y1 - y0)) * H_];
   };
   useEffect(() => {
-    fetch(staticFile('geo/world.geo.json'))
+    fetch(staticFile(geo))
       .then((r) => r.json())
-      .then((geo) => {
+      .then((gj) => {
+        // 정점이 아주 많은 상세 지도는 솎아낸다(형태는 유지, 렌더는 가볍게)
+        let total = 0;
+        for (const f of gj.features) {
+          const g = f.geometry;
+          const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+          for (const poly of polys) for (const ring of poly) total += ring.length;
+        }
+        const step = total > 120000 ? Math.ceil(total / 60000) : 1;
         const ps = [];
-        for (const f of geo.features) {
+        for (const f of gj.features) {
           const g = f.geometry;
           const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
           for (const poly of polys) {
             for (const ring of poly) {
-              const pts = ring.map(([lo, la]) => prj(lo, la).map((v) => v.toFixed(1)).join(','));
+              if (ring.length < 8) continue;
+              const kept = step > 1 ? ring.filter((_, i) => i % step === 0 || i === ring.length - 1) : ring;
+              if (kept.length < 4) continue;
+              const pts = kept.map(([lo, la]) => prj(lo, la).map((v) => v.toFixed(1)).join(','));
               ps.push(`M${pts.join('L')}Z`);
             }
           }
@@ -90,7 +102,6 @@ export const PaperWorldMapCard = ({
   return (
     <AbsoluteFill>
       <PaperSurface tone={PAPER} />
-      <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
       <svg width={W_} height={H_} style={{position: 'absolute', top: 0, left: 0}}>
         {paths ? <path d={paths} fill="#DCE0E6" stroke="#FFFFFF" strokeWidth={1.4} opacity={fade(frame, 4, 20)} /> : null}
         {routeD ? (
@@ -116,6 +127,10 @@ export const PaperWorldMapCard = ({
           </div>
         );
       })}
+      {/* 헤더는 지도 위에 — 흰 스크림을 얇게 깔아 대비 확보 */}
+      <div style={{position: 'absolute', top: 0, left: 0, right: 0, height: 300, pointerEvents: 'none',
+        background: 'linear-gradient(180deg, rgba(240,242,247,0.95) 0%, rgba(240,242,247,0.7) 55%, rgba(240,242,247,0) 100%)'}} />
+      <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
       {note ? <Stage top={SAFE_BOTTOM - 58} style={{opacity: fade(frame, 44)}}><span style={P.caption}>{note}</span></Stage> : null}
       <Credit text={credit} dark={false} opacity={fade(frame, 44)} />
     </AbsoluteFill>
