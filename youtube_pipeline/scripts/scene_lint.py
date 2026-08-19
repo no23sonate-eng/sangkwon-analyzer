@@ -15,12 +15,28 @@ import sys
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 글자가 주인공인 카드 (그래픽 없음)
-TEXT_CARDS = {'YHeadlineCard', 'YQuoteCard'}
+TEXT_CARDS = {'YHeadlineCard', 'YQuoteCard', 'PaperArticleCard'}
 # 수치를 다루는 카드 — 출처·킥커가 있어야 신뢰가 붙는다
 DATA_CARDS = {
     'CleoStatCard', 'YTableCard', 'UnitBlocksCard', 'TrendCard',
     'SeatDotsCard', 'TimelineBarsCard', 'IconCountCard', 'YCompareCard',
+    'PaperStatCard', 'PaperCountCard', 'PaperCompareCard', 'PaperTableCard',
+    'PaperTimelineCard', 'FootageStatCard',
 }
+# 실사를 바닥에 까는 카드 (§21-2 기본층)
+FOOTAGE_CARDS = {
+    'FootageCard', 'FootageStatCard', 'FootageAnnotateCard', 'FootageLabelCard',
+    'SatelliteRouteCard', 'ArchiveCard', 'SourceClipCard', 'ThenNowCard',
+}
+# 아카이브·외부 인용 — 출처 표기가 없으면 쓰면 안 되는 카드
+ARCHIVE_CARDS = {'ArchiveCard', 'SourceClipCard', 'ThenNowCard'}
+# 층 묶음처럼 "한 덩어리" 강조가 정상인 카드
+GROUP_HOT_CARDS = {'FloorStackCard', 'PaperElevationCard', 'PaperSectionCard'}
+# 자리 채우기용 예시 이미지 — 실사 원칙 위반
+PLACEHOLDER_RE = re.compile(r'^(demo|sample|placeholder)/')
+# 킥커·출처 역할을 하는 v4 prop 이름
+KICKER_KEYS = ('kicker', 'eyebrow', 'label', 'title')
+SOURCE_KEYS = ('source', 'credit')
 NUM_RE = re.compile(r'[\d][\d,\.]*')
 
 
@@ -85,18 +101,32 @@ def lint(scenes):
 
         # R2 — 강조는 화면당 1곳
         hot = count_hot(props)
-        if card == 'FloorStackCard':
+        if card in GROUP_HOT_CARDS:
             hot = 1 if hot else 0  # 층 묶음 강조는 한 덩어리로 본다
         if hot > 1 and card not in ('YCompareCard',):
             findings.append((tag, 'R2', f'강조(hot) {hot}곳 — 화면당 1곳으로 줄일 것', 'warn'))
 
         # R8 — 데이터 카드는 킥커(맥락)가 있어야 한다
-        if card in DATA_CARDS and not props.get('kicker'):
+        if card in DATA_CARDS and not any(props.get(k) for k in KICKER_KEYS):
             findings.append((tag, 'R8', '데이터 카드인데 킥커(맥락)가 없음', 'warn'))
 
         # 출처 — 외부 수치를 말하면 출처가 붙어야 신뢰가 산다
-        if card in DATA_CARDS and not props.get('source'):
+        if card in DATA_CARDS and not any(props.get(k) for k in SOURCE_KEYS):
             findings.append((tag, 'SRC', '수치 카드에 출처 없음 (자체 추정이면 그렇게 표기)', 'info'))
+
+        # 실사 원칙 — 예시 이미지를 그대로 두고 렌더하지 않는다
+        img = props.get('image') or props.get('video') or ''
+        for key in ('thenImage', 'nowImage'):
+            img = img or props.get(key) or ''
+        if card in FOOTAGE_CARDS:
+            if not img:
+                findings.append((tag, 'MEDIA', '실사 카드인데 image/video 가 비어 있음', 'error'))
+            elif PLACEHOLDER_RE.match(img):
+                findings.append((tag, 'MEDIA', f'예시 이미지 "{img}" 사용 — 실제 대상 자료로 교체', 'error'))
+
+        # 아카이브·인용은 출처 없이 쓰지 않는다
+        if card in ARCHIVE_CARDS and not (props.get('credit') or props.get('courtesy')):
+            findings.append((tag, 'SRC', '아카이브·인용 화면에 출처 표기 없음', 'error'))
 
         # 창작 방지 — props 의 숫자가 대본 문장에 없으면 의심
         if script_numbers:
@@ -134,7 +164,9 @@ def lint(scenes):
 
     # 위계 — 실사 활용이 0이면 B1M 기본층을 안 쓴 것 (§21-2)
     has_photo = any(
-        s.get('use_v7') or (s.get('props', {}).get('bgImage'))
+        s.get('use_v7') or s.get('card') in FOOTAGE_CARDS
+        or s.get('props', {}).get('bgImage') or s.get('props', {}).get('image')
+        or s.get('props', {}).get('video')
         for s in scenes
     )
     if n >= 6 and not has_photo:

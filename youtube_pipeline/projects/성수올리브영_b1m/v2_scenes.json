@@ -1,7 +1,7 @@
 {
   "project": "성수올리브영_b1m",
-  "design": "v4 중앙정렬 + 장치 다양화 (10장면 = 8종 장치)",
-  "note": "같은 장치 반복 금지. 실사 3 / 지면 7.",
+  "design": "v4 중앙정렬 + 장치 다양화 (10장면 = 9종 장치)",
+  "note": "같은 장치 반복 금지. 실사 3 / 지면 7. 실사는 모두 성수동 실제 촬영본(Wikimedia Commons).",
   "scenes": [
     {
       "id": 0,
@@ -9,9 +9,9 @@
       "card": "FootageCard",
       "props": {
         "durationSec": 4.5,
-        "image": "demo/yongsan.jpg",
+        "image": "media/seongsu_cafe_street.jpg",
         "place": "SEONGSU · SEOUL",
-        "credit": "이미지 예시 — 성수 실사로 교체",
+        "credit": "자료: Wikimedia Commons",
         "align": "center",
         "scrim": "full",
         "label": "3막",
@@ -49,20 +49,34 @@
     {
       "id": 2,
       "line": "낙찰받은 부지에서 걸어서 2분 거리에 올리브영N 성수가 있습니다.",
-      "card": "FootageAnnotateCard",
+      "card": "PaperWalkCard",
       "props": {
         "durationSec": 7.0,
-        "image": "demo/yongsan.jpg",
-        "place": "도보 2분",
-        "credit": "이미지 예시 — 항공사진으로 교체",
-        "box": {
-          "x": 700,
-          "y": 380,
-          "w": 420,
-          "h": 260
+        "eyebrow": "낙찰 부지 → 올리브영N 성수",
+        "title": "걸어서 2분",
+        "from": {
+          "x": 560,
+          "y": 540,
+          "label": "낙찰 부지"
         },
-        "label": "올리브영N 성수",
-        "sub": "낙찰 부지에서 걸어서 2분"
+        "to": {
+          "x": 1400,
+          "y": 500,
+          "label": "올리브영N 성수",
+          "sub": "팩토리얼 성수 1~5층"
+        },
+        "waypoints": [
+          [
+            860,
+            560
+          ],
+          [
+            1080,
+            500
+          ]
+        ],
+        "duration": "도보 2분",
+        "note": "블록은 개념 도해 — 실제 필지 형상과 다름"
       }
     },
     {
@@ -114,16 +128,16 @@
     {
       "id": 4,
       "line": "개점 1년 누적 방문객 250만 명, 전국 매장 중 내국인 방문 1위입니다.",
-      "card": "PaperStatCard",
+      "card": "FootageStatCard",
       "props": {
         "durationSec": 9.0,
-        "eyebrow": "개점 1년 누적 방문객",
-        "label": "올리브영N 성수",
+        "image": "media/seongsu_storefronts.jpg",
+        "place": "SEONGSU · SEOUL",
+        "label": "개점 1년 누적 방문객 · 올리브영N 성수",
         "valueTarget": 250,
-        "valueSuffix": "만 명",
+        "unit": "만 명",
         "caption": "전국 매장 중 내국인 방문 1위",
-        "markCaption": true,
-        "credit": "자료: 올리브영 발표"
+        "credit": "자료: 올리브영 발표 · 이미지 Wikimedia Commons"
       }
     },
     {
@@ -196,8 +210,8 @@
       "card": "FootageCard",
       "props": {
         "durationSec": 5.0,
-        "image": "demo/yongsan.jpg",
-        "credit": "이미지 예시",
+        "image": "media/seongsu_skyline.jpg",
+        "credit": "자료: Wikimedia Commons",
         "align": "center",
         "scrim": "full",
         "segs": [

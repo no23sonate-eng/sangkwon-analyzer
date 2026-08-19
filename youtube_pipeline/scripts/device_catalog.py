@@ -16,32 +16,34 @@ import tempfile
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOTION = os.path.join(BASE, 'motion')
 CHROME = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'
-IMG = 'demo/yongsan.jpg'  # 예시 실사 (실제 프로젝트에선 교체)
+IMG = 'media/seongsu_skyline.jpg'  # 실사 원칙: 실제 대상(성수동) 자료로 점검한다
+IMG_ALT = 'media/seongsu_storefronts.jpg'
+IMG_OLD = 'media/seongsu_alley.jpg'  # 아카이브 등급 시험용
 
 DEVICES = [
     ('FootageCard', {
         'durationSec': 6, 'image': IMG, 'place': 'SEONGSU · SEOUL', 'align': 'center',
-        'scrim': 'full', 'label': '3막', 'credit': '이미지 예시',
+        'scrim': 'full', 'label': '3막', 'credit': '이미지: Wikimedia Commons',
         'segs': [{'t': '올리브영이 ', 'hot': False}, {'t': '몇 개', 'hot': True}, {'t': '일까요?', 'hot': False}],
     }),
     ('FootageStatCard', {
         'durationSec': 8, 'image': IMG, 'place': 'SEONGSU', 'valueTarget': 2548, 'unit': '억',
-        'label': '팩토리얼 성수 · 거래 총액', 'caption': '성수동 오피스 최고가', 'credit': '이미지 예시',
+        'label': '팩토리얼 성수 · 거래 총액', 'caption': '성수동 오피스 최고가', 'credit': '이미지: Wikimedia Commons',
     }),
     ('FootageAnnotateCard', {
-        'durationSec': 7, 'image': IMG, 'place': '도보 2분', 'credit': '이미지 예시',
+        'durationSec': 7, 'image': IMG, 'place': '도보 2분', 'credit': '이미지: Wikimedia Commons',
         'box': {'x': 700, 'y': 380, 'w': 420, 'h': 260},
-        'label': '올리브영N 성수', 'sub': '낙찰 부지에서 걸어서 2분',
+        'label': '대상 건물', 'sub': '카탈로그 예시 — 실제 지목이 아님',
     }),
     ('FootageLabelCard', {
-        'durationSec': 7, 'image': IMG, 'place': 'SEONGSU', 'concept': '입지', 'credit': '이미지 예시',
-        'labels': [{'x': 760, 'y': 430, 'text': '팩토리얼 성수'}, {'x': 1260, 'y': 540, 'text': '낙찰 부지'}],
+        'durationSec': 7, 'image': IMG, 'place': 'SEONGSU', 'concept': '입지', 'credit': '이미지: Wikimedia Commons',
+        'labels': [{'x': 760, 'y': 430, 'text': '대상 A'}, {'x': 1260, 'y': 540, 'text': '대상 B'}],
     }),
     ('SatelliteRouteCard', {
-        'durationSec': 8, 'image': IMG, 'place': 'SEONGSU', 'credit': '이미지 예시',
-        'title': '도보 2분 거리', 'routeLabel': '낙찰 부지 → 올리브영N 성수',
-        'regions': [{'cx': 700, 'cy': 470, 'rx': 150, 'ry': 100, 'label': '낙찰 부지'},
-                    {'cx': 1180, 'cy': 430, 'rx': 150, 'ry': 100, 'label': '올리브영N'}],
+        'durationSec': 8, 'image': IMG, 'place': 'SEONGSU', 'credit': '이미지: Wikimedia Commons',
+        'title': '두 권역의 거리', 'routeLabel': '권역 A → 권역 B',
+        'regions': [{'cx': 700, 'cy': 470, 'rx': 150, 'ry': 100, 'label': '권역 A'},
+                    {'cx': 1180, 'cy': 430, 'rx': 150, 'ry': 100, 'label': '권역 B'}],
         'route': [[700, 470], [900, 500], [1180, 430]],
     }),
     ('PaperStatCard', {
@@ -121,6 +123,31 @@ DEVICES = [
         'durationSec': 8, 'eyebrow': '위치', 'title': '성수 · 서울',
         'geo': 'geo/korea_provinces.geo.json', 'focus': [125.2, 33.0, 131.2, 38.9],
         'markers': [{'lon': 127.056, 'lat': 37.545, 'label': '성수동', 'sub': '팩토리얼 성수', 'hot': True}],
+    }),
+    ('PaperWalkCard', {
+        'durationSec': 8, 'eyebrow': '낙찰 부지 → 올리브영N 성수', 'title': '걸어서 2분',
+        'from': {'x': 560, 'y': 540, 'label': '낙찰 부지'},
+        'to': {'x': 1400, 'y': 500, 'label': '올리브영N 성수', 'sub': '팩토리얼 성수 1~5층'},
+        'waypoints': [[860, 560], [1080, 500]],
+        'duration': '도보 2분',
+        'note': '블록은 개념 도해 — 실제 필지 형상과 다름',
+    }),
+    ('ArchiveCard', {
+        'durationSec': 7, 'image': IMG_OLD, 'era': 'bw', 'fit': 'cover',
+        'dateChip': 'SEONGSU · ARCHIVE', 'caption': '아카이브 등급 예시',
+        'credit': '자료: Wikimedia Commons',
+    }),
+    ('SourceClipCard', {
+        'durationSec': 7, 'image': IMG_ALT, 'outlet': 'NEWS',
+        'headline': '외부 영상·기사를 인용하는 화면',
+        'dateChip': '2025.12', 'courtesy': 'WIKIMEDIA COMMONS',
+    }),
+    ('ThenNowCard', {
+        'durationSec': 8, 'eyebrow': '같은 자리', 'title': '성수동의 변화',
+        'thenImage': IMG_OLD, 'thenLabel': '과거',
+        'nowImage': IMG, 'nowLabel': '현재',
+        'note': '두 장면은 같은 권역 — 정확한 동일 지점 자료는 교체 필요',
+        'credit': '자료: Wikimedia Commons',
     }),
 ]
 
