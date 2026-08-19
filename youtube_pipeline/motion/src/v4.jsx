@@ -116,10 +116,10 @@ export const FootageSurface = ({image = '', video = '', videoStart = 0, scrim = 
       {softEdge && (image || video) ? (
         <div style={{
           position: 'absolute', inset: 0, overflow: 'hidden',
-          maskImage: 'radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 46%, rgba(0,0,0,1) 92%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 46%, rgba(0,0,0,1) 92%)',
+          maskImage: 'radial-gradient(ellipse 96% 108% at 50% 46%, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 96% 108% at 50% 46%, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%)',
         }}>
-          <div style={{position: 'absolute', inset: 0, filter: 'blur(4px)', transform: 'scale(1.02)'}}>
+          <div style={{position: 'absolute', inset: 0, filter: 'blur(3px)', transform: 'scale(1.02)'}}>
             {video ? (
               <OffthreadVideo src={staticFile(video)} startFrom={Math.round(videoStart * fps)} style={style} />
             ) : (
@@ -129,9 +129,11 @@ export const FootageSurface = ({image = '', video = '', videoStart = 0, scrim = 
         </div>
       ) : null}
       <div style={{position: 'absolute', inset: 0, background: grad}} />
-      {/* 비네팅 — 가장자리만 떨어뜨려 시선을 가운데로. 계조는 유지된다 */}
+      {/* 비네팅 — 가장자리만 살짝. 기본 ellipse(farthest-corner)로 0.34 를 주면
+          좌우 중앙까지 눌려 **레터박스처럼** 보인다(모션 검수에서 확인).
+          타원을 화면보다 크게 잡고 세기를 낮춘다 */}
       <div style={{position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.34) 100%)'}} />
+        background: 'radial-gradient(ellipse 96% 108% at 50% 46%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.20) 100%)'}} />
     </>
   );
 };

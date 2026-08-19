@@ -147,6 +147,27 @@ DEVICES = [
                  {'label': '사례 C', 'value': 2900, 'text': '2,900'}],
         'note': '사례 A~C 는 축척 예시 — 실제 사례가 아님',
     }),
+    ('PaperDotsCard', {
+        'durationSec': 9, 'eyebrow': '수용 규모', 'title': '한 점 = 100석',
+        'total': 17000, 'perDot': 100, 'unit': '석',
+        'legend': '● = 100석', 'caption': '점의 수가 곧 규모',
+        'note': '수치는 카탈로그 예시',
+    }),
+    ('PaperTrendCard', {
+        'durationSec': 9, 'eyebrow': '연도별 추이', 'title': '값의 변화',
+        'unit': '만원', 'axisLabel': '연면적 평당',
+        'series': [{'label': '2022', 'value': 2600, 'text': '2,600'},
+                   {'label': '2023', 'value': 2900, 'text': '2,900'},
+                   {'label': '2024', 'value': 3100, 'text': '3,100'},
+                   {'label': '2025', 'value': 4000, 'text': '4,000', 'hot': True}],
+        'note': '2022~2024 는 축척 예시 — 실제 값이 아님',
+    }),
+    ('PaperQuoteCard', {
+        'durationSec': 8, 'eyebrow': '관계자 발언',
+        'quote': '기존 수익률이 좋아서 산 건물이라도 매수자는 결국 수익률을 더 개선시키고 싶어진다',
+        'mark': '수익률을 더 개선',
+        'speaker': '카탈로그 예시', 'role': '· 발언 인용 장치',
+    }),
     ('ArchiveCard', {
         'durationSec': 7, 'image': IMG_OLD, 'era': 'bw', 'fit': 'cover',
         'dateChip': 'SEONGSU · ARCHIVE', 'caption': '아카이브 등급 예시',

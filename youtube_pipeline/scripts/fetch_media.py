@@ -48,8 +48,9 @@ def _get(url, headers=None, timeout=60, tries=4):
     """위키미디어는 연속 호출에 429 를 준다 — 간격을 두고 재시도한다."""
     for attempt in range(tries):
         gap = time.time() - _LAST[0]
-        if gap < 1.6:
-            time.sleep(1.6 - gap)
+        # 심사 때문에 후보를 여러 장 받으므로 호출량이 3~4배다. 간격을 넉넉히.
+        if gap < 2.6:
+            time.sleep(2.6 - gap)
         _LAST[0] = time.time()
         req = urllib.request.Request(url, headers={'User-Agent': UA, **(headers or {})})
         try:
@@ -57,7 +58,7 @@ def _get(url, headers=None, timeout=60, tries=4):
                 return r.read()
         except urllib.error.HTTPError as e:
             if e.code in (429, 503) and attempt < tries - 1:
-                time.sleep(4 * (attempt + 1))
+                time.sleep(8 * (attempt + 1))
                 continue
             raise
 
@@ -122,7 +123,11 @@ def from_wikimedia(query, slug, min_width=1280, anchor='', screen=True):
         if q in tried:
             continue
         tried.append(q)
-        got = _wikimedia_once(q, slug, min_width, anchor, screen)
+        try:
+            got = _wikimedia_once(q, slug, min_width, anchor, screen)
+        except Exception as e:  # noqa: BLE001 — 한 검색어가 실패해도 다음으로
+            print(f'  검색 실패({e})', flush=True)
+            got = None
         if got:
             return got
     return None
@@ -174,8 +179,12 @@ def _wikimedia_once(query, slug, min_width=1280, anchor='', screen=True):
     # 후보를 여러 장 받아 화면값으로 고른다 (screen=False 면 첫 장)
     best, best_raw, best_score, best_m = None, None, None, None
     for c in cands[:MAX_SCREEN if screen else 1]:
-        raw = _get(c['url'])
-        if len(raw) < 20000:
+        try:
+            raw = _get(c['url'])
+        except Exception as e:  # noqa: BLE001 — 한 후보가 막혀도 다음 후보로
+            print(f'  후보 내려받기 실패({e}) — 다음 후보', flush=True)
+            continue
+        if not raw or len(raw) < 20000:
             continue
         if not screen:
             best, best_raw = c, raw

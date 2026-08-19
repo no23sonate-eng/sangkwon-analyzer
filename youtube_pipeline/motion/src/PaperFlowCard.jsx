@@ -72,7 +72,9 @@ export const PaperFlowCard = ({
       {/* 노드 텍스트 */}
       {nodes.map((node, i) => {
         const x = startX + i * (nodeW + gap);
-        const inn = useRevealUp(stagger(i, 10, 12), 24, 16);
+        // 박스와 글자를 같은 프레임에 시작한다. 예전엔 글자가 4프레임 늦어
+        // "빈 박스가 먼저 뜨는" 구간이 생겼다 (모션 검수에서 확인).
+        const inn = useRevealUp(stagger(i, 10, 8), 22, 16);
         const hot = Boolean(node.hot);
         return (
           <div key={i} style={{position: 'absolute', left: x, top: nodeY, width: nodeW, height: nodeH,

@@ -147,6 +147,9 @@ def lint(scenes):
         # 리듬 — 글자 카드가 너무 길면 화면이 죽는다
         if card in TEXT_CARDS and dur > 9:
             findings.append((tag, 'RHY', f'글자 카드가 {dur:.0f}초 — 9초 넘으면 그래픽으로 바꾸거나 분할', 'warn'))
+        # 정착 후 너무 오래 붙들면 화면이 죽는다 (모션 검수: 대부분 2초 안에 정착)
+        if dur > 12:
+            findings.append((tag, 'RHY', f'{dur:.0f}초 — 화면은 보통 2초면 정착한다. 컷을 쪼개거나 소재를 바꿀 것', 'warn'))
         # 데이터 카드가 너무 짧으면 애니메이션이 끝나기 전에 넘어간다
         if card in DATA_CARDS and 0 < dur < 6:
             findings.append((tag, 'RHY', f'데이터 카드가 {dur:.0f}초 — 등장 애니메이션이 다 안 보임(6초 이상 권장)', 'warn'))

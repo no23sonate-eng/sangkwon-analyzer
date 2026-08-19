@@ -128,5 +128,65 @@
    "edge": 0.207,
    "lum": 81
   }
+ },
+ {
+  "file": "hanam_city.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Hanam Bus Information System.jpg",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AHanam%20Bus%20Information%20System.jpg",
+  "query": "Hanam Gyeonggi city",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.147,
+   "edge": 0.123,
+   "lum": 124
+  }
+ },
+ {
+  "file": "hanam_misa.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Misa and hanam.png",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AMisa%20and%20hanam.png",
+  "query": "Hanam Misa",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.069,
+   "edge": 0.053,
+   "lum": 19
+  }
+ },
+ {
+  "file": "sphere_las_vegas.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:2024 Las Vegas Grand Prix at the Sphere - Friday, November 22, Orbi.jpg",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3A2024%20Las%20Vegas%20Grand%20Prix%20at%20the%20Sphere%20-%20Friday%2C%20November%2022%2C%20Orbi.jpg",
+  "query": "Sphere Las Vegas",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.383,
+   "edge": 0.175,
+   "lum": 93
+  }
+ },
+ {
+  "file": "las_vegas_strip.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Las Vegas (Nevada, USA), The Strip -- 2012 -- 6139.jpg",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ALas%20Vegas%20%28Nevada%2C%20USA%29%2C%20The%20Strip%20--%202012%20--%206139.jpg",
+  "query": "Las Vegas Strip night",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.283,
+   "edge": 0.105,
+   "lum": 105
+  }
  }
 ]
