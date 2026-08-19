@@ -27,10 +27,11 @@ except ImportError:
     Image = None
 
 
-def render(cut, out_path, frame):
+def render(cut, out_path, frame, upgrade=''):
     props = {'card': cut.get('card', ''), 'props': cut.get('props', {}),
              'motion': cut.get('motion', {}) or {},
-             'durationSec': float(cut.get('durationSec') or 5)}
+             'durationSec': float(cut.get('durationSec') or 5),
+             'upgrade': upgrade}
     with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False, encoding='utf-8') as f:
         json.dump(props, f, ensure_ascii=False)
         p = f.name
@@ -71,6 +72,7 @@ def main():
     ap.add_argument('--out-name', default='before', help='출력 폴더 이름 (before/after)')
     ap.add_argument('--frame', type=int, default=70, help='뽑을 프레임 (등장 이후)')
     ap.add_argument('--only', default='', help='컷 id 쉼표 목록')
+    ap.add_argument('--upgrade', default='', help="개선 레이어: G(실사등급) T(타이포) S(출처) Y(옐로) 또는 all")
     ap.add_argument('--sheets-only', action='store_true')
     args = ap.parse_args()
 
@@ -93,7 +95,7 @@ def main():
         cut = scenes[k]
         name = cut.get('card', '?')
         out = os.path.join(out_dir, f'cut{int(k):03d}_{name}.png')
-        good, err = render(cut, out, args.frame)
+        good, err = render(cut, out, args.frame, args.upgrade)
         ok += 1 if good else 0
         if not good:
             print(f'[FAIL] cut{int(k):03d} {name} :: {err}', flush=True)

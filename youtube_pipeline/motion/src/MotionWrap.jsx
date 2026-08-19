@@ -3,6 +3,7 @@ import {AbsoluteFill} from 'remotion';
 import {MotionShell} from './MotionShell';
 import {CARDS} from './cardRegistry';
 import {themeOf} from './paper';
+import {setUpgrade} from './upgrade';
 
 // 아무 카드나 이름으로 받아 MotionShell 로 감싸 렌더한다.
 // scene_props.json 에 `motion: {dir, push, punchAt, exitSec}` 만 넣으면
@@ -13,7 +14,9 @@ const DARK_CARDS = new Set([
   'SphereHeroCard', 'ElevatorCard',
 ]);
 
-export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5}) => {
+export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5, upgrade = ''}) => {
+  // 디자인 개선 레이어 스위치 — 비우면 완성본과 동일하게 렌더된다
+  setUpgrade(upgrade);
   const C = CARDS[card];
   if (!C) return <AbsoluteFill style={{background: '#300'}} />;
   // **모션은 기본값이 "없음"이다.**

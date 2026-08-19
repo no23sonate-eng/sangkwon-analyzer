@@ -5,6 +5,8 @@ import {Img, OffthreadVideo, staticFile, useCurrentFrame} from 'remotion';
 // B1M의 "밝은 종이 + 그리드 + 플랫 실루엣" 설명 문법을 채널 팔레트로 번역:
 // 종이는 크림(#EFEAE3, 실사 액자와 동일), 잉크는 딥 차콜, 강조는 레몬 옐로.
 // 로직/구조/비교를 "설명"하는 구간 전용 — 실사/다크 카드와 구분되는 톤.
+import {veilOf, gradeFilter, GradeOverlay, tsize, up} from './upgrade';
+
 export const PAPER = '#EFEAE3';
 export const INK = '#23262B'; // 외곽선·본문
 export const INK_MUTE = '#9AA0A8'; // 비강조 면
@@ -139,7 +141,7 @@ export const LiveBackdrop = ({image = '', veil = 0.9, blur = 0, dir = 0,
   const box = {position: 'absolute', left: '50%', top: '50%', width: 1920, height: 1080,
                objectFit: 'cover',
                transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${k})`,
-               filter: blur ? `blur(${blur}px)` : 'none'};
+               filter: gradeFilter(blur)};
   return (
     <>
       <div style={{position: 'absolute', inset: 0, overflow: 'hidden', background: T.bg}}>
@@ -147,7 +149,8 @@ export const LiveBackdrop = ({image = '', veil = 0.9, blur = 0, dir = 0,
           ? <OffthreadVideo src={src} muted style={box} />
           : <Img src={src} style={box} />}
       </div>
-      <div style={{position: 'absolute', inset: 0, background: T.bg, opacity: veil}} />
+      <div style={{position: 'absolute', inset: 0, background: T.bg, opacity: veilOf(veil)}} />
+      <GradeOverlay dark={dark} />
     </>
   );
 };
@@ -238,9 +241,11 @@ export const PaperSource = ({source = '', dark = false, theme}) => {
   const T = themeOf(theme, dark);
   const txt = /^\s*source\s*:/i.test(source) ? source : `Source : ${source}`;
   return (
-    <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right',
-                 maxWidth: 760,
-                 fontFamily: 'A2Z Light, sans-serif', fontSize: 23,
+    <div style={{position: 'absolute', right: 44,
+                 // S — B1M 은 출처를 우하단 초소형으로 둔다. 우상단은 지역 칩 자리다
+                 ...(up('S') ? {bottom: 26, top: 'auto'} : {top: 34}),
+                 textAlign: 'right', maxWidth: 760,
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: tsize(23),
                  letterSpacing: '0.04em', lineHeight: 1.3, color: T.soft,
                  opacity: 0.85 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
       {txt}
