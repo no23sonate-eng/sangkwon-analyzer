@@ -17,7 +17,7 @@
    },
    "motion": {
     "dir": "left",
-    "push": 0.035,
+    "push": 0.045,
     "exitSec": 0
    }
   },
@@ -33,7 +33,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Sgroey / CC BY-SA 4.0"
-   }
+   },
+   "motion": {}
   },
   "2": {
    "card": "BigStatsCard",
@@ -60,8 +61,8 @@
     "source": "뉴스스페이스 · 블로터 2026.07.22"
    },
    "motion": {
-    "dir": "left",
-    "push": 0.035,
+    "dir": "up",
+    "push": 0.05,
     "exitSec": 0
    }
   },
@@ -74,11 +75,7 @@
     "theme": "ink",
     "source": "뉴스스페이스 · 블로터 2026.07.22"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "4": {
    "card": "ShapeCompareCard",
@@ -106,7 +103,7 @@
    },
    "motion": {
     "dir": "up",
-    "push": 0.035,
+    "push": 0.045,
     "exitSec": 0
    }
   },
@@ -123,11 +120,7 @@
     "theme": "paper",
     "source": "블로터 2026.07.22"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "6": {
    "card": "LowerThirdCard",
@@ -142,11 +135,7 @@
     "scrim": 0.55,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "7": {
    "card": "LowerThirdCard",
@@ -160,7 +149,8 @@
     "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "8": {
    "card": "BigStatsCard",
@@ -191,8 +181,8 @@
     "source": "뉴스스페이스 · 블로터 2026.07.22"
    },
    "motion": {
-    "dir": "right",
-    "push": 0.035,
+    "dir": "up",
+    "push": 0.045,
     "exitSec": 0
    }
   },
@@ -208,7 +198,8 @@
     "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "10": {
    "card": "BigStatsCard",
@@ -233,11 +224,7 @@
     },
     "source": "오픈애즈 2026.04.03 · 지도 Wikimedia Commons CC BY-SA 3.0"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "11": {
    "card": "MapCard",
@@ -286,7 +273,8 @@
     ],
     "align": "left",
     "source": "© OpenStreetMap contributors © CARTO · 위치 네이버지도 대조"
-   }
+   },
+   "motion": {}
   },
   "12": {
    "card": "LowerThirdCard",
@@ -301,11 +289,7 @@
     "scrim": 0.55,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "13": {
    "card": "LowerThirdCard",
@@ -319,7 +303,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "블로그 tenderrain / naver"
-   }
+   },
+   "motion": {}
   },
   "14": {
    "card": "LowerThirdCard",
@@ -333,7 +318,8 @@
     "align": "left",
     "scrim": 0.5,
     "source": "블로그 solvanian / naver"
-   }
+   },
+   "motion": {}
   },
   "15": {
    "card": "LowerThirdCard",
@@ -347,6 +333,11 @@
     "align": "center",
     "scrim": 0.52,
     "source": "블로그 wlsdlftn8297 / naver"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
    }
   },
   "16": {
@@ -362,11 +353,7 @@
     "scrim": 0.5,
     "source": "블로그 protohologram / naver"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "17": {
    "card": "LowerThirdCard",
@@ -380,7 +367,8 @@
     "align": "left",
     "scrim": 0.67,
     "source": "Pexels"
-   }
+   },
+   "motion": {}
   },
   "18": {
    "card": "ShapeCompareCard",
@@ -403,7 +391,7 @@
    },
    "motion": {
     "dir": "right",
-    "push": 0.035,
+    "push": 0.04,
     "exitSec": 0
    }
   },
@@ -419,7 +407,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "Pexels"
-   }
+   },
+   "motion": {}
   },
   "20": {
    "card": "LowerThirdCard",
@@ -434,11 +423,7 @@
     "scrim": 0.5,
     "source": "블로그 poiu123_ / naver"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "21": {
    "card": "LowerThirdCard",
@@ -452,7 +437,8 @@
     "align": "left",
     "scrim": 0.74,
     "source": "블로그 jooracan / naver"
-   }
+   },
+   "motion": {}
   },
   "22": {
    "card": "AspectRatioCard",
@@ -478,11 +464,7 @@
     "caption": "",
     "source": "도해"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "23": {
    "card": "FrontageCard",
@@ -509,7 +491,8 @@
     "note": "",
     "theme": "ink",
     "source": "도해"
-   }
+   },
+   "motion": {}
   },
   "24": {
    "card": "LowerThirdCard",
@@ -524,11 +507,7 @@
     "scrim": 0.34,
     "source": "블로그 hpphr / naver"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "25": {
    "card": "LowerThirdCard",
@@ -542,7 +521,8 @@
     "align": "center",
     "scrim": 0.3,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "26": {
    "card": "LowerThirdCard",
@@ -557,11 +537,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "27": {
    "card": "LowerThirdCard",
@@ -575,7 +551,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "28": {
    "card": "LowerThirdCard",
@@ -590,11 +567,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "29": {
    "card": "LowerThirdCard",
@@ -608,7 +581,8 @@
     "align": "left",
     "scrim": 0.76,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "30": {
    "card": "LowerThirdCard",
@@ -622,7 +596,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "31": {
    "card": "LowerThirdCard",
@@ -636,7 +611,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "32": {
    "card": "LowerThirdCard",
@@ -653,7 +629,7 @@
    },
    "motion": {
     "dir": "left",
-    "push": 0.035,
+    "push": 0.04,
     "exitSec": 0
    }
   },
@@ -670,11 +646,7 @@
     "scrim": 0.5,
     "source": "블로그 yunmystery / naver"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "34": {
    "card": "ShapeCompareCard",
@@ -699,11 +671,7 @@
     "theme": "ink",
     "source": "도해"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "35": {
    "card": "LowerThirdCard",
@@ -717,7 +685,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "블로그 imdressholic / naver"
-   }
+   },
+   "motion": {}
   },
   "36": {
    "card": "LowerThirdCard",
@@ -732,11 +701,7 @@
     "scrim": 0.5,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "37": {
    "card": "LowerThirdCard",
@@ -750,7 +715,8 @@
     "align": "left",
     "scrim": 0.78,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "38": {
    "card": "LowerThirdCard",
@@ -765,11 +731,7 @@
     "scrim": 0.3,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "39": {
    "card": "ShapeCompareCard",
@@ -795,8 +757,8 @@
     "source": "도해"
    },
    "motion": {
-    "dir": "right",
-    "push": 0.035,
+    "dir": "down",
+    "push": 0.04,
     "exitSec": 0
    }
   },
@@ -812,7 +774,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "41": {
    "card": "LowerThirdCard",
@@ -827,11 +790,7 @@
     "scrim": 0.5,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "42": {
    "card": "LowerThirdCard",
@@ -846,11 +805,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "43": {
    "card": "YFlowCard",
@@ -893,11 +848,7 @@
     ],
     "source": "도해"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "44": {
    "card": "LowerThirdCard",
@@ -912,11 +863,7 @@
     "scrim": 0.5,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "45": {
    "card": "LowerThirdCard",
@@ -930,7 +877,8 @@
     "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "46": {
    "card": "LowerThirdCard",
@@ -944,7 +892,8 @@
     "align": "left",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "47": {
    "card": "LowerThirdCard",
@@ -958,6 +907,11 @@
     "align": "center",
     "scrim": 0.5,
     "source": "블로그 yunny_23 / naver"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
    }
   },
   "48": {
@@ -973,11 +927,7 @@
     "scrim": 0.3,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "49": {
    "card": "LowerThirdCard",
@@ -992,11 +942,7 @@
     "scrim": 0.42,
     "source": "블로그 lovingshu / naver"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "50": {
    "card": "LowerThirdCard",
@@ -1011,11 +957,7 @@
     "scrim": 0.5,
     "source": "블로그 9zlog / naver"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "51": {
    "card": "LowerThirdCard",
@@ -1029,7 +971,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "Yzen2023 / CC BY 4.0"
-   }
+   },
+   "motion": {}
   },
   "52": {
    "card": "LowerThirdCard",
@@ -1044,11 +987,7 @@
     "scrim": 0.5,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "53": {
    "card": "LowerThirdCard",
@@ -1062,7 +1001,8 @@
     "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "54": {
    "card": "LowerThirdCard",
@@ -1077,11 +1017,7 @@
     "scrim": 0.5,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "55": {
    "card": "TrackRecordCard",
@@ -1105,11 +1041,7 @@
     "theme": "ink",
     "source": "화자 해석"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "56": {
    "card": "LowerThirdCard",
@@ -1124,11 +1056,7 @@
     "scrim": 0.54,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "57": {
    "card": "LowerThirdCard",
@@ -1142,7 +1070,8 @@
     "align": "center",
     "scrim": 0.55,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "58": {
    "card": "LowerThirdCard",
@@ -1157,11 +1086,7 @@
     "scrim": 0.54,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "59": {
    "card": "LowerThirdCard",
@@ -1175,7 +1100,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "60": {
    "card": "LowerThirdCard",
@@ -1190,11 +1116,7 @@
     "scrim": 0.54,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "61": {
    "card": "ShareSplitCard",
@@ -1217,11 +1139,7 @@
     },
     "source": "민법 제269조 · 하우징포스트 2025.09"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "62": {
    "card": "LowerThirdCard",
@@ -1236,11 +1154,7 @@
     "scrim": 0.55,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "63": {
    "card": "LowerThirdCard",
@@ -1254,7 +1168,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "64": {
    "card": "LowerThirdCard",
@@ -1270,8 +1185,8 @@
     "source": "Mixkit"
    },
    "motion": {
-    "dir": "right",
-    "push": 0.035,
+    "dir": "left",
+    "push": 0.04,
     "exitSec": 0
    }
   },
@@ -1287,7 +1202,8 @@
     "align": "center",
     "scrim": 0.3,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "66": {
    "card": "TrackRecordCard",
@@ -1309,11 +1225,7 @@
     "align": "center",
     "source": "민법 제269조 · 민사집행법"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "67": {
    "card": "ForkPathCard",
@@ -1334,7 +1246,8 @@
     "decided": 1,
     "theme": "ink",
     "source": "도해"
-   }
+   },
+   "motion": {}
   },
   "68": {
    "card": "LowerThirdCard",
@@ -1349,11 +1262,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "69": {
    "card": "ArticleCard",
@@ -1363,6 +1272,11 @@
     "body": "지난달 25일 서울동부지방법원 경매에서 성수동2가 준공업지역 토지 4,274㎡와 건물 2,503㎡가 «2,202억 100만원»에 낙찰됐다. 2021년 강남 논현동 빌딩의 1,055억원을 뛰어넘는 «국내 경매 시장 사상 최고 기록»이다.",
     "theme": "ink",
     "source": "뉴스1 2025.09 · 헤럴드경제"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
    }
   },
   "70": {
@@ -1378,11 +1292,7 @@
     "scrim": 0.54,
     "source": "블로그 realtyincome___ / naver"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "71": {
    "card": "ShapeCompareCard",
@@ -1405,11 +1315,7 @@
     "theme": "ink",
     "source": "하우징포스트 2025.09"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "72": {
    "card": "BigStatsCard",
@@ -1439,11 +1345,7 @@
     },
     "source": "하우징포스트 2025.09"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "73": {
    "card": "LowerThirdCard",
@@ -1457,7 +1359,8 @@
     "align": "center",
     "scrim": 0.55,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "74": {
    "card": "LowerThirdCard",
@@ -1471,7 +1374,8 @@
     "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "75": {
    "card": "LowerThirdCard",
@@ -1486,11 +1390,7 @@
     "scrim": 0.25,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "76": {
    "card": "LowerThirdCard",
@@ -1504,7 +1404,8 @@
     "align": "center",
     "scrim": 0.25,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "77": {
    "card": "MapCard",
@@ -1554,11 +1455,7 @@
     "align": "left",
     "source": "© OpenStreetMap contributors © CARTO · ZDNet 2025.11.17 · 위치 네이버지도 대조"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "78": {
    "card": "LowerThirdCard",
@@ -1572,7 +1469,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "사진=팩토리얼 성수 / heyPOP"
-   }
+   },
+   "motion": {}
   },
   "79": {
    "card": "MapCard",
@@ -1607,6 +1505,11 @@
     ],
     "align": "left",
     "source": "© OpenStreetMap contributors © CARTO · 블로터 2026.07.22"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
    }
   },
   "80": {
@@ -1632,11 +1535,7 @@
     },
     "source": "CJ올리브영 · 사진=팩토리얼 성수 / heyPOP"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "81": {
    "card": "LowerThirdCard",
@@ -1651,11 +1550,7 @@
     "scrim": 0.55,
     "source": "사진=CJ올리브영 / CJ뉴스룸"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "82": {
    "card": "LowerThirdCard",
@@ -1670,11 +1565,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "83": {
    "card": "LowerThirdCard",
@@ -1688,7 +1579,8 @@
     "align": "left",
     "scrim": 0.62,
     "source": "사진=CJ올리브영 / CJ뉴스룸"
-   }
+   },
+   "motion": {}
   },
   "84": {
    "card": "ArticleCard",
@@ -1698,6 +1590,11 @@
     "body": "팩토리얼 성수가 «2,548억원»에 새 주인을 찾았다. 이지스자산운용에서 교보AIM자산운용으로 소유주가 바뀌며, 연면적 3.3㎡당 «4,000만원» 수준으로 «성수동 오피스 최고가»를 새로 썼다.",
     "theme": "ink",
     "source": "비즈워치 2026.01.14"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
    }
   },
   "85": {
@@ -1719,11 +1616,7 @@
     },
     "source": "비즈워치 2026.01.14"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "86": {
    "card": "BigStatsCard",
@@ -1748,11 +1641,7 @@
     },
     "source": "비즈워치 2026.01.14"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "87": {
    "card": "LowerThirdCard",
@@ -1766,7 +1655,8 @@
     "align": "center",
     "scrim": 0.55,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "88": {
    "card": "YFlowCard",
@@ -1800,7 +1690,8 @@
      }
     ],
     "source": "화자 판단 — 추정"
-   }
+   },
+   "motion": {}
   },
   "89": {
    "card": "LowerThirdCard",
@@ -1815,11 +1706,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "90": {
    "card": "LowerThirdCard",
@@ -1833,7 +1720,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "사진=CJ올리브영 / CJ뉴스룸"
-   }
+   },
+   "motion": {}
   },
   "91": {
    "card": "LowerThirdCard",
@@ -1848,11 +1736,7 @@
     "scrim": 0.78,
     "source": "블로그 9zlog / naver"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "92": {
    "card": "PaperImageCard",
@@ -1864,6 +1748,11 @@
     "source": "MTAPhotos / BY 2.0",
     "theme": "paper",
     "align": "center"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
    }
   },
   "93": {
@@ -1890,11 +1779,7 @@
     },
     "source": "블로터 2026.07.22"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "94": {
    "card": "CostStackCard",
@@ -1926,11 +1811,7 @@
     "theme": "ink",
     "source": "낙찰가=법원 공고 · 세율=지방세법 / 나머지 추정"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "95": {
    "card": "LowerThirdCard",
@@ -1945,11 +1826,7 @@
     "scrim": 0.54,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "96": {
    "card": "LowerThirdCard",
@@ -1964,11 +1841,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "97": {
    "card": "TwoPanelCard",
@@ -1992,11 +1865,7 @@
     "theme": "blueprint",
     "source": "화자 판단"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "98": {
    "card": "ShapeCompareCard",
@@ -2017,6 +1886,11 @@
     "theme": "blueprint",
     "note": "용적률 400~500% 가정 · 실제 지구단위계획 미반영 — 자체 시뮬레이션",
     "source": "자체 시뮬레이션 — 가정값"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
    }
   },
   "99": {
@@ -2036,11 +1910,7 @@
     "align": "center",
     "source": "자체 시뮬레이션 — 가정값"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "100": {
    "card": "LowerThirdCard",
@@ -2054,7 +1924,8 @@
     "align": "center",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "101": {
    "card": "MassingCard",
@@ -2069,11 +1940,7 @@
     "note": "대지가 200평이 채 안 돼 자주식 주차도 쉽지 않다",
     "source": "© OpenStreetMap contributors"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "102": {
    "card": "LowerThirdCard",
@@ -2088,11 +1955,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "103": {
    "card": "LowerThirdCard",
@@ -2107,11 +1970,7 @@
     "scrim": 0.5,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "104": {
    "card": "LowerThirdCard",
@@ -2125,7 +1984,8 @@
     "align": "left",
     "scrim": 0.54,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "105": {
    "card": "LowerThirdCard",
@@ -2140,11 +2000,7 @@
     "scrim": 0.5,
     "source": "Pexels"
    },
-   "motion": {
-    "dir": "up",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "106": {
    "card": "LowerThirdCard",
@@ -2158,7 +2014,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "107": {
    "card": "LowerThirdCard",
@@ -2173,11 +2030,7 @@
     "scrim": 0.75,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "108": {
    "card": "LowerThirdCard",
@@ -2193,8 +2046,8 @@
     "source": "Netflix House 공식 이미지 / 블로그 artlife"
    },
    "motion": {
-    "dir": "right",
-    "push": 0.035,
+    "dir": "left",
+    "push": 0.04,
     "exitSec": 0
    }
   },
@@ -2210,7 +2063,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "110": {
    "card": "LowerThirdCard",
@@ -2225,11 +2079,7 @@
     "scrim": 0.52,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "111": {
    "card": "LowerThirdCard",
@@ -2243,7 +2093,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "블로그 tomoekunn / naver"
-   }
+   },
+   "motion": {}
   },
   "112": {
    "card": "MapCard",
@@ -2279,11 +2130,7 @@
     "align": "left",
     "source": "© OpenStreetMap contributors © CARTO · 이데일리 마켓in"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "113": {
    "card": "LowerThirdCard",
@@ -2298,11 +2145,7 @@
     "scrim": 0.5,
     "source": "조감도=K-프로젝트 / 더벨"
    },
-   "motion": {
-    "dir": "down",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "114": {
    "card": "LowerThirdCard",
@@ -2316,7 +2159,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "블로그 onomdear / naver"
-   }
+   },
+   "motion": {}
   },
   "115": {
    "card": "LowerThirdCard",
@@ -2331,11 +2175,7 @@
     "scrim": 0.65,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "left",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "116": {
    "card": "LowerThirdCard",
@@ -2349,7 +2189,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "사진=디에디트 the-edit.co.kr"
-   }
+   },
+   "motion": {}
   },
   "117": {
    "card": "YTableCard",
@@ -2384,7 +2225,7 @@
    },
    "motion": {
     "dir": "left",
-    "push": 0.035,
+    "push": 0.04,
     "exitSec": 0
    }
   },
@@ -2400,7 +2241,8 @@
     "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
-   }
+   },
+   "motion": {}
   },
   "119": {
    "card": "LowerThirdCard",
@@ -2414,7 +2256,8 @@
     "align": "center",
     "scrim": 0.34,
     "source": "Pexels"
-   }
+   },
+   "motion": {}
   },
   "120": {
    "card": "ForkPathCard",
@@ -2435,6 +2278,11 @@
     "question": "어느 쪽?",
     "theme": "ink",
     "source": "도해"
+   },
+   "motion": {
+    "dir": "right",
+    "push": 0.05,
+    "exitSec": 0
    }
   },
   "121": {
@@ -2450,11 +2298,7 @@
     "scrim": 0.54,
     "source": "Mixkit"
    },
-   "motion": {
-    "dir": "right",
-    "push": 0.035,
-    "exitSec": 0
-   }
+   "motion": {}
   },
   "122": {
    "card": "LowerThirdCard",
@@ -2468,7 +2312,8 @@
     "align": "center",
     "scrim": 0.5,
     "source": "CartoonChess / CC BY-SA 4.0"
-   }
+   },
+   "motion": {}
   }
  }
 }

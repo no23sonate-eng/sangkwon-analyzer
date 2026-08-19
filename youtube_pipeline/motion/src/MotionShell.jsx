@@ -25,7 +25,10 @@ export const MotionShell = ({
   const sy = dir === 'up' ? 1 : dir === 'down' ? -1 : 0;
 
   // ① 진입 — 화면 12% 만큼 밀려 들어오며 스프링으로 안착 (오버슛 없음: damping 200)
-  const e = spring({frame, fps, config: {damping: 200, stiffness: 120}, durationInFrames: enterF});
+  // enterF 0 = 하드컷. spring 에 0 프레임을 넘기면 안 되므로 여기서 끊는다
+  const e = enterF > 0
+    ? spring({frame, fps, config: {damping: 200, stiffness: 120}, durationInFrames: enterF})
+    : 1;
   const ex = (1 - e) * sx * 230;
   const ey = (1 - e) * sy * 130;
 
