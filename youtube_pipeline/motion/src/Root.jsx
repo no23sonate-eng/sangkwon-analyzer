@@ -35,7 +35,7 @@ import {PaperCompareCard, PaperTableCard, PaperTimelineCard, PaperCountCard, Pap
 import {FootageStatCard, PaperWorldMapCard, PaperDocumentCard} from './PaperKit2';
 import {FootageLabelCard, SatelliteRouteCard, PaperMassingCard, PaperSectionCard} from './PaperKit3';
 import {ArchiveCard, SourceClipCard, ThenNowCard} from './ArchiveKit';
-import {PaperWalkCard} from './PaperKit4';
+import {PaperWalkCard, PaperBarCard} from './PaperKit4';
 import {YQuoteCard} from './YQuoteCard';
 import {YCompareCard} from './YCompareCard';
 
@@ -237,6 +237,7 @@ export const RemotionRoot = () => {
         ['SourceClipCard', SourceClipCard, {}],
         ['ThenNowCard', ThenNowCard, {}],
         ['PaperWalkCard', PaperWalkCard, {}],
+        ['PaperBarCard', PaperBarCard, {bars: []}],
       ].map(([id, comp, defaults]) => (
         <Composition
           key={id}

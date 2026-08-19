@@ -138,6 +138,15 @@ DEVICES = [
         'duration': '도보 2분',
         'note': '블록은 개념 도해 — 실제 필지 형상과 다름',
     }),
+    ('PaperBarCard', {
+        'durationSec': 9, 'eyebrow': '연면적 평당 거래가', 'title': '성수동 오피스',
+        'shape': 'building', 'unit': '만원',
+        'bars': [{'label': '사례 A', 'value': 2600, 'text': '2,600'},
+                 {'label': '사례 B', 'value': 3100, 'text': '3,100'},
+                 {'label': '팩토리얼 성수', 'value': 4000, 'text': '4,000', 'hot': True, 'sub': '성수동 최고가'},
+                 {'label': '사례 C', 'value': 2900, 'text': '2,900'}],
+        'note': '사례 A~C 는 축척 예시 — 실제 사례가 아님',
+    }),
     ('ArchiveCard', {
         'durationSec': 7, 'image': IMG_OLD, 'era': 'bw', 'fit': 'cover',
         'dateChip': 'SEONGSU · ARCHIVE', 'caption': '아카이브 등급 예시',

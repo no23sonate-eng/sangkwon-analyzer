@@ -250,7 +250,9 @@ export const PaperSectionCard = ({
     const hot = Boolean(f.hot);
     return (
       <g>
-        {hot ? <rect x={bx} y={y} width={bw * t} height={fh} fill="rgba(217,154,31,0.12)" /> : null}
+        {/* 주인공 층은 속을 채운 검은 덩어리 (입면 카드와 같은 문법) */}
+        {hot ? <rect x={bx} y={y} width={bw * t} height={fh} fill={INK} /> : null}
+        {hot ? <line x1={bx} y1={y + fh} x2={bx + bw * t} y2={y + fh} stroke="rgba(255,255,255,0.34)" strokeWidth={1.4} /> : null}
         {under && !hot ? <rect x={bx} y={y} width={bw * t} height={fh} fill="rgba(46,92,154,0.06)" /> : null}
         <rect x={bx} y={y} width={bw * t} height={fh}
           fill="none" stroke={hot ? INK : under ? '#93A3BA' : '#A9AFB8'}

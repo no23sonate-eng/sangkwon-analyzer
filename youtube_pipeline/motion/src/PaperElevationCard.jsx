@@ -56,17 +56,23 @@ export const PaperElevationCard = ({
           });
           return (
             <g key={i}>
-              {hot ? (
-                <rect x={bx} y={y} width={bw * t} height={fh} fill="rgba(217,154,31,0.10)" />
-              ) : null}
+              {/* 주인공 층은 **속을 채운 검은 덩어리**로.
+                  선만으로 그리면 화면에 잉크가 거의 없어 B1M 지면보다 훨씬
+                  묽게 보인다 (quality_probe: ink 0.037 vs B1M 0.058~0.205) */}
+              {hot ? <rect x={bx} y={y} width={bw * t} height={fh} fill={INK} /> : null}
               <rect x={bx} y={y} width={bw * t} height={fh}
                 fill="none" stroke={hot ? INK : '#A9AFB8'} strokeWidth={hot ? 2 : 1.2} />
-              {/* 창 분할 — 얇은 세로선 */}
+              {/* 층 경계 — 덩어리로 칠하면 층 수가 안 보이므로 밝은 선으로 되살린다 */}
+              {hot ? (
+                <line x1={bx} y1={y + fh} x2={bx + bw * t} y2={y + fh}
+                  stroke="rgba(255,255,255,0.34)" strokeWidth={1.4} />
+              ) : null}
+              {/* 창 분할 — 어두운 덩어리 위에서는 밝은 선으로 뒤집는다 */}
               {Array.from({length: 7}, (_, k) => (
                 <line key={k}
                   x1={bx + (bw / 8) * (k + 1)} y1={y + fh * 0.26}
                   x2={bx + (bw / 8) * (k + 1)} y2={y + fh * 0.76}
-                  stroke={hot ? '#8A9099' : '#C7CBD2'} strokeWidth={1} opacity={t} />
+                  stroke={hot ? 'rgba(255,255,255,0.30)' : '#C7CBD2'} strokeWidth={1} opacity={t} />
               ))}
             </g>
           );

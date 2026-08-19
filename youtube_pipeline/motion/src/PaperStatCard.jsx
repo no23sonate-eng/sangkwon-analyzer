@@ -40,7 +40,7 @@ export const PaperStatCard = ({
 
   return (
     <AbsoluteFill>
-      <PaperSurface tone={PAPER} />
+      <PaperSurface tone={PAPER} plot />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
 
       {label ? (

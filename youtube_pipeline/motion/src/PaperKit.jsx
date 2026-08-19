@@ -35,7 +35,7 @@ export const PaperCompareCard = ({
   };
   return (
     <AbsoluteFill>
-      <PaperSurface tone={PAPER} />
+      <PaperSurface tone={PAPER} plot />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
       <Side d={left} x={960 - CW - 90} delay={10} />
       <Side d={right} x={960 + 90} delay={20} />
@@ -58,21 +58,31 @@ export const PaperTableCard = ({
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
-  const TW = 1080;
-  const rowH = rows.length > 4 ? 92 : 112;
-  const top = 330;
+  const TW = 1180;
+  const rowH = rows.length > 4 ? 96 : 116;
+  const top = 348;
+  const HEAD = 56; // 표 머리띠 — 지면에 검은 면을 하나 두어 도표가 서게 한다
   return (
     <AbsoluteFill>
-      <PaperSurface tone={PAPER} />
+      <PaperSurface tone={PAPER} plot />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
+      <div style={{
+        position: 'absolute', left: (1920 - TW) / 2, top: top - HEAD, width: TW, height: HEAD,
+        background: INK, opacity: fade(frame, 6),
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 22px', boxSizing: 'border-box',
+      }}>
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 21, letterSpacing: '0.2em', color: '#FFFFFF'}}>항목</span>
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 21, letterSpacing: '0.2em', color: '#FFFFFF'}}>내용</span>
+      </div>
       {rows.map((r, i) => {
         const inn = useRevealUp(stagger(i, 6, 10), 24, 14);
         return (
           <div key={i} style={{position: 'absolute', left: (1920 - TW) / 2, top: top + i * rowH, width: TW, height: rowH, ...inn}}>
             <div style={{position: 'absolute', bottom: 0, left: 0, width: TW, height: 1, background: HAIR}} />
             {i === 0 ? <div style={{position: 'absolute', top: 0, left: 0, width: TW, height: 1, background: HAIR}} /> : null}
-            <div style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 6, ...P.label, fontSize: 28}}>{r.label}</div>
-            <div style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 6, textAlign: 'right'}}>
+            <div style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 22, ...P.label, fontSize: 28}}>{r.label}</div>
+            <div style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 22, textAlign: 'right'}}>
               <span style={{...P.valueM, fontSize: r.hot ? 50 : 42}}>
                 {r.hot ? <Mark on={interpolate(frame, [stagger(i, 6, 26), stagger(i, 6, 26) + 22], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: EASE.outExpo})}>{r.value}</Mark> : r.value}
               </span>
@@ -105,7 +115,7 @@ export const PaperTimelineCard = ({
   const y = 548;
   return (
     <AbsoluteFill>
-      <PaperSurface tone={PAPER} />
+      <PaperSurface tone={PAPER} plot />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         <DrawPath d={`M ${x0} ${y} L ${x0 + axisW} ${y}`} start={6} dur={34} length={axisW} stroke={INK2} strokeWidth={2} />
@@ -150,11 +160,11 @@ export const PaperTimelineCard = ({
 };
 
 // 4) 개수 — 픽토그램을 실제 개수만큼, 가운데 그리드
-const StoreGlyph = ({size = 1, ink = INK, on = 1}) => (
+// 센 픽토그램은 **면으로** 그린다. 선으로만 그리면 화면이 묽다.
+const StoreGlyph = ({size = 1, ink = INK, filled = true, on = 1}) => (
   <svg width={78 * size} height={92 * size} viewBox="0 0 78 92" style={{opacity: on}}>
-    <path d="M8 30 L39 8 L70 30" fill="none" stroke={ink} strokeWidth={3} />
-    <rect x={14} y={30} width={50} height={52} fill="none" stroke={ink} strokeWidth={3} />
-    <rect x={28} y={52} width={22} height={30} fill="none" stroke={ink} strokeWidth={2.4} />
+    <path d="M4 32 L39 5 L74 32 L74 84 L4 84 Z" fill={filled ? ink : 'none'} stroke={ink} strokeWidth={3} strokeLinejoin="round" />
+    <rect x={29} y={54} width={20} height={30} fill={filled ? '#F0F2F7' : 'none'} stroke={filled ? 'none' : ink} strokeWidth={2.4} />
   </svg>
 );
 
@@ -171,12 +181,12 @@ export const PaperCountCard = ({
   const markOn = interpolate(frame, [12 + count * 7 + 16, 12 + count * 7 + 40], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: EASE.outExpo});
   return (
     <AbsoluteFill>
-      <PaperSurface tone={PAPER} />
+      <PaperSurface tone={PAPER} plot />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
       <div style={{position: 'absolute', left: (1920 - gridW) / 2, top: 330, width: gridW, display: 'flex', flexWrap: 'wrap'}}>
         {Array.from({length: count}, (_, i) => (
           <div key={i} style={{width: cell, display: 'flex', justifyContent: 'center', paddingBottom: 18}}>
-            <StoreGlyph size={size} ink={i < shown ? INK : '#CDD2D9'} on={fade(frame, stagger(i, 7, 12))} />
+            <StoreGlyph size={size} ink={i < shown ? INK : '#CDD2D9'} filled={i < shown} on={fade(frame, stagger(i, 7, 12))} />
           </div>
         ))}
       </div>

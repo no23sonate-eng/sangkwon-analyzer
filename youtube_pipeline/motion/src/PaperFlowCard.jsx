@@ -29,7 +29,7 @@ export const PaperFlowCard = ({
 
   return (
     <AbsoluteFill>
-      <PaperSurface tone={PAPER} />
+      <PaperSurface tone={PAPER} plot />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>

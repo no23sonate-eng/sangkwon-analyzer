@@ -57,8 +57,13 @@ export const PaperSurface = ({tone = PAPER, plot = false}) => (
     <div style={{position: 'absolute', inset: 0, background: tone}} />
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
       <defs>
+        {/* 제도지 격자 — 0.045 는 사실상 안 보였다(quality_probe: edge 변화 0).
+            B1M 의 차트 지면에는 격자가 분명히 보인다. 잔격자 + 굵은 격자 2단 */}
         <pattern id="v4plot" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M40 0 L0 0 0 40" fill="none" stroke="rgba(22,24,26,0.045)" strokeWidth="1" />
+          <path d="M40 0 L0 0 0 40" fill="none" stroke="rgba(22,24,26,0.10)" strokeWidth="1" />
+        </pattern>
+        <pattern id="v4plotMajor" width="200" height="200" patternUnits="userSpaceOnUse">
+          <path d="M200 0 L0 0 0 200" fill="none" stroke="rgba(22,24,26,0.17)" strokeWidth="1.2" />
         </pattern>
         <radialGradient id="v4vig" cx="50%" cy="45%" r="75%">
           <stop offset="60%" stopColor="#000" stopOpacity="0" />
@@ -70,6 +75,7 @@ export const PaperSurface = ({tone = PAPER, plot = false}) => (
         </filter>
       </defs>
       {plot ? <rect width="1920" height="1080" fill="url(#v4plot)" /> : null}
+      {plot ? <rect width="1920" height="1080" fill="url(#v4plotMajor)" /> : null}
       <rect width="1920" height="1080" fill="url(#v4vig)" />
       <rect width="1920" height="1080" filter="url(#v4tex)" opacity="0.035" />
     </svg>
@@ -78,15 +84,23 @@ export const PaperSurface = ({tone = PAPER, plot = false}) => (
 
 // ── 실사(FOOTAGE) 표면 ────────────────────────────────────────────────
 // 느린 줌 + 하단 그라디언트(자막·크레딧 가독성). 텍스트는 흰색.
-export const FootageSurface = ({image = '', video = '', videoStart = 0, scrim = 'bottom'}) => {
+export const FootageSurface = ({image = '', video = '', videoStart = 0, scrim = 'bottom', softEdge = true}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const z = 1.05 + (frame / 900) * 0.05; // 아주 느린 줌인
-  const style = {position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})`};
+  // 등급 — B1M 실사는 우리보다 밝고 채도가 높다(quality_probe 실측).
+  // 스크림으로 전체를 덮어 눌러버리면 계조가 죽으므로, 화면을 덮는 대신
+  // 소재 자체를 살짝 올리고 어둡게 하는 일은 비네팅·부분 그라디언트에 맡긴다.
+  const style = {
+    position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+    transform: `scale(${z})`, filter: 'contrast(1.05) saturate(1.12) brightness(1.03)',
+  };
   const grad =
     scrim === 'full'
-      ? 'linear-gradient(180deg, rgba(8,10,12,.62) 0%, rgba(8,10,12,.38) 45%, rgba(8,10,12,.78) 100%)'
-      : 'linear-gradient(180deg, rgba(8,10,12,.30) 0%, rgba(8,10,12,0) 34%, rgba(8,10,12,.10) 62%, rgba(8,10,12,.72) 100%)';
+      // full = 화면 중앙에 글이 오는 경우. 전면 워시(.38~.78) 대신
+      // 위·아래만 눌러 가운데 계조를 남긴다
+      ? 'linear-gradient(180deg, rgba(8,10,12,.58) 0%, rgba(8,10,12,.20) 30%, rgba(8,10,12,.20) 58%, rgba(8,10,12,.74) 100%)'
+      : 'linear-gradient(180deg, rgba(8,10,12,.26) 0%, rgba(8,10,12,0) 32%, rgba(8,10,12,.06) 60%, rgba(8,10,12,.70) 100%)';
   return (
     <>
       {video ? (
@@ -96,7 +110,28 @@ export const FootageSurface = ({image = '', video = '', videoStart = 0, scrim = 
       ) : (
         <div style={{position: 'absolute', inset: 0, background: NIGHT}} />
       )}
+      {/* 주변부 소프트 폴오프 — 영상은 렌즈 특성상 가장자리가 살짝 무르다.
+          정지 사진을 그대로 쓰면 화면 전체가 균일하게 날카로워 그래픽처럼 보인다
+          (quality_probe: 엣지 밀도가 B1M 대비 과다). 가운데는 건드리지 않는다 */}
+      {softEdge && (image || video) ? (
+        <div style={{
+          position: 'absolute', inset: 0, overflow: 'hidden',
+          maskImage: 'radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 46%, rgba(0,0,0,1) 92%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 46%, rgba(0,0,0,1) 92%)',
+        }}>
+          <div style={{position: 'absolute', inset: 0, filter: 'blur(4px)', transform: 'scale(1.02)'}}>
+            {video ? (
+              <OffthreadVideo src={staticFile(video)} startFrom={Math.round(videoStart * fps)} style={style} />
+            ) : (
+              <Img src={staticFile(image)} style={style} />
+            )}
+          </div>
+        </div>
+      ) : null}
       <div style={{position: 'absolute', inset: 0, background: grad}} />
+      {/* 비네팅 — 가장자리만 떨어뜨려 시선을 가운데로. 계조는 유지된다 */}
+      <div style={{position: 'absolute', inset: 0,
+        background: 'radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.34) 100%)'}} />
     </>
   );
 };
