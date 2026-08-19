@@ -123,8 +123,14 @@ def main():
         head = ('# 자료 출처\n\n| 파일 | 원본 | 출처 / 라이선스 | 화면 표기 |\n|---|---|---|---|\n')
         if not os.path.exists(cred):
             open(cred, 'w', encoding='utf-8').write(head)
-        with open(cred, 'a', encoding='utf-8') as f:
-            f.write('\n'.join(lines) + '\n')
+        # 같은 소재를 다시 받는 일이 생긴다 (작업 폴더가 통째로 되돌아가면
+        # 미디어는 gitignore 라 같이 사라진다). 그때 줄을 그냥 덧붙이면
+        # 출처 표가 중복으로 늘어난다 — 이미 있는 줄은 건너뛴다.
+        have = open(cred, encoding='utf-8').read()
+        fresh = [ln for ln in lines if ln not in have]
+        if fresh:
+            with open(cred, 'a', encoding='utf-8') as f:
+                f.write('\n'.join(fresh) + '\n')
 
     print(f'\n받음 {ok} · 실패 {fail}')
     if fail:
