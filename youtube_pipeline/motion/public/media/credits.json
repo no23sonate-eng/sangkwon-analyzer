@@ -188,5 +188,15 @@
    "edge": 0.105,
    "lum": 105
   }
+ },
+ {
+  "file": "seoul_clip.webm",
+  "kind": "video",
+  "source": "Wikimedia Commons",
+  "title": "File:Seoul, central street.webm",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ASeoul%2C%20central%20street.webm",
+  "query": "Seoul",
+  "tier": "1순위 · 실제 대상"
  }
 ]

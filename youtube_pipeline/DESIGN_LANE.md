@@ -80,6 +80,7 @@
 
 ## 6. 지금 있는 자산
 
+- **대본 → 장치 대응표: `design_reference.md` §23-15** ← 카드 고를 때 여기부터
 - 카드 카탈로그: `design_reference.md` §19-2 / §21-5
 - 레퍼런스 프레임: `reference/channel_study/` (B1M·Stewart Hicks 실측)
 - 프레임 수집기: `scripts/grab_video_frames.py` (새 레퍼런스 채널 학습용)
@@ -87,4 +88,6 @@
 - 진단기: `scripts/scene_lint.py`
 - 실사 수급기: `scripts/fetch_media.py` (Wikimedia 1순위 → Pexels 2순위, 크레딧 자동 기록)
 - 장치 카탈로그: `scripts/device_catalog.py` → `reference/device_catalog/` (21종 한 장씩)
-- 받은 실사: `motion/public/media/` + `credits.json` (출처·라이선스)
+- 받은 실사·영상: `motion/public/media/` + `credits.json` (출처·라이선스·화면값)
+- 품질 측정기: `scripts/quality_probe.py` (B1M 558프레임 대비)
+- 모션 검수기: `scripts/motion_probe.py` (정착 시점·잔여 움직임 + 필름스트립)

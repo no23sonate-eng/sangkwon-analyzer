@@ -1615,3 +1615,67 @@ B1M 은 이럴 때 실사 대신 개념 평면도를 쓴다.
 | `PaperQuoteCard` | **발언 인용**. 기사 카드로 우겨넣고 있었다 | 따뜻한 지면 + 큰 따옴표 + 발화자 규칙선. 핵심 구절만 형광펜 |
 
 **현재 장치 25종** — 실사 8 / 지면 17.
+
+### 23-15. 스크립트 → 장치 대응표 (2026-08-19)
+
+"대본에 나올 만한 건 전부 영상화한다"는 목표에 맞춰 빈칸을 채웠다.
+아래가 **대본을 읽으면서 바로 고르는 표**다.
+
+| 대본에 이런 게 나오면 | 장치 | 표면 |
+|---|---|---|
+| 장면 전환 · 질문 던지기 | `FootageCard` | 실사 |
+| 큰 수치 하나 (거래액·방문객) | `FootageStatCard` / `PaperStatCard` | 실사 / 지면 |
+| 특정 건물·부위를 짚기 | `FootageAnnotateCard`(흰 브래킷) / `FootageLabelCard`(지시선 라벨) | 실사 |
+| 두 지점의 관계 · 권역 | `SatelliteRouteCard`(항공 있을 때) / `PaperWalkCard`(없을 때) | 실사 / 지면 |
+| **계산 과정** (임대료 × 면적 × 12) | `PaperFormulaCard` | 지면 |
+| 값 비교 (평당가·층수·규모) | `PaperBarCard` (`shape:'building'` 가능) | 지면 |
+| 연도별 변화 | `PaperTrendCard` | 지면 |
+| **구성비** (지분·연면적·매출) | `PaperShareCard` | 지면 |
+| 큰 수량 (좌석·세대·방문객) | `PaperDotsCard` (한 점 = N) | 지면 |
+| 적은 개수 (매장 6개) | `PaperCountCard` | 지면 |
+| 두 값 대조 | `PaperCompareCard` | 지면 |
+| 항목 요약 (거래 요약표) | `PaperTableCard` | 지면 |
+| **조건·요건 나열** | `PaperListCard` | 지면 |
+| 시간 순서 (소유권 이전) | `PaperTimelineCard` | 지면 |
+| 원인 → 결과 | `PaperFlowCard` | 지면 |
+| **소유·지분 계층** | `PaperOrgCard` | 지면 |
+| 층 구성 / 지하 포함 | `PaperElevationCard` / `PaperSectionCard` | 지면 |
+| 권역 내 위치(3D) | `PaperMassingCard` | 지면 |
+| 위치 (전국·수도권) | `PaperWorldMapCard`(마커) | 지면 |
+| **구역 구분 색칠** | `PaperChoroCard`(+범례) | 지면 |
+| 기사 한 줄 | `PaperArticleCard` | 지면 |
+| **기사 원문 지면** | `PaperPressCard`(느린 이동 + 형광펜) | 지면 |
+| 공시·보고서 | `PaperDocumentCard` | 지면 |
+| 발언 인용 | `PaperQuoteCard` | 지면 |
+| **인물 소개** | `PaperPortraitCard`(흑백 초상 + 선택적 인용) | 지면 |
+| 과거 자료 | `ArchiveCard`(시대 칩 + 등급) | 실사 |
+| 외부 영상·뉴스 화면 인용 | `SourceClipCard`(COURTESY OF) | 실사 |
+| 같은 자리 과거/현재 | `ThenNowCard` | 혼합 |
+
+**총 32종** — 실사 7 / 지면 24 / 혼합 1.
+
+**B1M 프레임에서 새로 확인해 만든 것** (558프레임 재분석):
+- `PaperPressCard` — B1M 은 기사를 재구성하지 않는다. **실제 지면 위를 천천히
+  지나가며 한 구절만 형광펜**으로 집는다 (베를린 공항 기사 프레임).
+- `PaperPortraitCard` — 흑백 초상 + 이름 (윌리엄 반 앨런 / 크라이슬러 첨탑 프레임).
+- `PaperChoroCard` — 면을 칠하고 **우측에 작은 범례 상자** (베를린 4개 점령지구 프레임).
+- `PaperFormulaCard` / `PaperShareCard` / `PaperOrgCard` / `PaperListCard` 는
+  부동산 대본에 필수인데 B1M 문법(밝은 지면·검은 덩어리 하나·앰버 한 곳)으로 지었다.
+
+### 23-16. 영상 소재 자동 수급 (2026-08-19)
+
+사진만 받던 수급기가 **동영상**도 받는다.
+
+```
+python3 scripts/fetch_media.py --slug seoul_clip --subject "Seoul" --anchor Seoul --video
+```
+
+- 위키미디어 커먼즈에서 `filetype:video` 로 검색 → webm / ogv / mp4
+- 제목 앵커 검사는 사진과 동일 (엉뚱한 영상 방지)
+- 용량 상한 기본 60MB (`--max-mb` 로 조정). 원본 수백 MB 짜리는 건너뛴다
+- `credits.json` 에 `kind: video` 로 기록
+
+받은 webm 을 `FootageCard`·`FootageStatCard` 등에 `video:` 로 넣으면 그대로 렌더된다
+(Remotion `OffthreadVideo`). 실제로 서울 야경 거리 영상(CC BY-SA 4.0)으로 확인했다.
+**영상 소재는 정지 사진보다 B1M 구간에 잘 맞는다** — 모션블러 덕분에 엣지 밀도가
+낮고, 조명 때문에 채도가 높다. 지금까지 실사 지표가 계속 미달이던 이유이기도 하다.

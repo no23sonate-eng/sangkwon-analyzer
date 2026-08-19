@@ -108,6 +108,55 @@ def screen_score(raw):
     return total, m
 
 
+# ── 영상 수급 — 위키미디어 커먼즈의 동영상 (webm / ogv / mp4) ─────────────
+# 사진과 달리 "실제 대상" 영상은 훨씬 드물다. 없으면 Pexels(키 필요)로 내려간다.
+VIDEO_EXT = ('.webm', '.ogv', '.ogg', '.mp4', '.mov')
+
+
+def video_from_wikimedia(query, slug, anchor='', max_mb=60):
+    """제목 앵커 검사는 사진과 동일. 용량이 큰 원본은 건너뛴다."""
+    api = ('https://commons.wikimedia.org/w/api.php?action=query&generator=search'
+           f'&gsrsearch={urllib.parse.quote(query + " filetype:video")}&gsrnamespace=6&gsrlimit=12'
+           '&prop=imageinfo&iiprop=url%7Cextmetadata%7Csize%7Cmime&format=json')
+    try:
+        d = json.loads(_get(api))
+    except Exception as e:  # noqa: BLE001
+        print(f'  wikimedia(video) 실패: {e}', flush=True)
+        return None
+    for p in list((d.get('query') or {}).get('pages', {}).values()):
+        title = p.get('title', '')
+        if not _title_ok(title, anchor):
+            continue
+        ii = (p.get('imageinfo') or [{}])[0]
+        url = ii.get('url') or ''
+        stem = url.split('?', 1)[0].lower()
+        if not stem.endswith(VIDEO_EXT):
+            continue
+        size = ii.get('size') or 0
+        if size and size > max_mb * 1024 * 1024:
+            print(f'  건너뜀(용량 {size // 1048576}MB): {title[:50]}', flush=True)
+            continue
+        lic = (ii.get('extmetadata', {}).get('LicenseShortName', {}) or {}).get('value', '')
+        if 'fair' in lic.lower():
+            continue
+        try:
+            raw = _get(url, timeout=180)
+        except Exception as e:  # noqa: BLE001
+            print(f'  영상 내려받기 실패({e}) — 다음 후보', flush=True)
+            continue
+        if not raw or len(raw) < 100000:
+            continue
+        ext = stem.rsplit('.', 1)[-1]
+        path = _save(raw, slug, ext)
+        _record({'file': os.path.basename(path), 'kind': 'video', 'source': 'Wikimedia Commons',
+                 'title': title, 'license': lic,
+                 'page': f"https://commons.wikimedia.org/wiki/{urllib.parse.quote(title)}",
+                 'query': query, 'tier': '1순위 · 실제 대상'})
+        print(f'  [wikimedia:video] {os.path.basename(path)} | {lic} | {title[:50]}', flush=True)
+        return path
+    return None
+
+
 def from_wikimedia(query, slug, min_width=1280, anchor='', screen=True):
     """검색어가 길면 결과가 0이 되기 쉬워, 뒤 단어부터 떼며 재시도한다.
 
@@ -256,10 +305,15 @@ def from_pexels(query, slug, want_video=False):
     return path
 
 
-def fetch_one(slug, subject='', mood='', want_video=False, anchor='', screen=True):
+def fetch_one(slug, subject='', mood='', want_video=False, anchor='', screen=True, max_mb=60):
     """실제 대상 → 없으면 유사 분위기 순으로 시도."""
     print(f'· {slug}', flush=True)
-    if subject and not want_video:
+    if subject and want_video:
+        got = video_from_wikimedia(subject, slug, anchor=anchor, max_mb=max_mb)
+        if got:
+            return got
+        print('  실제 대상 영상 없음 → 유사 분위기 스톡으로 폴백', flush=True)
+    elif subject:
         got = from_wikimedia(subject, slug, anchor=anchor, screen=screen)
         if got:
             return got
@@ -277,6 +331,7 @@ def main():
     ap.add_argument('--plan', default='', help='[{slug, subject, mood, anchor, video}] JSON')
     ap.add_argument('--prune', action='store_true', help='없는 파일의 크레딧 항목 정리')
     ap.add_argument('--no-screen', action='store_true', help='화면값 심사 없이 첫 후보를 받는다')
+    ap.add_argument('--max-mb', type=int, default=60, help='영상 최대 용량 (기본 60MB)')
     args = ap.parse_args()
 
     if args.prune:
@@ -292,7 +347,8 @@ def main():
         ok = 0
         for item in plan:
             if fetch_one(item['slug'], item.get('subject', ''), item.get('mood', ''),
-                         item.get('video', False), item.get('anchor', ''), not args.no_screen):
+                         item.get('video', False), item.get('anchor', ''), not args.no_screen,
+                         item.get('max_mb', args.max_mb)):
                 ok += 1
         print(f'done: {ok}/{len(plan)}', flush=True)
         return 0
@@ -300,7 +356,7 @@ def main():
     if not args.slug:
         ap.error('--slug 필요')
     return 0 if fetch_one(args.slug, args.subject, args.mood, args.video, args.anchor,
-                          not args.no_screen) else 1
+                          not args.no_screen, args.max_mb) else 1
 
 
 if __name__ == '__main__':
