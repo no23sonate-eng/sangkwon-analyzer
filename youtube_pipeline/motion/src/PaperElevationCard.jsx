@@ -65,7 +65,7 @@ export const PaperElevationCard = ({
               {/* 층 경계 — 덩어리로 칠하면 층 수가 안 보이므로 밝은 선으로 되살린다 */}
               {hot ? (
                 <line x1={bx} y1={y + fh} x2={bx + bw * t} y2={y + fh}
-                  stroke="rgba(255,255,255,0.34)" strokeWidth={1.4} />
+                  stroke="rgba(255,255,255,0.46)" strokeWidth={1.8} />
               ) : null}
               {/* 창 분할 — 어두운 덩어리 위에서는 밝은 선으로 뒤집는다 */}
               {Array.from({length: 7}, (_, k) => (

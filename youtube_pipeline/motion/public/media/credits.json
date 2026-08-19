@@ -1,35 +1,5 @@
 [
  {
-  "file": "seongsu_skyline.jpg",
-  "kind": "photo",
-  "source": "Wikimedia Commons",
-  "title": "File:Construction and skyline in Seongsu-dong.jpg",
-  "license": "CC BY-SA 4.0",
-  "page": "https://commons.wikimedia.org/wiki/File%3AConstruction%20and%20skyline%20in%20Seongsu-dong.jpg",
-  "query": "Construction and skyline in Seongsu-dong",
-  "tier": "1순위 · 실제 대상"
- },
- {
-  "file": "seongsu_storefronts.jpg",
-  "kind": "photo",
-  "source": "Wikimedia Commons",
-  "title": "File:Brick storefront in Seongsu-dong.jpg",
-  "license": "CC BY-SA 4.0",
-  "page": "https://commons.wikimedia.org/wiki/File%3ABrick%20storefront%20in%20Seongsu-dong.jpg",
-  "query": "Seongsu-dong storefronts",
-  "tier": "1순위 · 실제 대상"
- },
- {
-  "file": "seongsu_alley.jpg",
-  "kind": "photo",
-  "source": "Wikimedia Commons",
-  "title": "File:Residential alley in Seongsu-dong with apartment.jpg",
-  "license": "CC BY-SA 4.0",
-  "page": "https://commons.wikimedia.org/wiki/File%3AResidential%20alley%20in%20Seongsu-dong%20with%20apartment.jpg",
-  "query": "Residential alley in Seongsu-dong with apartment",
-  "tier": "1순위 · 실제 대상"
- },
- {
   "file": "seongsu_bridge.jpg",
   "kind": "photo",
   "source": "Wikimedia Commons",
@@ -57,16 +27,6 @@
   "license": "CC BY 3.0",
   "page": "https://commons.wikimedia.org/wiki/File%3AASEM%20Tower%20-%20panoramio.jpg",
   "query": "Gangnam office building",
-  "tier": "1순위 · 실제 대상"
- },
- {
-  "file": "seongsu_cafe_street.jpg",
-  "kind": "photo",
-  "source": "Wikimedia Commons",
-  "title": "File:Cafe storefront in Seongsu-dong.jpg",
-  "license": "CC BY-SA 4.0",
-  "page": "https://commons.wikimedia.org/wiki/File%3ACafe%20storefront%20in%20Seongsu-dong.jpg",
-  "query": "Seongsu-dong cafe street",
   "tier": "1순위 · 실제 대상"
  },
  {
@@ -108,5 +68,65 @@
   "page": "https://commons.wikimedia.org/wiki/File%3A%EA%B5%AC%EB%A3%A1%ED%84%B0%EB%84%90%20%EC%84%B1%EC%88%98%EB%8C%80%EA%B5%90.jpg",
   "query": "성수대교",
   "tier": "1순위 · 실제 대상"
+ },
+ {
+  "file": "seongsu_skyline.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Construction and skyline in Seongsu-dong.jpg",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AConstruction%20and%20skyline%20in%20Seongsu-dong.jpg",
+  "query": "Seongsu-dong skyline",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.108,
+   "edge": 0.185,
+   "lum": 125
+  }
+ },
+ {
+  "file": "seongsu_storefronts.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Seongsu-dong storefronts.jpg",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ASeongsu-dong%20storefronts.jpg",
+  "query": "Seongsu-dong storefront",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.149,
+   "edge": 0.107,
+   "lum": 125
+  }
+ },
+ {
+  "file": "seongsu_cafe_street.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Cafe storefront in Seongsu-dong.jpg",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ACafe%20storefront%20in%20Seongsu-dong.jpg",
+  "query": "Seongsu-dong cafe",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.129,
+   "edge": 0.202,
+   "lum": 128
+  }
+ },
+ {
+  "file": "seongsu_alley.jpg",
+  "kind": "photo",
+  "source": "Wikimedia Commons",
+  "title": "File:Night alley with signs in Seongsu-dong.jpg",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ANight%20alley%20with%20signs%20in%20Seongsu-dong.jpg",
+  "query": "Seongsu-dong alley",
+  "tier": "1순위 · 실제 대상",
+  "screen": {
+   "sat": 0.288,
+   "edge": 0.207,
+   "lum": 81
+  }
  }
 ]

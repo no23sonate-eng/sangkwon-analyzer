@@ -81,7 +81,33 @@ def _record(entry):
 
 
 # ── 1순위: 실제 대상 (Wikimedia Commons) ────────────────────────────────
-def from_wikimedia(query, slug, min_width=1280, anchor=''):
+# ── 화면값 심사 — "실제 대상"이어도 화면에서 B1M 처럼 안 보이면 소용없다 ──
+# quality_probe 가 잰 B1M 실사 구간: sat 0.18~0.37 / edge 0.05~0.12 / lum 78~125
+MAX_SCREEN = 4  # 후보를 최대 몇 장까지 받아 비교할지
+SCREEN_TARGET = {'sat': (0.18, 0.37), 'edge': (0.049, 0.122), 'lum': (78, 125)}
+SCREEN_WEIGHT = {'sat': 1.0, 'edge': 0.8, 'lum': 0.4}
+
+
+def screen_score(raw):
+    """구간 밖으로 얼마나 벗어났는지 (0 이면 구간 안). 낮을수록 좋다."""
+    try:
+        import io as _io
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from quality_probe import metrics  # numpy/Pillow 필요
+        from PIL import Image
+        m = metrics(Image.open(_io.BytesIO(raw)))
+    except Exception:  # noqa: BLE001 — 심사는 있으면 좋은 것, 없어도 진행
+        return None, None
+    total = 0.0
+    for k, (lo, hi) in SCREEN_TARGET.items():
+        v = m[k]
+        span = hi - lo
+        off = (lo - v) / span if v < lo else (v - hi) / span if v > hi else 0.0
+        total += SCREEN_WEIGHT[k] * off
+    return total, m
+
+
+def from_wikimedia(query, slug, min_width=1280, anchor='', screen=True):
     """검색어가 길면 결과가 0이 되기 쉬워, 뒤 단어부터 떼며 재시도한다.
 
     단, 단어를 떼면 "성수동"과 무관한 사진이 걸리기 쉽다. 그래서 앵커(기본값:
@@ -96,7 +122,7 @@ def from_wikimedia(query, slug, min_width=1280, anchor=''):
         if q in tried:
             continue
         tried.append(q)
-        got = _wikimedia_once(q, slug, min_width, anchor)
+        got = _wikimedia_once(q, slug, min_width, anchor, screen)
         if got:
             return got
     return None
@@ -111,7 +137,7 @@ def _title_ok(title, anchor):
     return a in re.sub(r'[^a-z0-9가-힣]', '', t)
 
 
-def _wikimedia_once(query, slug, min_width=1280, anchor=''):
+def _wikimedia_once(query, slug, min_width=1280, anchor='', screen=True):
     api = ('https://commons.wikimedia.org/w/api.php?action=query&generator=search'
            f'&gsrsearch={urllib.parse.quote(query)}&gsrnamespace=6&gsrlimit=12'
            '&prop=imageinfo&iiprop=url%7Cextmetadata%7Csize&iiurlwidth=1920&format=json')
@@ -121,7 +147,7 @@ def _wikimedia_once(query, slug, min_width=1280, anchor=''):
         print(f'  wikimedia 실패: {e}', flush=True)
         return None
     pages = list((d.get('query') or {}).get('pages', {}).values())
-    best = None
+    cands = []
     for p in pages:
         title = p.get('title', '')
         # 문서 스캔(PDF·DjVu)에서 뽑힌 페이지 이미지는 실사가 아니다
@@ -140,19 +166,45 @@ def _wikimedia_once(query, slug, min_width=1280, anchor=''):
         lic = (ii.get('extmetadata', {}).get('LicenseShortName', {}) or {}).get('value', '')
         if 'fair' in lic.lower():
             continue
-        best = {'url': url, 'title': title, 'license': lic,
-                'page': f"https://commons.wikimedia.org/wiki/{urllib.parse.quote(title)}"}
-        break
+        cands.append({'url': url, 'title': title, 'license': lic,
+                      'page': f"https://commons.wikimedia.org/wiki/{urllib.parse.quote(title)}"})
+    if not cands:
+        return None
+
+    # 후보를 여러 장 받아 화면값으로 고른다 (screen=False 면 첫 장)
+    best, best_raw, best_score, best_m = None, None, None, None
+    for c in cands[:MAX_SCREEN if screen else 1]:
+        raw = _get(c['url'])
+        if len(raw) < 20000:
+            continue
+        if not screen:
+            best, best_raw = c, raw
+            break
+        sc, m = screen_score(raw)
+        if sc is None:
+            best, best_raw = c, raw
+            break
+        if best_score is None or sc < best_score:
+            best, best_raw, best_score, best_m = c, raw, sc, m
+        if sc < 0.05:  # 충분히 좋으면 더 안 본다
+            break
     if not best:
         return None
-    raw = _get(best['url'])
-    if len(raw) < 20000:
-        return None
-    path = _save(raw, slug, 'jpg')
-    _record({'file': os.path.basename(path), 'kind': 'photo', 'source': 'Wikimedia Commons',
+
+    path = _save(best_raw, slug, 'jpg')
+    entry = {'file': os.path.basename(path), 'kind': 'photo', 'source': 'Wikimedia Commons',
              'title': best['title'], 'license': best['license'], 'page': best['page'],
-             'query': query, 'tier': '1순위 · 실제 대상'})
-    print(f"  [wikimedia] {os.path.basename(path)} | {best['license']} | {best['title'][:60]}", flush=True)
+             'query': query, 'tier': '1순위 · 실제 대상'}
+    if best_m:
+        entry['screen'] = {'sat': round(best_m['sat'], 3), 'edge': round(best_m['edge'], 3),
+                           'lum': round(best_m['lum'])}
+    _record(entry)
+    tail = ''
+    if best_m:
+        tail = f" | sat {best_m['sat']:.2f} edge {best_m['edge']:.2f}"
+        if best_score and best_score > 0.25:
+            tail += ' ← B1M 실사 대비 밋밋/복잡 (교체 권장)'
+    print(f"  [wikimedia] {os.path.basename(path)} | {best['license']} | {best['title'][:50]}{tail}", flush=True)
     return path
 
 
@@ -195,11 +247,11 @@ def from_pexels(query, slug, want_video=False):
     return path
 
 
-def fetch_one(slug, subject='', mood='', want_video=False, anchor=''):
+def fetch_one(slug, subject='', mood='', want_video=False, anchor='', screen=True):
     """실제 대상 → 없으면 유사 분위기 순으로 시도."""
     print(f'· {slug}', flush=True)
     if subject and not want_video:
-        got = from_wikimedia(subject, slug, anchor=anchor)
+        got = from_wikimedia(subject, slug, anchor=anchor, screen=screen)
         if got:
             return got
         print('  실제 대상 자료 없음 → 유사 분위기로 폴백', flush=True)
@@ -215,6 +267,7 @@ def main():
     ap.add_argument('--anchor', default='', help='제목에 반드시 들어가야 할 낱말 (기본: subject 첫 단어)')
     ap.add_argument('--plan', default='', help='[{slug, subject, mood, anchor, video}] JSON')
     ap.add_argument('--prune', action='store_true', help='없는 파일의 크레딧 항목 정리')
+    ap.add_argument('--no-screen', action='store_true', help='화면값 심사 없이 첫 후보를 받는다')
     args = ap.parse_args()
 
     if args.prune:
@@ -230,14 +283,15 @@ def main():
         ok = 0
         for item in plan:
             if fetch_one(item['slug'], item.get('subject', ''), item.get('mood', ''),
-                         item.get('video', False), item.get('anchor', '')):
+                         item.get('video', False), item.get('anchor', ''), not args.no_screen):
                 ok += 1
         print(f'done: {ok}/{len(plan)}', flush=True)
         return 0
 
     if not args.slug:
         ap.error('--slug 필요')
-    return 0 if fetch_one(args.slug, args.subject, args.mood, args.video, args.anchor) else 1
+    return 0 if fetch_one(args.slug, args.subject, args.mood, args.video, args.anchor,
+                          not args.no_screen) else 1
 
 
 if __name__ == '__main__':

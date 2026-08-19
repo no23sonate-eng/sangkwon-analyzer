@@ -206,14 +206,14 @@ export const PaperMassingCard = ({
         <ambientLight intensity={0.72} />
         <directionalLight position={[8, 14, 6]} intensity={1.15} />
         <directionalLight position={[-6, 8, -4]} intensity={0.35} />
-        <group position={[0, 2.0, 0]}>
+        <group position={[0, 1.2, 0]}>
           <Massing blocks={bl} subject={sub3d} grow={grow} />
         </group>
       </ThreeCanvas>
 
       {/* 텍스트 가독성용 상·하단 스크림 — 3D 위에 흰 안개를 얇게 */}
       <div style={{position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'linear-gradient(180deg, rgba(240,242,247,0.96) 0%, rgba(240,242,247,0.55) 16%, rgba(240,242,247,0) 30%, rgba(240,242,247,0) 56%, rgba(240,242,247,0.9) 70%, rgba(240,242,247,0.98) 100%)'}} />
+        background: 'linear-gradient(180deg, rgba(240,242,247,0.98) 0%, rgba(240,242,247,0.94) 20%, rgba(240,242,247,0.55) 27%, rgba(240,242,247,0) 36%, rgba(240,242,247,0) 56%, rgba(240,242,247,0.9) 70%, rgba(240,242,247,0.98) 100%)'}} />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
 
       {label ? (
@@ -237,10 +237,11 @@ export const PaperSectionCard = ({
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
-  const fh = 74;
+  // 제목이 커지면서 지상층이 헤더를 침범했다. 지반선을 내리고 층고를 줄인다.
+  const fh = 58;
   const bw = 520;
   const bx = (1920 - bw) / 2;
-  const groundY = 560;
+  const groundY = 616;
   const dimIn = useRevealUp(stagger(above.length + below.length, 5, 22), 26, 14);
 
   const Floor = ({f, y, i, under}) => {
@@ -252,7 +253,7 @@ export const PaperSectionCard = ({
       <g>
         {/* 주인공 층은 속을 채운 검은 덩어리 (입면 카드와 같은 문법) */}
         {hot ? <rect x={bx} y={y} width={bw * t} height={fh} fill={INK} /> : null}
-        {hot ? <line x1={bx} y1={y + fh} x2={bx + bw * t} y2={y + fh} stroke="rgba(255,255,255,0.34)" strokeWidth={1.4} /> : null}
+        {hot ? <line x1={bx} y1={y + fh} x2={bx + bw * t} y2={y + fh} stroke="rgba(255,255,255,0.46)" strokeWidth={1.8} /> : null}
         {under && !hot ? <rect x={bx} y={y} width={bw * t} height={fh} fill="rgba(46,92,154,0.06)" /> : null}
         <rect x={bx} y={y} width={bw * t} height={fh}
           fill="none" stroke={hot ? INK : under ? '#93A3BA' : '#A9AFB8'}

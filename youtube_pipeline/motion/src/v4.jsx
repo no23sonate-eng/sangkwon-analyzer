@@ -30,11 +30,11 @@ export const SAFE_BOTTOM = 820;
 export const KO = {wordBreak: 'keep-all', overflowWrap: 'break-word'};
 
 export const P = {
-  eyebrow: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 24, letterSpacing: '0.22em', color: INK2},
-  title: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 46, letterSpacing: '0.01em', color: INK},
-  body: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.02em', color: INK},
-  label: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.08em', color: INK2},
-  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 21, letterSpacing: '0.06em', color: INK3},
+  eyebrow: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.22em', color: INK2},
+  title: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 58, letterSpacing: '0.01em', color: INK},
+  body: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, letterSpacing: '0.02em', color: INK},
+  label: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.08em', color: INK2},
+  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.06em', color: INK3},
   dim: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 26, letterSpacing: '0.1em', color: INK2},
   valueXL: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 250, letterSpacing: '-0.035em', color: INK, lineHeight: 0.92, fontVariantNumeric: 'tabular-nums'},
   valueL: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 120, letterSpacing: '-0.02em', color: INK, lineHeight: 1, fontVariantNumeric: 'tabular-nums'},
@@ -172,7 +172,7 @@ export const PaperHead = ({eyebrow = '', title = '', opacity = 1, align = 'cente
   <div style={{position: 'absolute', top: 104, left: M, right: M, opacity, textAlign: align}}>
     {eyebrow ? <div style={P.eyebrow}>{eyebrow}</div> : null}
     {title ? <div style={{...P.title, marginTop: 12}}>{title}</div> : null}
-    <div style={{margin: align === 'center' ? '24px auto 0' : '24px 0 0', width: align === 'center' ? 220 : '100%', height: 1, background: HAIR}} />
+    <div style={{margin: align === 'center' ? '24px auto 0' : '24px 0 0', width: align === 'center' ? 260 : '100%', height: 1, background: HAIR}} />
   </div>
 );
 
