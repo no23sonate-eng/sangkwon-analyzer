@@ -67,10 +67,10 @@ export const PaperFormulaCard = ({
                     color: hot ? '#FFFFFF' : INK, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap',
                   }}>{t.value}</span>
                 </div>
-                <div style={{marginTop: 16, ...P.label, fontSize: Math.round(26 * scale), color: hot ? INK : INK2}}>
+                <div style={{marginTop: 16, ...P.label, fontSize: Math.max(28, Math.round(30 * scale)), color: hot ? INK : INK2}}>
                   {t.label}
                 </div>
-                {t.sub ? <div style={{marginTop: 6, ...P.caption, fontSize: Math.round(21 * scale)}}>{t.sub}</div> : null}
+                {t.sub ? <div style={{marginTop: 6, ...P.caption, fontSize: Math.max(26, Math.round(28 * scale))}}>{t.sub}</div> : null}
               </div>
             </React.Fragment>
           );
@@ -148,7 +148,7 @@ export const PaperShareCard = ({
         }}>
           <div style={{
             fontFamily: p.hot ? 'A2Z Medium, sans-serif' : 'A2Z Light, sans-serif',
-            fontSize: 27, letterSpacing: '0.06em', color: p.hot ? INK : INK2, ...KO,
+            fontSize: 30, letterSpacing: '0.06em', color: p.hot ? INK : INK2, ...KO,
           }}>{p.label}</div>
           <div style={{marginTop: 6, ...P.valueM, fontSize: p.hot ? 42 : 34, color: p.hot ? INK : INK2}}>
             {p.text || `${p.pct.toFixed(p.pct < 10 ? 1 : 0)}%`}
@@ -226,7 +226,7 @@ export const PaperOrgCard = ({
           display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
           opacity: fade(frame, 8)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 40, color: '#FFFFFF', ...KO}}>{root.label}</div>
-          {root.sub ? <div style={{marginTop: 8, ...P.caption, fontSize: 22, color: 'rgba(255,255,255,0.72)'}}>{root.sub}</div> : null}
+          {root.sub ? <div style={{marginTop: 8, ...P.caption, fontSize: 27, color: 'rgba(255,255,255,0.72)'}}>{root.sub}</div> : null}
         </div>
       ) : null}
 
@@ -237,8 +237,8 @@ export const PaperOrgCard = ({
           opacity: fade(frame, stagger(i, 5, 44)), padding: '0 14px', boxSizing: 'border-box',
         }}>
           {k.share ? <div style={{...P.valueM, fontSize: 38, color: k.hot ? INK : INK2}}>{k.share}</div> : null}
-          <div style={{...P.label, fontSize: 25, color: INK, textAlign: 'center', ...KO}}>{k.label}</div>
-          {k.sub ? <div style={{...P.caption, fontSize: 20, textAlign: 'center'}}>{k.sub}</div> : null}
+          <div style={{...P.label, fontSize: 29, color: INK, textAlign: 'center', ...KO}}>{k.label}</div>
+          {k.sub ? <div style={{...P.caption, fontSize: 26, textAlign: 'center'}}>{k.sub}</div> : null}
         </div>
       ))}
 
@@ -282,7 +282,7 @@ export const PaperListCard = ({
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 <span style={{
-                  fontFamily: 'A2Z Medium, sans-serif', fontSize: 24, paddingTop: 3,
+                  fontFamily: 'A2Z Medium, sans-serif', fontSize: 28, paddingTop: 3,
                   color: it.hot ? '#FFFFFF' : INK2,
                 }}>{i + 1}</span>
               </div>
@@ -294,7 +294,7 @@ export const PaperListCard = ({
                 ...KO, fontFamily: it.hot ? 'A2Z Regular, sans-serif' : 'A2Z Light, sans-serif',
                 fontSize: 36, color: INK, letterSpacing: '0.01em',
               }}>{it.text}</div>
-              {it.sub ? <div style={{marginTop: 5, ...P.caption, fontSize: 22}}>{it.sub}</div> : null}
+              {it.sub ? <div style={{marginTop: 5, ...P.caption, fontSize: 27}}>{it.sub}</div> : null}
             </div>
             <div style={{position: 'absolute', left: 0, bottom: 0, width: W, height: 1, background: HAIR, opacity: 0.7}} />
           </div>
@@ -379,10 +379,10 @@ export const PaperPressCard = ({
           display: 'flex', alignItems: 'baseline', gap: 16}}>
           <span style={{
             background: INK, color: '#FFFFFF', padding: '7px 14px 5px',
-            fontFamily: 'A2Z Medium, sans-serif', fontSize: 20, letterSpacing: '0.18em',
+            fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.18em',
           }}>{outlet}</span>
-          {date ? <span style={{...P.caption, fontSize: 20}}>{date}</span> : null}
-          {byline ? <span style={{...P.caption, fontSize: 20}}>{byline}</span> : null}
+          {date ? <span style={{...P.caption, fontSize: 26}}>{date}</span> : null}
+          {byline ? <span style={{...P.caption, fontSize: 26}}>{byline}</span> : null}
         </div>
       ) : null}
 
@@ -431,7 +431,7 @@ export const PaperPortraitCard = ({
         opacity: fade(frame, 26),
       }}>
         <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 32, letterSpacing: '0.06em', color: INK, ...KO}}>{name}</div>
-        {role ? <div style={{marginTop: 6, ...P.caption, fontSize: 22}}>{role}</div> : null}
+        {role ? <div style={{marginTop: 6, ...P.caption, fontSize: 27}}>{role}</div> : null}
       </div>
 
       {quote ? (
@@ -536,7 +536,7 @@ export const PaperChoroCard = ({
           {regions.map((r, i) => (
             <div key={i} style={{display: 'flex', alignItems: 'center', gap: 12, marginTop: i ? 10 : 0}}>
               <div style={{width: 20, height: 14, background: r.color || AMBER}} />
-              <span style={{...P.label, fontSize: 24, color: INK}}>{r.label || r.name}</span>
+              <span style={{...P.label, fontSize: 28, color: INK}}>{r.label || r.name}</span>
             </div>
           ))}
         </div>

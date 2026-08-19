@@ -24,11 +24,11 @@ export const PaperCompareCard = ({
     const hot = Boolean(d.hot);
     return (
       <div style={{position: 'absolute', left: x, top: 330, width: CW, textAlign: 'center', ...inn}}>
-        <div style={{...P.label, fontSize: 27}}>{d.title}</div>
+        <div style={{...P.label, fontSize: 30}}>{d.title}</div>
         <div style={{marginTop: 22, ...P.valueL, fontSize: String(d.value || '').length > 7 ? 86 : 112, color: hot ? INK : INK2, whiteSpace: 'nowrap'}}>{d.value}</div>
         {hot ? <div style={{margin: '18px auto 0', width: 190, height: 4, background: AMBER}} /> : null}
         {(d.lines || []).map((ln, i) => (
-          <div key={i} style={{marginTop: i ? 12 : 26, ...P.body, fontSize: 27, color: INK2}}>{ln}</div>
+          <div key={i} style={{marginTop: i ? 12 : 26, ...P.body, fontSize: 30, color: INK2}}>{ln}</div>
         ))}
       </div>
     );
@@ -72,8 +72,8 @@ export const PaperTableCard = ({
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 22px', boxSizing: 'border-box',
       }}>
-        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 21, letterSpacing: '0.2em', color: '#FFFFFF'}}>항목</span>
-        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 21, letterSpacing: '0.2em', color: '#FFFFFF'}}>내용</span>
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.2em', color: '#FFFFFF'}}>항목</span>
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.2em', color: '#FFFFFF'}}>내용</span>
       </div>
       {rows.map((r, i) => {
         const inn = useRevealUp(stagger(i, 6, 10), 24, 14);
@@ -86,7 +86,7 @@ export const PaperTableCard = ({
               <span style={{...P.valueM, fontSize: r.hot ? 50 : 42}}>
                 {r.hot ? <Mark on={interpolate(frame, [stagger(i, 6, 26), stagger(i, 6, 26) + 22], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: EASE.outExpo})}>{r.value}</Mark> : r.value}
               </span>
-              {r.note ? <span style={{marginLeft: 16, ...P.caption, fontSize: 22}}>{r.note}</span> : null}
+              {r.note ? <span style={{marginLeft: 16, ...P.caption, fontSize: 27}}>{r.note}</span> : null}
             </div>
           </div>
         );
@@ -141,7 +141,7 @@ export const PaperTimelineCard = ({
         const vsize = (act ? 54 : 45) * (vlen > 8 ? 0.72 : vlen > 6 ? 0.85 : 1);
         return (
           <div key={i} style={{position: 'absolute', left: lx, width: LW, top: y - 126, textAlign: 'center', opacity: fade(frame, stagger(i, 7, 18))}}>
-            <div style={{...P.label, fontSize: 25, color: act ? INK : INK3}}>{s.label}</div>
+            <div style={{...P.label, fontSize: 29, color: act ? INK : INK3}}>{s.label}</div>
             {s.value ? <div style={{marginTop: 10, ...P.valueM, fontSize: vsize, color: act ? INK : INK2, whiteSpace: 'nowrap'}}>{s.value}</div> : null}
           </div>
         );
@@ -149,7 +149,7 @@ export const PaperTimelineCard = ({
       {steps.map((s, i) => (
         s.sub ? (
           <div key={i} style={{position: 'absolute', left: Math.min(Math.max(x0 + (axisW / (n - 1 || 1)) * i - 190, 20), 1920 - 400), width: 380, top: y + 38, textAlign: 'center', opacity: fade(frame, stagger(i, 7, 22))}}>
-            <span style={{...P.caption, fontSize: 21}}>{s.sub}</span>
+            <span style={{...P.caption, fontSize: 26}}>{s.sub}</span>
           </div>
         ) : null
       ))}
@@ -219,8 +219,8 @@ export const PaperArticleCard = ({
       <PaperSurface tone={PAPER_WARM} />
       <div style={{position: 'absolute', left: 250, right: 250, top: 250, opacity: fade(frame, 0)}}>
         <div style={{display: 'flex', alignItems: 'baseline', gap: 20}}>
-          <span style={{...P.eyebrow, fontSize: 22}}>{outlet}</span>
-          {date ? <span style={{...P.caption, fontSize: 20}}>{date}</span> : null}
+          <span style={{...P.eyebrow, fontSize: 27}}>{outlet}</span>
+          {date ? <span style={{...P.caption, fontSize: 26}}>{date}</span> : null}
         </div>
         <div style={{marginTop: 18, height: 1, background: '#CFC7B8'}} />
       </div>
@@ -285,7 +285,7 @@ export const FootageAnnotateCard = ({
           display: 'inline-block', background: 'rgba(14,17,20,0.80)', padding: '14px 20px 12px',
         }}>
           <div style={{...W.label, fontSize: 30, letterSpacing: '0.1em', textShadow: 'none'}}>{label}</div>
-          {sub ? <div style={{marginTop: 8, ...W.caption, fontSize: 23, color: 'rgba(255,255,255,0.78)'}}>{sub}</div> : null}
+          {sub ? <div style={{marginTop: 8, ...W.caption, fontSize: 28, color: 'rgba(255,255,255,0.78)'}}>{sub}</div> : null}
         </div>
       </div>
       <Credit text={credit} opacity={fade(frame, 20)} />

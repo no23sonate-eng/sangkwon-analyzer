@@ -59,7 +59,7 @@ export const FootageLabelCard = ({
           style={{
             position: 'absolute', left: l.x, top: l.y, transform: 'translate(-50%, -50%)',
             background: '#FFFFFF', padding: '10px 18px 8px',
-            fontFamily: 'A2Z Medium, sans-serif', fontSize: 24, letterSpacing: '0.12em', color: INK,
+            fontFamily: 'A2Z Medium, sans-serif', fontSize: 28, letterSpacing: '0.12em', color: INK,
             opacity: fade(frame, stagger(i, 8, 18)), whiteSpace: 'nowrap',
             boxShadow: '0 6px 22px rgba(0,0,0,0.28)',
           }}
@@ -117,7 +117,7 @@ export const SatelliteRouteCard = ({
       {regions.map((r, i) => (
         <div key={i} style={{position: 'absolute', left: r.cx - 220, width: 440, top: r.cy - r.ry - 62, textAlign: 'center', opacity: fade(frame, stagger(i, 8, 20))}}>
           <span style={{
-            ...W.label, fontSize: 27, textShadow: 'none',
+            ...W.label, fontSize: 30, textShadow: 'none',
             background: 'rgba(14,17,20,0.78)', padding: '8px 14px 6px', display: 'inline-block',
           }}>{r.label}</span>
         </div>
@@ -134,7 +134,7 @@ export const SatelliteRouteCard = ({
       ) : null}
       {routeLabel ? (
         <div style={{position: 'absolute', left: 0, right: 0, top: SAFE_BOTTOM - 66, textAlign: 'center', opacity: fade(frame, 46)}}>
-          <span style={{...W.caption, fontSize: 26, letterSpacing: '0.1em'}}>{routeLabel}</span>
+          <span style={{...W.caption, fontSize: 30, letterSpacing: '0.1em'}}>{routeLabel}</span>
         </div>
       ) : null}
       <Credit text={credit} opacity={fade(frame, 22)} />
@@ -219,7 +219,7 @@ export const PaperMassingCard = ({
       {label ? (
         <Stage top={SAFE_BOTTOM - 168} style={{opacity: fade(frame, 40)}}>
           <div style={{...P.valueM, fontSize: 56, color: BLUE}}>{label}</div>
-          {sub ? <div style={{marginTop: 12, ...P.label, fontSize: 27}}>{sub}</div> : null}
+          {sub ? <div style={{marginTop: 12, ...P.label, fontSize: 30}}>{sub}</div> : null}
         </Stage>
       ) : null}
       {note ? <Stage top={SAFE_BOTTOM - 54} style={{opacity: fade(frame, 48)}}><span style={P.caption}>{note}</span></Stage> : null}
@@ -306,10 +306,10 @@ export const PaperSectionCard = ({
           opacity: fade(frame, stagger(i, 5, 12)), whiteSpace: 'nowrap',
         }}>
           <span style={{
-            fontFamily: 'A2Z Medium, sans-serif', fontSize: 18, letterSpacing: '0.14em',
+            fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.14em',
             color: f.hot ? INK : INK3, border: `1px solid ${f.hot ? INK : '#C7CBD2'}`, padding: '4px 8px 2px',
           }}>{f.name}</span>
-          <span style={{...P.label, fontSize: 25, color: f.hot ? INK : INK3}}>{f.tenant}</span>
+          <span style={{...P.label, fontSize: 29, color: f.hot ? INK : INK3}}>{f.tenant}</span>
         </div>
       ))}
 
@@ -319,7 +319,7 @@ export const PaperSectionCard = ({
           top: groundY - (above.length * fh) / 2 - 30, textAlign: 'right', whiteSpace: 'nowrap', ...dimIn,
         }}>
           <div style={{...P.valueM, fontSize: 58}}>{dimension.label}</div>
-          {dimension.sub ? <div style={{marginTop: 8, ...P.dim, fontSize: 24}}>{dimension.sub}</div> : null}
+          {dimension.sub ? <div style={{marginTop: 8, ...P.dim, fontSize: 28}}>{dimension.sub}</div> : null}
         </div>
       ) : null}
 

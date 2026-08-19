@@ -93,7 +93,7 @@ export const PaperWalkCard = ({
           </span>
           {p.sub ? (
             <div style={{marginTop: 4}}>
-              <span style={{...P.caption, fontSize: 20, background: 'rgba(240,242,247,0.94)', padding: '3px 10px 1px'}}>{p.sub}</span>
+              <span style={{...P.caption, fontSize: 26, background: 'rgba(240,242,247,0.94)', padding: '3px 10px 1px'}}>{p.sub}</span>
             </div>
           ) : null}
         </div>
@@ -121,7 +121,7 @@ export const PaperWalkCard = ({
             <line x1={1} y1={2} x2={1} y2={14} stroke={INK2} strokeWidth={1.4} />
             <line x1={180} y1={2} x2={180} y2={14} stroke={INK2} strokeWidth={1.4} />
           </svg>
-          <div style={{marginTop: 4, ...P.caption, fontSize: 19}}>{scale}</div>
+          <div style={{marginTop: 4, ...P.caption, fontSize: 26}}>{scale}</div>
         </div>
       ) : null}
 
@@ -207,9 +207,9 @@ export const PaperBarCard = ({
             <div style={{position: 'absolute', left: x + bw / 2 - 170, width: 340, top: BASE + 24, textAlign: 'center', opacity: o}}>
               <div style={{
                 fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Light, sans-serif',
-                fontSize: 27, letterSpacing: '0.06em', color: hot ? INK : INK2,
+                fontSize: 30, letterSpacing: '0.06em', color: hot ? INK : INK2,
               }}>{b.label}</div>
-              {b.sub ? <div style={{marginTop: 5, ...P.caption, fontSize: 20}}>{b.sub}</div> : null}
+              {b.sub ? <div style={{marginTop: 5, ...P.caption, fontSize: 26}}>{b.sub}</div> : null}
             </div>
           </React.Fragment>
         );
@@ -217,7 +217,7 @@ export const PaperBarCard = ({
 
       {baselineLabel ? (
         <div style={{position: 'absolute', left: M, top: BASE - 34, opacity: fade(frame, 40)}}>
-          <span style={{...P.caption, fontSize: 20}}>{baselineLabel}</span>
+          <span style={{...P.caption, fontSize: 26}}>{baselineLabel}</span>
         </div>
       ) : null}
 

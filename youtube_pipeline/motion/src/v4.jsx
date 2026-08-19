@@ -31,12 +31,12 @@ export const SAFE_BOTTOM = 820;
 export const KO = {wordBreak: 'keep-all', overflowWrap: 'break-word'};
 
 export const P = {
-  eyebrow: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.22em', color: INK2},
+  eyebrow: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.22em', color: INK2},
   title: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 58, letterSpacing: '0.01em', color: INK},
   body: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, letterSpacing: '0.02em', color: INK},
   label: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.08em', color: INK2},
-  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.06em', color: INK3},
-  dim: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 26, letterSpacing: '0.1em', color: INK2},
+  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.06em', color: INK3},
+  dim: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 30, letterSpacing: '0.1em', color: INK2},
   valueXL: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 250, letterSpacing: '-0.035em', color: INK, lineHeight: 0.92, fontVariantNumeric: 'tabular-nums'},
   valueL: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 120, letterSpacing: '-0.02em', color: INK, lineHeight: 1, fontVariantNumeric: 'tabular-nums'},
   valueM: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 64, letterSpacing: '-0.01em', color: INK, fontVariantNumeric: 'tabular-nums'},
@@ -45,7 +45,7 @@ export const P = {
 export const W = {
   title: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 92, letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: '0 2px 26px rgba(0,0,0,0.55)'},
   label: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, letterSpacing: '0.14em', color: '#FFFFFF', textShadow: '0 2px 16px rgba(0,0,0,0.6)'},
-  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 22, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.72)'},
+  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.72)'},
 };
 
 // 일반 요소의 등장 페이드. 모션 예산에 따라 길이가 줄어든다.
@@ -151,7 +151,7 @@ export const PlaceChip = ({text, dark = true, opacity = 1}) =>
         position: 'absolute', top: 62, right: M, opacity,
         background: dark ? 'rgba(14,17,20,0.82)' : 'rgba(255,255,255,0.9)',
         padding: '9px 16px 7px',
-        fontFamily: 'A2Z Medium, sans-serif', fontSize: 21, letterSpacing: '0.2em',
+        fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.2em',
         color: dark ? '#FFFFFF' : INK,
       }}
     >
@@ -165,7 +165,7 @@ export const Credit = ({text, dark = true, opacity = 1}) =>
     <div
       style={{
         position: 'absolute', bottom: 26, right: M, opacity,
-        fontFamily: 'A2Z Light, sans-serif', fontSize: 17, letterSpacing: '0.12em',
+        fontFamily: 'A2Z Light, sans-serif', fontSize: 22, letterSpacing: '0.12em',
         color: dark ? 'rgba(255,255,255,0.55)' : INK3,
       }}
     >

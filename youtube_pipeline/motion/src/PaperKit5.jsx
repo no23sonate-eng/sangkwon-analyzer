@@ -31,7 +31,8 @@ export const PaperDotsCard = ({
   const gw = (cols - 1) * gap;
   const gh = (rows - 1) * gap;
   const gx = 960 - gw / 2;
-  const gy = 456 - gh / 2;
+  // 글자를 키운 뒤(모바일 하한) 숫자·캡션·note 가 겹쳤다 — 격자를 위로 올린다
+  const gy = 420 - gh / 2;
   const shown = Math.round(interpolate(frame, [10, 10 + Math.min(60, dots)], [0, dots], {
     extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: EASE.outQuint,
   }));
@@ -54,15 +55,15 @@ export const PaperDotsCard = ({
         })}
       </svg>
 
-      <Stage top={Math.max(gy + gh + 58, 590)} style={{opacity: fade(frame, 16)}}>
-        <span style={{...P.valueXL, fontSize: 128}}>{counted}</span>
-        {unit ? <span style={{...P.valueXL, fontSize: 56, color: INK2, marginLeft: 10}}>{unit}</span> : null}
-        {caption ? <div style={{marginTop: 22, ...P.body, fontSize: 32}}>{caption}</div> : null}
+      <Stage top={Math.max(gy + gh + 46, 566)} style={{opacity: fade(frame, 16)}}>
+        <span style={{...P.valueXL, fontSize: 116}}>{counted}</span>
+        {unit ? <span style={{...P.valueXL, fontSize: 52, color: INK2, marginLeft: 10}}>{unit}</span> : null}
+        {caption ? <div style={{marginTop: 18, ...P.body, fontSize: 32}}>{caption}</div> : null}
       </Stage>
 
       {/* 범례 — 나머지 요소와 같이 중앙. 텍스트에 이미 ● 가 있으면 떼고 쓴다 */}
       {legend ? (
-        <div style={{position: 'absolute', left: 0, right: 0, top: 292, opacity: fade(frame, 30),
+        <div style={{position: 'absolute', left: 0, right: 0, top: 262, opacity: fade(frame, 30),
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10}}>
           <svg width={16} height={16}><circle cx={8} cy={8} r={5} fill={INK} /></svg>
           <span style={{...P.caption}}>{String(legend).replace(/^[●•]\s*/, '')}</span>
@@ -70,7 +71,7 @@ export const PaperDotsCard = ({
       ) : null}
 
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
-      {note ? <Stage top={SAFE_BOTTOM - 38} style={{opacity: fade(frame, 52)}}><span style={P.caption}>{note}</span></Stage> : null}
+      {note ? <Stage top={SAFE_BOTTOM - 30} style={{opacity: fade(frame, 52)}}><span style={P.caption}>{note}</span></Stage> : null}
       <Credit text={credit} dark={false} opacity={fade(frame, 52)} />
     </AbsoluteFill>
   );
@@ -135,7 +136,7 @@ export const PaperTrendCard = ({
             </div>
             <div style={{position: 'absolute', left: x - 150, width: 300, top: BASE + 22, textAlign: 'center',
               opacity: fade(frame, stagger(i, 5, 30))}}>
-              <span style={{...P.label, fontSize: 26, color: hot ? INK : INK3}}>{s.label}</span>
+              <span style={{...P.label, fontSize: 30, color: hot ? INK : INK3}}>{s.label}</span>
             </div>
           </React.Fragment>
         );
@@ -188,7 +189,7 @@ export const PaperQuoteCard = ({
         <Stage top={SAFE_BOTTOM - 118} style={{opacity: fade(frame, 44)}}>
           <div style={{width: 72, height: 1, background: '#CFC7B8', margin: '0 auto 22px'}} />
           <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.08em', color: INK}}>{speaker}</span>
-          {role ? <span style={{...P.caption, fontSize: 24, marginLeft: 14}}>{role}</span> : null}
+          {role ? <span style={{...P.caption, fontSize: 28, marginLeft: 14}}>{role}</span> : null}
         </Stage>
       ) : null}
       {note ? <Stage top={SAFE_BOTTOM - 34} style={{opacity: fade(frame, 52)}}><span style={P.caption}>{note}</span></Stage> : null}

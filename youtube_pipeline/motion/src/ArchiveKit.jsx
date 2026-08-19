@@ -145,7 +145,7 @@ export const SourceClipCard = ({
         <Stage top={SAFE_BOTTOM - 178} style={{opacity: fade(frame, 8)}}>
           <span style={{
             background: 'rgba(255,255,255,0.94)', color: INK, padding: '8px 14px 6px',
-            fontFamily: 'A2Z Medium, sans-serif', fontSize: 22, letterSpacing: '0.14em',
+            fontFamily: 'A2Z Medium, sans-serif', fontSize: 27, letterSpacing: '0.14em',
           }}>{outlet}</span>
         </Stage>
       ) : null}
@@ -194,7 +194,7 @@ export const ThenNowCard = ({
           ) : null}
         </div>
         <div style={{position: 'absolute', left: x, top: TOP + CH + 20, width: CW, textAlign: 'center', opacity: fade(frame, delay + 18)}}>
-          <span style={{...P.label, fontSize: 27, color: INK}}>{label}</span>
+          <span style={{...P.label, fontSize: 30, color: INK}}>{label}</span>
         </div>
       </>
     );

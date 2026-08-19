@@ -146,7 +146,7 @@ export const PaperWorldMapCard = ({
             }}>{m.label}</span>
             {m.sub ? (
               <div style={{marginTop: 4}}>
-                <span style={{...P.caption, fontSize: 21, background: 'rgba(240,242,247,0.92)', padding: '2px 10px'}}>{m.sub}</span>
+                <span style={{...P.caption, fontSize: 26, background: 'rgba(240,242,247,0.92)', padding: '2px 10px'}}>{m.sub}</span>
               </div>
             ) : null}
           </div>
@@ -198,7 +198,7 @@ export const PaperDocumentCard = ({
             ) : null}
             <div style={{marginTop: 26, height: 1, background: '#E2E5EA'}} />
             {docBody.map((ln, i) => (
-              <div key={i} style={{marginTop: i ? 14 : 24, ...P.body, fontSize: 25, color: INK2, lineHeight: 1.6, opacity: fade(frame, stagger(i, 5, 24))}}>
+              <div key={i} style={{marginTop: i ? 14 : 24, ...P.body, fontSize: 29, color: INK2, lineHeight: 1.6, opacity: fade(frame, stagger(i, 5, 24))}}>
                 {ln}
               </div>
             ))}

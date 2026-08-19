@@ -82,12 +82,12 @@ export const PaperFlowCard = ({
             {node.tag ? (
               <div style={{
                 position: 'absolute', top: -14, left: 22, background: PAPER, padding: '0 10px',
-                fontFamily: 'A2Z Medium, sans-serif', fontSize: 19, letterSpacing: '0.18em', color: hot ? INK : INK3,
+                fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.18em', color: hot ? INK : INK3,
               }}>{node.tag}</div>
             ) : null}
-            <div style={{...P.label, fontSize: 27}}>{node.label}</div>
+            <div style={{...P.label, fontSize: 30}}>{node.label}</div>
             <div style={{...P.valueM, fontSize: hot ? 68 : 56}}>{node.value}</div>
-            {node.sub ? <div style={{...P.caption, fontSize: 22}}>{node.sub}</div> : null}
+            {node.sub ? <div style={{...P.caption, fontSize: 27}}>{node.sub}</div> : null}
           </div>
         );
       })}
@@ -100,7 +100,7 @@ export const PaperFlowCard = ({
             top: nodeY + nodeH / 2 - 54, textAlign: 'center',
             opacity: fade(frame, stagger(i, 10, 26)),
           }}>
-            <span style={{...P.caption, fontSize: 22}}>{a.label}</span>
+            <span style={{...P.caption, fontSize: 27}}>{a.label}</span>
           </div>
         ) : null
       )}

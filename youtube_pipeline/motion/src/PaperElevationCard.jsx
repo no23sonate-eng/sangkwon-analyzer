@@ -106,11 +106,11 @@ export const PaperElevationCard = ({
             }}
           >
             <span style={{
-              fontFamily: 'A2Z Medium, sans-serif', fontSize: 19, letterSpacing: '0.14em',
+              fontFamily: 'A2Z Medium, sans-serif', fontSize: 26, letterSpacing: '0.14em',
               color: hot ? INK : INK3,
               border: `1px solid ${hot ? INK : '#C7CBD2'}`, padding: '4px 8px 2px',
             }}>{f.name}</span>
-            <span style={{...P.label, fontSize: 26, color: hot ? INK : INK3}}>{f.tenant}</span>
+            <span style={{...P.label, fontSize: 30, color: hot ? INK : INK3}}>{f.tenant}</span>
           </div>
         );
       })}
