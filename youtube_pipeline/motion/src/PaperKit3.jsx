@@ -36,6 +36,23 @@ export const FootageLabelCard = ({
         </div>
       ) : null}
 
+      {/* 지시선 — 라벨은 반드시 대상과 연결한다 (§21 규칙 5).
+          l.to = [x, y] 를 주면 라벨에서 그 점까지 얇은 흰 선 + 점을 찍는다 */}
+      <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+        {labels.map((l, i) => {
+          if (!l.to) return null;
+          const [tx, ty] = l.to;
+          const o = fade(frame, stagger(i, 8, 22));
+          return (
+            <g key={i} opacity={o}>
+              <line x1={l.x} y1={l.y} x2={tx} y2={ty} stroke="#FFFFFF" strokeWidth={1.8} opacity={0.85} />
+              <circle cx={tx} cy={ty} r={6} fill="none" stroke="#FFFFFF" strokeWidth={2} />
+              <circle cx={tx} cy={ty} r={2.4} fill="#FFFFFF" />
+            </g>
+          );
+        })}
+      </svg>
+
       {labels.map((l, i) => (
         <div
           key={i}
@@ -76,8 +93,18 @@ export const SatelliteRouteCard = ({
           });
           return (
             <g key={i} opacity={t}>
-              <ellipse cx={r.cx} cy={r.cy} rx={r.rx} ry={r.ry}
-                fill="rgba(250,255,46,0.22)" stroke={BRAND} strokeWidth={2} />
+              {/* 권역은 흰 얇은 윤곽 + 거의 비치지 않는 채움.
+                  B1M 은 위성 위에서 형광색 덩어리를 쓰지 않는다.
+                  hot: true 인 권역 하나만 앰버로 올린다 */}
+              {/* 어두운 그림자 획을 먼저 깔아 밝은 하늘 위에서도 윤곽이 보이게 */}
+              <ellipse cx={r.cx} cy={r.cy} rx={r.rx * t} ry={r.ry * t}
+                fill="none" stroke="rgba(8,10,12,0.45)" strokeWidth={r.hot ? 5 : 4.2}
+                strokeDasharray={r.hot ? undefined : '9 7'} />
+              <ellipse cx={r.cx} cy={r.cy} rx={r.rx * t} ry={r.ry * t}
+                fill={r.hot ? 'rgba(217,154,31,0.16)' : 'rgba(255,255,255,0.10)'}
+                stroke={r.hot ? AMBER : '#FFFFFF'} strokeWidth={r.hot ? 2.6 : 2.2}
+                strokeDasharray={r.hot ? undefined : '9 7'} />
+              <circle cx={r.cx} cy={r.cy} r={4} fill={r.hot ? AMBER : '#FFFFFF'} />
             </g>
           );
         })}
@@ -88,19 +115,26 @@ export const SatelliteRouteCard = ({
       </svg>
 
       {regions.map((r, i) => (
-        <div key={i} style={{position: 'absolute', left: r.cx - 220, width: 440, top: r.cy - r.ry - 66, textAlign: 'center', opacity: fade(frame, stagger(i, 8, 20))}}>
-          <span style={{...W.label, fontSize: 28}}>{r.label}</span>
+        <div key={i} style={{position: 'absolute', left: r.cx - 220, width: 440, top: r.cy - r.ry - 62, textAlign: 'center', opacity: fade(frame, stagger(i, 8, 20))}}>
+          <span style={{
+            ...W.label, fontSize: 27, textShadow: 'none',
+            background: 'rgba(14,17,20,0.78)', padding: '8px 14px 6px', display: 'inline-block',
+          }}>{r.label}</span>
         </div>
       ))}
 
+      {title || routeLabel ? (
+        <div style={{position: 'absolute', left: 0, right: 0, top: SAFE_BOTTOM - 220, bottom: 0, pointerEvents: 'none',
+          background: 'linear-gradient(180deg, rgba(8,10,12,0) 0%, rgba(8,10,12,.55) 42%, rgba(8,10,12,.72) 100%)'}} />
+      ) : null}
       {title ? (
-        <div style={{position: 'absolute', left: M, top: SAFE_BOTTOM - 150, opacity: fade(frame, 40)}}>
+        <div style={{position: 'absolute', left: 0, right: 0, top: SAFE_BOTTOM - 150, textAlign: 'center', opacity: fade(frame, 40)}}>
           <span style={{...W.title, fontSize: 62}}>{title}</span>
         </div>
       ) : null}
       {routeLabel ? (
-        <div style={{position: 'absolute', left: M, top: SAFE_BOTTOM - 70, opacity: fade(frame, 46)}}>
-          <span style={{...W.caption, fontSize: 26}}>{routeLabel}</span>
+        <div style={{position: 'absolute', left: 0, right: 0, top: SAFE_BOTTOM - 66, textAlign: 'center', opacity: fade(frame, 46)}}>
+          <span style={{...W.caption, fontSize: 26, letterSpacing: '0.1em'}}>{routeLabel}</span>
         </div>
       ) : null}
       <Credit text={credit} opacity={fade(frame, 22)} />

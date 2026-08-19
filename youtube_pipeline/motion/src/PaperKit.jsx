@@ -3,6 +3,7 @@ import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remot
 import {useA2ZFonts} from './Fonts';
 import {
   PaperSurface, PaperHead, Stage, Credit, Mark, PlaceChip, FootageSurface,
+  KO,
   PAPER, PAPER_WARM, INK, INK2, INK3, HAIR, AMBER, BRAND, P, W, M, SAFE_BOTTOM, fade,
 } from './v4';
 import {DrawPath, EASE, stagger, useCountUp, useRevealUp} from './anim';
@@ -98,23 +99,24 @@ export const PaperTimelineCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const n = steps.length || 1;
-  const axisW = 1360;
+  const axisW = 1420;
   const x0 = (1920 - axisW) / 2;
-  const y = 470;
+  // 헤더(~260) 와 자막 안전영역(820) 사이의 세로 가운데에 축을 놓는다
+  const y = 548;
   return (
     <AbsoluteFill>
       <PaperSurface tone={PAPER} />
       <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <DrawPath d={`M ${x0} ${y} L ${x0 + axisW} ${y}`} start={6} dur={34} length={axisW} stroke={INK2} strokeWidth={1.6} />
+        <DrawPath d={`M ${x0} ${y} L ${x0 + axisW} ${y}`} start={6} dur={34} length={axisW} stroke={INK2} strokeWidth={2} />
         {steps.map((s, i) => {
           const x = x0 + (axisW / (n - 1 || 1)) * i;
           const on = fade(frame, stagger(i, 7, 16));
           const act = i === activeIndex;
           return (
             <g key={i} opacity={on}>
-              <circle cx={x} cy={y} r={act ? 13 : 8} fill={act ? AMBER : PAPER} stroke={INK} strokeWidth={act ? 0 : 1.6} />
-              {act ? <circle cx={x} cy={y} r={24} fill="none" stroke={AMBER} strokeWidth={1.4} opacity={0.55} /> : null}
+              <circle cx={x} cy={y} r={act ? 15 : 9} fill={act ? AMBER : PAPER} stroke={INK} strokeWidth={act ? 0 : 1.8} />
+              {act ? <circle cx={x} cy={y} r={28} fill="none" stroke={AMBER} strokeWidth={1.4} opacity={0.55} /> : null}
             </g>
           );
         })}
@@ -126,17 +128,17 @@ export const PaperTimelineCard = ({
         // 양끝은 화면 밖으로 나가지 않게 안쪽으로 당긴다
         const lx = Math.min(Math.max(x - LW / 2, 20), 1920 - LW - 20);
         const vlen = String(s.value || '').length;
-        const vsize = (act ? 46 : 38) * (vlen > 8 ? 0.72 : vlen > 6 ? 0.85 : 1);
+        const vsize = (act ? 54 : 45) * (vlen > 8 ? 0.72 : vlen > 6 ? 0.85 : 1);
         return (
-          <div key={i} style={{position: 'absolute', left: lx, width: LW, top: y - 112, textAlign: 'center', opacity: fade(frame, stagger(i, 7, 18))}}>
-            <div style={{...P.label, fontSize: 24, color: act ? INK : INK3}}>{s.label}</div>
-            {s.value ? <div style={{marginTop: 8, ...P.valueM, fontSize: vsize, color: act ? INK : INK2, whiteSpace: 'nowrap'}}>{s.value}</div> : null}
+          <div key={i} style={{position: 'absolute', left: lx, width: LW, top: y - 126, textAlign: 'center', opacity: fade(frame, stagger(i, 7, 18))}}>
+            <div style={{...P.label, fontSize: 25, color: act ? INK : INK3}}>{s.label}</div>
+            {s.value ? <div style={{marginTop: 10, ...P.valueM, fontSize: vsize, color: act ? INK : INK2, whiteSpace: 'nowrap'}}>{s.value}</div> : null}
           </div>
         );
       })}
       {steps.map((s, i) => (
         s.sub ? (
-          <div key={i} style={{position: 'absolute', left: Math.min(Math.max(x0 + (axisW / (n - 1 || 1)) * i - 190, 20), 1920 - 400), width: 380, top: y + 34, textAlign: 'center', opacity: fade(frame, stagger(i, 7, 22))}}>
+          <div key={i} style={{position: 'absolute', left: Math.min(Math.max(x0 + (axisW / (n - 1 || 1)) * i - 190, 20), 1920 - 400), width: 380, top: y + 38, textAlign: 'center', opacity: fade(frame, stagger(i, 7, 22))}}>
             <span style={{...P.caption, fontSize: 21}}>{s.sub}</span>
           </div>
         ) : null
@@ -213,7 +215,7 @@ export const PaperArticleCard = ({
         <div style={{marginTop: 18, height: 1, background: '#CFC7B8'}} />
       </div>
       <div style={{position: 'absolute', left: 250, right: 250, top: 340, ...headIn}}>
-        <div style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 62, lineHeight: 1.34, letterSpacing: '-0.01em', color: INK}}>
+        <div style={{...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 62, lineHeight: 1.34, letterSpacing: '-0.01em', color: INK}}>
           {parts ? (<>{parts[0]}<Mark on={markOn}>{mark}</Mark>{parts[1]}</>) : headline}
         </div>
         {deck ? <div style={{marginTop: 28, ...P.body, fontSize: 28, color: INK2, lineHeight: 1.6}}>{deck}</div> : null}
@@ -229,28 +231,52 @@ export const FootageAnnotateCard = ({
   box = {x: 760, y: 420, w: 400, h: 240}, // 표시할 영역
   label = '', sub = '',
   labelSide = 'right',
+  hot = false, // true 면 브래킷을 채널 옐로로 (한 화면에 한 번만)
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const t = interpolate(frame, [10, 40], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: EASE.outExpo});
   const cx = box.x + box.w / 2;
   const cy = box.y + box.h / 2;
-  const lx = labelSide === 'right' ? box.x + box.w + 180 : box.x - 180;
-  const ly = cy - 120;
+  const lx = labelSide === 'right' ? box.x + box.w + 140 : box.x - 140;
+  const ly = cy - 46;
+  const C = hot ? BRAND : '#FFFFFF';
   return (
     <AbsoluteFill>
       <FootageSurface image={image} video={video} scrim="bottom" />
       <PlaceChip text={place} opacity={fade(frame, 6)} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        {/* 표시 사각 — 네 모서리가 그려지듯 */}
-        <rect x={box.x} y={box.y} width={box.w * t} height={box.h} fill="rgba(250,255,46,0.08)" />
-        <rect x={box.x} y={box.y} width={box.w} height={box.h} fill="none" stroke={BRAND} strokeWidth={3} opacity={t} />
-        <DrawPath d={`M ${labelSide === 'right' ? box.x + box.w : box.x} ${cy} L ${lx} ${ly + 92}`}
-          start={30} dur={20} length={400} stroke={BRAND} strokeWidth={2} />
+        {/* 표시 사각 — B1M 은 흰 모서리 브래킷을 쓴다. 옐로는 포인트일 때만 */}
+        <rect x={box.x} y={box.y} width={box.w} height={box.h}
+          fill="rgba(255,255,255,0.06)" stroke={C} strokeWidth={1.2} opacity={t * 0.55} />
+        {[[0, 0, 1, 1], [1, 0, -1, 1], [0, 1, 1, -1], [1, 1, -1, -1]].map(([ux, uy, dx, dy], i) => {
+          const px = box.x + ux * box.w;
+          const py = box.y + uy * box.h;
+          const arm = Math.min(46, box.w / 3, box.h / 3) * t;
+          return (
+            <g key={i}>
+              <line x1={px} y1={py} x2={px + dx * arm} y2={py} stroke={C} strokeWidth={3} />
+              <line x1={px} y1={py} x2={px} y2={py + dy * arm} stroke={C} strokeWidth={3} />
+            </g>
+          );
+        })}
+        <DrawPath d={`M ${labelSide === 'right' ? box.x + box.w : box.x} ${cy} L ${lx - 18} ${ly + 22}`}
+          start={30} dur={20} length={400} stroke={C} strokeWidth={2} />
+        <circle cx={labelSide === 'right' ? box.x + box.w : box.x} cy={cy} r={5} fill={C} opacity={fade(frame, 30)} />
       </svg>
-      <div style={{position: 'absolute', left: labelSide === 'right' ? lx : 0, width: labelSide === 'right' ? 460 : lx, top: ly, textAlign: labelSide === 'right' ? 'left' : 'right', opacity: fade(frame, 40)}}>
-        <div style={{...W.label, fontSize: 30, letterSpacing: '0.1em'}}>{label}</div>
-        {sub ? <div style={{marginTop: 10, ...W.caption, fontSize: 24}}>{sub}</div> : null}
+      {/* 라벨은 어두운 판 위에 — 밝은 실사에서 흰 글씨만으로는 읽히지 않는다 */}
+      <div style={{
+        position: 'absolute', left: labelSide === 'right' ? lx : undefined,
+        right: labelSide === 'right' ? undefined : 1920 - lx,
+        top: ly, maxWidth: 520, opacity: fade(frame, 40),
+        textAlign: 'left',
+      }}>
+        <div style={{
+          display: 'inline-block', background: 'rgba(14,17,20,0.80)', padding: '14px 20px 12px',
+        }}>
+          <div style={{...W.label, fontSize: 30, letterSpacing: '0.1em', textShadow: 'none'}}>{label}</div>
+          {sub ? <div style={{marginTop: 8, ...W.caption, fontSize: 23, color: 'rgba(255,255,255,0.78)'}}>{sub}</div> : null}
+        </div>
       </div>
       <Credit text={credit} opacity={fade(frame, 20)} />
     </AbsoluteFill>

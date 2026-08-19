@@ -13,6 +13,11 @@ import subprocess
 import sys
 import tempfile
 
+try:
+    from PIL import Image, ImageDraw
+except ImportError:  # 시트만 못 만들 뿐, 렌더는 된다
+    Image = None
+
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOTION = os.path.join(BASE, 'motion')
 CHROME = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'
@@ -37,13 +42,14 @@ DEVICES = [
     }),
     ('FootageLabelCard', {
         'durationSec': 7, 'image': IMG, 'place': 'SEONGSU', 'concept': '입지', 'credit': '이미지: Wikimedia Commons',
-        'labels': [{'x': 760, 'y': 430, 'text': '대상 A'}, {'x': 1260, 'y': 540, 'text': '대상 B'}],
+        'labels': [{'x': 700, 'y': 330, 'text': '대상 A', 'to': [880, 470]},
+                   {'x': 1330, 'y': 620, 'text': '대상 B', 'to': [1180, 500]}],
     }),
     ('SatelliteRouteCard', {
         'durationSec': 8, 'image': IMG, 'place': 'SEONGSU', 'credit': '이미지: Wikimedia Commons',
         'title': '두 권역의 거리', 'routeLabel': '권역 A → 권역 B',
         'regions': [{'cx': 700, 'cy': 470, 'rx': 150, 'ry': 100, 'label': '권역 A'},
-                    {'cx': 1180, 'cy': 430, 'rx': 150, 'ry': 100, 'label': '권역 B'}],
+                    {'cx': 1180, 'cy': 430, 'rx': 150, 'ry': 100, 'label': '권역 B', 'hot': True}],
         'route': [[700, 470], [900, 500], [1180, 430]],
     }),
     ('PaperStatCard', {
@@ -121,7 +127,7 @@ DEVICES = [
     }),
     ('PaperWorldMapCard', {
         'durationSec': 8, 'eyebrow': '위치', 'title': '성수 · 서울',
-        'geo': 'geo/korea_provinces.geo.json', 'focus': [125.2, 33.0, 131.2, 38.9],
+        'geo': 'geo/korea_provinces.geo.json', 'focus': [125.8, 33.1, 129.8, 38.7],
         'markers': [{'lon': 127.056, 'lat': 37.545, 'label': '성수동', 'sub': '팩토리얼 성수', 'hot': True}],
     }),
     ('PaperWalkCard', {
@@ -168,12 +174,39 @@ def render(name, props, out_dir, frame=100):
     return out if ok else None
 
 
+def build_sheets(out_dir, cols=3, rows=3, tw=640, th=360):
+    """전 장치를 3x3 시트로 묶어 한눈에 비교한다."""
+    if Image is None:
+        print('PIL 없음 — 시트 생략', flush=True)
+        return []
+    names = [n for n in sorted(os.listdir(out_dir)) if n.endswith('.png')]
+    made = []
+    for i in range(0, len(names), cols * rows):
+        chunk = names[i:i + cols * rows]
+        sheet = Image.new('RGB', (cols * tw, rows * (th + 30)), '#101214')
+        dr = ImageDraw.Draw(sheet)
+        for j, n in enumerate(chunk):
+            im = Image.open(os.path.join(out_dir, n)).convert('RGB').resize((tw, th))
+            x, y = (j % cols) * tw, (j // cols) * (th + 30)
+            sheet.paste(im, (x, y))
+            dr.text((x + 8, y + th + 8), n[:-4], fill='#FAFF2E')
+        path = os.path.join(out_dir, f'_sheet{i // (cols * rows) + 1}.jpg')
+        sheet.save(path, quality=88)
+        made.append(path)
+    print('sheets: ' + ', '.join(os.path.basename(m) for m in made), flush=True)
+    return made
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--only', default='')
+    ap.add_argument('--sheets-only', action='store_true')
     ap.add_argument('--out', default=os.path.join(BASE, 'reference', 'device_catalog'))
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
+    if args.sheets_only:
+        build_sheets(args.out)
+        return 0
     made = []
     for name, props in DEVICES:
         if args.only and args.only != name:
@@ -182,6 +215,8 @@ def main():
         if got:
             made.append(got)
     print(f'catalog: {len(made)}/{len(DEVICES)}', flush=True)
+    if not args.only:
+        build_sheets(args.out)
 
 
 if __name__ == '__main__':

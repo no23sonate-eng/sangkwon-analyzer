@@ -3,6 +3,7 @@ import {AbsoluteFill, Img, continueRender, delayRender, interpolate, staticFile,
 import {useA2ZFonts} from './Fonts';
 import {
   PaperSurface, PaperHead, Stage, Credit, PlaceChip, FootageSurface, Mark,
+  KO,
   PAPER, PAPER_WARM, INK, INK2, INK3, HAIR, AMBER, BRAND, P, W, M, SAFE_BOTTOM, fade,
 } from './v4';
 import {DrawPath, EASE, stagger, useCountUp, useRevealUp} from './anim';
@@ -52,16 +53,33 @@ export const PaperWorldMapCard = ({
   eyebrow = '', title = '', focus = [110, 20, 145, 48],
   geo = 'geo/world.geo.json', // 한국 상세도는 'geo/korea_provinces.geo.json'
   markers = [], route = null, note = '', credit = '',
+  // 지도가 놓일 세로 구간 — 헤더 아래 ~ 자막 안전영역 위
+  mapTop = 285, mapBottom = 800, fill = 1,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const [paths, setPaths] = useState(null);
   const [handle] = useState(() => delayRender('지도 로드'));
   const W_ = 1920, H_ = 1080;
-  const prj = (lon, lat) => {
+  // 등장방형 투영에 위도 보정(cos φ)을 넣고, focus 상자를 화면에 맞춰 letterbox.
+  // 보정 없이 가로로 늘리면 한반도가 뚱뚱해진다 — B1M 지도는 형태를 지킨다.
+  const prj = (() => {
     const [x0, y0, x1, y1] = focus;
-    return [((lon - x0) / (x1 - x0)) * W_, ((y1 - lat) / (y1 - y0)) * H_];
-  };
+    const cLon = (x0 + x1) / 2;
+    const cLat = (y0 + y1) / 2;
+    const kx = Math.cos((cLat * Math.PI) / 180);
+    const wUnits = (x1 - x0) * kx;
+    const hUnits = y1 - y0;
+    // 헤더(상단 ~260px)와 자막 안전영역을 피해 세로로 조금 눌러 담는다
+    const availW = (W_ - 2 * M) * fill;
+    const availH = (mapBottom - mapTop) * fill;
+    const scale = Math.min(availW / wUnits, availH / hUnits);
+    const cy = (mapTop + mapBottom) / 2;
+    return (lon, lat) => [
+      W_ / 2 + (lon - cLon) * kx * scale,
+      cy - (lat - cLat) * scale,
+    ];
+  })();
   useEffect(() => {
     fetch(staticFile(geo))
       .then((r) => r.json())
@@ -103,7 +121,7 @@ export const PaperWorldMapCard = ({
     <AbsoluteFill>
       <PaperSurface tone={PAPER} />
       <svg width={W_} height={H_} style={{position: 'absolute', top: 0, left: 0}}>
-        {paths ? <path d={paths} fill="#DCE0E6" stroke="#FFFFFF" strokeWidth={1.4} opacity={fade(frame, 4, 20)} /> : null}
+        {paths ? <path d={paths} fill="#CFD5DE" stroke="#FFFFFF" strokeWidth={1.4} opacity={fade(frame, 4, 20)} /> : null}
         {routeD ? (
           <DrawPath d={routeD} start={16} dur={40} length={4000} stroke={AMBER} strokeWidth={3.5} strokeDasharray="10 8" />
         ) : null}
@@ -121,9 +139,16 @@ export const PaperWorldMapCard = ({
       {markers.map((m, i) => {
         const [x, y] = prj(m.lon, m.lat);
         return (
-          <div key={i} style={{position: 'absolute', left: x - 200, width: 400, top: y - 74, textAlign: 'center', opacity: fade(frame, stagger(i, 8, 26))}}>
-            <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.1em', color: INK}}>{m.label}</span>
-            {m.sub ? <div style={{marginTop: 4, ...P.caption, fontSize: 21}}>{m.sub}</div> : null}
+          <div key={i} style={{position: 'absolute', left: x - 200, width: 400, top: y - 86, textAlign: 'center', opacity: fade(frame, stagger(i, 8, 26))}}>
+            <span style={{
+              fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.1em', color: INK,
+              background: 'rgba(240,242,247,0.92)', padding: '3px 12px 1px', display: 'inline-block',
+            }}>{m.label}</span>
+            {m.sub ? (
+              <div style={{marginTop: 4}}>
+                <span style={{...P.caption, fontSize: 21, background: 'rgba(240,242,247,0.92)', padding: '2px 10px'}}>{m.sub}</span>
+              </div>
+            ) : null}
           </div>
         );
       })}
@@ -165,7 +190,7 @@ export const PaperDocumentCard = ({
         ) : (
           <>
             {docTitle ? (
-              <div style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 40, lineHeight: 1.4, color: INK, letterSpacing: '-0.01em'}}>
+              <div style={{...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 40, lineHeight: 1.4, color: INK, letterSpacing: '-0.01em'}}>
                 {mark && docTitle.includes(mark)
                   ? (<>{docTitle.split(mark)[0]}<Mark on={markOn}>{mark}</Mark>{docTitle.split(mark)[1]}</>)
                   : docTitle}

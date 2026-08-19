@@ -25,22 +25,26 @@ export const M = 150;
 export const SAFE_BOTTOM = 820;
 
 // 타이포 — 지면(잉크)용 / 실사(화이트)용
+// 한글은 어절 단위로 끊어야 한다. keep-all 이 없으면 "소유권 이전"이
+// "소유 / 권 이전"으로 갈라진다 — 모든 타이포 토큰에 기본으로 넣는다.
+export const KO = {wordBreak: 'keep-all', overflowWrap: 'break-word'};
+
 export const P = {
-  eyebrow: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 24, letterSpacing: '0.22em', color: INK2},
-  title: {fontFamily: 'A2Z Regular, sans-serif', fontSize: 46, letterSpacing: '0.01em', color: INK},
-  body: {fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.02em', color: INK},
-  label: {fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.08em', color: INK2},
-  caption: {fontFamily: 'A2Z Light, sans-serif', fontSize: 21, letterSpacing: '0.06em', color: INK3},
-  dim: {fontFamily: 'A2Z Regular, sans-serif', fontSize: 26, letterSpacing: '0.1em', color: INK2},
+  eyebrow: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 24, letterSpacing: '0.22em', color: INK2},
+  title: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 46, letterSpacing: '0.01em', color: INK},
+  body: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.02em', color: INK},
+  label: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.08em', color: INK2},
+  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 21, letterSpacing: '0.06em', color: INK3},
+  dim: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 26, letterSpacing: '0.1em', color: INK2},
   valueXL: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 250, letterSpacing: '-0.035em', color: INK, lineHeight: 0.92, fontVariantNumeric: 'tabular-nums'},
   valueL: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 120, letterSpacing: '-0.02em', color: INK, lineHeight: 1, fontVariantNumeric: 'tabular-nums'},
   valueM: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 64, letterSpacing: '-0.01em', color: INK, fontVariantNumeric: 'tabular-nums'},
 };
 
 export const W = {
-  title: {fontFamily: 'A2Z Medium, sans-serif', fontSize: 92, letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: '0 2px 26px rgba(0,0,0,0.55)'},
-  label: {fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, letterSpacing: '0.14em', color: '#FFFFFF', textShadow: '0 2px 16px rgba(0,0,0,0.6)'},
-  caption: {fontFamily: 'A2Z Light, sans-serif', fontSize: 22, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.72)'},
+  title: {...KO, fontFamily: 'A2Z Medium, sans-serif', fontSize: 92, letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: '0 2px 26px rgba(0,0,0,0.55)'},
+  label: {...KO, fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, letterSpacing: '0.14em', color: '#FFFFFF', textShadow: '0 2px 16px rgba(0,0,0,0.6)'},
+  caption: {...KO, fontFamily: 'A2Z Light, sans-serif', fontSize: 22, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.72)'},
 };
 
 export const fade = (frame, start, len = 14) =>
