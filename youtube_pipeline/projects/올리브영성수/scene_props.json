@@ -383,7 +383,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.54,
+    "scrim": 0.67,
     "source": "Pexels"
    }
   },
@@ -455,7 +455,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.5,
+    "scrim": 0.74,
     "source": "블로그 jooracan / naver"
    }
   },
@@ -611,7 +611,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.5,
+    "scrim": 0.76,
     "source": "Mixkit"
    }
   },
@@ -753,7 +753,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.54,
+    "scrim": 0.78,
     "source": "Mixkit"
    }
   },
@@ -1204,7 +1204,7 @@
   "61": {
    "card": "ShareSplitCard",
    "props": {
-    "title": "공유물분할 경매",
+    "title": "한 건물, 열아홉 주인",
     "sub": "나눌 수 없으니 통째로 판다",
     "n": 19,
     "ownerLabel": "지분권자",
@@ -1696,7 +1696,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.5,
+    "scrim": 0.62,
     "source": "사진=CJ올리브영 / CJ뉴스룸"
    }
   },
@@ -1836,7 +1836,7 @@
    "props": {
     "media": "올리브영성수/oliveyoungn_kpop.jpg",
     "num": "",
-    "label": "매장보다는 놀이터",
+    "label": "올리브영도 예외가 아니다",
     "sub": "",
     "tone": "dark",
     "kicker": "",
@@ -1855,7 +1855,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.52,
+    "scrim": 0.78,
     "source": "블로그 9zlog / naver"
    },
    "motion": {
@@ -2180,7 +2180,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.54,
+    "scrim": 0.75,
     "source": "Mixkit"
    },
    "motion": {
@@ -2213,7 +2213,7 @@
    "props": {
     "media": "올리브영성수/px_mall_high.mp4",
     "num": "",
-    "label": "그런 방향도 가능해 보인다",
+    "label": "직접 경험하게 만드는 공간",
     "sub": "",
     "tone": "dark",
     "kicker": "",
@@ -2338,7 +2338,7 @@
     "tone": "light",
     "kicker": "",
     "align": "left",
-    "scrim": 0.5,
+    "scrim": 0.65,
     "source": "Mixkit"
    },
    "motion": {
@@ -2427,23 +2427,22 @@
    }
   },
   "120": {
-   "card": "TwoPanelCard",
+   "card": "ForkPathCard",
    "props": {
     "title": "앞으로의 두 갈래",
-    "sub": "올리브영 성수 부지",
-    "panels": [
+    "sub": "",
+    "trunkLabel": "올리브영 성수 부지",
+    "branches": [
      {
-      "tag": "A",
       "label": "따라간다",
       "note": "다른 브랜드가 이미 보여준 방식"
      },
      {
-      "tag": "B",
       "label": "만든다",
       "note": "올리브영만의 공간 콘텐츠"
      }
     ],
-    "divider": "어느 쪽?",
+    "question": "어느 쪽?",
     "theme": "ink",
     "source": "도해"
    }

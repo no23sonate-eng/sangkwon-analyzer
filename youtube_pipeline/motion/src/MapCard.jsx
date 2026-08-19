@@ -142,53 +142,63 @@ export const MapCard = ({
       {/* 핀 라벨 — 검정 상자 (§31-4). 지도는 회색조라 상자가 확실히 이긴다.
           겹침 보정(dy)은 **미리 한 번에** 계산한다 — 렌더 중 props 에 쓰면
           프레임마다 값이 누적돼 라벨이 계속 내려간다 */}
-      {(() => { window.__mapDy = []; return null; })()}
+      {(() => { window.__mapDy = []; window.__mapSide = []; return null; })()}
       {pins.map((p, i) => {
         const o = fadeIn(frame, 44 + i * (pins.length > 4 ? 6 : 10));
         if (o <= 0.01) return null;
         const [X, Y] = px(p.lat, p.lon);
         const size = fit(p.label || '', 40, 520);
         const w = estWidth(p.label || '', size) + 44;
-        // 화면 밖으로 나갈 방향이면 뒤집는다
-        let left = p.side === 'left';
-        if (!left && X + 28 + w > 1880) left = true;
-        if (left && X - 28 - w < 40) left = false;
-
-        // ── 라벨 충돌 회피 ──
+        // ── 라벨 자리 찾기 ──
         // 핀이 가까이 붙으면 라벨 상자끼리 겹쳐 글자가 서로를 지운다
         // (성수 6곳에서 "올리브영N 성수"와 "뷰티 맨션 성수"가 포개졌다).
-        // 앞 핀들과 세로로 겹치면 **아래로 한 칸씩 내린다** — 좌우로 밀면
-        // 핀에서 멀어져 어느 핀의 이름인지가 흐려진다.
-        let dy = 0;
-        for (let k = 0; k < i; k++) {
-          const q = pins[k];
-          const [QX, QY] = px(q.lat, q.lon);
-          const qw = estWidth(q.label || '', fit(q.label || '', 40, 520)) + 44;
-          let ql = q.side === 'left';
-          if (!ql && QX + 28 + qw > 1880) ql = true;
-          if (ql && QX - 28 - qw < 40) ql = false;
-          const ax = left ? X - 28 - w : X + 28;
-          const bx = ql ? QX - 28 - qw : QX + 28;
-          const overX = ax < bx + qw + 16 && bx < ax + w + 16;
-          const ay = Y - 92 + dy;
-          const by = QY - 92 + (window.__mapDy[k] || 0);
-          if (overX && Math.abs(ay - by) < 62) dy += 68;
-        }
-        // 라벨 상자가 **다른 핀을 덮는** 경우도 내린다. 라벨끼리만 보다가
-        // "뷰티 맨션 성수" 라벨이 옆 핀을 통째로 가려서 핀이 사라진 것처럼
-        // 보였다 (검수 지적 #11). 상자 밑에 핀이 들어오면 한 칸 더 내린다.
-        for (let pass = 0; pass < 3; pass++) {
-          const bx0 = left ? X - 28 - w : X + 28;
-          const by0 = Y - 92 + dy;
-          const hit = pins.some((q, k) => {
-            if (k === i) return false;
+        // 겹치면 **아래로 한 칸씩** 내리는데, 이것만 쓰면 라벨이 자기 핀에서
+        // 140px 씩 떨어져 어느 핀의 이름인지가 안 보인다 (실제로 "올리브영N
+        // 성수"가 그렇게 떠 버렸다). 그래서 **반대편도 같이 재 보고 덜 밀리는
+        // 쪽을 고른다** — 옆에 자리가 있으면 굳이 내려갈 이유가 없다.
+        const drop = (side) => {
+          let d = 0;
+          for (let k = 0; k < i; k++) {
+            const q = pins[k];
             const [QX, QY] = px(q.lat, q.lon);
-            return QX > bx0 - 18 && QX < bx0 + w + 18
-                   && QY > by0 - 10 && QY < by0 + 76;
-          });
-          if (!hit) break;
-          dy += 68;
+            const qw = estWidth(q.label || '', fit(q.label || '', 40, 520)) + 44;
+            let ql = window.__mapSide[k];
+            const ax = side ? X - 28 - w : X + 28;
+            const bx = ql ? QX - 28 - qw : QX + 28;
+            const overX = ax < bx + qw + 16 && bx < ax + w + 16;
+            const ay = Y - 92 + d;
+            const by = QY - 92 + (window.__mapDy[k] || 0);
+            if (overX && Math.abs(ay - by) < 62) d += 68;
+          }
+          // 라벨 상자가 **다른 핀을 덮는** 경우도 내린다. 라벨끼리만 보다가
+          // "뷰티 맨션 성수" 라벨이 옆 핀을 통째로 가려서 핀이 사라진 것처럼
+          // 보였다 (검수 지적 #11).
+          for (let pass = 0; pass < 3; pass++) {
+            const bx0 = side ? X - 28 - w : X + 28;
+            const by0 = Y - 92 + d;
+            const hit = pins.some((q, k) => {
+              if (k === i) return false;
+              const [QX, QY] = px(q.lat, q.lon);
+              return QX > bx0 - 18 && QX < bx0 + w + 18
+                     && QY > by0 - 10 && QY < by0 + 76;
+            });
+            if (!hit) break;
+            d += 68;
+          }
+          return d;
+        };
+        // 화면 밖으로 나가는 쪽은 애초에 후보가 아니다
+        const canR = X + 28 + w <= 1880;
+        const canL = X - 28 - w >= 40;
+        let left = p.side === 'left';
+        if (!canR) left = true;
+        if (!canL) left = false;
+        let dy = drop(left);
+        if (canR && canL && dy > 0) {
+          const alt = drop(!left);
+          if (alt < dy) { left = !left; dy = alt; }
         }
+        window.__mapSide[i] = left;
         window.__mapDy[i] = dy;
         return (
           <div key={i} style={{position: 'absolute', top: Y - 92 + dy,

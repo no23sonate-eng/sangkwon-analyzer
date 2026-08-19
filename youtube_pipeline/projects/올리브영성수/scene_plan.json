@@ -1743,7 +1743,7 @@
    "end": 558.9,
    "dur": 3.6,
    "text": "이미 다른 브랜드들이 보여준 방식을 따라갈지,",
-   "card": "TwoPanelCard",
+   "card": "ForkPathCard",
    "key": "cut121",
    "cardDur": 3.6
   },

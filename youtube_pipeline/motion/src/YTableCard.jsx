@@ -3,6 +3,7 @@ import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from
 import {useA2ZFonts} from './Fonts';
 import {YELLOW, glow} from './v2shared';
 import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
+import {estWidth} from './layout';
 
 // 데이터 테이블 — 얇은 구분선 + 좌측 라벨 / 우측정렬 값.
 // **채널 테마로 옮겨 왔다** (YFlowCard 와 같은 이유). 원래 v2 시절 카드라
@@ -28,11 +29,20 @@ export const YTableCard = ({
   const rowH = n > 3 ? 118 : 138;
   // 1280 은 너무 넓어서 왼쪽 이름과 오른쪽 값이 화면 양 끝으로 갈라졌다
   // ("크래프톤" 과 "사옥 신축" 이 서로 남처럼 보였다 — 검수 지적 #117).
-  const tableW = 860;
-  // 이름은 왼쪽 끝, 값은 오른쪽 끝 — 이러면 둘이 화면 양쪽으로 갈라져 한 줄로
-  // 안 읽힌다. **이름 칸 폭을 정해 두고 값은 그 바로 옆에서 시작**하게 바꾼다.
-  const NAMEW = 250;
-  const left = (1920 - tableW) / 2;
+  // 그렇다고 폭을 860 으로 **고정**해 놓으니 이번엔 줄 끝이 내용보다 230px 쯤
+  // 더 뻗어서, 표는 가운데인데 글자 덩어리는 왼쪽으로 쏠려 보였다.
+  // 폭은 **내용이 정하게** 한다 — 가장 긴 이름과 가장 긴 값을 재서 그만큼만 긋고,
+  // 그 덩어리를 화면 한가운데 놓는다. 그래야 진짜 가운데로 읽힌다.
+  const PADL = 10, GUTTER = 46, PADR = 30;
+  const nameW = Math.max(...rows.map((r) => estWidth(r.label || '', 34)), 120);
+  const valW = Math.max(...rows.map((r) =>
+    estWidth(r.value || '', r.hot ? 52 : 44)
+    + (r.note ? 20 + estWidth(r.note, 27) : 0)), 160);
+  // 이름 칸 폭을 정해 두고 값은 그 바로 옆에서 시작한다 — 양 끝 정렬을 하면
+  // 이름과 값이 서로 남처럼 보인다
+  const NAMEW = PADL + nameW + GUTTER;
+  const tableW = Math.min(1400, Math.max(620, NAMEW + valW + PADR));
+  const left = Math.round((1920 - tableW) / 2);
   const closingSpace = closingLine ? 110 : 0;
   // 제목이 붙으면 그 아래 띠 한가운데에 표를 앉힌다
   const bandTop = (title || kicker) ? (sub ? 300 : 250) : 200;

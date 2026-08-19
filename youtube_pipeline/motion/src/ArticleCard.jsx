@@ -58,67 +58,70 @@ export const ArticleCard = ({
   const hasPortrait = Boolean(portrait);
   // 본문 단 폭은 1180px 로 묶는다. 화면 폭을 다 쓰면 한 줄이 너무 길어 눈이 되돌아오지 못하고,
   // 무엇보다 **신문처럼 안 보인다** — 신문은 단이 좁다. B1M 도 화면의 절반 조금 넘게 쓴다.
-  const PADX = 120;
   const COLW = 1180;
-  const COLX = hasPortrait ? 470 : (1920 - COLW) / 2;
   const size = fit(body, 40, COLW * 5.2, 0.66);
 
+  const column = (
+    <div style={{width: COLW, opacity: fadeIn(frame, 6),
+                 fontFamily: serif ? 'Myeongjo, Georgia, serif' : 'A2Z Regular, sans-serif',
+                 fontSize: size, lineHeight: 1.66, color: TEXT,
+                 wordBreak: 'keep-all', textAlign: 'left'}}>
+      {parts.map((p, i) => {
+        const isHL = p.startsWith('«') && p.endsWith('»');
+        const txt = isHL ? p.slice(1, -1) : p;
+        if (isHL) {
+          return <Highlighter key={i} progress={hl} color={HL_YELLOW}>{txt}</Highlighter>;
+        }
+        return <span key={i} style={{opacity: fade}}>{txt}</span>;
+      })}
+    </div>
+  );
+
   return (
-    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: T.bg}}>
-      {/* 판 — 화면을 거의 다 덮되 가장자리를 남겨 "얹힌 종이"로 읽히게 */}
-      <div style={{position: 'absolute', left: 40, top: 40, right: 40, bottom: 40,
-                   background: PAPER, opacity: s,
-                   transform: `translateY(${(1 - s) * 14}px) scale(${0.995 + s * 0.005})`,
-                   boxShadow: '0 18px 60px rgba(0,0,0,0.30)'}} />
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: T.bg,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      {/* 판 — 화면을 거의 다 덮게 두면 **무대가 사라진다.** 실제로 그렇게 만들어
+          놨더니 먹 테마가 30px 짜리 테두리로만 남아 렌더 오류처럼 보였고,
+          우상단 `Source :` 가 흰 종이 위 회색이라 안 읽혔다.
+          지면은 무대 위에 **떠 있는 한 장**이어야 한다 — 그래야 인용이라는 게
+          읽히고, 남는 여백에 출처가 제자리를 찾는다.
+          높이는 내용이 정한다. 고정하면 문단 짧은 컷에서 아래가 텅 빈다. */}
+      <div style={{background: PAPER, padding: '84px 120px 92px',
+                   opacity: s,
+                   transform: `translateY(${(1 - s) * 16}px) scale(${0.992 + s * 0.008})`,
+                   boxShadow: '0 26px 80px rgba(0,0,0,0.38)',
+                   display: 'flex', flexDirection: 'column', alignItems: 'center',
+                   maxHeight: CONTENT_BOTTOM - 40}}>
+        {/* 매체 + 날짜 — 지면 맨 위 머리글 */}
+        {(outlet || date) ? (
+          <div style={{opacity: fadeIn(frame, 4), marginBottom: 54, textAlign: 'center',
+                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontSize: 30, letterSpacing: '0.14em', color: TEXT,
+                       paddingBottom: 18, borderBottom: `2px solid ${TEXT}`,
+                       minWidth: 360}}>
+            {[outlet, date].filter(Boolean).join('  ')}
+          </div>
+        ) : null}
 
-      {/* 매체 + 날짜 */}
-      {(outlet || date) ? (
-        <div style={{position: 'absolute', left: 0, right: 0, top: 128, textAlign: 'center',
-                     opacity: fadeIn(frame, 4),
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                     fontSize: 30, letterSpacing: '0.04em', color: TEXT}}>
-          {[outlet, date].filter(Boolean).join('  ')}
-        </div>
-      ) : null}
-
-      {/* 발언자 — 흑백. 컬러면 인물이 기사보다 세진다 */}
-      {hasPortrait ? (
-        <div style={{position: 'absolute', left: PADX, top: 210, width: 280,
-                     textAlign: 'center', opacity: fadeIn(frame, 8)}}>
-          <Img src={/^https?:/.test(portrait) ? portrait : staticFile(portrait)}
-               style={{width: 280, height: 340, objectFit: 'cover',
-                       filter: 'grayscale(1) contrast(1.05)'}} />
-          {who ? (
-            <div style={{marginTop: 16, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                         fontSize: 26, color: TEXT, wordBreak: 'keep-all'}}>{who}</div>
-          ) : null}
-          {role ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 22, color: '#7A8089', wordBreak: 'keep-all'}}>{role}</div>
-          ) : null}
-        </div>
-      ) : null}
-
-      {/* 원문 — 통째로 놓는다 */}
-      <div style={{position: 'absolute', left: COLX, top: 196, width: COLW,
-                   height: CONTENT_BOTTOM - 150,
-                   display: 'flex', alignItems: 'center',
-                   opacity: fadeIn(frame, 6),
-                   fontFamily: serif
-                     ? 'Myeongjo, Georgia, serif'
-                     : 'A2Z Regular, sans-serif',
-                   fontSize: size, lineHeight: 1.66, color: TEXT,
-                   wordBreak: 'keep-all', textAlign: 'left'}}>
-        <div>
-        {parts.map((p, i) => {
-          const isHL = p.startsWith('«') && p.endsWith('»');
-          const txt = isHL ? p.slice(1, -1) : p;
-          if (isHL) {
-            return <Highlighter key={i} progress={hl} color={HL_YELLOW}>{txt}</Highlighter>;
-          }
-          return <span key={i} style={{opacity: fade}}>{txt}</span>;
-        })}
-        </div>
+        {hasPortrait ? (
+          <div style={{display: 'flex', alignItems: 'center', gap: 64}}>
+            {/* 발언자 — 흑백. 컬러면 인물이 기사보다 세진다 */}
+            <div style={{width: 280, textAlign: 'center', opacity: fadeIn(frame, 8)}}>
+              <Img src={/^https?:/.test(portrait) ? portrait : staticFile(portrait)}
+                   style={{width: 280, height: 340, objectFit: 'cover',
+                           filter: 'grayscale(1) contrast(1.05)'}} />
+              {who ? (
+                <div style={{marginTop: 16, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                             fontSize: 26, color: TEXT, wordBreak: 'keep-all'}}>{who}</div>
+              ) : null}
+              {role ? (
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
+                             fontSize: 22, color: '#7A8089', wordBreak: 'keep-all'}}>{role}</div>
+              ) : null}
+            </div>
+            {column}
+          </div>
+        ) : column}
       </div>
 
       {/* 출처는 채널 규칙대로 **우측 상단 · Source :**. 예전엔 이 카드만
