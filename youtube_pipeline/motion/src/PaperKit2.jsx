@@ -1,0 +1,172 @@
+import React, {useEffect, useState} from 'react';
+import {AbsoluteFill, Img, continueRender, delayRender, interpolate, staticFile, useCurrentFrame} from 'remotion';
+import {useA2ZFonts} from './Fonts';
+import {
+  PaperSurface, PaperHead, Stage, Credit, PlaceChip, FootageSurface, Mark,
+  PAPER, PAPER_WARM, INK, INK2, INK3, HAIR, AMBER, BRAND, P, W, M, SAFE_BOTTOM, fade,
+} from './v4';
+import {DrawPath, EASE, stagger, useCountUp, useRevealUp} from './anim';
+
+// ── v4 장치 2차 — B1M 영상 12편 추가 분석에서 확인된 문법 ────────────────
+// (나일강 메가댐 / 마그레브 / 하이퍼루프 / 아반도노 등)
+
+// 7) 실사 위 빅넘버 — 초점 흐린 실사 위에 숫자만 크게 (B1M "5,000MW" 문법)
+// 숫자는 Light, 단위는 Medium 으로 굵기를 바꿔 대비를 만든다.
+export const FootageStatCard = ({
+  image = '', video = '', place = '', credit = '',
+  valueTarget = 0, valueText = '', decimals = 0, unit = '',
+  label = '', caption = '', blur = 6,
+}) => {
+  useA2ZFonts();
+  const frame = useCurrentFrame();
+  const counted = useCountUp(valueTarget, 10, 46, decimals);
+  const shown = valueText || counted;
+  const inn = useRevealUp(8, 30, 34);
+  return (
+    <AbsoluteFill>
+      <div style={{position: 'absolute', inset: 0, filter: `blur(${blur}px)`, transform: 'scale(1.06)'}}>
+        <FootageSurface image={image} video={video} scrim="full" />
+      </div>
+      <PlaceChip text={place} opacity={fade(frame, 8)} />
+      <Stage top={392} style={inn}>
+        {label ? <div style={{...W.label, fontSize: 30, marginBottom: 22, opacity: 0.9}}>{label}</div> : null}
+        <div style={{whiteSpace: 'nowrap'}}>
+          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 210, letterSpacing: '-0.03em', color: '#FFFFFF', fontVariantNumeric: 'tabular-nums'}}>
+            {shown}
+          </span>
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 128, letterSpacing: '-0.01em', color: '#FFFFFF', marginLeft: 6}}>
+            {unit}
+          </span>
+        </div>
+        {caption ? <div style={{marginTop: 30, ...W.label, fontSize: 30, letterSpacing: '0.08em', opacity: fade(frame, 40)}}>{caption}</div> : null}
+      </Stage>
+      <Credit text={credit} opacity={fade(frame, 24)} />
+    </AbsoluteFill>
+  );
+};
+
+// 8) 연한 세계지도 — 회색 대륙 + 얇은 루트 + 작은 마커 (B1M 위치 문법)
+// focus: [lonMin, latMin, lonMax, latMax] / markers: [{lon, lat, label, hot}]
+// route: [[lon,lat], ...] 를 주면 파선 루트를 그린다.
+export const PaperWorldMapCard = ({
+  eyebrow = '', title = '', focus = [110, 20, 145, 48],
+  markers = [], route = null, note = '', credit = '',
+}) => {
+  useA2ZFonts();
+  const frame = useCurrentFrame();
+  const [paths, setPaths] = useState(null);
+  const [handle] = useState(() => delayRender('지도 로드'));
+  const W_ = 1920, H_ = 1080;
+  const prj = (lon, lat) => {
+    const [x0, y0, x1, y1] = focus;
+    return [((lon - x0) / (x1 - x0)) * W_, ((y1 - lat) / (y1 - y0)) * H_];
+  };
+  useEffect(() => {
+    fetch(staticFile('geo/world.geo.json'))
+      .then((r) => r.json())
+      .then((geo) => {
+        const ps = [];
+        for (const f of geo.features) {
+          const g = f.geometry;
+          const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+          for (const poly of polys) {
+            for (const ring of poly) {
+              const pts = ring.map(([lo, la]) => prj(lo, la).map((v) => v.toFixed(1)).join(','));
+              ps.push(`M${pts.join('L')}Z`);
+            }
+          }
+        }
+        setPaths(ps.join(' '));
+        continueRender(handle);
+      })
+      .catch(() => continueRender(handle));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const routeD = route
+    ? 'M' + route.map(([lo, la]) => prj(lo, la).map((v) => v.toFixed(1)).join(',')).join('L')
+    : null;
+
+  return (
+    <AbsoluteFill>
+      <PaperSurface tone={PAPER} />
+      <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
+      <svg width={W_} height={H_} style={{position: 'absolute', top: 0, left: 0}}>
+        {paths ? <path d={paths} fill="#DCE0E6" stroke="#FFFFFF" strokeWidth={1.4} opacity={fade(frame, 4, 20)} /> : null}
+        {routeD ? (
+          <DrawPath d={routeD} start={16} dur={40} length={4000} stroke={AMBER} strokeWidth={3.5} strokeDasharray="10 8" />
+        ) : null}
+        {markers.map((m, i) => {
+          const [x, y] = prj(m.lon, m.lat);
+          const o = fade(frame, stagger(i, 8, 22));
+          return (
+            <g key={i} opacity={o}>
+              <circle cx={x} cy={y} r={m.hot ? 11 : 7} fill={m.hot ? AMBER : INK} />
+              {m.hot ? <circle cx={x} cy={y} r={22} fill="none" stroke={AMBER} strokeWidth={1.4} opacity={0.5} /> : null}
+            </g>
+          );
+        })}
+      </svg>
+      {markers.map((m, i) => {
+        const [x, y] = prj(m.lon, m.lat);
+        return (
+          <div key={i} style={{position: 'absolute', left: x - 200, width: 400, top: y - 74, textAlign: 'center', opacity: fade(frame, stagger(i, 8, 26))}}>
+            <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 30, letterSpacing: '0.1em', color: INK}}>{m.label}</span>
+            {m.sub ? <div style={{marginTop: 4, ...P.caption, fontSize: 21}}>{m.sub}</div> : null}
+          </div>
+        );
+      })}
+      {note ? <Stage top={SAFE_BOTTOM - 58} style={{opacity: fade(frame, 44)}}><span style={P.caption}>{note}</span></Stage> : null}
+      <Credit text={credit} dark={false} opacity={fade(frame, 44)} />
+    </AbsoluteFill>
+  );
+};
+
+// 9) 문서 지면 — 밝은 바탕 위에 흰 페이지가 떠 있는 연출 (특허·보고서 인용)
+// image 를 주면 실제 문서 스캔을, 없으면 텍스트 블록을 조판한다.
+export const PaperDocumentCard = ({
+  eyebrow = '', title = '', image = '',
+  docTitle = '', docBody = [], mark = '',
+  note = '', credit = '',
+}) => {
+  useA2ZFonts();
+  const frame = useCurrentFrame();
+  const pageIn = useRevealUp(8, 30, 26);
+  const markOn = interpolate(frame, [34, 58], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: EASE.outExpo});
+  const PW = 760, PH = 470;
+  return (
+    <AbsoluteFill>
+      <PaperSurface tone="#E4E7EC" />
+      <PaperHead eyebrow={eyebrow} title={title} opacity={fade(frame, 0)} />
+      <div
+        style={{
+          position: 'absolute', left: (1920 - PW) / 2, top: 320, width: PW, minHeight: PH,
+          background: '#FFFFFF', boxShadow: '0 26px 60px rgba(20,24,30,0.16)',
+          padding: '54px 60px', ...pageIn,
+        }}
+      >
+        {image ? (
+          <Img src={staticFile(image)} style={{width: '100%', display: 'block'}} />
+        ) : (
+          <>
+            {docTitle ? (
+              <div style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 40, lineHeight: 1.4, color: INK, letterSpacing: '-0.01em'}}>
+                {mark && docTitle.includes(mark)
+                  ? (<>{docTitle.split(mark)[0]}<Mark on={markOn}>{mark}</Mark>{docTitle.split(mark)[1]}</>)
+                  : docTitle}
+              </div>
+            ) : null}
+            <div style={{marginTop: 26, height: 1, background: '#E2E5EA'}} />
+            {docBody.map((ln, i) => (
+              <div key={i} style={{marginTop: i ? 14 : 24, ...P.body, fontSize: 25, color: INK2, lineHeight: 1.6, opacity: fade(frame, stagger(i, 5, 24))}}>
+                {ln}
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+      {note ? <Stage top={SAFE_BOTTOM - 56} style={{opacity: fade(frame, 46)}}><span style={P.caption}>{note}</span></Stage> : null}
+      <Credit text={credit} dark={false} opacity={fade(frame, 46)} />
+    </AbsoluteFill>
+  );
+};
