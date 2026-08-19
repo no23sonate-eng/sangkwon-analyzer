@@ -1,0 +1,54 @@
+{
+  "project": "신세계MOU",
+  "scenes": [
+    {
+      "id": 0,
+      "act": 1,
+      "start": 0.0,
+      "end": 3.0,
+      "dur": 3.0,
+      "text": "그래서 2025년 7월 1일,",
+      "card": "FullBleedCard",
+      "key": "date"
+    },
+    {
+      "id": 1,
+      "act": 1,
+      "start": 3.1,
+      "end": 6.8,
+      "dur": 3.6,
+      "text": "신세계백화점과 MOU를 체결합니다.",
+      "card": "FullBleedCard",
+      "key": "mou"
+    },
+    {
+      "id": 2,
+      "act": 1,
+      "start": 6.9,
+      "end": 12.3,
+      "dur": 5.4,
+      "text": "지하 1층부터 지상 4층까지 전용 1만6,470제곱미터,",
+      "card": "BigStatsCard",
+      "key": "area"
+    },
+    {
+      "id": 3,
+      "act": 1,
+      "start": 12.5,
+      "end": 14.5,
+      "dur": 2.0,
+      "text": "전면 경영제휴입니다.",
+      "card": "FullBleedCard",
+      "key": "deal",
+      "cardDur": 0.0,
+      "broll": {
+        "src": "mall_wide.mp4",
+        "ss": 1.0,
+        "dur": 2.0,
+        "text": "전면 경영제휴",
+        "sub": "",
+        "credit": "Mixkit"
+      }
+    }
+  ]
+}

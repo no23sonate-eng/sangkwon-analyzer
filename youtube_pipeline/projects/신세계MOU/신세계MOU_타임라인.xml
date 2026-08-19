@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xmeml>
+<xmeml version="4">
+<sequence id="seq-1">
+  <name>신세계MOU_타임라인</name>
+  <duration>417</duration>
+  <rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate>
+  <media><video>
+    <format><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height><pixelaspectratio>square</pixelaspectratio></samplecharacteristics></format>
+    <track><clipitem id="clip-0"><name>#0 sec00_mou.mp4</name><enabled>TRUE</enabled><duration>138</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>0</start><end>138</end><in>0</in><out>138</out><file id="file-0"><name>sec00_mou.mp4</name><pathurl>file://localhost/sec00_mou.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>138</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem>
+<clipitem id="clip-1"><name>#1 sec01_scale.mp4</name><enabled>TRUE</enabled><duration>153</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>144</start><end>297</end><in>0</in><out>153</out><file id="file-1"><name>sec01_scale.mp4</name><pathurl>file://localhost/sec01_scale.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>153</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem>
+<clipitem id="clip-2"><name>#2 sec02_deal.mp4</name><enabled>TRUE</enabled><duration>114</duration><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><start>303</start><end>417</end><in>0</in><out>114</out><file id="file-2"><name>sec02_deal.mp4</name><pathurl>file://localhost/sec02_deal.mp4</pathurl><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><duration>114</duration><media><video><samplecharacteristics><rate><timebase>30</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height></samplecharacteristics></video></media></file></clipitem></track>
+  </video><audio/></media>
+</sequence>
+</xmeml>

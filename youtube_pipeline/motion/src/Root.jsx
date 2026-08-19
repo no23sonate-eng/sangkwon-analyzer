@@ -30,7 +30,7 @@ import {FloorStackCard} from './FloorStackCard';
 import {FootageCard} from './FootageCard';
 import {PaperStatCard} from './PaperStatCard';
 import {PaperElevationCard} from './PaperElevationCard';
-import {PaperFlowCard} from './PaperFlowCard';
+import {PaperFlowCardV4} from './PaperFlowCardV4';
 import {PaperCompareCard, PaperTableCard, PaperTimelineCard, PaperCountCard, PaperArticleCard, FootageAnnotateCard} from './PaperKit';
 import {FootageStatCard, PaperWorldMapCard, PaperDocumentCard} from './PaperKit2';
 import {FootageLabelCard, SatelliteRouteCard, PaperMassingCard, PaperSectionCard} from './PaperKit3';
@@ -40,6 +40,50 @@ import {PaperDotsCard, PaperTrendCard, PaperQuoteCard} from './PaperKit5';
 import {PaperFormulaCard, PaperShareCard, PaperOrgCard, PaperListCard, PaperPressCard, PaperPortraitCard, PaperChoroCard} from './PaperKit6';
 import {YQuoteCard} from './YQuoteCard';
 import {YCompareCard} from './YCompareCard';
+import {SkylineCompareCard} from './SkylineCompareCard';
+import {TowerGaugeCard} from './TowerGaugeCard';
+import {PaperFlowCardV4} from './PaperFlowCardV4';
+import {PaperImageCard} from './PaperImageCard';
+import {NewsQuoteCard} from './NewsQuoteCard';
+import {SectionCard} from './SectionCard';
+import {RatioCard} from './RatioCard';
+import {SightlineCard} from './SightlineCard';
+import {RankTrendCard} from './RankTrendCard';
+import {ExplodedStackCard} from './ExplodedStackCard';
+import {TimelineRailCard} from './TimelineRailCard';
+import {AreaNestCard} from './AreaNestCard';
+import {DotMatrixCard} from './DotMatrixCard';
+import {SectionPhotoCard} from './SectionPhotoCard';
+import {ParkCompareCard} from './ParkCompareCard';
+import {FullBleedCard} from './FullBleedCard';
+import {PhotoStepsCard} from './PhotoStepsCard';
+import {ElevatorCard} from './ElevatorCard';
+import {SplitCard} from './SplitCard';
+import {BigStatsCard} from './BigStatsCard';
+import {PhotoSplitCard} from './PhotoSplitCard';
+import {ExchangeMotionCard} from './ExchangeMotionCard';
+import {MotionSample} from './MotionSample';
+import {MotionWrap} from './MotionWrap';
+import {AnnotatedShotCard} from './AnnotatedShotCard';
+import {ScaleCompareCard} from './ScaleCompareCard';
+import {BeforeAfterCard} from './BeforeAfterCard';
+import {TrackRecordCard} from './TrackRecordCard';
+import {BrandCard} from './BrandCard';
+import {StrikeSwapCard} from './StrikeSwapCard';
+import {ArticleCard} from './ArticleCard';
+import {IsoDiagramCard} from './IsoDiagramCard';
+import {MapCard} from './MapCard';
+import {SectionDiagramCard} from './SectionDiagramCard';
+import {LayerPeelCard} from './LayerPeelCard';
+import {MassingCard} from './MassingCard';
+import {NodeArrayCard} from './NodeArrayCard';
+import {SplitProofCard} from './SplitProofCard';
+import {FrontageCard} from './FrontageCard';
+import {ShareSplitCard} from './ShareSplitCard';
+import {YardViewCard} from './YardViewCard';
+import {SitePlotCard} from './SitePlotCard';
+import {ShapeCompareCard} from './ShapeCompareCard';
+import {LowerThirdCard} from './LowerThirdCard';
 
 import {setMotionMode} from './anim';
 
@@ -237,7 +281,7 @@ export const RemotionRoot = () => {
         ['FootageCard', FootageCard, {}],
         ['PaperStatCard', PaperStatCard, {}],
         ['PaperElevationCard', PaperElevationCard, {floors: []}],
-        ['PaperFlowCard', PaperFlowCard, {nodes: [], arrows: []}],
+        ['PaperFlowCardV4', PaperFlowCardV4, {nodes: [], arrows: []}],
         ['PaperCompareCard', PaperCompareCard, {left: {}, right: {}}],
         ['PaperTableCard', PaperTableCard, {rows: []}],
         ['PaperTimelineCard', PaperTimelineCard, {steps: []}],
@@ -357,6 +401,126 @@ export const RemotionRoot = () => {
         height={1080}
         durationInFrames={300}
         defaultProps={{}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="SkylineCompareCard"
+        component={SkylineCompareCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{buildings: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="TowerGaugeCard"
+        component={TowerGaugeCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{items: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="PaperFlowCard"
+        component={PaperFlowCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{nodes: []}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="PaperImageCard"
+        component={PaperImageCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      {[
+        ['SectionCard', SectionCard, {bands: []}],
+        ['RatioCard', RatioCard, {items: []}],
+        ['SightlineCard', SightlineCard, {}],
+        ['RankTrendCard', RankTrendCard, {points: []}],
+        ['ExplodedStackCard', ExplodedStackCard, {layers: []}],
+        ['TimelineRailCard', TimelineRailCard, {rails: []}],
+        ['AreaNestCard', AreaNestCard, {items: []}],
+        ['DotMatrixCard', DotMatrixCard, {groups: []}],
+        ['SectionPhotoCard', SectionPhotoCard, {bands: []}],
+        ['ParkCompareCard', ParkCompareCard, {sides: []}],
+        ['FullBleedCard', FullBleedCard, {}],
+        ['PhotoStepsCard', PhotoStepsCard, {steps: []}],
+        ['ElevatorCard', ElevatorCard, {stops: []}],
+        ['SplitCard', SplitCard, {left: {}, right: {}}],
+        ['BigStatsCard', BigStatsCard, {items: []}],
+        ['PhotoSplitCard', PhotoSplitCard, {sides: []}],
+        ['ExchangeMotionCard', ExchangeMotionCard, {left: {}, right: {}}],
+        ['AnnotatedShotCard', AnnotatedShotCard, {beats: []}],
+        ['ScaleCompareCard', ScaleCompareCard, {items: []}],
+        ['BeforeAfterCard', BeforeAfterCard, {}],
+        ['TrackRecordCard', TrackRecordCard, {items: []}],
+        ['BrandCard', BrandCard, {}],
+        ['StrikeSwapCard', StrikeSwapCard, {}],
+        ['ArticleCard', ArticleCard, {}],
+        ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
+        ['MapCard', MapCard, {pins: []}],
+        ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],
+        ['LayerPeelCard', LayerPeelCard, {layers: []}],
+        ['MassingCard', MassingCard, {}],
+        ['NodeArrayCard', NodeArrayCard, {hits: []}],
+        ['SplitProofCard', SplitProofCard, {layers: []}],
+        ['FrontageCard', FrontageCard, {options: []}],
+        ['ShareSplitCard', ShareSplitCard, {}],
+        ['YardViewCard', YardViewCard, {}],
+        ['SitePlotCard', SitePlotCard, {}],
+        ['ShapeCompareCard', ShapeCompareCard, {items: []}],
+        ['LowerThirdCard', LowerThirdCard, {}],
+      ].map(([id, comp, defaults]) => (
+        <Composition
+          key={id}
+          id={id}
+          component={comp}
+          fps={FPS}
+          width={1920}
+          height={1080}
+          durationInFrames={300}
+          defaultProps={defaults}
+          calculateMetadata={async ({props}) => durationFromProps({props})}
+        />
+      ))}
+      <Composition
+        id="MotionWrap"
+        component={MotionWrap}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{card: '', props: {}, motion: {}}}
+        calculateMetadata={async ({props}) => durationFromProps({props})}
+      />
+      <Composition
+        id="MotionSample"
+        component={MotionSample}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={24 * FPS}
+        defaultProps={{}}
+      />
+      <Composition
+        id="NewsQuoteCard"
+        component={NewsQuoteCard}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        durationInFrames={300}
+        defaultProps={{headline: []}}
         calculateMetadata={async ({props}) => durationFromProps({props})}
       />
     </>

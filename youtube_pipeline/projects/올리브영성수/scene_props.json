@@ -1,0 +1,2319 @@
+{
+ "project": "올리브영성수",
+ "note": "plan_from_script.py 초안. 수치·라벨을 채운 뒤 qa_check.py 로 검사할 것.",
+ "scenes": {
+  "0": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/seongsu_aerial.jpg",
+    "num": "",
+    "label": "2026년 7월, 성수동",
+    "sub": "경매 한 건",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.46,
+    "source": "블로그 tomoekunn / naver"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.045,
+    "exitSec": 0
+   }
+  },
+  "1": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/oliveyoung_myeongdong.jpg",
+    "num": "",
+    "label": "낙찰자는 올리브영",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Sgroey / CC BY-SA 4.0"
+   },
+   "motion": {}
+  },
+  "2": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "2026년 7월",
+    "sub": "",
+    "items": [
+     {
+      "display": "541.5",
+      "unit": "억",
+      "label": "낙찰가",
+      "sub": "541억 5,290만원 · 단독 입찰",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/money_counter.mp4",
+     "veil": 0.94,
+     "dir": 0,
+     "blur": 4
+    },
+    "source": "뉴스스페이스 · 블로터 2026.07.22"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.05,
+    "exitSec": 0
+   }
+  },
+  "3": {
+   "card": "ArticleCard",
+   "props": {
+    "outlet": "뉴스스페이스",
+    "date": "2026.07",
+    "body": "CJ올리브영은 성동구 성수동2가 314-2번지 토지면적 651㎡(약 197평) 규모 2층 건물 경매에 단독 입찰해 «541억 5,290만원»을 써냈다. 이는 «감정가 395억 9,288만원» 대비 136.77%에 달하는 금액으로, 평당 약 2억 7,000만원 수준이다.",
+    "theme": "ink",
+    "source": "뉴스스페이스 · 블로터 2026.07.22"
+   },
+   "motion": {}
+  },
+  "4": {
+   "card": "ShapeCompareCard",
+   "props": {
+    "title": "감정가 대비 +145억",
+    "sub": "",
+    "items": [
+     {
+      "w": 1.9,
+      "h": 3.96,
+      "label": "396억",
+      "note": "감정가"
+     },
+     {
+      "w": 1.9,
+      "h": 5.41,
+      "label": "541억",
+      "note": "낙찰가",
+      "hot": true
+     }
+    ],
+    "numbered": true,
+    "theme": "ink",
+    "source": "블로터 2026.07.22 · 차액은 자체 계산"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
+   }
+  },
+  "5": {
+   "card": "SitePlotCard",
+   "props": {
+    "title": "대지",
+    "sub": "",
+    "area": "197",
+    "areaUnit": "평",
+    "ratio": 1.5,
+    "second": "2.75억 / 평",
+    "secondLabel": "평당가",
+    "theme": "paper",
+    "source": "블로터 2026.07.22"
+   },
+   "motion": {}
+  },
+  "6": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_thinking.mp4",
+    "num": "",
+    "label": "이상한 점?",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "7": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_gallery_look.mp4",
+    "num": "1",
+    "label": "경쟁자가 없었습니다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "8": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "단독 입찰",
+    "sub": "경쟁자가 없는데 감정가를 넘겼다",
+    "items": [
+     {
+      "display": "1",
+      "unit": "곳",
+      "label": "입찰 참여"
+     },
+     {
+      "display": "136.77",
+      "unit": "%",
+      "label": "감정가 대비",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/auction_columns.mp4",
+     "veil": 0.93,
+     "dir": 0,
+     "blur": 3
+    },
+    "source": "뉴스스페이스 · 블로터 2026.07.22"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
+   }
+  },
+  "9": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_office_dusk.mp4",
+    "num": "2",
+    "label": "원래 매장 건물을 사지 않는 회사",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "10": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "매장 대부분 임차로 사용",
+    "sub": "",
+    "items": [
+     {
+      "display": "1,381",
+      "unit": "개",
+      "label": "전국 매장",
+      "hot": true
+     }
+    ],
+    "theme": "paper",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/korea.png",
+     "veil": 0.79,
+     "dir": 0,
+     "blur": 0
+    },
+    "source": "오픈애즈 2026.04.03 · 지도 Wikimedia Commons CC BY-SA 3.0"
+   },
+   "motion": {}
+  },
+  "11": {
+   "card": "MapCard",
+   "props": {
+    "image": "올리브영성수/seongsu_oy.png",
+    "bounds": [
+     127.030301,
+     37.535812,
+     127.071499,
+     37.554187
+    ],
+    "title": "성수 상권",
+    "sub": "올리브영 매장 6곳",
+    "pins": [
+     {
+      "lat": 37.545258,
+      "lon": 127.054493,
+      "label": "성수역점"
+     },
+     {
+      "lat": 37.547694,
+      "lon": 127.045124,
+      "label": "뚝섬역점"
+     },
+     {
+      "lat": 37.544207,
+      "lon": 127.054377,
+      "label": "올리브영N 성수",
+      "hot": true
+     },
+     {
+      "lat": 37.544551,
+      "lon": 127.057387,
+      "label": "뷰티 맨션 성수"
+     },
+     {
+      "lat": 37.5419,
+      "lon": 127.044976,
+      "label": "서울숲역점"
+     },
+     {
+      "lat": 37.541405,
+      "lon": 127.056912,
+      "label": "성수연방점"
+     }
+    ],
+    "align": "left",
+    "source": "© OpenStreetMap contributors © CARTO · 위치 네이버지도 대조"
+   },
+   "motion": {}
+  },
+  "12": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_desk_top.mp4",
+    "num": "",
+    "label": "왜 건물을 산 걸까요?",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "13": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_facade_yard.jpg",
+    "num": "",
+    "label": "카페 쎈느가 임차해 온 건물",
+    "sub": "연무장5길 · 낙찰 대상 건물",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 tenderrain / naver"
+   },
+   "motion": {}
+  },
+  "14": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_popup_build.jpg",
+    "num": "",
+    "label": "브랜드 팝업이 이어졌다",
+    "sub": "팝업 구조물 설치 중",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.5,
+    "source": "블로그 solvanian / naver"
+   },
+   "motion": {}
+  },
+  "15": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_dior.jpg",
+    "num": "",
+    "label": "루이비통 · 디올 · 지프 · 랄프로렌",
+    "sub": "디올 팝업 당시",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "블로그 wlsdlftn8297 / naver"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "16": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_queue.jpg",
+    "num": "",
+    "label": "팝업 성지",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 protohologram / naver"
+   },
+   "motion": {}
+  },
+  "17": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/popup_jewel.jpg",
+    "num": "",
+    "label": "평범한 건물이 성지가 된 이유",
+    "sub": "3가지",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.67,
+    "source": "Pexels"
+   },
+   "motion": {}
+  },
+  "18": {
+   "card": "ShapeCompareCard",
+   "props": {
+    "title": "건물이 네모반듯하다",
+    "sub": "",
+    "items": [
+     {
+      "w": 7.5,
+      "h": 3.0,
+      "label": "",
+      "dim": "bottom",
+      "dimLabel": "한 변이 곧다",
+      "hot": true
+     }
+    ],
+    "nudge": 56,
+    "theme": "paper",
+    "source": "도해"
+   },
+   "motion": {
+    "dir": "right",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "19": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_facade_day.mp4",
+    "num": "",
+    "label": "한쪽 면이 길다",
+    "sub": "정사각형보다 한 변이 길다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Pexels"
+   },
+   "motion": {}
+  },
+  "20": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_facade.jpg",
+    "num": "",
+    "label": "파사드가 노출되기 좋다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 poiu123_ / naver"
+   },
+   "motion": {}
+  },
+  "21": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_night_popup.jpg",
+    "num": "",
+    "label": "팝업스토어는 결국 광고판이다",
+    "sub": "",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.74,
+    "source": "블로그 jooracan / naver"
+   },
+   "motion": {}
+  },
+  "22": {
+   "card": "AspectRatioCard",
+   "props": {
+    "title": "같은 면적, 다른 전면",
+    "sub": "둘 다 16㎡ — 땅 넓이는 같다",
+    "unit": "m",
+    "items": [
+     {
+      "w": 8,
+      "h": 2,
+      "label": "길게 보인다",
+      "hot": true
+     },
+     {
+      "w": 4,
+      "h": 4,
+      "label": "짧게 보인다"
+     }
+    ],
+    "frontLabel": "길에 닿는 변",
+    "theme": "paper",
+    "caption": "",
+    "source": "도해"
+   },
+   "motion": {}
+  },
+  "23": {
+   "card": "FrontageCard",
+   "props": {
+    "title": "그만큼 광고판이 넓어진다",
+    "sub": "",
+    "options": [
+     {
+      "label": "4 × 4",
+      "w": 4,
+      "d": 4,
+      "note": ""
+     },
+     {
+      "label": "8 × 2",
+      "w": 8,
+      "d": 2,
+      "note": "광고판 폭 2배",
+      "hot": true
+     }
+    ],
+    "floors": 2,
+    "unit": "m",
+    "note": "",
+    "theme": "ink",
+    "source": "도해"
+   },
+   "motion": {}
+  },
+  "24": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_night.jpg",
+    "num": "",
+    "label": "길에서 보이는 면이 두 배",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.34,
+    "source": "블로그 hpphr / naver"
+   },
+   "motion": {}
+  },
+  "25": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_street_evening.mp4",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.3,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "26": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_installation.mp4",
+    "num": "",
+    "label": "브랜드는 파사드를 연출한다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "27": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_thinking2.mp4",
+    "num": "",
+    "label": "래핑할지, 구조물을 세울지",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "28": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_billboard.mp4",
+    "num": "",
+    "label": "건물 정면을 어떻게 쓸 것인가",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "29": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_drone_roofs.mp4",
+    "num": "",
+    "label": "보여줄 수 있는 얼굴이 작다",
+    "sub": "파사드가 작다는 건",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.76,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "30": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_gallery_people.mp4",
+    "num": "",
+    "label": "방문객이 인증샷을 올린다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "31": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_seoul_aerial.mp4",
+    "num": "",
+    "label": "여러 앵글에서 찍힌다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "32": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_white_gallery.mp4",
+    "num": "2",
+    "label": "내부 레이아웃이 좋다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "33": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_void.jpg",
+    "num": "",
+    "label": "1층과 2층이 뚫려 있다",
+    "sub": "몇몇 공간이 위아래로 열려 있다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 yunmystery / naver"
+   },
+   "motion": {}
+  },
+  "34": {
+   "card": "ShapeCompareCard",
+   "props": {
+    "title": "한 층만 쓸 수도, 두 층을 통으로 쓸 수도",
+    "sub": "같은 바닥이라도 쓰는 방식이 달라진다",
+    "items": [
+     {
+      "w": 4,
+      "h": 4,
+      "label": "통으로",
+      "split": 1,
+      "hot": true
+     },
+     {
+      "w": 4,
+      "h": 4,
+      "label": "층별로",
+      "split": 2
+     }
+    ],
+    "theme": "ink",
+    "source": "도해"
+   },
+   "motion": {}
+  },
+  "35": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_interior.jpg",
+    "num": "",
+    "label": "위아래 시선이 자유롭다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 imdressholic / naver"
+   },
+   "motion": {}
+  },
+  "36": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_arch_hall.mp4",
+    "num": "",
+    "label": "공간 활용도가 높다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "37": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_columns_dark.mp4",
+    "num": "",
+    "label": "하얀 도화지가 클수록",
+    "sub": "담을 수 있는 게 많아진다",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.78,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "38": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_corridor.mp4",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.3,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "39": {
+   "card": "ShapeCompareCard",
+   "props": {
+    "title": "층고가 낮으면",
+    "sub": "",
+    "shrink": {
+     "from": 4.6,
+     "at": 18,
+     "dur": 34
+    },
+    "items": [
+     {
+      "w": 7,
+      "h": 1.7,
+      "label": "낮은 층고",
+      "dim": "left",
+      "dimLabel": "층고"
+     }
+    ],
+    "theme": "blueprint",
+    "note": "큰 조형물이 안 서고, 조명을 위에서 떨어뜨릴 자리가 안 나온다",
+    "source": "도해"
+   },
+   "motion": {
+    "dir": "down",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "40": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_columns_room.mp4",
+    "num": "",
+    "label": "할 수 있는 게 줄어든다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "41": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_high_ceiling.mp4",
+    "num": "",
+    "label": "열려 있으면 달라진다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "42": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_concourse.mp4",
+    "num": "",
+    "label": "실제 면적보다 커 보인다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "43": {
+   "card": "YFlowCard",
+   "props": {
+    "kicker": "동선을 설계할 수 있다",
+    "sub": "층이 열려 있으면 위아래로 흐름을 짠다",
+    "nodes": [
+     {
+      "tag": "01",
+      "label": "진입",
+      "sub": "파사드에서 바로"
+     },
+     {
+      "tag": "02",
+      "label": "1층 메인",
+      "sub": "가장 넓은 연출"
+     },
+     {
+      "tag": "03",
+      "label": "보이드",
+      "sub": "위가 보인다",
+      "hot": true
+     },
+     {
+      "tag": "04",
+      "label": "2층",
+      "sub": "올라가고 싶어진다"
+     }
+    ],
+    "arrows": [
+     {
+      "label": ""
+     },
+     {
+      "label": ""
+     },
+     {
+      "label": ""
+     }
+    ],
+    "source": "도해"
+   },
+   "motion": {}
+  },
+  "44": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_lobby.mp4",
+    "num": "",
+    "label": "기둥도 마찬가지다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "45": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_station_hall.mp4",
+    "num": "",
+    "label": "기둥이 많으면 잘게 나뉜다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "46": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_aerial_sunset.mp4",
+    "num": "3",
+    "label": "마당이 있다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "47": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_queue2.jpg",
+    "num": "",
+    "label": "팝업은 대기 줄이 생긴다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 yunny_23 / naver"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "48": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_retail_pick.mp4",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.3,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "49": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/scene_yard.jpg",
+    "num": "",
+    "label": "마당을 대기 공간으로",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.42,
+    "source": "블로그 lovingshu / naver"
+   },
+   "motion": {}
+  },
+  "50": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/seongsu_street_crowd.jpg",
+    "num": "",
+    "label": "내부뿐 아니라 외부까지",
+    "sub": "건물 밖까지 덤으로 받는다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 9zlog / naver"
+   },
+   "motion": {}
+  },
+  "51": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/brand_storefront.jpg",
+    "num": "",
+    "label": "마당은 파사드의 거리다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Yzen2023 / CC BY 4.0"
+   },
+   "motion": {}
+  },
+  "52": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_phonesnap.mp4",
+    "num": "",
+    "label": "건물 얼굴이 온전히 다 담긴다",
+    "sub": "인증샷도 마찬가지",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "53": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_city_lights.mp4",
+    "num": "",
+    "label": "내로라하는 브랜드들이 여기서 팝업을 했다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "54": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_makeup.mp4",
+    "num": "",
+    "label": "올리브영 입장에선?",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "55": {
+   "card": "TrackRecordCard",
+   "props": {
+    "title": "이미 검증이 끝났다",
+    "sub": "",
+    "items": [
+     {
+      "label": "파사드 노출",
+      "note": "여러 브랜드가 실증"
+     },
+     {
+      "label": "내부 레이아웃",
+      "note": "층을 통으로 쓴 사례"
+     },
+     {
+      "label": "마당 활용",
+      "note": "대기·주차·연출"
+     }
+    ],
+    "theme": "ink",
+    "source": "화자 해석"
+   },
+   "motion": {}
+  },
+  "56": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_planning.mp4",
+    "num": "",
+    "label": "돈 한 푼 안 들인 오프라인 테스트",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "57": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_lawsuit.mp4",
+    "num": "",
+    "label": "그런데 왜 하필 경매였을까요?",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "58": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_coins.mp4",
+    "num": "",
+    "label": "경매 = 싸게 사는 것?",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "59": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_discussion.mp4",
+    "num": "",
+    "label": "이건 그게 아니었다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "60": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_office_meet.mp4",
+    "num": "",
+    "label": "공유물분할 경매",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "61": {
+   "card": "ShareSplitCard",
+   "props": {
+    "title": "한 건물, 열아홉 주인",
+    "sub": "나눌 수 없으니 통째로 판다",
+    "n": 19,
+    "ownerLabel": "지분권자",
+    "cutLabel": "땅은 반으로 못 자른다",
+    "bidLabel": "법원 경매 · 공개 입찰",
+    "cutAt": 40,
+    "bidAt": 86,
+    "note": "인근 신도리코 부지가 실제로 이 과정을 거쳤다",
+    "theme": "paper",
+    "bg": {
+     "backdrop": "올리브영성수/bl_city_night2.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    },
+    "source": "민법 제269조 · 하우징포스트 2025.09"
+   },
+   "motion": {}
+  },
+  "62": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_gavel.mp4",
+    "num": "",
+    "label": "나눌 수 없으니 법원으로 간다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "63": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_office_talk.mp4",
+    "num": "",
+    "label": "합의도 잘 안 된다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "64": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_architect2.mp4",
+    "num": "",
+    "label": "법원에 소송을 걸면",
+    "sub": "법원이 매각을 진행한다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "65": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_blueprint.mp4",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.3,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "66": {
+   "card": "TrackRecordCard",
+   "props": {
+    "title": "두 가지가 확정된다",
+    "sub": "",
+    "items": [
+     {
+      "label": "매각은 무조건 진행된다",
+      "note": "합의 불필요"
+     },
+     {
+      "label": "방식은 공개 입찰이다",
+      "note": "가격은 시장이 정한다",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "source": "민법 제269조 · 민사집행법"
+   },
+   "motion": {}
+  },
+  "67": {
+   "card": "ForkPathCard",
+   "props": {
+    "title": "건물을 파는 두 가지 방법",
+    "sub": "",
+    "trunkLabel": "신도리코 부지",
+    "branches": [
+     {
+      "label": "보통 매각",
+      "note": "주관사가 매수자를 섭외한다"
+     },
+     {
+      "label": "경매",
+      "note": "공고 후 공개 입찰 — 시장이 값을 정한다"
+     }
+    ],
+    "decided": 1,
+    "theme": "ink",
+    "source": "도해"
+   },
+   "motion": {}
+  },
+  "68": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_seoul_gate.mp4",
+    "num": "",
+    "label": "입지가 이 정도로 좋은 물건은",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "69": {
+   "card": "ArticleCard",
+   "props": {
+    "outlet": "뉴스1",
+    "date": "2025.09",
+    "body": "지난달 25일 서울동부지방법원 경매에서 성수동2가 준공업지역 토지 4,274㎡와 건물 2,503㎡가 «2,202억 100만원»에 낙찰됐다. 2021년 강남 논현동 빌딩의 1,055억원을 뛰어넘는 «국내 경매 시장 사상 최고 기록»이다.",
+    "theme": "ink",
+    "source": "뉴스1 2025.09 · 헤럴드경제"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
+   }
+  },
+  "70": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/sindoh_hq.jpg",
+    "num": "",
+    "label": "인근 신도리코 부지",
+    "sub": "낙찰 부지는 신도리코 본사에서 50m · 같은 경매 과정",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "블로그 realtyincome___ / naver"
+   },
+   "motion": {}
+  },
+  "71": {
+   "card": "ShapeCompareCard",
+   "props": {
+    "title": "신도리코 부지",
+    "sub": "소유자 19명 · 한 필지",
+    "items": [
+     {
+      "w": 7.6,
+      "h": 3.4,
+      "label": "분할 불가",
+      "dim": "bottom",
+      "dimLabel": "4,272㎡",
+      "hot": true
+     }
+    ],
+    "divide": 19,
+    "nudge": 30,
+    "note": "2025.8.25 · 서울동부지법 · 2,202억 낙찰",
+    "theme": "ink",
+    "source": "하우징포스트 2025.09"
+   },
+   "motion": {}
+  },
+  "72": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "인근 사례",
+    "sub": "4,272㎡ · 단독 응찰",
+    "items": [
+     {
+      "display": "2,202",
+      "unit": "억",
+      "label": "신도리코 낙찰가",
+      "hot": true
+     },
+     {
+      "display": "19",
+      "unit": "명",
+      "label": "공유 소유자"
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/bl_city_river.mp4",
+     "veil": 0.945,
+     "dir": 3,
+     "blur": 4
+    },
+    "source": "하우징포스트 2025.09"
+   },
+   "motion": {}
+  },
+  "73": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_receipts.mp4",
+    "num": "",
+    "label": "반드시 받으려고 웃돈을 썼다",
+    "sub": "싸게 사려던 게 아니다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "74": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_vault.mp4",
+    "num": "",
+    "label": "싸게 사려던 게 아니다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "75": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_seoul_night.mp4",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.25,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "76": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_street_topdown.mp4",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.25,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "77": {
+   "card": "MapCard",
+   "props": {
+    "image": "올리브영성수/seongsu_oy.png",
+    "bounds": [
+     127.030301,
+     37.535812,
+     127.071499,
+     37.554187
+    ],
+    "title": "한 상권에 여섯 곳",
+    "sub": "",
+    "pins": [
+     {
+      "lat": 37.545258,
+      "lon": 127.054493,
+      "label": "성수역점"
+     },
+     {
+      "lat": 37.547694,
+      "lon": 127.045124,
+      "label": "뚝섬역점"
+     },
+     {
+      "lat": 37.544207,
+      "lon": 127.054377,
+      "label": "올리브영N 성수",
+      "hot": true
+     },
+     {
+      "lat": 37.544551,
+      "lon": 127.057387,
+      "label": "뷰티 맨션 성수"
+     },
+     {
+      "lat": 37.5419,
+      "lon": 127.044976,
+      "label": "서울숲역점"
+     },
+     {
+      "lat": 37.541405,
+      "lon": 127.056912,
+      "label": "성수연방점"
+     }
+    ],
+    "align": "left",
+    "source": "© OpenStreetMap contributors © CARTO · ZDNet 2025.11.17 · 위치 네이버지도 대조"
+   },
+   "motion": {}
+  },
+  "78": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/factorial_exterior.jpg",
+    "num": "",
+    "label": "팩토리얼 성수",
+    "sub": "올리브영N 성수가 1~5층을 쓴다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "사진=팩토리얼 성수 / heyPOP"
+   },
+   "motion": {}
+  },
+  "79": {
+   "card": "MapCard",
+   "props": {
+    "image": "올리브영성수/seongsu_zoom.png",
+    "bounds": [
+     127.0432,
+     37.539406,
+     127.0638,
+     37.548593
+    ],
+    "title": "걸어서 2분",
+    "sub": "낙찰 부지 바로 옆",
+    "pins": [
+     {
+      "lat": 37.544182,
+      "lon": 127.05288,
+      "label": "낙찰 부지",
+      "sub": "카페 쎈느 · 연무장5길",
+      "hot": true
+     },
+     {
+      "lat": 37.544207,
+      "lon": 127.054377,
+      "label": "올리브영N 성수"
+     },
+     {
+      "lat": 37.543979,
+      "lon": 127.056966,
+      "label": "성수역"
+     }
+    ],
+    "align": "left",
+    "source": "© OpenStreetMap contributors © CARTO · 블로터 2026.07.22"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "80": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "올리브영N 성수",
+    "sub": "팩토리얼 성수 지상 1~5층",
+    "items": [
+     {
+      "display": "1,400",
+      "unit": "평",
+      "label": "약 4,628㎡",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/factorial_facade.jpg",
+     "veil": 0.74,
+     "dir": 0,
+     "blur": 1
+    },
+    "source": "CJ올리브영 · 사진=팩토리얼 성수 / heyPOP"
+   },
+   "motion": {}
+  },
+  "81": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/oliveyoungn_floor.jpg",
+    "num": "",
+    "label": "개점 1년 누적 250만 명",
+    "sub": "전국 매장 중 내국인 방문 1위",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
+   },
+   "motion": {}
+  },
+  "82": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_drone_urban.mp4",
+    "num": "",
+    "label": "전국 매장 중 내국인 방문 1위",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "83": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/oliveyoungn_atrium.jpg",
+    "num": "",
+    "label": "핵심 사업장",
+    "sub": "올리브영N 성수",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.62,
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
+   },
+   "motion": {}
+  },
+  "84": {
+   "card": "ArticleCard",
+   "props": {
+    "outlet": "비즈워치",
+    "date": "2026.01.14",
+    "body": "팩토리얼 성수가 «2,548억원»에 새 주인을 찾았다. 이지스자산운용에서 교보AIM자산운용으로 소유주가 바뀌며, 연면적 3.3㎡당 «4,000만원» 수준으로 «성수동 오피스 최고가»를 새로 썼다.",
+    "theme": "ink",
+    "source": "비즈워치 2026.01.14"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
+   }
+  },
+  "85": {
+   "card": "StrikeSwapCard",
+   "props": {
+    "title": "소유주 변경",
+    "sub": "",
+    "from": "이지스자산운용",
+    "fromLabel": "기존",
+    "to": "교보AIM자산운용",
+    "toLabel": "2,548억",
+    "note": "",
+    "theme": "ink",
+    "bg": {
+     "backdrop": "올리브영성수/contract_signature.mp4",
+     "veil": 0.945,
+     "dir": 1,
+     "blur": 3
+    },
+    "source": "비즈워치 2026.01.14"
+   },
+   "motion": {}
+  },
+  "86": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "성수동 오피스 최고가",
+    "sub": "연면적 기준",
+    "items": [
+     {
+      "display": "4,000",
+      "unit": "만원/평",
+      "label": "연면적 평당",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/px_blueprint2.mp4",
+     "veil": 0.94,
+     "dir": 5,
+     "blur": 3
+    },
+    "source": "비즈워치 2026.01.14"
+   },
+   "motion": {}
+  },
+  "87": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_crane_site.mp4",
+    "num": "",
+    "label": "건물주가 바뀌면 임차인은?",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.55,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "88": {
+   "card": "YFlowCard",
+   "props": {
+    "kicker": "건물주가 바뀌면",
+    "sub": "임차인에게 무슨 일이 생기나",
+    "nodes": [
+     {
+      "tag": "01",
+      "label": "소유주 변경",
+      "sub": "2,548억에 인수"
+     },
+     {
+      "tag": "02",
+      "label": "수익률 개선",
+      "sub": "매수자의 목표"
+     },
+     {
+      "tag": "03",
+      "label": "임대료 인상 압력",
+      "sub": "추정",
+      "hot": true
+     }
+    ],
+    "arrows": [
+     {
+      "label": ""
+     },
+     {
+      "label": ""
+     }
+    ],
+    "source": "화자 판단 — 추정"
+   },
+   "motion": {}
+  },
+  "89": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/cash_closeup.mp4",
+    "num": "",
+    "label": "임대료가 올라갈 가능성",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "90": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/oliveyoungn_kpop.jpg",
+    "num": "",
+    "label": "올리브영도 예외가 아니다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "사진=CJ올리브영 / CJ뉴스룸"
+   },
+   "motion": {}
+  },
+  "91": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/seongsu_brickst.jpg",
+    "num": "",
+    "label": "성수동 분위기와 잘 맞는 건물",
+    "sub": "",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.78,
+    "source": "블로그 9zlog / naver"
+   },
+   "motion": {}
+  },
+  "92": {
+   "card": "PaperImageCard",
+   "props": {
+    "title": "",
+    "sub": "",
+    "image": "올리브영성수/popup_space.jpg",
+    "caption": "",
+    "source": "MTAPhotos / BY 2.0",
+    "theme": "paper",
+    "align": "center"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "93": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "500억대 자산",
+    "sub": "",
+    "items": [
+     {
+      "display": "541",
+      "unit": "억",
+      "prefix": "약",
+      "label": "낙찰가",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "align": "center",
+    "bg": {
+     "backdrop": "올리브영성수/px_contract_sign.mp4",
+     "veil": 0.945,
+     "dir": 0,
+     "blur": 4
+    },
+    "source": "블로터 2026.07.22"
+   },
+   "motion": {}
+  },
+  "94": {
+   "card": "CostStackCard",
+   "props": {
+    "title": "실제로 나간 돈",
+    "sub": "낙찰가만이 전부가 아니다",
+    "unit": "억원",
+    "parts": [
+     {
+      "value": 541.5,
+      "display": "541.5",
+      "label": "낙찰가"
+     },
+     {
+      "value": 25,
+      "display": "25",
+      "prefix": "약",
+      "label": "취득세 (4.6% 가정)"
+     },
+     {
+      "value": 3.5,
+      "display": "3.5",
+      "prefix": "약",
+      "label": "기타 비용 (추정)"
+     }
+    ],
+    "totalLabel": "취득 총액 (추정)",
+    "totalDisplay": "570",
+    "theme": "ink",
+    "source": "낙찰가=법원 공고 · 세율=지방세법 / 나머지 추정"
+   },
+   "motion": {}
+  },
+  "95": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_retail_aisle.mp4",
+    "num": "",
+    "label": "570억을 회수하려면",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "96": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_topdown_block.mp4",
+    "num": "",
+    "label": "광고 효과나 매출이 나와야 한다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "97": {
+   "card": "TwoPanelCard",
+   "props": {
+    "title": "570억을 회수하는 두 갈래",
+    "sub": "",
+    "panels": [
+     {
+      "tag": "01",
+      "label": "임대 수익",
+      "note": "오피스로 지어 임대료로"
+     },
+     {
+      "tag": "02",
+      "label": "브랜드 효과",
+      "note": "광고판 · 테스트베드로",
+      "hot": true
+     }
+    ],
+    "divider": "동시에",
+    "theme": "blueprint",
+    "source": "화자 판단"
+   },
+   "motion": {}
+  },
+  "98": {
+   "card": "ShapeCompareCard",
+   "props": {
+    "title": "오피스로 지으면 7~8층",
+    "sub": "",
+    "items": [
+     {
+      "w": 3.4,
+      "h": 7.4,
+      "label": "",
+      "dim": "left",
+      "dimLabel": "층수",
+      "split": 8,
+      "hot": true
+     }
+    ],
+    "theme": "blueprint",
+    "note": "용적률 400~500% 가정 · 실제 지구단위계획 미반영 — 자체 시뮬레이션",
+    "source": "자체 시뮬레이션 — 가정값"
+   },
+   "motion": {
+    "dir": "up",
+    "push": 0.045,
+    "exitSec": 0
+   }
+  },
+  "99": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "최대 연면적 (가정)",
+    "sub": "",
+    "items": [
+     {
+      "display": "985",
+      "unit": "평",
+      "label": "단순 오피스 기준",
+      "hot": true
+     }
+    ],
+    "theme": "blueprint",
+    "align": "center",
+    "source": "자체 시뮬레이션 — 가정값"
+   },
+   "motion": {}
+  },
+  "100": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_retail_browse.mp4",
+    "num": "",
+    "label": "임대료만으로 수익성 맞추기는 쉽지 않다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "101": {
+   "card": "MassingCard",
+   "props": {
+    "data": "올리브영성수/seongsu_buildings.json",
+    "title": "어떤 동네에 서게 되나",
+    "sub": "성수 일대 실제 건물 발자국",
+    "spin": 14,
+    "tilt": 0.52,
+    "scale": 1.25,
+    "theme": "ink",
+    "note": "대지가 200평이 채 안 돼 자주식 주차도 쉽지 않다",
+    "source": "© OpenStreetMap contributors"
+   },
+   "motion": {}
+  },
+  "102": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_aerial_land.mp4",
+    "num": "",
+    "label": "인근 토지를 더 사는 방법도 있다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "103": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_street_crowd.mp4",
+    "num": "",
+    "label": "상징성 있는 위치",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "104": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_crane2.mp4",
+    "num": "",
+    "label": "광고 효과를 1순위로 놓고 계산했다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "105": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_library.jpg",
+    "num": "",
+    "label": "검증은 이미 옆에서 끝났다",
+    "sub": "올리브영N 성수",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Pexels"
+   },
+   "motion": {}
+  },
+  "106": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_retail_walk.mp4",
+    "num": "",
+    "label": "매장보다는 놀이터",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "107": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_rooftop.mp4",
+    "num": "",
+    "label": "테스트베드",
+    "sub": "활용 계획은 미확정",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.75,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "108": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/netflix_house.jpg",
+    "num": "",
+    "label": "넷플릭스 하우스",
+    "sub": "체험형 공간의 대표 사례",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.46,
+    "source": "Netflix House 공식 이미지 / 블로그 artlife"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "109": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_mall_high.mp4",
+    "num": "",
+    "label": "직접 경험하게 만드는 공간",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "110": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_seoul_stream.mp4",
+    "num": "",
+    "label": "그런 방향도 가능해 보인다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "111": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/seongsu_aerial2.jpg",
+    "num": "",
+    "label": "땅을 산 건 올리브영만이 아니다",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "블로그 tomoekunn / naver"
+   },
+   "motion": {}
+  },
+  "112": {
+   "card": "MapCard",
+   "props": {
+    "image": "올리브영성수/seongsu.png",
+    "bounds": [
+     127.011301,
+     37.525923,
+     127.093699,
+     37.562672
+    ],
+    "title": "성수동을 사들이는 브랜드들",
+    "sub": "",
+    "pins": [
+     {
+      "lat": 37.544569,
+      "lon": 127.056102,
+      "label": "크래프톤 사옥",
+      "sub": "2028 준공 예정",
+      "hot": true
+     },
+     {
+      "lat": 37.543979,
+      "lon": 127.056966,
+      "label": "성수역"
+     },
+     {
+      "lat": 37.547503,
+      "lon": 127.046197,
+      "label": "뚝섬역"
+     }
+    ],
+    "align": "left",
+    "source": "© OpenStreetMap contributors © CARTO · 이데일리 마켓in"
+   },
+   "motion": {}
+  },
+  "113": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/krafton_rendering.jpg",
+    "num": "",
+    "label": "크래프톤 사옥",
+    "sub": "데이비드 치퍼필드 설계 · 2027년 준공 예정",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "조감도=K-프로젝트 / 더벨"
+   },
+   "motion": {}
+  },
+  "114": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/musinsa_campus.jpg",
+    "num": "",
+    "label": "무신사",
+    "sub": "성수 무신사 캠퍼스",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "블로그 onomdear / naver"
+   },
+   "motion": {}
+  },
+  "115": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_street_walk.mp4",
+    "num": "",
+    "label": "성수동 투자로 유명하다",
+    "sub": "",
+    "tone": "light",
+    "kicker": "",
+    "align": "left",
+    "scrim": 0.65,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "116": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/gentlemonster_haus.jpg",
+    "num": "",
+    "label": "젠틀몬스터",
+    "sub": "하우스 노웨어 서울 · 성수",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "사진=디에디트 the-edit.co.kr"
+   },
+   "motion": {}
+  },
+  "117": {
+   "card": "YTableCard",
+   "props": {
+    "title": "브랜드마다 전략이 다르다",
+    "sub": "성수동 · 브랜드 부동산 격전지",
+    "rows": [
+     {
+      "label": "크래프톤",
+      "value": "사옥 신축",
+      "note": "옛 이마트 부지"
+     },
+     {
+      "label": "무신사",
+      "value": "캠퍼스",
+      "note": "평당 3,500만원"
+     },
+     {
+      "label": "젠틀몬스터",
+      "value": "사옥",
+      "note": "하우스 노웨어 서울"
+     },
+     {
+      "label": "올리브영",
+      "value": "토지 낙찰",
+      "note": "541억",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "source": "비즈워치 2026.01.14"
+   },
+   "motion": {
+    "dir": "left",
+    "push": 0.04,
+    "exitSec": 0
+   }
+  },
+  "118": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_drone_roofs2.mp4",
+    "num": "",
+    "label": "적극 가담하겠다는 신호",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.52,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "119": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/px_seoul_busy.jpg",
+    "num": "",
+    "label": "",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.34,
+    "source": "Pexels"
+   },
+   "motion": {}
+  },
+  "120": {
+   "card": "ForkPathCard",
+   "props": {
+    "title": "앞으로의 두 갈래",
+    "sub": "",
+    "trunkLabel": "올리브영 성수 부지",
+    "branches": [
+     {
+      "label": "따라간다",
+      "note": "다른 브랜드가 이미 보여준 방식"
+     },
+     {
+      "label": "만든다",
+      "note": "올리브영만의 공간 콘텐츠"
+     }
+    ],
+    "question": "어느 쪽?",
+    "theme": "ink",
+    "source": "도해"
+   },
+   "motion": {
+    "dir": "right",
+    "push": 0.05,
+    "exitSec": 0
+   }
+  },
+  "121": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/bl_topdown_roof.mp4",
+    "num": "",
+    "label": "올리브영만의 공간 콘텐츠를 만들지",
+    "sub": "",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.54,
+    "source": "Mixkit"
+   },
+   "motion": {}
+  },
+  "122": {
+   "card": "LowerThirdCard",
+   "props": {
+    "media": "올리브영성수/seoulforest_deck.jpg",
+    "num": "",
+    "label": "이곳이 어떻게 바뀔까",
+    "sub": "지켜보면 방향이 보인다",
+    "tone": "dark",
+    "kicker": "",
+    "align": "center",
+    "scrim": 0.5,
+    "source": "CartoonChess / CC BY-SA 4.0"
+   },
+   "motion": {}
+  }
+ }
+}

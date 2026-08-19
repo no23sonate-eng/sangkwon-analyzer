@@ -81,7 +81,7 @@ DEVICES = [
                   {'label': '거래', 'value': '2,548억', 'sub': '평당 4,000만원'},
                   {'label': '매수', 'value': '교보AIM자산운용', 'sub': '새 소유'}],
     }),
-    ('PaperFlowCard', {
+    ('PaperFlowCardV4', {
         'durationSec': 10, 'eyebrow': '높은 가격에 산 건물의 다음 수순',
         'nodes': [{'tag': '매입', 'label': '매입가', 'value': '2,548억', 'sub': '평당 4,000만원'},
                   {'tag': '요구', 'label': '수익률 개선', 'value': '필요', 'sub': '매수자 입장'},

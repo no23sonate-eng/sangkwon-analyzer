@@ -1,7 +1,7 @@
 import React from 'react';
 import {useCurrentFrame, useVideoConfig, spring, interpolate, AbsoluteFill} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BG_STYLE, GridBg, TEXT, ACCENT, MediaBg} from './shared';
+import {BG_STYLE, GridBg, TEXT, ACCENT, MediaBg, TEXT_SHADOW} from './shared';
 
 // 숫자 하나가 주인공인 카드 — 금액/개소/연도 등 단일 지표 강조.
 // 문장이 길어(카드 지속시간이 김) 사실이 두 단계로 나뉠 때는
@@ -65,7 +65,7 @@ export const StatCard = ({
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, transform: `translateY(${titleY}px)`,
+          fontSize: 44, opacity: titleOpacity, transform: `translateY(${titleY}px)`,
           ...TEXT.title, color: framed ? '#1B1E22' : TEXT.title.color,
         }}
       >
@@ -78,14 +78,15 @@ export const StatCard = ({
           opacity: valueOpacity * stage1Opacity, transform: `scale(${valueScale})`,
         }}
       >
-        <div style={{fontSize: 96, ...TEXT.value}}>{value}</div>
+        <div style={{fontSize: hasMedia && !bgInset && !framed ? 104 : 96, ...TEXT.value,
+                      ...(hasMedia && !bgInset && !framed ? {textShadow: TEXT_SHADOW} : {})}}>{value}</div>
       </div>
 
       <div
         style={{
           position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: subOpacity * stage1Opacity, ...TEXT.label,
-          ...(hasMedia && !bgInset && !framed ? {color: '#E9ECF0'} : {}),
+          fontSize: 46, opacity: subOpacity * stage1Opacity, ...TEXT.label,
+          ...(hasMedia && !bgInset && !framed ? {color: '#FFFFFF', textShadow: TEXT_SHADOW} : {}),
         }}
       >
         {subtitle}
@@ -94,8 +95,9 @@ export const StatCard = ({
       {caption ? (
         <div
           style={{
-            position: 'absolute', top: 670, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 26, color: '#6B7280', fontFamily: 'A2Z Light, sans-serif',
+            position: 'absolute', top: 692, left: 0, width: '100%', textAlign: 'center',
+            fontSize: 34, fontFamily: 'A2Z Regular, sans-serif',
+            ...(hasMedia && !bgInset && !framed ? {color: '#E4E8ED', textShadow: TEXT_SHADOW} : {color: '#6B7280'}),
             opacity: subOpacity * stage1Opacity,
           }}
         >
@@ -111,13 +113,14 @@ export const StatCard = ({
               opacity: stage2Opacity, transform: `scale(${stage2Scale})`,
             }}
           >
-            <div style={{fontSize: 96, ...TEXT.value}}>{value2}</div>
+            <div style={{fontSize: hasMedia && !bgInset && !framed ? 104 : 96, ...TEXT.value,
+                          ...(hasMedia && !bgInset && !framed ? {textShadow: TEXT_SHADOW} : {})}}>{value2}</div>
           </div>
           <div
             style={{
               position: 'absolute', top: 610, left: 0, width: '100%', textAlign: 'center',
-              fontSize: 34, opacity: stage2Opacity, ...TEXT.label,
-              ...(hasMedia && !bgInset && !framed ? {color: '#E9ECF0'} : {}),
+              fontSize: 46, opacity: stage2Opacity, ...TEXT.label,
+              ...(hasMedia && !bgInset && !framed ? {color: '#FFFFFF', textShadow: TEXT_SHADOW} : {}),
             }}
           >
             {subtitle2}

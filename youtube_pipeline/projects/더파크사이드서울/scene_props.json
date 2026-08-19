@@ -1,0 +1,724 @@
+{
+ "project": "더파크사이드서울",
+ "note": "scene_plan.json 의 dur(초)로 렌더된다. card + props 만 여기서 관리. 이미지는 motion/public/parkside/ (출처는 CREDITS.md).",
+ "scenes": {
+  "0": {
+   "card": "PaperImageCard",
+   "props": {
+    "image": "parkside/hero.jpg",
+    "ratio": 1.778,
+    "wide": true,
+    "source": "더파크사이드 서울"
+   }
+  },
+  "1": {
+   "card": "SectionPhotoCard",
+   "props": {
+    "title": "지하 7층 · 지상 20층",
+    "sub": "대지면적 약 1만3,600평 · 연면적 약 14만5,600평 · 11개 동",
+    "above": {
+     "floors": 20,
+     "label": "지상",
+     "note": "높이 70m"
+    },
+    "below": {
+     "floors": 7,
+     "label": "지하",
+     "note": "주차 3,384대"
+    },
+    "bands": [
+     {
+      "y0": 0.604,
+      "y1": 0.757,
+      "label": "백화점 · 리테일 (B1~4F)",
+      "hot": true
+     }
+    ],
+    "source": "더파크사이드 서울",
+    "topRatio": 0.212,
+    "botRatio": 0.885
+   }
+  },
+  "2": {
+   "card": "ParkCompareCard",
+   "props": {
+    "title": "\"서울의 센트럴파크\"",
+    "sides": [
+     {
+      "photo": "parkside/photo_centralpark.jpg",
+      "shape": "parkside/shape_centralpark.png",
+      "name": "뉴욕 센트럴파크",
+      "area": "3,410,000㎡",
+      "sub": "4.1km × 0.8km",
+      "dw": 340,
+      "dh": 1422
+     },
+     {
+      "photo": "parkside/photo_yongsanpark.jpg",
+      "shape": "parkside/shape_yongsanpark.png",
+      "name": "용산공원",
+      "area": "3,030,000㎡",
+      "sub": "반환 미군기지 부지",
+      "hot": true,
+      "dw": 730,
+      "dh": 932
+     }
+    ],
+    "note": "용산공원은 센트럴파크의 89% 크기",
+    "source": "dronepicr · Korea.net / CC BY"
+   }
+  },
+  "3": {
+   "card": "SkylineCompareCard",
+   "props": {
+    "title": "사업비",
+    "sub": "건물 높이가 아니라 사업비를 비교한다",
+    "buildings": [
+     {
+      "label": "여의도 파크원",
+      "value": 0.96,
+      "note": "2조 1,000억",
+      "shape": "parc1",
+      "tone": 0
+     },
+     {
+      "label": "롯데월드타워",
+      "value": 0.9,
+      "note": "4조 2,000억",
+      "shape": "lotte",
+      "tone": 2
+     },
+     {
+      "label": "더 파크사이드 서울",
+      "value": 1.0,
+      "note": "11조",
+      "shape": "cluster",
+      "hot": true
+     }
+    ],
+    "note": "보도된 금액의 기준(총사업비 · 공사비 · 토지비 포함 여부)이 서로 달라 단순 비교는 참고용",
+    "source": "보도 종합"
+   }
+  },
+  "4": {
+   "card": "FullBleedCard",
+   "props": {
+    "image": "parkside/yongsan_base.jpg",
+    "headline": "시작은 도시가 아니었다",
+    "source": "MNXANL / CC BY-SA 4.0"
+   }
+  },
+  "5": {
+   "card": "FullBleedCard",
+   "props": {
+    "image": "parkside/humphreys.jpg",
+    "headline": "용산 → 평택",
+    "sub": "2003년 4월 한미 합의 · 이전 비용 3조 4,000억원",
+    "scrim": 0.4,
+    "source": "USAG Humphreys / CC BY 2.0"
+   }
+  },
+  "6": {
+   "card": "ExchangeMotionCard",
+   "props": {
+    "title": "기부 대 양여",
+    "sub": "2007년 11월",
+    "left": {
+     "wordmark": "LH",
+     "label": "LH",
+     "sub": "한국토지주택공사"
+    },
+    "right": {
+     "logo": "parkside/logo_mnd.png",
+     "label": "국방부",
+     "sub": "용산기지 소유"
+    },
+    "give": {
+     "icon": "base",
+     "label": "평택기지",
+     "sub": "3조 4,000억"
+    },
+    "get": {
+     "icon": "land",
+     "label": "4개 부지",
+     "sub": ""
+    },
+    "source": "국방부·LH 협약"
+   }
+  },
+  "7": {
+   "card": "SkylineCompareCard",
+   "props": {
+    "title": "용도지역이 바뀌면 높이가 바뀐다",
+    "sub": "2015년 4월 · 유엔사 부지",
+    "dark": true,
+    "buildings": [
+     {
+      "label": "제3종일반주거지역 · 250%",
+      "value": 0.28,
+      "note": "변경 전",
+      "shape": "slab",
+      "tone": 0
+     },
+     {
+      "label": "일반상업지역 · 상한 1300%",
+      "value": 1.0,
+      "note": "변경 후",
+      "shape": "slender",
+      "hot": true
+     }
+    ],
+    "note": "",
+    "source": "서울시"
+   }
+  },
+  "8": {
+   "card": "PaperImageCard",
+   "props": {
+    "title": "유엔사 부지 공개매각",
+    "image": "parkside/map.jpg",
+    "ratio": 1.445,
+    "caption": "2017년 5월 · 공급면적 약 1만3,600평 · 예정가 8,031억원 (평당 약 5,900만원)",
+    "source": "더파크사이드 서울"
+   }
+  },
+  "9": {
+   "card": "RatioCard",
+   "props": {
+    "title": "2017년 7월 낙찰",
+    "sub": "예정가보다 2,521억원 · 31% 높게",
+    "mode": "bar",
+    "unit": "억원",
+    "items": [
+     {
+      "label": "LH 예정가",
+      "pct": 8031,
+      "decimals": 0,
+      "sub": "평당 약 5,900만원"
+     },
+     {
+      "label": "일레븐건설 낙찰가",
+      "pct": 10552,
+      "decimals": 0,
+      "sub": "평당 약 7,760만원",
+      "hot": true
+     }
+    ],
+    "source": "LH 매각공고"
+   }
+  },
+  "10": {
+   "card": "PhotoStepsCard",
+   "props": {
+    "title": "일레븐건설 엄석오 회장",
+    "steps": [
+     {
+      "icon": "books",
+      "label": "책 외판원",
+      "sub": "사회생활 시작"
+     },
+     {
+      "icon": "press",
+      "label": "출판사",
+      "sub": "설립"
+     },
+     {
+      "icon": "crane",
+      "label": "건설사",
+      "sub": "설립"
+     },
+     {
+      "photo": "parkside/site_aerial.jpg",
+      "label": "1조짜리 땅",
+      "sub": "서울 한복판",
+      "hot": true
+     }
+    ],
+    "source": "보도 종합",
+    "scale": 0.8,
+    "gapScale": 0.8
+   }
+  },
+  "11": {
+   "card": "SkylineCompareCard",
+   "props": {
+    "title": "용적률",
+    "sub": "일반상업지역 기준으로 봐도 낮다",
+    "buildings": [
+     {
+      "label": "법정 상한",
+      "value": 1.0,
+      "note": "1300%",
+      "shape": "slender",
+      "tone": 0
+     },
+     {
+      "label": "서울시 조례",
+      "value": 0.62,
+      "note": "800%",
+      "shape": "slab",
+      "tone": 2
+     },
+     {
+      "label": "실제 적용",
+      "value": 0.46,
+      "note": "600%",
+      "shape": "slab",
+      "hot": true
+     }
+    ],
+    "source": "국토계획법·서울시 조례"
+   }
+  },
+  "12": {
+   "card": "ExchangeMotionCard",
+   "props": {
+    "title": "국방부 vs 서울시 논쟁",
+    "sub": "이 대립이 몇 년을 끌었다",
+    "left": {
+     "logo": "parkside/logo_mnd.png",
+     "label": "국방부",
+     "sub": "땅을 판 쪽"
+    },
+    "right": {
+     "logo": "parkside/logo_seoul.png",
+     "label": "서울시",
+     "sub": "인허가권"
+    },
+    "give": {
+     "icon": "height",
+     "label": "최대 용적률",
+     "sub": ""
+    },
+    "get": {
+     "icon": "mountain",
+     "label": "남산 간섭",
+     "sub": ""
+    },
+    "source": "보도 종합"
+   }
+  },
+  "13": {
+   "card": "SightlineCard",
+   "props": {
+    "title": "합의 조건 두 개",
+    "sub": "3D 경관 시뮬레이션",
+    "viewer": {
+     "x": 300,
+     "label": "반포대교 남단"
+    },
+    "peak": {
+     "x": 1560,
+     "label": "남산",
+     "ridgeLabel": "7부능선"
+    },
+    "building": {
+     "x": 1010,
+     "w": 190,
+     "h": 150,
+     "label": "더 파크사이드 서울",
+     "note": "남산 소월길보다 낮게"
+    },
+    "source": "서울시 경관심의"
+   }
+  },
+  "14": {
+   "card": "SectionPhotoCard",
+   "props": {
+    "title": "70m — 지상 20층",
+    "sub": "위로 못 가니 아래로 팠다",
+    "above": {
+     "floors": 20,
+     "label": "지상",
+     "note": "높이 70m"
+    },
+    "below": {
+     "floors": 7,
+     "label": "지하",
+     "note": ""
+    },
+    "bands": [
+     {
+      "y0": 0.742,
+      "y1": 0.885,
+      "label": "주차 3,384대 전부 지하",
+      "hot": true
+     }
+    ],
+    "source": "더파크사이드 서울",
+    "topRatio": 0.212,
+    "botRatio": 0.885
+   }
+  },
+  "15": {
+   "card": "RatioCard",
+   "props": {
+    "title": "연면적 대비 상업시설 비중",
+    "items": [
+     {
+      "label": "더 파크사이드 서울",
+      "pct": 8.1,
+      "sub": "약 3만9,000㎡",
+      "hot": true
+     },
+     {
+      "label": "아자부다이힐스",
+      "pct": 2.7,
+      "sub": "도쿄 · 모리빌딩"
+     }
+    ],
+    "unit": "%",
+    "source": "건축개요·모리빌딩"
+   }
+  },
+  "16": {
+   "card": "PaperFlowCard",
+   "props": {
+    "title": "",
+    "nodes": []
+   }
+  },
+  "17": {
+   "card": "PhotoStepsCard",
+   "props": {
+    "title": "도쿄의 답 — 모리빌딩",
+    "sub": "짓고, 그대로 운영한다",
+    "steps": [
+     {
+      "photo": "parkside/mori_roppongi.jpg",
+      "label": "롯폰기힐스",
+      "sub": "2003"
+     },
+     {
+      "photo": "parkside/mori_toranomon.jpg",
+      "label": "도라노몬힐스",
+      "sub": "2014"
+     },
+     {
+      "photo": "parkside/mori_azabudai.jpg",
+      "label": "아자부다이힐스",
+      "sub": "2023",
+      "hot": true
+     }
+    ],
+    "source": "稲妻ノ歯鯨 · Kakidai / CC BY-SA · Syced / CC0",
+    "gapScale": 0.5
+   }
+  },
+  "18": {
+   "card": "PaperImageCard",
+   "props": {
+    "title": "신세계백화점 MOU",
+    "image": "parkside/retail.jpg",
+    "ratio": 1.781,
+    "caption": "2025년 7월 1일 · 지하 1층~지상 4층 전용 1만6,470㎡ 전면 경영제휴",
+    "source": "더파크사이드 서울"
+   }
+  },
+  "19": {
+   "card": "AreaNestCard",
+   "props": {
+    "title": "백화점 밖 제휴 구역",
+    "sub": "",
+    "unit": "평",
+    "items": [
+     {
+      "label": "더 파크사이드 서울",
+      "sub": "",
+      "value": 4980,
+      "display": "약 4,980",
+      "hot": true
+     },
+     {
+      "label": "하우스오브신세계 청담",
+      "sub": "",
+      "value": 1500,
+      "display": "1,500"
+     }
+    ],
+    "multipleNote": "3.3배",
+    "source": "보도 종합"
+   }
+  },
+  "20": {
+   "card": "FullBleedCard",
+   "props": {
+    "image": "parkside/rosewood_full.jpg",
+    "headline": "로즈우드",
+    "sub": "1979년 댈러스에서 시작 · 전 세계 39개 도시",
+    "scrim": 0.4,
+    "source": "Wpcpey / CC BY-SA 4.0"
+   }
+  },
+  "21": {
+   "card": "RankTrendCard",
+   "props": {
+    "title": "The World's 50 Best Hotels",
+    "sub": "로즈우드 홍콩",
+    "points": [
+     {
+      "x": "2023",
+      "rank": 2
+     },
+     {
+      "x": "2024",
+      "rank": 3
+     },
+     {
+      "x": "2025",
+      "rank": 1
+     }
+    ],
+    "worst": 4,
+    "caption": "2025년 10월 발표 — 전 세계 1위",
+    "source": "50 Best Hotels"
+   }
+  },
+  "22": {
+   "card": "ElevatorCard",
+   "props": {
+    "title": "엘리베이터를 타고 내려가면",
+    "sub": "위아래로 이어진다",
+    "stops": [
+     {
+      "floor": "5~20F",
+      "label": "집",
+      "sub": "주거 · 레지던스"
+     },
+     {
+      "floor": "1~4F",
+      "label": "로즈우드가 운영하는 라운지 · 스파",
+      "hot": true
+     },
+     {
+      "floor": "B1",
+      "label": "신세계 공간"
+     }
+    ],
+    "source": "건축개요"
+   }
+  },
+  "23": {
+   "card": "PhotoStepsCard",
+   "props": {
+    "title": "회수 시점을 셋으로 나눴다",
+    "steps": [
+     {
+      "icon": "books",
+      "label": "오피스텔",
+      "sub": "2025년 바로 분양"
+     },
+     {
+      "icon": "crane",
+      "label": "아파트",
+      "sub": "2027년 분양 예정"
+     },
+     {
+      "icon": "press",
+      "label": "리테일",
+      "sub": "분양하지 않고 보유",
+      "hot": true
+     }
+    ],
+    "source": "분양공고",
+    "gapScale": 0.5
+   }
+  },
+  "24": {
+   "card": "FullBleedCard",
+   "props": {
+    "image": "parkside/layout.jpg",
+    "headline": "세대는 숲을 품었다",
+    "sub": "용산공원을 마주보는 쪽이 오피스텔 · 로즈우드는 오히려 뒤쪽",
+    "scrim": 0.46,
+    "source": "더파크사이드 서울"
+   }
+  },
+  "25": {
+   "card": "SplitCard",
+   "props": {
+    "title": "한국에 없었던 이유",
+    "left": {
+     "label": "개발사",
+     "sub": "짓고 판다",
+     "lines": [
+      "분양이 끝나면 손을 뗀다",
+      "회수 시점이 준공"
+     ]
+    },
+    "right": {
+     "label": "운영사",
+     "sub": "빌리고 운영한다",
+     "lines": [
+      "임차인·콘텐츠 계속 변경",
+      "회수 시점이 수년~수십 년"
+     ]
+    },
+    "verdict": "한 회사가 하는 사례가 없음",
+    "source": ""
+   }
+  },
+  "26": {
+   "card": "TimelineRailCard",
+   "props": {
+    "title": "아자부다이힐스와 비교",
+    "sub": "같은 축 위에 놓으면 기간이 보인다",
+    "axis": {
+     "from": 1985,
+     "to": 2030,
+     "step": 5
+    },
+    "rails": [
+     {
+      "label": "아자부다이힐스",
+      "from": 1989,
+      "to": 2023,
+      "note": "34년"
+     },
+     {
+      "label": "파크사이드 서울",
+      "from": 2017,
+      "to": 2027,
+      "note": "10년",
+      "hot": true
+     }
+    ],
+    "source": "모리빌딩·건축개요"
+   }
+  },
+  "27": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "오피스텔 청약",
+    "sub": "2025년 7월 · 775실 모집에 1,296건",
+    "items": [
+     {
+      "display": "1.67",
+      "unit": ":1",
+      "label": "평균 경쟁률"
+     },
+     {
+      "display": "40",
+      "unit": ":1",
+      "label": "최고 경쟁률",
+      "sub": "초과",
+      "hot": true
+     }
+    ],
+    "source": "청약홈"
+   }
+  },
+  "28": {
+   "card": "SkylineCompareCard",
+   "props": {
+    "title": "분양가",
+    "sub": "전용면적 기준 3.3㎡당 2억원대",
+    "buildings": [
+     {
+      "label": "전용 53㎡ · 가장 작은 타입",
+      "value": 0.54,
+      "note": "29억 8,300만원",
+      "shape": "plan",
+      "tone": 0
+     },
+     {
+      "label": "전용 185㎡ · 가장 큰 타입",
+      "value": 1.0,
+      "note": "185억 700만원",
+      "shape": "plan",
+      "hot": true
+     }
+    ],
+    "source": "분양공고",
+    "note": "변 길이가 아니라 면적이 실제 전용면적 비율(53㎡ : 185㎡)"
+   }
+  },
+  "29": {
+   "card": "TimelineRailCard",
+   "props": {
+    "title": "남은 일정",
+    "axis": {
+     "from": 2027.0,
+     "to": 2027.92,
+     "step": 0.184
+    },
+    "rails": [
+     {
+      "label": "",
+      "from": 2027.0,
+      "to": 2027.92,
+      "events": [
+       {
+        "at": 2027.08,
+        "label": "준공",
+        "sub": "2월"
+       },
+       {
+        "at": 2027.42,
+        "label": "입주",
+        "sub": "6월"
+       },
+       {
+        "at": 2027.75,
+        "label": "아파트 420가구",
+        "sub": "분양 방식이 관건",
+        "hot": true
+       }
+      ]
+     }
+    ],
+    "source": "분양공고",
+    "sub": "2027년",
+    "tickLabels": [
+     "1월",
+     "3월",
+     "5월",
+     "7월",
+     "9월",
+     "11월"
+    ]
+   }
+  },
+  "30": {
+   "card": "PhotoSplitCard",
+   "props": {
+    "title": "다른 전략",
+    "sides": [
+     {
+      "photo": "parkside/parkside_towers.jpg",
+      "name": "더 파크사이드 서울",
+      "sub": "11개 동 · KPF 설계",
+      "stat": "1,195",
+      "statUnit": "세대",
+      "lines": [
+       "오피스텔 775실 + 아파트 420가구",
+       "백화점 · 호텔 · 리테일을 품는다"
+      ],
+      "hot": true
+     },
+     {
+      "photo": "parkside/eterno_towers.jpg",
+      "name": "에테르노 용산",
+      "sub": "2개 동 · 라파엘 모네오 설계",
+      "stat": "33",
+      "statUnit": "세대",
+      "lines": [
+       "아파트 29 + 오피스텔 4",
+       "희소성으로 승부"
+      ]
+     }
+    ],
+    "verdict": "같은 입지, 반대 방향",
+    "source": "더파크사이드 서울 · 에테르노 용산"
+   }
+  },
+  "31": {
+   "card": "PaperImageCard",
+   "props": {
+    "image": "parkside/closing.jpg",
+    "ratio": 1.335,
+    "source": "더파크사이드 서울"
+   }
+  }
+ }
+}

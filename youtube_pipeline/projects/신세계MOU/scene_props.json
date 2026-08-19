@@ -1,0 +1,54 @@
+{
+ "project": "신세계MOU",
+ "note": "빠른 컷 + 다중 소스 데모",
+ "scenes": {
+  "0": {
+   "card": "FullBleedCard",
+   "props": {
+    "image": "신세계MOU/shinsegae_plate.jpg",
+    "headline": "2025년 7월 1일",
+    "sub": "",
+    "scrim": 0.42,
+    "source": "Minseong Kim / CC BY-SA 4.0"
+   }
+  },
+  "1": {
+   "card": "FullBleedCard",
+   "props": {
+    "image": "신세계MOU/shinsegae_lights.jpg",
+    "headline": "신세계백화점과 MOU",
+    "sub": "",
+    "scrim": 0.46,
+    "source": "travel oriented / BY-SA 2.0"
+   }
+  },
+  "2": {
+   "card": "BigStatsCard",
+   "props": {
+    "title": "제휴 구역",
+    "sub": "",
+    "items": [
+     {
+      "value": 5,
+      "unit": "개 층",
+      "label": "지하 1층 ~ 지상 4층",
+      "decimals": 0
+     },
+     {
+      "value": 16470,
+      "unit": "㎡",
+      "label": "전용면적",
+      "sub": "약 4,980평",
+      "hot": true,
+      "decimals": 0
+     }
+    ],
+    "source": "헤럴드경제 · 이투데이 · 아주경제"
+   }
+  },
+  "3": {
+   "card": "FullBleedCard",
+   "props": {}
+  }
+ }
+}

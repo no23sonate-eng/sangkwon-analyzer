@@ -1,0 +1,135 @@
+{
+  "project": "갤러리인테리어",
+  "scenes": [
+    {
+      "id": 0,
+      "act": 1,
+      "start": 0.0,
+      "end": 5.4,
+      "dur": 5.4,
+      "text": "현재 세일즈하는 갤러리는 현장이 아니라 강남구 역삼동에 있습니다.",
+      "card": "FullBleedCard",
+      "key": "where"
+    },
+    {
+      "id": 1,
+      "act": 1,
+      "start": 5.6,
+      "end": 10.8,
+      "dur": 5.2,
+      "text": "강남 자산가들이 쉽게 접근할 수 있는 위치를 택한 것으로 보입니다.",
+      "card": "SplitCard",
+      "key": "why"
+    },
+    {
+      "id": 2,
+      "act": 2,
+      "start": 11.2,
+      "end": 13.7,
+      "dur": 2.5,
+      "text": "인테리어도 짚어볼 만합니다.",
+      "card": "FullBleedCard",
+      "key": "intro",
+      "cardDur": 0.0,
+      "broll": {
+        "src": "interior_dark.mp4",
+        "ss": 0.8,
+        "dur": 2.5,
+        "text": "인테리어",
+        "sub": "",
+        "credit": "Mixkit",
+        "style": "lower"
+      }
+    },
+    {
+      "id": 3,
+      "act": 2,
+      "start": 13.8,
+      "end": 18.8,
+      "dur": 5.0,
+      "text": "오피스텔 인테리어 디자인은 런던 기반 콘란앤파트너스가 맡았고,",
+      "card": "FullBleedCard",
+      "key": "conran",
+      "cardDur": 0.0,
+      "broll": {
+        "src": "marble.mp4",
+        "ss": 0.5,
+        "dur": 5.0,
+        "text": "콘란앤파트너스",
+        "sub": "런던 기반 · 오피스텔 인테리어 디자인",
+        "credit": "Mixkit",
+        "style": "center"
+      }
+    },
+    {
+      "id": 4,
+      "act": 2,
+      "start": 18.9,
+      "end": 24.4,
+      "dur": 5.5,
+      "text": "국내에선 하이엔드 인테리어 전문사 EWAI가 참여했습니다.",
+      "card": "TrackRecordCard",
+      "key": "ewai"
+    },
+    {
+      "id": 5,
+      "act": 2,
+      "start": 24.6,
+      "end": 29.8,
+      "dur": 5.2,
+      "text": "한남더힐, 서울숲 트리마제, 에테르노 청담을 해온 회사입니다.",
+      "card": "TrackRecordCard",
+      "key": "record"
+    },
+    {
+      "id": 6,
+      "act": 3,
+      "start": 30.2,
+      "end": 33.1,
+      "dur": 2.9,
+      "text": "직접 보니 어두운 원목 톤에 마블 소재,",
+      "card": "FullBleedCard",
+      "key": "tone",
+      "cardDur": 0.0,
+      "broll": {
+        "src": "walnut.mp4",
+        "ss": 0.5,
+        "dur": 2.9,
+        "text": "어두운 원목",
+        "sub": "",
+        "credit": "Mixkit",
+        "style": "lower"
+      }
+    },
+    {
+      "id": 7,
+      "act": 3,
+      "start": 33.2,
+      "end": 37.3,
+      "dur": 4.1,
+      "text": "그리고 마감으로 고급감을 만드는 방식이었습니다.",
+      "card": "FullBleedCard",
+      "key": "finish",
+      "cardDur": 0.0,
+      "broll": {
+        "src": "marble.mp4",
+        "ss": 4.0,
+        "dur": 4.1,
+        "text": "마감으로 만드는 고급감",
+        "sub": "",
+        "credit": "Mixkit",
+        "style": "band"
+      }
+    },
+    {
+      "id": 8,
+      "act": 3,
+      "start": 37.5,
+      "end": 43.6,
+      "dur": 6.1,
+      "text": "화려하게 쓰는 게 아니라 합리적인 방법으로 고급미를 살린 쪽에 가까웠습니다.",
+      "card": "SplitCard",
+      "key": "verdict"
+    }
+  ]
+}

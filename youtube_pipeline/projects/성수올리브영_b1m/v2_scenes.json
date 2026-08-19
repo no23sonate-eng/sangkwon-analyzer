@@ -242,7 +242,7 @@
     {
       "id": 9,
       "line": "기존 수익률이 좋아서 산 건물이라도, 매수자는 결국 수익률을 더 개선시키고 싶을 수밖에 없습니다. 그렇기 때문에 올리브영의 임대료도 향후 높아질 가능성이 있죠.",
-      "card": "PaperFlowCard",
+      "card": "PaperFlowCardV4",
       "props": {
         "durationSec": 12.0,
         "eyebrow": "높은 가격에 산 건물의 다음 수순",

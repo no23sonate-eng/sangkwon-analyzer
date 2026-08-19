@@ -7,3 +7,14 @@ projects/*
 
 # 로컬 whisper 모델 (대용량 — scripts/setup_model.py 로 재다운로드)
 models/
+
+# 수집 후보는 임시물 — fetch_sources.py 를 다시 돌리면 새로 받아지고,
+# 수집할 때마다 통째로 덮인다. 채택한 자산만 커밋한다
+motion/public/*/_candidates/
+
+# 스톡 영상은 커밋하지 않는다 — 용량이 크고(편당 수백 MB)
+# `fetch_sources.py --adopt` 로 언제든 다시 받을 수 있다.
+# 사진·지도·JSON 은 작고 재현이 번거로우므로 그대로 둔다.
+motion/public/*/*.mp4
+motion/public/*/*.webm
+motion/public/*/*.mov
