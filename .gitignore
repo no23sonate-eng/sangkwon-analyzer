@@ -17,3 +17,6 @@ __pycache__/
 
 # 장면별 영상 클립 — 용량이 커서 저장소에 넣지 않는다 (스크립트로 재생성)
 youtube_pipeline/projects/*/clips/
+
+# 개선 비교용 컷 스틸 — 스크립트로 재생성 가능
+youtube_pipeline/projects/*/cuts_*/

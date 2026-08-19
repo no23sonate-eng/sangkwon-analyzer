@@ -111,3 +111,6 @@ export const PaperFlowCardV4 = ({
         </div>
       ) : null}
       <Credit text={credit} dark={false} opacity={fade(frame, 50)} />
+    </AbsoluteFill>
+  );
+};

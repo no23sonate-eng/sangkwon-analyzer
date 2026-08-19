@@ -1,3 +1,4 @@
+import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
@@ -340,3 +341,6 @@ export const PaperFlowCard = ({
         );
       })}
       <PaperSource source={source} theme={theme} />
+    </AbsoluteFill>
+  );
+};
