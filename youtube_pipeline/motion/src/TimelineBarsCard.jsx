@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer, Canvas, shapeGlow, T} from './v2shared';
 
 // v2 기간 비교 카드 — 개월 수를 "실제 칸 개수"로 보여준다 (한 칸 = 1개월).
 // bars: [{label, months, hot}] — 길이 차이가 그대로 보인다.
@@ -26,6 +26,7 @@ export const TimelineBarsCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       {/* 범례 */}
@@ -57,7 +58,7 @@ export const TimelineBarsCard = ({
                   width={cellW} height={cellH} rx={4}
                   fill={i < lit ? (hot ? YELLOW : '#4A4A4A') : '#1A1A1A'}
                   stroke={i < lit ? 'none' : '#2A2A2A'}
-                  style={i < lit && hot ? {filter: 'drop-shadow(0 0 5px rgba(250,255,46,0.4))'} : undefined}
+                  style={i < lit && hot ? {filter: shapeGlow(0.7)} : undefined}
                 />
               ))}
             </svg>

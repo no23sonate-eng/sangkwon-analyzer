@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer, Canvas, T} from './v2shared';
 
 // v2 데이터 테이블 — 얇은 구분선 + 좌측 라벨 / 우측정렬 값.
 // rows: [{label, value, note, hot}] — hot 값만 옐로 발광.
@@ -35,6 +35,7 @@ export const YTableCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       {rows.map((r, i) => {
@@ -67,7 +68,7 @@ export const YTableCard = ({
                   fontSize: r.hot ? 52 : 44,
                   letterSpacing: '0.02em',
                   color: r.hot ? YELLOW : WHITE,
-                  textShadow: r.hot ? glow(0.6) : 'none',
+                  
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >

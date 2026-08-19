@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer, PerspectiveFloor} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer, PerspectiveFloor, Canvas, T} from './v2shared';
 
 // v2 흐름 도식 카드 — 사업 구조·돈의 흐름·계산 과정을 노드+화살표로.
 // nodes: [{tag, label, value, sub, hot}] / arrows: [{label}] (노드 사이 n-1개)
@@ -35,6 +35,7 @@ export const YFlowCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       {floor ? <PerspectiveFloor opacity={enter} /> : null}
       <Kicker title={kicker} sub={sub} opacity={enter} />
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, glow, fadeIn, Kicker, Footer, Canvas, shapeGlow, T} from './v2shared';
 
 // 개수를 아이콘 개수로 보여주는 카드 (§21 기본층).
 // "한 상권에 매장이 N개" 처럼 수가 적을 때 — 블록/도트보다 대상이 무엇인지
@@ -12,7 +12,7 @@ const PinIcon = ({size = 1, color, glowOn}) => (
     <path
       d="M46 6 C25 6 8 23 8 44 C8 72 46 110 46 110 C46 110 84 72 84 44 C84 23 67 6 46 6 Z"
       fill="none" stroke={color} strokeWidth={4}
-      style={glowOn ? {filter: 'drop-shadow(0 0 10px rgba(250,255,46,0.55))'} : undefined}
+      style={glowOn ? {filter: shapeGlow(0.7)} : undefined}
     />
     <rect x={28} y={30} width={36} height={26} fill="none" stroke={color} strokeWidth={3.5} />
     <line x1={28} y1={40} x2={64} y2={40} stroke={color} strokeWidth={3} />
@@ -50,6 +50,7 @@ export const IconCountCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       {Array.from({length: count}, (_, i) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, PerspectiveFloor} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, PerspectiveFloor, Canvas, T} from './v2shared';
 
 // v2 인용구 — 대형 옐로 따옴표 + 화이트 본문(수동 줄바꿈 pre-line 지원).
 // quote2 가 있으면 카드 길이의 절반 지점에 2단 크로스페이드 전환.
@@ -33,7 +33,7 @@ export const YQuoteCard = ({
         style={{
           position: 'absolute', top: -105, left: -130,
           fontFamily: 'A2Z Medium, sans-serif', fontSize: 200, lineHeight: 1,
-          color: YELLOW, textShadow: glow(0.7),
+          color: YELLOW, 
         }}
       >
         “
@@ -51,6 +51,7 @@ export const YQuoteCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <PerspectiveFloor opacity={enter * 0.7} />
       {kicker ? <Kicker title={kicker} opacity={enter} /> : null}
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer, Canvas, shapeGlow, T} from './v2shared';
 
 // v2 유닛 블록 카드 — 금액/개수를 "실제 블록 개수"로 보여준다 (■ = unitLabel).
 // groups: [{label, units, note, hot}] — 블록이 아래에서부터 차오른다.
@@ -35,6 +35,7 @@ export const UnitBlocksCard = ({
     );
     return (
       <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
         <Kicker title={kicker} sub={sub} opacity={enter} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {Array.from({length: progress.total}, (_, i) => {
@@ -49,7 +50,7 @@ export const UnitBlocksCard = ({
                 width={B} height={B} rx={4}
                 fill={on ? YELLOW : '#1E1E1E'}
                 stroke={on ? 'none' : '#2E2E2E'}
-                style={on ? {filter: 'drop-shadow(0 0 6px rgba(250,255,46,0.5))'} : undefined}
+                style={on ? {filter: shapeGlow(0.7)} : undefined}
               />
             );
           })}
@@ -108,7 +109,7 @@ export const UnitBlocksCard = ({
                     width={B} height={B} rx={4}
                     fill={on ? col : '#1A1A1A'}
                     stroke={on ? 'none' : '#2A2A2A'}
-                    style={on && hot ? {filter: 'drop-shadow(0 0 6px rgba(250,255,46,0.45))'} : undefined}
+                    style={on && hot ? {filter: shapeGlow(0.7)} : undefined}
                   />
                 );
               })}

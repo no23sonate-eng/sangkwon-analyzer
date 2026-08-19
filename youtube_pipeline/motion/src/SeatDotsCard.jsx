@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer, Canvas, shapeGlow, T} from './v2shared';
 
 // v2 좌석 도트 카드 — 좌석 수를 "실제 도트 수"로 보여준다 (● = perDot 석).
 // 아레나 반원 배열: 무대(하단) 주위로 도트가 켜지며 차오른다.
@@ -49,6 +49,7 @@ export const SeatDotsCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       {layouts.map((a, ai) => {
@@ -78,7 +79,7 @@ export const SeatDotsCard = ({
                   key={i}
                   cx={x} cy={y} r={dotR}
                   fill={i < lit ? (hot ? YELLOW : '#9A9A9A') : '#242424'}
-                  style={i < lit && hot ? {filter: 'drop-shadow(0 0 4px rgba(250,255,46,0.6))'} : undefined}
+                  style={i < lit && hot ? {filter: shapeGlow(0.7)} : undefined}
                 />
               ))}
             </svg>

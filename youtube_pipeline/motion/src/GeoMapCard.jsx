@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, continueRender, delayRender, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer, Canvas, shapeGlow, T} from './v2shared';
 
 // v2 지도 카드 — 순블랙 위 다크 랜드매스 + 발광 마커 (Cleo 지도 문법).
 // focus: [lonMin, latMin, lonMax, latMax] 로 영역을 잘라 보여준다.
@@ -64,6 +64,7 @@ export const GeoMapCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       {paths ? (
         <svg width={W} height={H} style={{position: 'absolute', top: 0, left: 0, opacity: enter}}>
           <path d={paths} fill="#181A1D" stroke="#33363B" strokeWidth={1.2} />
@@ -103,7 +104,7 @@ export const GeoMapCard = ({
                 <circle
                   cx={x} cy={y} r={13}
                   fill={col}
-                  style={m.hot ? {filter: 'drop-shadow(0 0 14px rgba(250,255,46,0.9))'} : undefined}
+                  style={m.hot ? {filter: shapeGlow(0.7)} : undefined}
                 />
               )}
             </svg>

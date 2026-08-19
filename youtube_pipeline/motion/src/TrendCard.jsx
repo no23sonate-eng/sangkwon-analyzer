@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, GRID, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, GRID, glow, fadeIn, Kicker, Footer, Canvas, shapeGlow, T} from './v2shared';
 
 // v2 추세 카드 — 두 증감률을 "기울기 차이" 그 자체로 보여준다.
 // series: [{label, pct, display, hot}] — pct 는 기울기 계산용 (%).
@@ -24,6 +24,7 @@ export const TrendCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
@@ -44,10 +45,10 @@ export const TrendCard = ({
                 x1={x0} y1={y0} x2={x1} y2={y1}
                 stroke={col} strokeWidth={s.hot ? 6 : 4}
                 strokeLinecap="round"
-                style={s.hot ? {filter: 'drop-shadow(0 0 10px rgba(250,255,46,0.6))'} : undefined}
+                style={s.hot ? {filter: shapeGlow(0.7)} : undefined}
               />
               <circle cx={x1} cy={y1} r={s.hot ? 11 : 8} fill={col}
-                style={s.hot ? {filter: 'drop-shadow(0 0 10px rgba(250,255,46,0.8))'} : undefined} />
+                style={s.hot ? {filter: shapeGlow(0.7)} : undefined} />
             </g>
           );
         })}

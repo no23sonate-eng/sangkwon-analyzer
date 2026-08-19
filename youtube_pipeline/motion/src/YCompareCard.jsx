@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer, Canvas, T} from './v2shared';
 
 // v2 좌우 대비 — 두 입장/두 수치의 대조. hot 쪽만 옐로.
 // 각 side: {title, value, lines: [], empty, emptyLabel, hot}
@@ -100,6 +100,7 @@ export const YCompareCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       <Side side={left} x={GAPC - W - 65} w={W} delay={10} frame={frame} fps={fps} />

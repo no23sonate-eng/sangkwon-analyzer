@@ -3,7 +3,7 @@ import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate} from
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer, Canvas, T} from './v2shared';
 
 // v2 스피어 히어로 카드 — 주인공(구형 공연장)을 실제 3D 도트 구체로.
 // LED 표면 느낌의 포인트 구체 + 와이어프레임, 천천히 자전.
@@ -62,6 +62,7 @@ export const SphereHeroCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <ThreeCanvas
         width={1920}
         height={1080}

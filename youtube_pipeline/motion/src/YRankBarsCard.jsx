@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, GRID, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {BLACK, YELLOW, WHITE, MUTE, GRAY, GRID, glow, fadeIn, Kicker, Footer, Canvas, T} from './v2shared';
 
 // v2 가로 랭킹 바 — 항목명이 긴 한국어 비교에 유리한 수평 막대.
 // 1위(hot)만 옐로 발광, 나머지 뮤트그레이. 순위 번호·증감 주석 포함.
@@ -28,6 +28,7 @@ export const YRankBarsCard = ({
 
   return (
     <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+      <Canvas />
       <Kicker title={kicker} sub={sub} opacity={enter} />
 
       {/* 세로 기준선(시작선) 하나만 — 데이터잉크 최소 */}
@@ -87,7 +88,7 @@ export const YRankBarsCard = ({
                   fontSize: r.hot ? 44 : 36,
                   letterSpacing: '0.02em',
                   color: r.hot ? YELLOW : GRAY,
-                  textShadow: r.hot ? glow(0.5) : 'none',
+                  
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >
