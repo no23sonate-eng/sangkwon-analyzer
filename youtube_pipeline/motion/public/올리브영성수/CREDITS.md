@@ -135,3 +135,4 @@
 | `px_drone_roofs.mp4` | Pexels video 5667291 | Pexels License | (표기 의무 없음) |
 | `px_drone_roofs2.mp4` | Pexels video 2248532 | Pexels License | (표기 의무 없음) |
 | `px_drone_urban.mp4` | Pexels video 8319683 | Pexels License | (표기 의무 없음) |
+| `px_facade_day.mp4` | Pexels video 6775059 | Pexels License | (표기 의무 없음) |

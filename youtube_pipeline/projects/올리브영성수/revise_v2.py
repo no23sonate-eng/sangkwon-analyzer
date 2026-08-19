@@ -73,6 +73,7 @@ CRED = {
     'px_library.jpg': 'Pexels', 'px_seoul_busy.jpg': 'Pexels',
     'px_seoul_downtown.jpg': 'Pexels', 'px_buildings_night.mp4': 'Pexels',
     'px_street.mp4': 'Pexels', 'px_escalator.mp4': 'Pexels',
+    'px_facade_day.mp4': 'Pexels',
     'px_mall_walk.mp4': 'Pexels', 'px_mall_esc2.mp4': 'Pexels',
     'px_mall_interior.mp4': 'Pexels', 'px_mall_bangkok.mp4': 'Pexels',
     'popup_jewel.jpg': 'Pexels',
@@ -833,7 +834,10 @@ R[101] = ('MassingCard', {
 
 # ══════════ 컷별 검수 반영 (소재) ══════════
 R[0] = lt('seongsu_aerial.jpg', label='2026년 7월, 성수동', sub='경매 한 건', scrim=0.46)
-R[19] = lt('px_buildings_night.mp4', label='한쪽 면이 길다',
+# "깨끗한 그냥 빌딩으로" — 야경 스카이라인을 넣어 놨었는데, 그건 도시지 건물이
+# 아니다. 이 컷이 말하는 건 **한 건물의 긴 면** 하나다. 낮에 찍힌 유리 파사드
+# 한 동으로 바꾼다 — 카메라가 긴 면을 따라 흐르니 문장 그대로다.
+R[19] = lt('px_facade_day.mp4', label='한쪽 면이 길다',
            sub='정사각형보다 한 변이 길다', scrim=0.5)
 R[29] = lt('px_drone_roofs.mp4', label='보여줄 수 있는 얼굴이 작다',
            sub='파사드가 작다는 건', scrim=0.5)
