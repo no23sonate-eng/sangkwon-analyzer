@@ -92,21 +92,33 @@ export const DashCircle = ({cx, cy, r = 90, progress = 1, color = YELLOW,
 // 검정 상자 + 흰 대문자. B1M 라벨의 기본형.
 // two-tier: 작은 한정어 줄 위 / 큰 본체 줄 아래. ("WORLD'S LARGEST NAVAL BASE" / "$4BN")
 // hot 이면 노랑 상자 + 검정 글씨 — 한 화면에 **하나만** 써야 효과가 있다.
+// caps: B1M 이 **실사 위에** 지시를 얹을 때 쓰는 결 (§40-4).
+// `REPLACE` `FIX THE ROOF` — 가는 산세리프에 자간이 아주 넓고 상자가 없다.
+// **굵기로 이기지 않는다.** 얇은데도 읽히는 건 자간과 크기 덕이고, 그래서
+// 사진을 덜 가린다. 검정 상자(§31-4)는 지도처럼 바탕이 시끄러울 때 쓰고,
+// 깨끗한 실사 위에서는 상자가 오히려 화면을 두 조각으로 자른다.
+//
+// 한글에는 대문자가 없다. 옮겨올 수 있는 건 **얇기와 자간**이라 그 둘만 가져온다.
 export const StampLabel = ({top, sub = '', size = 54, hot = false, align = 'left',
-                            reveal = 1, box = true}) => {
+                            reveal = 1, box = true, caps = false}) => {
   const clip = `inset(0 ${(1 - Math.max(0, Math.min(1, reveal))) * 100}% 0 0)`;
   const bg = hot ? YELLOW : '#0B0E12';
-  const fg = hot ? INK : '#FFFFFF';
+  const fg = caps && !box ? (hot ? YELLOW : '#FFFFFF') : (hot ? INK : '#FFFFFF');
   const Row = ({text, s, weight}) => (
     <div style={{display: 'flex', justifyContent: align === 'right' ? 'flex-end' : 'flex-start'}}>
       <div style={{background: box ? bg : 'transparent', color: fg,
                    padding: box ? '4px 14px 6px' : 0,
-                   fontFamily: weight === 'bold'
+                   fontFamily: caps
+                     ? 'A2Z Light, sans-serif'
+                     : weight === 'bold'
                      ? 'Pretendard Bold, A2Z Medium, sans-serif'
                      : 'Pretendard Bold, A2Z Regular, sans-serif',
-                   fontSize: s, lineHeight: 1.16, letterSpacing: '-0.01em',
+                   fontSize: caps ? Math.round(s * 1.12) : s,
+                   lineHeight: 1.16,
+                   letterSpacing: caps ? '0.16em' : '-0.01em',
                    whiteSpace: 'nowrap', wordBreak: 'keep-all',
-                   textShadow: box ? 'none' : '0 2px 14px rgba(0,0,0,0.6)'}}>
+                   textShadow: box ? 'none'
+                     : caps ? '0 2px 20px rgba(0,0,0,0.75)' : '0 2px 14px rgba(0,0,0,0.6)'}}>
         {text}
       </div>
     </div>
@@ -261,4 +273,73 @@ export const PulseRing = ({cx, cy, r0 = 10, r1 = 46, frame = 0, start = 0, perio
   const op = opacity * (1 - p);
   if (op <= 0.01) return null;
   return <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={width} opacity={op} />;
+};
+
+// ── 거친 박스 제목 ────────────────────────────────────────────────────────
+// B1M 의 안(案) 제목은 **검정 박스 위 흰 글자인데 박스 가장자리가 거칠다** (§40-7).
+// `The Full Decant`, `Enhanced Maintenance and Improvement Plus`.
+// 마커로 칠한 결이라 반듯한 사각형과 인상이 완전히 다르다 — 반듯하면 UI 배지고,
+// 거칠면 사람이 종이에 칠해 놓은 것이 된다. 우리 판이 도면 결이라 후자가 맞다.
+//
+// **두 줄이면 박스도 두 개로 나뉜다.** 한 박스에 두 줄을 넣지 않는다 —
+// 줄마다 폭이 달라지면서 손으로 칠한 느낌이 사는 게 요점이라, 한 덩어리로
+// 감싸면 그 효과가 통째로 사라진다.
+//
+// 거칢은 SVG 로 그린다. CSS 로는 변이 있는 사각형을 못 만든다.
+const roughRect = (w, h, seed, amp = 5) => {
+  const j = (i) => {
+    const x = Math.sin((seed * 17.3 + i * 39.7)) * 43758.5453;
+    return (x - Math.floor(x) - 0.5) * 2 * amp;
+  };
+  const N = 7;                     // 변마다 점 7개. 더 늘리면 지저분해진다
+  const pts = [];
+  for (let i = 0; i < N; i++) pts.push([(w * i) / (N - 1), j(i)]);
+  for (let i = 0; i < N; i++) pts.push([w + j(i + 20), (h * i) / (N - 1)]);
+  for (let i = N - 1; i >= 0; i--) pts.push([(w * i) / (N - 1), h + j(i + 40)]);
+  for (let i = N - 1; i >= 0; i--) pts.push([j(i + 60), (h * i) / (N - 1)]);
+  return pts.map((p) => p.map((v) => Math.round(v * 10) / 10).join(',')).join(' ');
+};
+
+// lines: 문자열 배열. 줄마다 박스 하나.
+export const RoughTitle = ({lines = [], kicker = '', size = 76, reveal = 1,
+                            fill = '#0B0E12', color = '#FFFFFF', kickerColor = '#23262B',
+                            align = 'center'}) => {
+  const ls = (Array.isArray(lines) ? lines : [lines]).filter(Boolean);
+  const PADX = Math.round(size * 0.34), PADY = Math.round(size * 0.14);
+  return (
+    <div style={{display: 'flex', flexDirection: 'column',
+                 alignItems: align === 'left' ? 'flex-start' : 'center', gap: 10}}>
+      {kicker ? (
+        <div style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: Math.round(size * 0.42),
+                     color: kickerColor, letterSpacing: '0.02em', marginBottom: 6,
+                     opacity: Math.min(1, reveal * 2)}}>
+          {kicker}
+        </div>
+      ) : null}
+      {ls.map((t, i) => {
+        const on = Math.max(0, Math.min(1, reveal * ls.length - i));
+        if (on <= 0.01) return null;
+        return (
+          <div key={i} style={{position: 'relative', display: 'inline-block',
+                               padding: `${PADY}px ${PADX}px`,
+                               clipPath: `inset(0 ${(1 - on) * 100}% 0 0)`}}>
+            <svg style={{position: 'absolute', left: -6, top: -6,
+                         width: 'calc(100% + 12px)', height: 'calc(100% + 12px)',
+                         overflow: 'visible'}}
+                 viewBox="0 0 100 100" preserveAspectRatio="none">
+              {/* viewBox 를 100×100 으로 두고 늘려 붙이면 변의 요철이 폭에 따라
+                  달라져서 줄마다 다른 손맛이 난다 — 같은 도형을 복사한 티가 안 난다 */}
+              <polygon points={roughRect(100, 100, i + 1, 2.4)} fill={fill} />
+            </svg>
+            <span style={{position: 'relative',
+                          fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                          fontSize: size, lineHeight: 1.2, color,
+                          letterSpacing: '-0.015em', whiteSpace: 'nowrap'}}>
+              {t}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, INK, CONTENT_BOTTOM, fadeIn} from './paper';
+import {YELLOW, INK, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
 import {estWidth, fit} from './layout';
 import {HandArrow, DashCircle, DashBox, StampLabel} from './annotate';
 
@@ -222,8 +222,10 @@ export const AnnotatedShotCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: anchorX, top: Y - 52,
                                width: w, opacity: done ? 1 - ease(tMove) : 1}}>
+            {/* caps 를 주면 상자 없이 얇은 글씨 + 넓은 자간 (§40-4).
+                깨끗한 실사 위에는 이쪽이 맞다 — 상자는 화면을 두 조각으로 자른다 */}
             <StampLabel top={b.label} sub={b.sub} size={size} hot={b.hot}
-                        reveal={lt} box={b.box !== false} />
+                        reveal={lt} box={b.box !== false} caps={b.caps === true} />
           </div>
         );
       })}
@@ -240,8 +242,11 @@ export const AnnotatedShotCard = ({
         </div>
       ) : null}
 
-      {/* 진행 표시 — 몇 군데 중 몇 번째인지. 타이틀 아래에 붙여 자막 영역을 피한다 */}
-      <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+      {/* 진행 표시 — 몇 군데 중 몇 번째인지. 타이틀 아래에 붙여 자막 영역을 피한다.
+          **지점이 하나면 안 그린다** — 홀로 뜬 노란 조각은 진행을 뜻하지 못하고
+          그냥 화면에 뭔가 잘못 남은 것처럼 보인다 (실제로 그렇게 보였다) */}
+      <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0,
+                                              display: beats.length > 1 ? 'block' : 'none'}}>
         {beats.map((b, i) => {
           const on = i <= idx;
           const cx0 = 960 - (beats.length - 1) * 22 + i * 44;
@@ -253,13 +258,9 @@ export const AnnotatedShotCard = ({
         })}
       </svg>
 
-      {source ? (
-        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.05em',
-                     color: '#FFFFFF', opacity: 0.8 * fadeIn(frame, 30), textShadow: SHADOW}}>
-          {source}
-        </div>
-      ) : null}
+      {/* 출처는 채널 규칙대로 **우측 상단 · Source :**.
+          이 카드만 지면 하단에 넣어 두어 다른 카드와 자리가 달랐다 */}
+      <PaperSource source={source} theme="ink" />
 
       {debug ? (
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
