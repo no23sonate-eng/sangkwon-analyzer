@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -56,9 +56,19 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                                   color: T.soft,
                                   fontFamily: 'A2Z Light, sans-serif'}}>{it.prefix}</span>
                   ) : null}
-                  {it.display}
-                  <span style={{fontSize: it.hot ? 66 : 56, marginLeft: 6,
-                                color: it.hot ? T.ink : T.soft}}>{it.unit}</span>
+                  {/* chip 을 주면 값이 색 박스에 들어간다 (§40-6).
+                      도해 옆에 붙는 수치처럼 **배경에서 떼어 내야** 할 때 쓴다 */}
+                  {it.chip ? (
+                    <ValueChip size={it.hot ? 118 : 96} hot={it.hot} theme={theme}>
+                      {it.display}{it.unit}
+                    </ValueChip>
+                  ) : (
+                    <>
+                      {it.display}
+                      <span style={{fontSize: it.hot ? 66 : 56, marginLeft: 6,
+                                    color: it.hot ? T.ink : T.soft}}>{it.unit}</span>
+                    </>
+                  )}
                 </span>
               ) : (
                 <NumberIn to={it.value ?? 0} start={14 + i * 12} dur={44}
@@ -69,7 +79,9 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
             </div>
             <div style={{marginTop: SP.GAP, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 46, color: T.ink, wordBreak: 'keep-all'}}>
-              {it.hot
+              {/* 칩을 쓰면 라벨은 맨 글자로 둔다 — 값도 옐로, 라벨도 옐로면
+                  강조가 두 군데로 갈려서 아무것도 강조가 안 된다 (§40-6) */}
+              {it.hot && !it.chip
                 ? <span style={{background: YELLOW, color: '#1B1E24',
                                 padding: '2px 14px'}}>{it.label}</span>
                 : it.label}

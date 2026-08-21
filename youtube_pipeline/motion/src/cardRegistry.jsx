@@ -57,6 +57,7 @@ import {TrackRecordCard} from './TrackRecordCard';
 import {BrandCard} from './BrandCard';
 import {StrikeSwapCard} from './StrikeSwapCard';
 import {ArticleCard} from './ArticleCard';
+import {MediaPlateCard} from './MediaPlateCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -83,6 +84,7 @@ export const CARDS = {
   BrandCard,
   StrikeSwapCard,
   ArticleCard,
+  MediaPlateCard,
   IsoDiagramCard,
   MapCard,
   SectionDiagramCard,

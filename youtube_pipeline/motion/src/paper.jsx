@@ -152,12 +152,69 @@ export const LiveBackdrop = ({image = '', veil = 0.9, blur = 0, dir = 0,
   );
 };
 
+// ── 종이 결 ───────────────────────────────────────────────────────────────
+// B1M 프레임 22장 중 **순색 바탕은 한 장도 없었다** (§40-1, §40-11).
+// 격자 위에 종이 얼룩과 먼지 점이 늘 깔려 있고, 그 층이 없으면 같은 레이아웃도
+// "파워포인트"로 읽힌다. 우리에게 지금 가장 없는 것이 이거다.
+//
+// **난수는 씨앗을 고정한다.** Math.random 을 쓰면 프레임마다 점이 새로 찍혀
+// 화면 전체가 지글거린다 (렌더는 프레임 단위로 컴포넌트를 다시 그린다).
+const rnd = (i) => {
+  const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+// 얼룩은 크고 뭉쳐 있고, 먼지는 작고 흩어져 있다 — 실제 스캔한 종이의 결이다.
+// 둘을 같은 크기로 뿌리면 노이즈 필터처럼 보이고 종이로는 안 읽힌다.
+export const PaperGrain = ({theme, dark = false, opacity = 1}) => {
+  const T = themeOf(theme, dark);
+  const light = T.bg !== DARK_PAPER && T.bg !== THEMES.blueprint.bg;
+  const speck = light ? '#3A3F47' : '#EFEDE8';
+  const SPECKS = 260, BLOTS = 14;
+  return (
+    <svg width={1920} height={1080}
+         style={{position: 'absolute', top: 0, left: 0, pointerEvents: 'none',
+                 opacity, mixBlendMode: light ? 'multiply' : 'screen'}}>
+      <defs>
+        <radialGradient id={`blot-${theme || 'd'}`}>
+          <stop offset="0" stopColor={speck} stopOpacity={light ? 0.055 : 0.045} />
+          <stop offset="1" stopColor={speck} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* 얼룩 — 큰 반점. 균일하게 뿌리면 안 된다 */}
+      {Array.from({length: BLOTS}, (_, i) => (
+        <circle key={`b${i}`} cx={rnd(i * 3 + 1) * 1920} cy={rnd(i * 3 + 2) * 1080}
+                r={70 + rnd(i * 3 + 3) * 160} fill={`url(#blot-${theme || 'd'})`} />
+      ))}
+      {/* 먼지 — 작고 흩어진 점. 크기를 세 단계로 섞어야 스캔한 결이 난다 */}
+      {Array.from({length: SPECKS}, (_, i) => {
+        const r = rnd(i * 7 + 5);
+        return (
+          <circle key={`s${i}`} cx={rnd(i * 7 + 11) * 1920} cy={rnd(i * 7 + 13) * 1080}
+                  r={r < 0.7 ? 1 : r < 0.94 ? 1.8 : 2.8}
+                  fill={speck} opacity={(light ? 0.16 : 0.13) * (0.5 + r * 0.5)} />
+        );
+      })}
+    </svg>
+  );
+};
+
 // 크림 종이 배경 + 옅은 격자 + 가장자리 비네트
 // backdrop 을 주면 격자 아래에 살아 있는 실사가 깔린다 — 판이 멎지 않는다.
-export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 0, dir = 0}) => {
+export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 0, dir = 0,
+                         grain = true}) => {
   const T = themeOf(theme, dark);
   const nv = Math.floor(1920 / T.step) - 1;
   const nh = Math.floor(1080 / T.step) - 1;
+  // 교차점 십자 — B1M 종이판이 5칸마다 찍는 표시 (§40-1).
+  // 격자선만 있으면 방안지인데, 십자가 찍히면 **도면**으로 읽힌다.
+  const CROSS = 5, CL = 7;
+  const crosses = [];
+  for (let i = 1; i * CROSS <= nv; i++) {
+    for (let j = 1; j * CROSS <= nh; j++) {
+      crosses.push([i * CROSS * T.step, j * CROSS * T.step]);
+    }
+  }
   return (
   <>
     <div style={{position: 'absolute', inset: 0, background: T.bg}} />
@@ -182,6 +239,17 @@ export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 
           ))}
         </g>
       ) : null}
+      {/* 십자는 청사진엔 안 찍는다 — 이미 굵은 기준선이 그 역할을 한다 */}
+      {!T.fine ? (
+        <g stroke={T.grid} strokeWidth={1.6}>
+          {crosses.map(([x, y], i) => (
+            <g key={`c${i}`}>
+              <line x1={x - CL} y1={y} x2={x + CL} y2={y} />
+              <line x1={x} y1={y - CL} x2={x} y2={y + CL} />
+            </g>
+          ))}
+        </g>
+      ) : null}
       <rect x={0} y={0} width={1920} height={1080} fill="url(#paperVig)" />
       <defs>
         <radialGradient id="paperVig" cx="0.5" cy="0.45" r="0.75">
@@ -190,6 +258,8 @@ export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 
         </radialGradient>
       </defs>
     </svg>
+    {/* 실사가 깔린 컷은 결을 약하게 — 사진 자체에 이미 결이 있다 */}
+    {grain ? <PaperGrain theme={theme} dark={dark} opacity={backdrop ? 0.45 : 1} /> : null}
   </>
   );
 };
@@ -291,6 +361,34 @@ export const NumberIn = ({
         <span style={{display: 'block', height: 6, background: underline,
                       transform: `scaleX(${ul})`, transformOrigin: 'left center', marginTop: 4}} />
       ) : null}
+    </span>
+  );
+};
+
+// ── 값 칩 ─────────────────────────────────────────────────────────────────
+// B1M 은 도해 **안에서** 수치를 못 박을 때 글자를 색 박스로 감싼다 (§40-6).
+// `1:7` `18m` `435m` `1:24` — 전부 파란 박스 안 흰 글자다.
+//
+// 왜 박스인가: 도해 위에는 이미 선과 면이 많아서 **글자만 얹으면 도형의 일부로
+// 읽힌다.** 박스가 글자를 배경에서 떼어 내 "이건 값이다" 라고 분리해 준다.
+// 우리 기존 방식(옐로 형광펜)은 라벨에만 걸려 있었고 수치 자체는 맨 글자였다.
+//
+// hot 이면 옐로 박스에 먹 글자 — 화면에 **딱 한 군데만** 쓴다.
+// 그 외에는 잉크 박스에 바탕색 글자로, 도해를 해치지 않을 만큼만 세운다.
+export const ValueChip = ({children, size = 44, hot = false, theme, dark = false,
+                           style = {}}) => {
+  const T = themeOf(theme, dark);
+  return (
+    <span style={{display: 'inline-block',
+                  background: hot ? YELLOW : T.ink,
+                  color: hot ? '#1B1E24' : T.bg,
+                  fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                  fontSize: size, lineHeight: 1.14,
+                  padding: `${Math.round(size * 0.16)}px ${Math.round(size * 0.34)}px`,
+                  borderRadius: 3, letterSpacing: '0.01em',
+                  fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap',
+                  ...style}}>
+      {children}
     </span>
   );
 };
