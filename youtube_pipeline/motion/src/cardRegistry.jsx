@@ -60,6 +60,8 @@ import {ArticleCard} from './ArticleCard';
 import {MediaPlateCard} from './MediaPlateCard';
 import {PlanTitleCard} from './PlanTitleCard';
 import {SilhouetteCompareCard} from './SilhouetteCompareCard';
+import {SectionScaleCard} from './SectionScaleCard';
+import {AreaBudgetCard} from './AreaBudgetCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -89,6 +91,8 @@ export const CARDS = {
   MediaPlateCard,
   PlanTitleCard,
   SilhouetteCompareCard,
+  SectionScaleCard,
+  AreaBudgetCard,
   IsoDiagramCard,
   MapCard,
   SectionDiagramCard,
