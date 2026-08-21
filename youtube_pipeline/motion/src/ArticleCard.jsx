@@ -32,6 +32,16 @@ export const ArticleCard = ({
   portrait = '', who = '', role = '',
   dim = true,                 // ③ 칠하지 않은 부분을 흐리게
   serif = true,               // 기사 원문은 세리프가 맞다. 보도자료·공문은 false
+  // ── 스크린샷 모드 (§40-8) ──
+  // B1M 은 기사를 **재조판하지 않는다.** WSJ 지면도 gov.uk 보도자료도 실제
+  // 화면을 그대로 쓰고, 거기에 스캔라인·색수차를 얹어 "화면을 카메라로 찍은 것"
+  // 처럼 만든다. 재조판이 더 깨끗하지만 **증거력은 원본 화면이 세다** —
+  // 내가 다시 친 글자는 결국 내 글자고, 원본 화면은 그쪽 지면이다.
+  //
+  // shot     스크린샷 이미지 경로. 주면 본문 조판 대신 이 판을 쓴다
+  // marks    형광펜 칠할 자리. [{x, y, w, h}] 를 0~1 비율로 (스크린샷 기준)
+  // 한글 기사는 재조판 쪽이 읽기 쉬울 때가 많아 두 모드를 **둘 다 남긴다.**
+  shot = '', marks = [],
   theme, source = '',
 }) => {
   useA2ZFonts();
@@ -76,6 +86,46 @@ export const ArticleCard = ({
       })}
     </div>
   );
+
+  if (shot) {
+    // 지면은 화면 가로의 76% 정도. 꽉 채우면 "웹페이지를 띄운 화면"이 되고,
+    // 판으로 얹어야 "내가 가져온 자료"가 된다 (§40-2 와 같은 이유)
+    const SW = 1460;
+    return (
+      <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: T.bg,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{position: 'relative', width: SW, opacity: s,
+                     transform: `translateY(${(1 - s) * 16}px) scale(${0.99 + s * 0.01})`,
+                     boxShadow: '0 26px 80px rgba(0,0,0,0.42)'}}>
+          <Img src={/^https?:/.test(shot) ? shot : staticFile(shot)}
+               style={{width: '100%', display: 'block'}} />
+          {/* 형광펜 — 원문 위 좌표로 찍는다. 왼쪽에서 오른쪽으로 차오른다 */}
+          {marks.map((m, i) => (
+            <div key={i} style={{position: 'absolute',
+                                 left: `${m.x * 100}%`, top: `${m.y * 100}%`,
+                                 width: `${m.w * 100 * Math.min(1, Math.max(0, hl * marks.length - i))}%`,
+                                 height: `${m.h * 100}%`,
+                                 background: HL_YELLOW, mixBlendMode: 'multiply'}} />
+          ))}
+          {/* 스캔라인 + 색수차 — "화면을 찍었다" 는 신호. 아주 약하게만 */}
+          <div style={{position: 'absolute', inset: 0, pointerEvents: 'none',
+                       background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.10) 0 1px,'
+                                 + ' rgba(0,0,0,0) 1px 3px)'}} />
+          <div style={{position: 'absolute', inset: 0, pointerEvents: 'none',
+                       boxShadow: 'inset 0 0 120px 26px rgba(0,0,0,0.22)'}} />
+        </div>
+        {(outlet || date) ? (
+          <div style={{position: 'absolute', left: 0, right: 0, top: 74, textAlign: 'center',
+                       opacity: fadeIn(frame, 4),
+                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontSize: 30, letterSpacing: '0.14em', color: T.ink}}>
+            {[outlet, date].filter(Boolean).join('  ')}
+          </div>
+        ) : null}
+        <PaperSource source={source} theme={theme} />
+      </AbsoluteFill>
+    );
+  }
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: T.bg,

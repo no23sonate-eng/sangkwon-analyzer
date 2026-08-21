@@ -60,6 +60,7 @@ import {StrikeSwapCard} from './StrikeSwapCard';
 import {ArticleCard} from './ArticleCard';
 import {MediaPlateCard} from './MediaPlateCard';
 import {PlanTitleCard} from './PlanTitleCard';
+import {SilhouetteCompareCard} from './SilhouetteCompareCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -409,6 +410,7 @@ export const RemotionRoot = () => {
         ['ArticleCard', ArticleCard, {}],
         ['MediaPlateCard', MediaPlateCard, {}],
         ['PlanTitleCard', PlanTitleCard, {}],
+        ['SilhouetteCompareCard', SilhouetteCompareCard, {}],
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
         ['MapCard', MapCard, {pins: []}],
         ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],
