@@ -14,3 +14,10 @@ __pycache__/
 서울시 상권분석서비스*
 # 본인 입력 데이터 (네트워크 실거래 / 시장 보고서) — 루트의 data/만 비공개
 /data/
+
+# 레퍼런스 원본 이미지는 올리지 않는다 (남의 저작물 · 출처 관리 불가)
+# 잰 값(summary.md · analysis.json)만 커밋한다
+youtube_pipeline/refs/**/*.jpg
+youtube_pipeline/refs/**/*.jpeg
+youtube_pipeline/refs/**/*.png
+youtube_pipeline/refs/**/*.webp
