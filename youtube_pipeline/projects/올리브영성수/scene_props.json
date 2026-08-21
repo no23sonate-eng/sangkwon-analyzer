@@ -161,13 +161,15 @@
      {
       "display": "1",
       "unit": "곳",
-      "label": "입찰 참여"
+      "label": "입찰 참여",
+      "chip": true
      },
      {
       "display": "136.77",
       "unit": "%",
       "label": "감정가 대비",
-      "hot": true
+      "hot": true,
+      "chip": true
      }
     ],
     "theme": "ink",
@@ -292,16 +294,13 @@
    "motion": {}
   },
   "13": {
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "props": {
     "media": "올리브영성수/scene_facade_yard.jpg",
-    "num": "",
+    "aspect": 1.7777777777777777,
     "label": "카페 쎈느가 임차해 온 건물",
-    "sub": "연무장5길 · 낙찰 대상 건물",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.5,
+    "note": "연무장5길 20 · 낙찰 대상",
+    "theme": "paper",
     "source": "블로그 tenderrain / naver"
    },
    "motion": {}
@@ -315,7 +314,7 @@
     "sub": "팝업 구조물 설치 중",
     "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.5,
     "source": "블로그 solvanian / naver"
    },
@@ -349,7 +348,7 @@
     "sub": "",
     "tone": "dark",
     "kicker": "",
-    "align": "center",
+    "align": "left",
     "scrim": 0.5,
     "source": "블로그 protohologram / naver"
    },
@@ -362,9 +361,9 @@
     "num": "",
     "label": "평범한 건물이 성지가 된 이유",
     "sub": "3가지",
-    "tone": "light",
+    "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.67,
     "source": "Pexels"
    },
@@ -1280,16 +1279,13 @@
    }
   },
   "70": {
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "props": {
     "media": "올리브영성수/sindoh_hq.jpg",
-    "num": "",
+    "aspect": 1.7777777777777777,
     "label": "인근 신도리코 부지",
-    "sub": "낙찰 부지는 신도리코 본사에서 50m · 같은 경매 과정",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.54,
+    "note": "낙찰 부지에서 50m · 같은 경매 과정",
+    "theme": "ink",
     "source": "블로그 realtyincome___ / naver"
    },
    "motion": {}
@@ -2033,16 +2029,13 @@
    "motion": {}
   },
   "108": {
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "props": {
     "media": "올리브영성수/netflix_house.jpg",
-    "num": "",
+    "aspect": 1.7777777777777777,
     "label": "넷플릭스 하우스",
-    "sub": "체험형 공간의 대표 사례",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.46,
+    "note": "체험형 공간의 대표 사례 · 미국 필라델피아",
+    "theme": "ink",
     "source": "Netflix House 공식 이미지 / 블로그 artlife"
    },
    "motion": {
@@ -2075,7 +2068,7 @@
     "sub": "",
     "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.52,
     "source": "Mixkit"
    },
@@ -2088,9 +2081,9 @@
     "num": "",
     "label": "땅을 산 건 올리브영만이 아니다",
     "sub": "",
-    "tone": "dark",
+    "tone": "light",
     "kicker": "",
-    "align": "center",
+    "align": "left",
     "scrim": 0.52,
     "source": "블로그 tomoekunn / naver"
    },
@@ -2133,16 +2126,13 @@
    "motion": {}
   },
   "113": {
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "props": {
     "media": "올리브영성수/krafton_rendering.jpg",
-    "num": "",
+    "aspect": 1.7777777777777777,
     "label": "크래프톤 사옥",
-    "sub": "데이비드 치퍼필드 설계 · 2027년 준공 예정",
-    "tone": "dark",
-    "kicker": "",
-    "align": "center",
-    "scrim": 0.5,
+    "note": "조감도 · 데이비드 치퍼필드 설계 · 2027 준공 예정",
+    "theme": "blueprint",
     "source": "조감도=K-프로젝트 / 더벨"
    },
    "motion": {}
@@ -2169,9 +2159,9 @@
     "num": "",
     "label": "성수동 투자로 유명하다",
     "sub": "",
-    "tone": "light",
+    "tone": "dark",
     "kicker": "",
-    "align": "left",
+    "align": "center",
     "scrim": 0.65,
     "source": "Mixkit"
    },
@@ -2186,7 +2176,7 @@
     "sub": "하우스 노웨어 서울 · 성수",
     "tone": "dark",
     "kicker": "",
-    "align": "center",
+    "align": "left",
     "scrim": 0.5,
     "source": "사진=디에디트 the-edit.co.kr"
    },

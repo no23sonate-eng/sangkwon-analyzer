@@ -262,7 +262,7 @@
    "end": 58.7,
    "dur": 4.1,
    "text": "이 건물은 카페 쎈느가 임차해서 운영해 온 곳입니다.",
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "key": "cut14",
    "cardDur": 4.1
   },
@@ -1043,7 +1043,7 @@
    "end": 314.1,
    "dur": 6.0,
    "text": "실제로 인근 신도리코가 매수한 부지도 같은 경매 과정을 거쳐 거래됐습니다.",
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "key": "cut71",
    "motion": {
     "dir": "left",
@@ -1581,7 +1581,7 @@
    "end": 504.5,
    "dur": 4.5,
    "text": "예를 들면 넷플릭스가 해외에서 하는 넷플릭스 하우스처럼,",
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "key": "cut109",
    "motion": {
     "dir": "right",
@@ -1651,7 +1651,7 @@
    "end": 526.0,
    "dur": 3.6,
    "text": "준공되면 성수의 또 다른 랜드마크가 되겠죠.",
-   "card": "LowerThirdCard",
+   "card": "MediaPlateCard",
    "key": "cut114",
    "motion": {
     "dir": "down",

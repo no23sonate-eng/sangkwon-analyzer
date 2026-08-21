@@ -972,6 +972,53 @@ def _apply_motion(props):
         m = _MOTION.get(int(_k))
         _e['motion'] = ({'dir': m[0], 'push': m[1], 'exitSec': 0} if m else {})
 
+# ══════════ §40 새 문법 투입 ══════════
+# B1M 프레임 22장에서 뽑은 문법을 이 편에 붙인다. 전부 바꾸지 않는다 —
+# **자료로 보여 주는 컷**만 판 위로 올리고, 장면 자체가 주인공인 컷
+# (성수동 거리, 팝업 대기줄, 매장 내부)은 꽉 채운 채 둔다. 둘이 섞여야
+# 리듬이 살고, 전부 판으로 바꾸면 그것대로 한 종류가 된다 (§40-14).
+#
+# 고른 기준은 하나다: **"이건 내가 가져와 보여 주는 자료다" 라고 말해야 하는 컷.**
+#   #13  낙찰 대상 건물 사진 — 이 편의 물증
+#   #70  신도리코 부지 — 남의 사례를 근거로 가져온 것
+#   #108 넷플릭스 하우스 — 해외 사례
+#   #113 크래프톤 조감도 — 렌더링. 실사가 아니라는 게 판으로 드러난다
+R[13] = ('MediaPlateCard', {
+    'media': img('scene_facade_yard.jpg'), 'aspect': 16 / 9,
+    'label': '카페 쎈느가 임차해 온 건물', 'note': '연무장5길 20 · 낙찰 대상',
+    'theme': 'paper', 'source': cred('scene_facade_yard.jpg')})
+
+R[70] = ('MediaPlateCard', {
+    'media': img('sindoh_hq.jpg'), 'aspect': 16 / 9,
+    'label': '인근 신도리코 부지', 'note': '낙찰 부지에서 50m · 같은 경매 과정',
+    'theme': 'ink', 'source': cred('sindoh_hq.jpg')})
+
+R[108] = ('MediaPlateCard', {
+    'media': img('netflix_house.jpg'), 'aspect': 16 / 9,
+    'label': '넷플릭스 하우스', 'note': '체험형 공간의 대표 사례 · 미국 필라델피아',
+    'theme': 'ink', 'source': cred('netflix_house.jpg')})
+
+# 조감도는 **아직 없는 건물**이다. 꽉 채우면 다 지어진 것처럼 읽히고,
+# 판으로 얹으면 "그림"이라는 게 화면에 드러난다 — 사실관계가 여기서 갈린다
+R[113] = ('MediaPlateCard', {
+    'media': img('krafton_rendering.jpg'), 'aspect': 16 / 9,
+    'label': '크래프톤 사옥', 'note': '조감도 · 데이비드 치퍼필드 설계 · 2027 준공 예정',
+    'theme': 'blueprint', 'source': cred('krafton_rendering.jpg')})
+
+# 도해 옆 수치는 색 칩으로 못 박는다 (§40-6).
+# 맨 글자로 두면 격자·도형 사이에서 도형의 일부처럼 읽힌다
+R[8] = ('BigStatsCard', {
+    'title': '단독 입찰', 'sub': '경쟁자가 없는데 감정가를 넘겼다',
+    'items': [{'display': '1', 'unit': '곳', 'label': '입찰 참여', 'chip': True},
+              {'display': '136.77', 'unit': '%', 'label': '감정가 대비',
+               'hot': True, 'chip': True}],
+    'theme': 'ink', 'align': 'center', 'bg': bg('auction_columns.mp4', 0.93, 0, 3),
+    'source': '뉴스스페이스 · 블로터 2026.07.22'})
+
+# 실루엣 비교(§40-9)는 이 편에 **안 넣는다.** 성수 건물들의 실제 높이를
+# 출처로 확보하지 못했고, 축척을 지어내면 그 카드의 값이 통째로 죽는다.
+# 높이 자료가 잡히는 편에서 쓴다.
+
 # ── 바꾸면 안 되는 소재 ─────────────────────────────────────────────────
 # 계열만 맞추면 되는 소재가 있고, **그 컷에서만 뜻이 통하는** 소재가 있다.
 # 젠틀몬스터 매장 사진은 젠틀몬스터를 말할 때만 맞고, 다른 데로 옮기면
