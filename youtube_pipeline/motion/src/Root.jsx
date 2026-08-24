@@ -66,6 +66,7 @@ import {AreaBudgetCard} from './AreaBudgetCard';
 import {UnitPriceCard} from './UnitPriceCard';
 import {UnitDensityCard} from './UnitDensityCard';
 import {PriceLadderCard} from './PriceLadderCard';
+import {VolatilityCard} from './VolatilityCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -421,6 +422,7 @@ export const RemotionRoot = () => {
         ['UnitPriceCard', UnitPriceCard, {"count": 24, "total": "", "unit": ""}],
         ['UnitDensityCard', UnitDensityCard, {"items": []}],
         ['PriceLadderCard', PriceLadderCard, {"rungs": []}],
+        ['VolatilityCard', VolatilityCard, {"series": []}],
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
         ['MapCard', MapCard, {pins: []}],
         ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],
