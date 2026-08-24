@@ -20,6 +20,9 @@ import pathlib
 import re
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from card_props import skeleton                                   # noqa: E402
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SHARE_MAX = 0.10
 
@@ -63,6 +66,25 @@ def main():
         if row:
             e['card'], e['_why'] = row[0], row[1]
 
+    # props 껍데기는 **확정된 카드 기준**으로 다시 만든다.
+    # plan_from_script 가 만든 scene_props 는 추천 카드 기준이라, 설계로
+    # 카드를 바꾸면 엉뚱한 카드의 껍데기가 남는다.
+    props = {'project': a.project,
+             'note': 'design.json 이 원본이다. 여기를 직접 고치지 말 것 — apply_design.py 가 덮는다.',
+             'scenes': {}}
+    filled = 0
+    for e in scenes:
+        row = design.get(str(e['id']), [e['card'], ''])
+        sk = skeleton(e['card']) or {}
+        given = row[2] if len(row) > 2 and isinstance(row[2], dict) else {}
+        sk.update(given)
+        if e.get('source') and not sk.get('source'):
+            sk['source'] = e['source']          # 대본 `→` 줄에서 딸려 온 출처
+        if given:
+            filled += 1
+        props['scenes'][str(e['id'])] = {'card': e['card'], 'props': sk,
+                                         'motion': e.get('motion', {})}
+
     cards = [e['card'] for e in scenes]
     cnt = collections.Counter(cards)
     runs = [(i, cards[i]) for i in range(1, len(cards)) if cards[i] == cards[i - 1]]
@@ -101,10 +123,13 @@ def main():
     if ok:
         print('  ✓ 연속 없음 · 상한 이내 · 전부 등록된 카드')
 
+    print(f'  내용 채운 컷 {filled}/{len(scenes)}')
     if not a.check:
         (pdir / 'scene_plan.json').write_text(
             json.dumps(plan, ensure_ascii=False, indent=1))
-        print(f'  → {pdir / "scene_plan.json"} 갱신')
+        (pdir / 'scene_props.json').write_text(
+            json.dumps(props, ensure_ascii=False, indent=1))
+        print(f'  → scene_plan.json · scene_props.json 갱신')
     sys.exit(0 if ok else 1)
 
 
