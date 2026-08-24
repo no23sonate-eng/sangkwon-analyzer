@@ -65,6 +65,7 @@ import {SectionScaleCard} from './SectionScaleCard';
 import {AreaBudgetCard} from './AreaBudgetCard';
 import {UnitPriceCard} from './UnitPriceCard';
 import {UnitDensityCard} from './UnitDensityCard';
+import {PriceLadderCard} from './PriceLadderCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -419,6 +420,7 @@ export const RemotionRoot = () => {
         ['AreaBudgetCard', AreaBudgetCard, {}],
         ['UnitPriceCard', UnitPriceCard, {"count": 24, "total": "", "unit": ""}],
         ['UnitDensityCard', UnitDensityCard, {"items": []}],
+        ['PriceLadderCard', PriceLadderCard, {"rungs": []}],
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
         ['MapCard', MapCard, {pins: []}],
         ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],
