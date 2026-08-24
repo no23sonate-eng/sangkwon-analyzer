@@ -97,11 +97,11 @@ export const CalendarCompareCard = ({
       </div>
 
       <CalendarGrid
-        count={leftCount} cols={COLS} cell={CELL} gap={GAP} color="#C98A9E"
+        count={leftCount} cols={COLS} cell={CELL} gap={GAP} color={T.tones[0]}
         startFrame={LEFT_START} perIcon={PER_ICON} frame={frame} x={LEFT_X} topY={GRID_TOP}
       />
       <CalendarGrid
-        count={rightCount} cols={COLS} cell={CELL} gap={GAP} color="#8FAD8B"
+        count={rightCount} cols={COLS} cell={CELL} gap={GAP} color={YELLOW}
         startFrame={RIGHT_START} perIcon={PER_ICON} frame={frame} x={RIGHT_X} topY={GRID_TOP}
       />
 

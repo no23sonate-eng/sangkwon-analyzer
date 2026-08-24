@@ -2204,13 +2204,15 @@
    }
   ],
   "116": [
-   "SectionPhotoCard",
+   "LowerThirdCard",
    "사 — 무대 전면 파노라마 LED",
    {
-    "title": "무대 전면 초대형 파노라마 LED",
-    "sub": "크리스탈볼룸",
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "source": "simonwilliamsim / BY-SA 2.0 · 이데일리 2026.8.11"
+    "media": "더그랜드롯데/hotel_corridor.mp4",
+    "label": "초대형 파노라마 LED",
+    "sub": "크리스탈볼룸 무대 전면",
+    "kicker": "연회장 개선",
+    "tone": "dark",
+    "source": "Mixkit Free License · 이데일리 2026.8.11"
    }
   ],
   "117": [
@@ -2319,49 +2321,51 @@
    }
   ],
   "123": [
-   "FrontageCard",
-   "그 — 가로 77m × 높이 21m",
+   "SpecGridCard",
+   "그 — 롯데타운 라이트 제원",
    {
-    "title": "가로 77m × 높이 21m",
-    "sub": "약 1,600㎡ · 명동 상권 최대 규모",
-    "options": [
+    "title": "롯데타운 라이트",
+    "sub": "영플라자 외관 · 명동 상권 최대 규모",
+    "items": [
      {
-      "label": "롯데타운 라이트",
-      "w": 77,
-      "d": 21,
-      "note": "약 1,600㎡",
-      "hot": true
+      "label": "가로",
+      "value": "77m"
+     },
+     {
+      "label": "높이",
+      "value": "21m"
+     },
+     {
+      "label": "면적",
+      "value": "약 1,600㎡"
+     },
+     {
+      "label": "패널",
+      "value": "4K LED",
+      "note": "최대 1km 밖에서도 식별"
      }
     ],
-    "unit": "m",
-    "floors": 1,
-    "note": "4K LED 패널 · 최대 1km 거리에서도 식별 가능하게 설계",
     "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"
    }
   ],
   "124": [
    "ScaleCompareCard",
-   "그 — 명동 상권 최대 규모",
+   "그 — 21m 높이를 사람과 견준다",
    {
     "title": "명동 상권 최대 규모",
-    "sub": "미디어파사드 면적",
+    "sub": "미디어파사드 높이",
     "unit": "m",
     "items": [
      {
       "label": "롯데타운 라이트",
-      "meters": 77,
-      "shape": "slab",
-      "note": "가로 77m",
-      "hot": true
-     },
-     {
-      "label": "높이",
       "meters": 21,
       "shape": "slab",
-      "note": "21m"
+      "note": "높이 21m · 가로 77m",
+      "hot": true
      }
     ],
-    "axisStep": 20,
+    "axisStep": 5,
+    "showHuman": true,
     "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"
    }
   ],
@@ -2452,11 +2456,11 @@
     "items": [
      {
       "logo": "",
-      "label": "롯데호텔 — 더그랜드롯데"
+      "label": "롯데호텔"
      },
      {
       "logo": "",
-      "label": "롯데쇼핑 — 본점·영플라자"
+      "label": "롯데쇼핑"
      }
     ],
     "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"

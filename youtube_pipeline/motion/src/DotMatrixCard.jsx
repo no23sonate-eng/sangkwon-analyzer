@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -19,14 +19,26 @@ export const DotMatrixCard = ({
   const n = groups.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const R = 10, PITCH = 30;
-  const blockW = cols * PITCH;
-  const slot = Math.min(760, 1560 / n);
-  const startX = (1920 - slot * n) / 2 + slot / 2;
+  // 열 수와 점 크기를 그대로 믿지 않는다. 737개를 1:1 로 그리라고 하면
+  // 격자가 화면 밖으로 나가는데 **렌더는 성공한다** — 시트에서야 안다.
+  // 폭과 높이 양쪽에 맞을 때까지 점 간격을 줄인다. 점 개수는 안 건드린다:
+  // 개수가 곧 뜻이라 임의로 줄이면 그림이 거짓말이 된다
   const TOP = 330;
+  const slot = Math.min(760, 1560 / n);
+  const AVAIL_H = CONTENT_BOTTOM - TOP - 96;          // 아래 수치·라벨 자리
+  const maxDots = Math.max(...groups.map((g) => Math.max(1, Math.round(g.value / perDot))));
+  let PITCH = 30, nCol = 4;
+  for (let pitch = 30; pitch >= 7; pitch -= 1) {
+    const c = Math.max(4, Math.min(cols, Math.floor((slot - 24) / pitch)));
+    if (Math.ceil(maxDots / c) * pitch <= AVAIL_H) { PITCH = pitch; nCol = c; break; }
+    PITCH = pitch; nCol = c;                          // 끝까지 못 맞으면 최소 간격
+  }
+  const R = Math.max(2.5, PITCH / 3);
+  const blockW = nCol * PITCH;
+  const startX = (1920 - slot * n) / 2 + slot / 2;
   // 그룹마다 행 수가 달라도 수치·라벨은 **가장 큰 격자 아래 한 줄**에 맞춘다.
   // 제각각 높이에 두면 격자 크기 차이가 아니라 배치 실수처럼 보인다.
-  const maxRows = Math.max(...groups.map((g) => Math.ceil(Math.max(1, Math.round(g.value / perDot)) / cols)));
+  const maxRows = Math.max(...groups.map((g) => Math.ceil(Math.max(1, Math.round(g.value / perDot)) / nCol)));
   const LABEL_Y = TOP + (maxRows - 1) * PITCH + R + 38;
   // 점이 순서대로 찍히는 속도 (그룹마다 살짝 시차)
   const dotsOf = (v) => Math.max(1, Math.round(v / perDot));
@@ -46,7 +58,7 @@ export const DotMatrixCard = ({
               {Array.from({length: total}, (_, k) => {
                 const o = fadeIn(frame, t0 + k * per, 6);
                 if (o <= 0) return null;
-                const r = Math.floor(k / cols), c = k % cols;
+                const r = Math.floor(k / nCol), c = k % nCol;
                 return (
                   <circle key={k} cx={cx0 + c * PITCH} cy={TOP + r * PITCH} r={R}
                           fill={g.hot ? YELLOW : T.tones[3]} stroke={T.ink} strokeWidth={1.6}
