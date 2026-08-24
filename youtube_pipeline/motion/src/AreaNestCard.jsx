@@ -52,19 +52,28 @@ export const AreaNestCard = ({
       </svg>
 
       {/* 라벨 — 각 사각형의 윗변 오른쪽에서 뻗어 나가는 지시선 + 수치 */}
-      {sorted.map((it, i) => {
-        const s = side(it.value);
-        const yTop = BASE_Y - s;
-        const xRight = CX - BOX / 2 + s;
-        const o = fadeIn(frame, 34 + i * 12);
-        return (
+      {(() => {
+        // 라벨을 사각형 모서리 높이에 그대로 두면, 값이 비슷한 두 항목의
+        // 모서리가 붙어 라벨 두 덩어리가 포개진다 (2조 6,560억 / 7,657억 /
+        // 4,135억 에서 뒤 둘이 그랬다). 모서리는 그대로 두고 **라벨만**
+        // 아래로 밀어 최소 간격을 확보한 뒤, 리더선을 밀린 자리로 잇는다
+        const MIN = 150;
+        let last = -1e9;
+        return sorted.map((it, i) => {
+          const s = side(it.value);
+          const yTop = BASE_Y - s;
+          const ly = Math.max(yTop, last + MIN);
+          last = ly;
+          const xRight = CX - BOX / 2 + s;
+          const o = fadeIn(frame, 34 + i * 12);
+          return (
           <React.Fragment key={i}>
             <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: o}}>
-              <line x1={xRight} y1={yTop} x2={CX + BOX / 2 + 84} y2={yTop}
+              <line x1={xRight} y1={yTop} x2={CX + BOX / 2 + 84} y2={ly}
                     stroke={T.ink} strokeWidth={2} opacity={0.45} strokeDasharray="5 5" />
               <circle cx={xRight} cy={yTop} r={5} fill={T.ink} opacity={0.6} />
             </svg>
-            <div style={{position: 'absolute', left: CX + BOX / 2 + 100, width: 700, top: yTop,
+            <div style={{position: 'absolute', left: CX + BOX / 2 + 100, width: 700, top: ly,
                          transform: 'translateY(-50%)', opacity: o}}>
               <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 62, color: T.ink,
                            lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
@@ -81,8 +90,9 @@ export const AreaNestCard = ({
               ) : null}
             </div>
           </React.Fragment>
-        );
-      })}
+          );
+        });
+      })()}
 
       {multipleNote ? (
         <div style={{position: 'absolute', left: 40, width: CX - BOX / 2 - 100, top: 452,

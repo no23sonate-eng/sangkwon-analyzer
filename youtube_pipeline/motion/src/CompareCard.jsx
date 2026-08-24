@@ -45,16 +45,22 @@ export const CompareCard = ({
   const LEFT_X = 1920 / 2 - GAP / 2 - COL_W;
   const RIGHT_X = 1920 / 2 + GAP / 2;
 
+  const hasImage = Boolean(leftImage || rightImage);
   const overlayStyle = {
     position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
     background: 'linear-gradient(180deg, rgba(5,7,10,.68) 0%, rgba(5,7,10,.7) 60%, rgba(5,7,10,.88) 100%)',
   };
-  const hasImage = Boolean(leftImage || rightImage);
   // 사진의 밝은 하늘 위에 텍스트가 얹힐 때도 항상 읽히도록, 오버레이
   // 그라디언트만으로는 부족해 텍스트 블록 뒤에 별도 받침 패널을 깐다.
-  const textPanel = {
+  // 사진 위에서는 어두운 받침이 있어야 글자가 읽힌다. 하지만 종이 무대에서는
+  // 그 받침이 그대로 **검은 상자 두 개**가 된다 — 실제로 그렇게 나왔다.
+  // 사진이 있을 때만 어둡게, 아니면 종이 위 얇은 테두리 판으로
+  const textPanel = hasImage ? {
     position: 'absolute', top: -28, left: -30, width: COL_W + 60, height: 360,
-    borderRadius: 16, background: 'rgba(5,7,10,0.62)', backdropFilter: 'blur(1px)',
+    background: 'rgba(5,7,10,0.62)', backdropFilter: 'blur(1px)',
+  } : {
+    position: 'absolute', top: -28, left: -30, width: COL_W + 60, height: 360,
+    background: T.bg, border: `2px solid ${T.ink}`, opacity: 0.9,
   };
 
   return (
@@ -93,13 +99,13 @@ export const CompareCard = ({
         {hasImage ? <div style={textPanel} /> : null}
         <div style={{position: 'relative', fontSize: 30, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{leftTitle}</div>
         {leftValue ? (
-          <div style={{position: 'relative', fontSize: 80, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif'}}>{leftValue}</div>
+          <div style={{position: 'relative', fontSize: 80, color: hasImage ? '#EDEFF3' : T.ink, fontFamily: 'A2Z Regular, sans-serif'}}>{leftValue}</div>
         ) : null}
         {leftLines.map((line, i) => (
           <div
             key={i}
             style={{
-              position: 'relative', fontSize: 34, color: '#FFFFFF', fontFamily: 'A2Z Regular, sans-serif',
+              position: 'relative', fontSize: 34, color: hasImage ? '#FFFFFF' : T.ink, fontFamily: 'A2Z Regular, sans-serif',
               lineHeight: 1.6, marginBottom: 10,
             }}
           >
@@ -126,7 +132,7 @@ export const CompareCard = ({
             <div
               key={i}
               style={{
-                position: 'relative', fontSize: 34, color: '#FFFFFF', fontFamily: 'A2Z Regular, sans-serif',
+                position: 'relative', fontSize: 34, color: hasImage ? '#FFFFFF' : T.ink, fontFamily: 'A2Z Regular, sans-serif',
                 lineHeight: 1.6, marginBottom: 10,
               }}
             >
