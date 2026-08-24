@@ -113,8 +113,8 @@ export const CalendarCompareCard = ({
         }}
       >
         <svg width="160" height="60" viewBox="0 0 160 60">
-          <line x1="10" y1="30" x2="128" y2="30" stroke={accent} strokeWidth="5" strokeLinecap="round" />
-          <path d="M122 12 L150 30 L122 48" fill="none" stroke={accent} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="10" y1="30" x2="128" y2="30" stroke={YELLOW} strokeWidth="5" strokeLinecap="round" />
+          <path d="M122 12 L150 30 L122 48" fill="none" stroke={YELLOW} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
 
@@ -131,7 +131,7 @@ export const CalendarCompareCard = ({
         <div
           style={{
             position: 'absolute', top: NUM_TOP + 150, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 36, color: accent, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em',
+            fontSize: 36, color: T.ink, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em',
             opacity: closingOpacity,
           }}
         >

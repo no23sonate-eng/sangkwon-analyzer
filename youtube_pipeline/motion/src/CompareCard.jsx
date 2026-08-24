@@ -112,7 +112,7 @@ export const CompareCard = ({
         {hasImage ? <div style={textPanel} /> : null}
         <div style={{position: 'relative', fontSize: 30, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{rightTitle}</div>
         {rightValue ? (
-          <div style={{position: 'relative', fontSize: 80, color: accent, fontFamily: 'A2Z Regular, sans-serif'}}>{rightValue}</div>
+          <div style={{position: 'relative', fontSize: 80, color: T.ink, fontFamily: 'A2Z Regular, sans-serif'}}>{rightValue}</div>
         ) : null}
         {rightEmpty ? (
           <div style={{position: 'relative'}}>
