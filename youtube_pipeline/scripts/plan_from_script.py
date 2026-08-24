@@ -75,6 +75,34 @@ COMPANY = r'[가-힣A-Za-z][가-힣A-Za-z0-9&·\'\-]{1,14}' \
           r'엔지니어링|디자인|스튜디오|자산운용|증권|은행|공사|공단|재단|사|社)'
 
 RULES = [
+    # ── §41 단가·자리·변동 규칙 (2026-08-24 추가) ────────────────────────
+    # 아래 §40 보다도 먼저 걸려야 한다. §40 은 "구조" 를, 여기는 "숫자를 어떻게
+    # 다루는 문장인가" 를 본다. 셋 다 겉보기엔 그냥 숫자 문장이라 안 걸러 두면
+    # 전부 BigStatsCard 로 빨려 들어간다.
+
+    # 면적이 늘면서 단위 단가가 **거꾸로** 간다 → 넓은 바닥에 펴 바르기
+    (r'((㎡당|평당|제곱미터당|단위 면적)[^.]{0,50}(낮|떨어|싸|역전|거꾸로|오히려)|'
+     r'(넓|커지|크)[^.]{0,40}(㎡당|평당)[^.]{0,20}(낮|떨어|싸))',
+     'UnitDensityCard', '면적당 단가 역전 = 펴 바르기'),
+
+    # 총액을 개수로 나눈다 → 덩어리를 칸으로 쪼개기
+    (r'((하나당|한\s*(개|채|실|가구|칸|호)당|\d[\d,]*\s*(실|개|가구|채|호)당)|'
+     r'(억|조|만원)[^.]{0,40}(나누|÷)[^.]{0,20}\d|'
+     r'\d[\d,]*\s*(실|개|가구|채)[^.]{0,20}(이니까|이니|니까)[^.]{0,20}(억|만원))',
+     'UnitPriceCard', '총액 ÷ 개수 = 칸 쪼개기'),
+
+    # 위아래 사이의 **빈 자리**를 가져간다 → 가격 사다리
+    (r'((보다\s*(비싸|높|위)[^.]{0,50}보다\s*(싸|낮|아래))|'
+     r'(라인업|브랜드|가격대|포지셔닝|등급)[^.]{0,30}(사이|빈|공백|중간|틈)|'
+     r'(사이|중간)[^.]{0,20}(자리|칸|급|층위)[^.]{0,20}(비|없|채우|가져))',
+     'PriceLadderCard', '위아래 사이의 빈 자리 = 사다리'),
+
+    # 흔들리는 수입 대 평탄한 수입 → 톱니와 평지
+    (r'((성수기|비수기|계절|시즌|분기)[^.]{0,50}(타|변동|들쭉|오르내|편차|출렁)|'
+     r'(변동|기복|들쭉날쭉|출렁)[^.]{0,60}(꾸준|일정|고정|안정|평탄)|'
+     r'(꾸준|일정|고정|안정)[^.]{0,60}(변동|기복|들쭉날쭉|출렁))',
+     'VolatilityCard', '흔들림 대 평탄 = 톱니와 평지'),
+
     # ── §40 구조·설명 규칙 (2026-08-22 추가) ─────────────────────────────
     # 이 아래 기존 규칙들보다 **먼저** 걸려야 한다. 기존 규칙은 숫자만 보면
     # BigStatsCard 로 보내 버려서, "층고가 낮으면 조형물을 못 세운다" 같은
@@ -316,6 +344,12 @@ def build_scenes(sections):
 
 # 같은 문법이 연속될 때 돌려 쓸 대안. 뜻이 안 깨지는 짝만 넣는다.
 ALT = {
+    # §41 카드 — 대안은 **같은 말을 하는 카드**만. 뜻이 바뀌면 안 넣는다
+    'UnitPriceCard':       ['DotMatrixCard', 'BigStatsCard'],
+    'UnitDensityCard':     ['RatioCard', 'AreaNestCard'],
+    'PriceLadderCard':     ['ScaleCompareCard', 'RankTrendCard'],
+    'VolatilityCard':      ['TrendCard', 'TimelineBarsCard'],
+
     # §40 카드 — 이게 없으면 총량 초과분을 돌릴 데가 없어 그대로 몰린다
     'LowerThirdCard':      ['MediaPlateCard', 'AnnotatedShotCard', 'FullBleedCard'],
     'MediaPlateCard':      ['AnnotatedShotCard', 'LowerThirdCard', 'PaperImageCard'],
@@ -610,6 +644,59 @@ def chapters(plan):
     return merged
 
 
+# ── 낭독 대상이 아닌 줄 ───────────────────────────────────────────────────
+# 대본에는 낭독문 말고도 두 종류가 섞여 있다.
+#   → ✅ 뉴스웨이 2026.7.28 · ✅ 파이낸셜뉴스 …   ← 앞 문장의 **출처**
+#   🔴 FKI 캡처 사용 금지 구간 …                  ← 나한테 주는 **작업 지시**
+# 이걸 그냥 두면 낭독문으로 세어 버린다. 더그랜드롯데 대본에서 실제로
+# 20컷 · 3분 43초가 출처 나열을 읽는 시간으로 잡혔고, 그만큼 영상이
+# 길어져 있었다. 출처는 앞 컷의 `Source :` 로 붙이고, 작업 지시는 버린다.
+NOTE_RE = re.compile(r'^\s*(→|🔴|⚠️)\s*(.*)$')
+
+
+def strip_notes(raw):
+    """낭독문만 남기고, `→` 줄은 (앞 문장 앞머리 → 출처) 로 따로 뺀다."""
+    out, srcmap, last = [], [], ''
+    for line in raw.split('\n'):
+        m = NOTE_RE.match(line)
+        if not m:
+            out.append(line)
+            if line.strip():
+                last = line.strip()
+            continue
+        if m.group(1) == '→' and last:
+            # ✅ / ⚠️ 같은 검증 표시는 화면에 안 나간다. 매체 이름만 남긴다
+            src = re.sub(r'[✅⚠️🔴]\s*', '', m.group(2)).strip()
+            if src:
+                srcmap.append((last[:24], src))
+    return '\n'.join(out), srcmap
+
+
+def attach_sources(plan, srcmap):
+    """출처를 **그 문장이 들어간 컷**에 붙인다. 대본 순서대로 훑는다.
+
+    처음엔 컷을 훑으며 큐를 하나씩 소비했는데, 앞머리 24자가 컷 경계에
+    걸려 한 번 못 맞으면 **그 뒤 출처가 전부 큐에 갇혔다** (20개 중 10개만
+    붙었다). 그래서 출처마다 앞으로 훑고, 못 찾으면 그 건만 버린다.
+    """
+    at, lost = 0, []
+    for head, src in srcmap:
+        j = next((k for k in range(at, len(plan)) if head in plan[k]['text']), None)
+        if j is None:
+            # 앞머리가 컷 경계에 잘렸을 수 있다. 짧게 줄여 한 번 더
+            j = next((k for k in range(at, len(plan)) if head[:12] in plan[k]['text']), None)
+        if j is None:
+            lost.append(head)
+            continue
+        # 한 컷에 출처가 여럿이면 이어 붙인다 — 기사 여러 개를 근거로 든 대목
+        plan[j]['source'] = (plan[j].get('source', '') + ' · ' + src).strip(' ·')
+        at = j
+    if lost:
+        REPORT.append(f'출처 {len(lost)}건이 붙을 컷을 못 찾았다 — 직접 붙여야 한다: '
+                      + ' / '.join(x[:14] for x in lost[:4]))
+    return plan
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('script')
@@ -624,11 +711,13 @@ def main():
     raw = open(a.script, encoding='utf-8').read()
     # 마크다운 제목·인용·구분선은 낭독 대상이 아니다
     raw = re.sub(r'^\s*(#{1,6}\s.*|>.*|-{3,})$', '', raw, flags=re.M)
+    raw, srcmap = strip_notes(raw)
     sections = [p.strip() for p in re.split(r'\n\s*\n', raw) if p.strip()]
     if not sections:
         sys.exit('스크립트에서 문단을 못 찾았다.')
 
     plan = add_motion(lift_live(tighten_opening(allocate(build_scenes(sections)))))
+    attach_sources(plan, srcmap)
     total = plan[-1]['end']
 
     print(f'섹션 {len(sections)} → 장면 {len(plan)} · {total:.1f}초 ({int(total)//60}:{int(total)%60:02d})')
