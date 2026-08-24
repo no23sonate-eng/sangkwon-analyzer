@@ -1,168 +1,111 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate} from 'remotion';
+import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
-import {OrgDiagram} from './LogoOrgCard';
+import {themeOf, PaperBg, PaperSource, PaperCaption, YELLOW,
+        CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
-// 세로 막대 그래프 카드 — 수치 나열(표)보다 비교가 바로 눈에 들어와야 할
-// 때(2026-07-29 "#16/#18/#19 그래프로 만들어줘, 비교가 잘 되게" 피드백).
-// bars: [{label, value, displayValue}] — value 는 막대 높이 계산용 숫자,
-// displayValue 는 막대 위에 표시할 텍스트(단위 포함, 생략 시 value 표시).
-// light=true: #10/#19 계열 화이트 톤. 항목이 2~3개일 때도 항상 화면
-// 가운데에 그룹으로 정렬된다(#18 "가운데 정렬" 피드백).
+// ── 막대 비교 ─────────────────────────────────────────────────────────────
+// "1,015실이 868실이 됐다" 처럼 **같은 것의 두 시점**을 견줄 때.
+// 성격이 다른 항목을 줄 세우는 건 YRankBarsCard(가로 막대) 쪽이다.
 //
-// intro: DataTable 과 동일한 로고 조직도 인트로 — 그래프가 뜨기 전에
-// introFrames 프레임 동안 조직도를 먼저 보여주고 크로스페이드로 넘어간다
-// (2026-07-29 "#2도 그래픽으로, 도표 만들어줘" 피드백 — 조직도는 유지하고
-// 수치 부분만 표에서 그래프로 전환).
-const PALETTE = ['#C98A9E', '#8FAD8B', '#7B9BC2', '#C9A86A'];
-
+// **종이 시스템으로 옮기면서 채널 규칙 두 개를 같이 고쳤다.**
+//   ① 숫자를 막대 위에 얹지 않는다. 원래는 막대 꼭대기에 값을 찍었는데
+//      채널 규칙에 정면으로 어긋난다. 값은 **막대 밖 오른쪽**, 라벨 줄에 붙인다
+//   ② 파스텔 4색 팔레트(#C98A9E 분홍 / #8FAD8B 초록 …) 를 버렸다.
+//      이 채널은 먹 + 노랑 하나다. 색으로 항목을 구분하면 색이 뜻을 갖게 되고,
+//      그러면 색을 계속 설명해야 한다. 강조 하나만 노랑으로 채운다
+//   ③ light 인자로 흰 배경을 따로 갖고 있었다 — 테마가 그 일을 한다
+//
+// bars: [{label, value, displayValue, subValue, hot}]
 export const BarChartCard = ({
-  title = '', bars = [], source = '', closingLine = '',
-  light = false, accent = ACCENT,
-  intro = null, introFrames = 0,
+  title = '', sub = '', bars = [], closingLine = '', caption = '',
+  source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
-  const {fps, durationInFrames} = useVideoConfig();
+  const {fps} = useVideoConfig();
+  const T = themeOf(theme);
 
-  const hasIntro = Boolean(intro);
-  const introOpacity = hasIntro
-    ? interpolate(frame, [introFrames - 6, introFrames + 14], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
-    : 0;
-  const chartFrame = hasIntro ? Math.max(0, frame - introFrames) : frame;
+  const list = bars.slice(0, 5);
+  const n = list.length || 1;
+  const maxValue = Math.max(...list.map((b) => Math.abs(Number(b.value)) || 0), 1);
 
-  const titleOpacity = interpolate(chartFrame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
-  const titleColor = light ? '#1B1E22' : TEXT.title.color;
-  const labelColor = light ? '#3A3E44' : TEXT.label.color;
-  const valueColor = light ? '#0A0B0D' : TEXT.value.color;
-  const baseLineColor = light ? 'rgba(10,11,13,0.35)' : 'rgba(255,255,255,0.18)';
+  const bandTop = title ? (sub ? 300 : 250) : 190;
+  const FOOT = 168;                       // 라벨 + 값
+  const BASELINE = Math.min(700, CONTENT_BOTTOM - (caption || closingLine ? 96 : 40) - FOOT);
+  const MAX_BAR_H = Math.max(160, BASELINE - bandTop - 20);
 
-  const BASELINE = 760;
-  const MAX_BAR_H = 380;
-  const n = bars.length || 1;
-  const maxValue = Math.max(...bars.map((b) => Math.abs(b.value) || 0), 1);
-
-  const side = Math.min(240, Math.round(900 / n));
-  const gap = 70;
+  const side = Math.min(240, Math.round(920 / n));
+  const gap = Math.min(110, Math.round(side * 0.5));
   const totalW = side * n + gap * (n - 1);
   const startX = (1920 - totalW) / 2;
 
   return (
-    <AbsoluteFill style={light ? {background: '#F4F1EC'} : BG_STYLE}>
-      {light ? (
-        <>
-          <GridBg color="rgba(10,11,13,0.055)" />
-          <div
-            style={{
-              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-              background: 'radial-gradient(ellipse at 20% 15%, rgba(10,11,13,0.035), transparent 55%),'
-                + 'radial-gradient(ellipse at 85% 85%, rgba(10,11,13,0.035), transparent 55%)',
-            }}
-          />
-        </>
-      ) : (
-        <GridBg />
-      )}
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+      <PaperBg theme={theme} {...bg} />
 
-      {hasIntro ? (
-        <OrgDiagram
-          parentLogo={intro.parentLogo}
-          parentLabel={intro.parentLabel}
-          children={intro.children}
-          opacity={introOpacity}
-        />
+      {title ? (
+        <div style={{position: 'absolute', left: 200, width: 1520, top: 150, textAlign: 'center',
+                     opacity: fadeIn(frame, 0)}}>
+          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
+          {sub ? (
+            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
+                         fontSize: 30, color: T.soft}}>{sub}</div>
+          ) : null}
+        </div>
       ) : null}
 
-      <div
-        style={{
-          position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, color: titleColor, fontFamily: 'A2Z Light, sans-serif',
-          letterSpacing: '0.02em',
-        }}
-      >
-        {title}
-      </div>
+      <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+        <line x1={startX - 40} y1={BASELINE} x2={startX + totalW + 40} y2={BASELINE}
+              stroke={T.ink} strokeWidth={2} opacity={0.5 * fadeIn(frame, 6)} />
+        {list.map((b, i) => {
+          const grow = spring({frame: frame - 14 - i * 8, fps,
+                               config: {damping: 200, mass: 0.8}, durationInFrames: 26});
+          const h = (Math.abs(Number(b.value)) || 0) / maxValue * MAX_BAR_H * grow;
+          const on = Boolean(b.hot);
+          return (
+            <rect key={i} x={startX + i * (side + gap)} y={BASELINE - h}
+                  width={side} height={h}
+                  fill={on ? YELLOW : T.tones[0]}
+                  stroke={T.ink} strokeWidth={on ? 3 : 2} />
+          );
+        })}
+      </svg>
 
-      <div style={{position: 'absolute', top: BASELINE, left: startX, width: totalW, height: 1, background: baseLineColor}} />
-
-      {bars.map((bar, i) => {
-        const delay = 18 + i * 10;
-        const grow = spring({frame: Math.max(0, chartFrame - delay), fps, config: {damping: 16, mass: 0.8}, durationInFrames: 26});
-        const ratio = (Math.abs(bar.value) || 0) / maxValue;
-        const barH = Math.round(MAX_BAR_H * ratio * grow);
-        const opacity = interpolate(grow, [0, 1], [0, 1]);
-        const x = startX + i * (side + gap);
-        const color = bar.color || PALETTE[i % PALETTE.length];
+      {/* 값은 막대 **아래**, 라벨과 한 덩어리로. 막대 위에 얹지 않는다 */}
+      {list.map((b, i) => {
+        const on = Boolean(b.hot);
         return (
-          <React.Fragment key={i}>
-            <div
-              style={{
-                position: 'absolute', top: BASELINE - barH, left: x, width: side, height: barH,
-                background: color, borderRadius: '4px 4px 0 0', opacity,
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute', top: BASELINE - barH - (bar.subValue ? 76 : 46), left: x, width: side,
-                textAlign: 'center', opacity,
-              }}
-            >
-              <div style={{fontSize: 32, color: valueColor, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em'}}>
-                {bar.displayValue ?? bar.value}
-              </div>
-              {bar.subValue ? (
-                <div
-                  style={{
-                    fontSize: 26, marginTop: 4, color: labelColor,
-                    fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
-                  }}
-                >
-                  {bar.subValue}
-                </div>
-              ) : null}
+          <div key={i} style={{position: 'absolute', left: startX + i * (side + gap) - gap / 2,
+                               width: side + gap, top: BASELINE + SP.NEAR, textAlign: 'center',
+                               opacity: fadeIn(frame, 30 + i * 8)}}>
+            <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                         wordBreak: 'keep-all'}}>{b.label}</div>
+            <div style={{marginTop: SP.TIGHT,
+                         fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                         fontSize: on ? 54 : 44, color: T.ink,
+                         fontVariantNumeric: 'tabular-nums'}}>
+              {b.displayValue ?? b.value}
             </div>
-            <div
-              style={{
-                position: 'absolute', top: BASELINE + 22, left: x, width: side, textAlign: 'center',
-                fontSize: 28, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
-                opacity,
-              }}
-            >
-              {bar.label}
-            </div>
-          </React.Fragment>
+            {b.subValue ? (
+              <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif',
+                           fontSize: 25, color: T.soft}}>{b.subValue}</div>
+            ) : null}
+          </div>
         );
       })}
 
-      {source ? (
-        <div
-          style={{
-            position: 'absolute', top: BASELINE + 90, left: startX,
-            fontSize: 20, color: light ? '#7A7F86' : '#565C64', fontFamily: 'A2Z Light, sans-serif', fontStyle: 'italic',
-            opacity: interpolate(chartFrame, [40, 55], [0, 1], {extrapolateRight: 'clamp'}),
-          }}
-        >
-          {source}
-        </div>
-      ) : null}
-
       {closingLine ? (
-        <div
-          style={{
-            position: 'absolute', top: BASELINE + 100, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 36, color: light ? '#1B1E22' : accent, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.02em',
-            opacity: interpolate(
-              frame,
-              [Math.round(durationInFrames * 0.6), Math.round(durationInFrames * 0.6) + 20],
-              [0, 1],
-              {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
-            ),
-          }}
-        >
-          {closingLine}
+        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 78,
+                     textAlign: 'center', opacity: fadeIn(frame, 60)}}>
+          <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                        fontSize: 44, color: T.ink, background: YELLOW,
+                        padding: '6px 18px'}}>{closingLine}</span>
         </div>
       ) : null}
+      <PaperCaption theme={theme} opacity={fadeIn(frame, 70)}>{caption}</PaperCaption>
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };
