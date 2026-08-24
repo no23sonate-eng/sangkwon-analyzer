@@ -1,9 +1,16 @@
 # youtube_pipeline 로컬 산출물/비밀
 .env
 
-# 프로젝트 폴더의 원본 미디어와 중간/최종 산출물은 커밋하지 않는다
+# 프로젝트 폴더의 원본 미디어와 중간/최종 산출물은 커밋하지 않는다.
+# 다만 **대본과 출처는 커밋한다** — 이건 산출물이 아니라 입력이고,
+# 여기 안 넣어 뒀다가 작업 디렉토리가 되돌아가면서 실제로 한 번 날아갔다.
+# depth 2 의 두 파일만 예외로 두고 그 아래는 다시 전부 제외한다
 projects/*
 !projects/.gitkeep
+!projects/*/
+projects/*/*
+!projects/*/script.md
+!projects/*/출처.md
 
 # 로컬 whisper 모델 (대용량 — scripts/setup_model.py 로 재다운로드)
 models/
