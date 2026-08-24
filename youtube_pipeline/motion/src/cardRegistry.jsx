@@ -62,6 +62,7 @@ import {PlanTitleCard} from './PlanTitleCard';
 import {SilhouetteCompareCard} from './SilhouetteCompareCard';
 import {SectionScaleCard} from './SectionScaleCard';
 import {AreaBudgetCard} from './AreaBudgetCard';
+import {UnitPriceCard} from './UnitPriceCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -93,6 +94,7 @@ export const CARDS = {
   SilhouetteCompareCard,
   SectionScaleCard,
   AreaBudgetCard,
+  UnitPriceCard,
   IsoDiagramCard,
   MapCard,
   SectionDiagramCard,
