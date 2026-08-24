@@ -392,3 +392,47 @@ export const ValueChip = ({children, size = 44, hot = false, theme, dark = false
     </span>
   );
 };
+
+// ── v2 카드를 종이로 옮길 때 쓰는 부품 ───────────────────────────────────
+// 옛 v2 카드는 `Kicker` 와 `Footer` 를 썼다. 둘 다 먹 배경 전용 색이 박혀
+// 있어서 그대로 두면 크림 종이 위에 회색 글자가 떠 안 읽힌다.
+// 같은 자리·같은 리듬을 유지하면서 색만 테마에서 받게 한 짝이다.
+//
+// 출처는 여기 안 넣는다 — 채널 규칙대로 **우측 상단** `PaperSource` 다.
+// 옛 Footer 는 캡션과 출처를 같이 아래에 뒀는데, 그래서 v2 카드만 출처
+// 자리가 달랐다.
+export const PaperKicker = ({title = '', sub = '', theme, dark = false, opacity = 1,
+                             left = 120, top = 150}) => {
+  const T = themeOf(theme, dark);
+  if (!title && !sub) return null;
+  return (
+    <div style={{position: 'absolute', left, top, opacity}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
+        <div style={{width: 46, height: 5, background: YELLOW}} />
+        <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                      fontSize: 34, letterSpacing: '0.06em', color: T.ink,
+                      wordBreak: 'keep-all'}}>{title}</span>
+      </div>
+      {sub ? (
+        <div style={{marginTop: SP.TIGHT, marginLeft: 66,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     color: T.soft, wordBreak: 'keep-all'}}>{sub}</div>
+      ) : null}
+    </div>
+  );
+};
+
+// 캡션 — 가정·단서·기준을 적는 자리. 화면 아래 가운데.
+// 자막 안전선(CONTENT_BOTTOM) 위에 붙는다
+export const PaperCaption = ({children, theme, dark = false, opacity = 1, top = null}) => {
+  const T = themeOf(theme, dark);
+  if (!children) return null;
+  return (
+    <div style={{position: 'absolute', left: 200, width: 1520,
+                 top: top == null ? CONTENT_BOTTOM - 26 : top, textAlign: 'center',
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: 29, color: T.soft,
+                 opacity, wordBreak: 'keep-all'}}>
+      {children}
+    </div>
+  );
+};
