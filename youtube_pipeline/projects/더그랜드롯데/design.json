@@ -149,11 +149,12 @@
    "MediaPlateCard",
    "사 — 새 간판 실사를 판 위에",
    {
+    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
     "title": "새 이름",
+    "sub": "파는 물건을 줄이는 경우는 드물다",
     "label": "더그랜드롯데 서울",
     "note": "2026.8.14 개관",
-    "caption": "파는 물건을 줄이는 경우는 드물다",
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "source": "simonwilliamsim / BY-SA 2.0"
    }
   ],
   "8": [
@@ -169,7 +170,8 @@
      "2026 신규",
      "소공동"
     ],
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "source": "Lotte Hotels & Resorts",
+    "logo": "더그랜드롯데/logo_lotte_hotel.png"
    }
   ],
   "9": [
@@ -357,7 +359,8 @@
     "headline": "이렇게나 중요한 객실을 줄였다",
     "sub": "명동 · 소공동",
     "scrim": 0.5,
-    "source": "한국경제 2026.8.6"
+    "source": "Abasaa / Public domain",
+    "image": "더그랜드롯데/myeongdong_night.jpg"
    }
   ],
   "20": [
@@ -388,7 +391,8 @@
     "sub": "1979년 개관 · 소공동",
     "tone": "dark",
     "kicker": "여기서 숫자를 하나",
-    "source": "롯데호텔"
+    "source": "simonwilliamsim / BY-SA 2.0",
+    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg"
    }
   ],
   "22": [
@@ -397,7 +401,7 @@
    {
     "title": "호텔롯데 매출은 이렇게 나뉜다",
     "sub": "2026년 상반기",
-    "unit": "억원",
+    "unit": "",
     "items": [
      {
       "label": "호텔롯데 전체",
@@ -569,7 +573,9 @@
    {
     "headline": "국내 특급호텔 대부분이 비슷하다",
     "sub": "객실 절반 · 연회와 식음료가 나머지",
-    "scrim": 0.5
+    "scrim": 0.5,
+    "image": "더그랜드롯데/hotel_corridor.mp4",
+    "source": "Mixkit Free License"
    }
   ],
   "31": [
@@ -647,15 +653,16 @@
    {
     "era": "film",
     "gate": 1.333,
-    "year": "1938",
-    "label": "소공동",
+    "year": "1960",
+    "label": "소공동 · 반도호텔 주변",
     "zoom": 0.12,
     "pan": [
      -40,
      0
     ],
     "headline": "88년 전에도 객실만 팔지 않았다",
-    "source": "경향신문 2024.1.11"
+    "source": "한국저작권위원회 / CC BY 4.0",
+    "media": "더그랜드롯데/bando_hotel_street_1960.jpg"
    }
   ],
   "35": [
@@ -668,7 +675,7 @@
    {
     "era": "film",
     "gate": 1.333,
-    "year": "1938",
+    "year": "1960",
     "label": "반도호텔",
     "zoom": 0.1,
     "pan": [
@@ -676,7 +683,8 @@
      -14
     ],
     "headline": "일본질소비료 사장 노구치 시타가우가 지었다",
-    "source": "경향신문 2024.1.11 · 오피니언뉴스 2024.5.26"
+    "source": "한국저작권위원회 / CC BY 4.0",
+    "media": "더그랜드롯데/bando_hotel_front_1960.jpg"
    }
   ],
   "37": [
@@ -705,15 +713,16 @@
    {
     "era": "film",
     "gate": 1.333,
-    "year": "1930s",
-    "label": "조선호텔 · 조선총독부 직영",
+    "year": "1880–1930",
+    "label": "조선호텔",
     "zoom": 0.11,
     "pan": [
      -26,
      8
     ],
     "headline": "당시 서울에서 가장 좋은 호텔",
-    "source": "여행신문 1998.1.23"
+    "source": "michaelseangallagher / BY-SA 2.0",
+    "media": "더그랜드롯데/chosun_hotel_palmcourt.jpg"
    }
   ],
   "43": [
@@ -761,16 +770,17 @@
    "아카이브 — 1970년 청와대 (film)",
    {
     "era": "film",
-    "year": "1970",
-    "label": "청와대",
+    "year": "1945",
+    "label": "서울",
     "zoom": 0.13,
     "pan": [
      20,
      -10
     ],
-    "headline": "박정희 대통령이 신격호 회장을 부른다",
+    "headline": "해방 뒤 미군정으로, 정부 수립 뒤엔 국영으로",
     "sub": "반도호텔 민영화",
-    "source": "한국경제인협회 e뮤지엄"
+    "source": "Don O'Brien / CC BY 2.0",
+    "media": "더그랜드롯데/seoul_1945.jpg"
    }
   ],
   "54": [
@@ -839,7 +849,8 @@
     ],
     "headline": "지하 3층 지상 38층, 1,020실",
     "sub": "당시 동양 최대 특급호텔",
-    "source": "한국경제인협회 e뮤지엄"
+    "source": "simonwilliamsim / BY-SA 2.0",
+    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg"
    }
   ],
   "68": [
@@ -871,7 +882,8 @@
      0
     ],
     "headline": "그해 12월, 바로 옆에 백화점이 열린다",
-    "source": "위키백과 롯데호텔 서울"
+    "source": "kallerna / CC BY-SA 4.0",
+    "media": "더그랜드롯데/sogong_dong_street.jpg"
    }
   ],
   "73": [
@@ -944,7 +956,14 @@
   ],
   "90": [
    "LowerThirdCard",
-   "사 — 롯데호텔 간판"
+   "사 — 롯데호텔 간판",
+   {
+    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "num": "",
+    "label": "롯데호텔",
+    "sub": "이미 특정 가격대에 자리를 잡고 있다",
+    "source": "simonwilliamsim / BY-SA 2.0"
+   }
   ],
   "91": [
    "AnnotatedShotCard",
@@ -984,7 +1003,11 @@
   ],
   "100": [
    "FullBleedCard",
-   "사 — 롯데시티호텔 마포"
+   "사 — 롯데시티호텔 마포",
+   {
+    "image": "더그랜드롯데/hotel_room.mp4",
+    "source": "Mixkit Free License"
+   }
   ],
   "101": [
    "PhotoStepsCard",
@@ -1000,7 +1023,12 @@
   ],
   "104": [
    "FullBleedCard",
-   "사 — 명동을 걷는 관광객"
+   "사 — 명동을 걷는 관광객",
+   {
+    "image": "더그랜드롯데/myeongdong_night.jpg",
+    "headline": "명동을 찾는 관광객",
+    "source": "Abasaa / Public domain"
+   }
   ],
   "105": [
    "NewsHeadlineCard",
@@ -1099,7 +1127,8 @@
      0
     ],
     "headline": "38년 만의 리뉴얼",
-    "source": "헤럴드경제 2026.7.30"
+    "source": "Abasaa / Public domain",
+    "media": "더그랜드롯데/myeongdong_night.jpg"
    }
   ],
   "127": [
@@ -1164,7 +1193,11 @@
   ],
   "142": [
    "MapCard",
-   "지도 — 서울역 만다린 오리엔탈"
+   "지도 — 서울역 만다린 오리엔탈",
+   {
+    "image": "더그랜드롯데/seoul_station_now.jpg",
+    "source": "LERK / CC BY-SA 4.0"
+   }
   ],
   "143": [
    "SitePlotCard",
@@ -1227,7 +1260,8 @@
      18
     ],
     "headline": "2022년 영업 종료, 2025년 철거",
-    "source": "스트레이트뉴스 2025.4.21"
+    "source": "travel oriented / BY-SA 2.0",
+    "media": "더그랜드롯데/old_seoul_station.jpg"
    }
   ],
   "156": [
@@ -1244,7 +1278,13 @@
   ],
   "159": [
    "BrandCard",
-   "그 — 리츠칼튼 선정"
+   "그 — 리츠칼튼 선정",
+   {
+    "logo": "더그랜드롯데/logo_ritz_carlton.png",
+    "name": "리츠칼튼",
+    "line": "2031년 이오타 서울 개장 예정",
+    "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0"
+   }
   ],
   "160": [
    "TimelineRailCard",
@@ -1320,7 +1360,12 @@
   ],
   "178": [
    "FullBleedCard",
-   "사 — 명동을 걷는 외국인 관광객"
+   "사 — 명동을 걷는 외국인 관광객",
+   {
+    "image": "더그랜드롯데/seoul_gate_night.mp4",
+    "headline": "서울이 외국인에게 친숙한 도시가 되고 있다",
+    "source": "Mixkit Free License"
+   }
   ],
   "179": [
    "AnnotatedShotCard",
@@ -1332,7 +1377,11 @@
   ],
   "181": [
    "FullBleedCard",
-   "사 — 명동 야경으로 닫는다"
+   "사 — 명동 야경으로 닫는다",
+   {
+    "image": "더그랜드롯데/city_aerial_night.mp4",
+    "source": "Mixkit Free License"
+   }
   ]
  }
 }
