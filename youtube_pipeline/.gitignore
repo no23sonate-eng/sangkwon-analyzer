@@ -12,6 +12,9 @@ projects/*/*
 !projects/*/script.md
 !projects/*/출처.md
 !projects/*/design.json
+# 검수 시트는 산출물이지만 **대화에 올려 놓고 얘기하는 물건**이라 남긴다.
+# 되돌아갈 때마다 30분짜리 렌더를 다시 돌리는 것보다 낫다 (한 장 2MB 안팎)
+!projects/*/검수시트_*.png
 
 # 로컬 whisper 모델 (대용량 — scripts/setup_model.py 로 재다운로드)
 models/
