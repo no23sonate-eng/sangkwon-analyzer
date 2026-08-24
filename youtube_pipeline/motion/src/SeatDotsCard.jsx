@@ -1,7 +1,8 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // v2 좌석 도트 카드 — 좌석 수를 "실제 도트 수"로 보여준다 (● = perDot 석).
 // 아레나 반원 배열: 무대(하단) 주위로 도트가 켜지며 차오른다.
@@ -24,15 +25,12 @@ const buildArena = (count, perDot, cx, cy, scale = 1) => {
 };
 
 export const SeatDotsCard = ({
-  kicker = '',
-  sub = '',
-  arenas = [],
-  perDot = 50,
-  caption = '',
-  source = '',
+  kicker = '', sub = '', arenas = [], perDot = 50, caption = '',
+  source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const T = themeOf(theme);
   const enter = fadeIn(frame, 0, 14);
   const single = arenas.length <= 1;
   const scale = single ? 1 : 0.62;
@@ -48,8 +46,9 @@ export const SeatDotsCard = ({
   );
 
   return (
-    <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
-      <Kicker title={kicker} sub={sub} opacity={enter} />
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+      <PaperBg theme={theme} {...bg} />
+      <PaperKicker title={kicker} sub={sub} theme={theme} opacity={enter} />
 
       {layouts.map((a, ai) => {
         const total = a.dots.length;
@@ -70,14 +69,16 @@ export const SeatDotsCard = ({
                 x={a.cx - 90 * scale} y={a.cy - 20 * scale}
                 width={180 * scale} height={40 * scale}
                 rx={6}
-                fill="none" stroke={MUTE} strokeWidth={1.5}
+                fill="none" stroke={T.soft} strokeWidth={1.5}
                 opacity={enter}
               />
               {a.dots.map(([x, y], i) => (
                 <circle
                   key={i}
                   cx={x} cy={y} r={dotR}
-                  fill={i < lit ? (hot ? YELLOW : '#9A9A9A') : '#242424'}
+                  fill={i < lit ? (hot ? YELLOW : T.tones[0]) : T.ink}
+                  stroke={i < lit && hot ? T.ink : 'none'} strokeWidth={1.2}
+                  opacity={i < lit ? 1 : 0.14}
                   style={i < lit && hot ? {filter: 'drop-shadow(0 0 4px rgba(250,255,46,0.6))'} : undefined}
                 />
               ))}
@@ -88,11 +89,11 @@ export const SeatDotsCard = ({
                 textAlign: 'center', opacity: fadeIn(frame, 30 + ai * 6),
               }}
             >
-              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, letterSpacing: '0.03em', color: WHITE, fontVariantNumeric: 'tabular-nums'}}>
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, letterSpacing: '0.03em', color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
                 {a.label}
               </span>
               {a.subLabel ? (
-                <span style={{marginLeft: 20, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.04em', color: MUTE}}>
+                <span style={{marginLeft: 20, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.04em', color: T.soft}}>
                   {a.subLabel}
                 </span>
               ) : null}
@@ -103,13 +104,13 @@ export const SeatDotsCard = ({
 
       {/* 범례 — 도트 하나의 의미 */}
       <div style={{position: 'absolute', right: 120, top: 100, display: 'flex', alignItems: 'center', gap: 14, opacity: fadeIn(frame, 24)}}>
-        <div style={{width: 14, height: 14, borderRadius: '50%', background: YELLOW, boxShadow: glow(0.4)}} />
-        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.06em', color: MUTE}}>
+        <div style={{width: 14, height: 14, borderRadius: '50%', background: YELLOW, border: `2px solid ${T.ink}`}} />
+        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.06em', color: T.soft}}>
           = {perDot.toLocaleString()}석
         </span>
       </div>
-
-      <Footer caption={caption} source={source} opacity={fadeIn(frame, 60)} />
+      <PaperCaption theme={theme} opacity={fadeIn(frame, 60)}>{caption}</PaperCaption>
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

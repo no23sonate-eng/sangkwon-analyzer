@@ -1,40 +1,48 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, GRID, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // v2 가로 랭킹 바 — 항목명이 긴 한국어 비교에 유리한 수평 막대.
 // 1위(hot)만 옐로 발광, 나머지 뮤트그레이. 순위 번호·증감 주석 포함.
 // rows: [{name, value, display, hot, delta}] — delta 예: '↗ 증가세'
 export const YRankBarsCard = ({
-  kicker = '',
-  sub = '',
-  rows = [],
-  caption = '',
-  source = '',
+  kicker = '', sub = '', rows = [], caption = '',
+  source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const T = themeOf(theme);
   const enter = fadeIn(frame, 0, 14);
   const maxVal = Math.max(...rows.map((r) => r.value), 1);
 
-  // 킥커(~220px)와 하단 Footer(~660px부터) 사이에 행이 다 들어가게 계산
-  const top = 250;
-  const rowH = rows.length > 4 ? 82 : 108;
-  const nameX = 120;
-  const barX = 520;
-  const barMaxW = 950;
+  // 킥커와 하단 캡션 사이에 행이 다 들어가게 계산
+  const top = kicker ? 300 : 230;
+  const rowH = Math.min(rows.length > 4 ? 82 : 108,
+                        (CONTENT_BOTTOM - 70 - top) / Math.max(1, rows.length));
+  // 세로 기준선은 **왼쪽 끝**에 세우고 01/02 를 그 오른쪽에 붙인다.
+  // 원래는 막대 시작선에 세워서 순위 번호가 선 왼쪽에 떠 있었는데,
+  // 채널 규칙은 번호가 선 오른쪽에 붙는 것이다. 선이 목록의 왼쪽 모서리를
+  // 잡아 줘야 항목명 길이가 달라도 줄이 흔들리지 않는다
+  const ruleX = 120;
+  const numX = ruleX + 22;
+  const nameX = ruleX + 96;
+  const barX = 560;
+  const barMaxW = 880;
 
   return (
-    <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
-      <Kicker title={kicker} sub={sub} opacity={enter} />
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+      <PaperBg theme={theme} {...bg} />
+      <PaperKicker title={kicker} sub={sub} theme={theme} opacity={enter} />
 
-      {/* 세로 기준선(시작선) 하나만 — 데이터잉크 최소 */}
+      {/* 세로 기준선 하나만 — 데이터잉크 최소. 목록의 왼쪽 모서리다 */}
       <div
         style={{
-          position: 'absolute', top: top - 26, left: barX - 1,
-          width: 1, height: rows.length * rowH + 30, background: GRID, opacity: enter,
+          position: 'absolute', top: top - 18, left: ruleX,
+          width: 2, height: rows.length * rowH + 20, background: T.ink,
+          opacity: 0.55 * enter,
         }}
       />
 
@@ -45,12 +53,14 @@ export const YRankBarsCard = ({
         return (
           <React.Fragment key={r.name}>
             {/* 순위 + 항목명 */}
-            <div style={{position: 'absolute', top: y + 4, left: nameX, width: barX - nameX - 30, whiteSpace: 'nowrap', opacity: grow}}>
+            <div style={{position: 'absolute', top: y + 4, left: numX,
+                         width: barX - numX - 30, whiteSpace: 'nowrap', opacity: grow}}>
               <span
                 style={{
-                  fontFamily: 'A2Z Medium, sans-serif', fontSize: 27,
-                  letterSpacing: '0.14em', color: r.hot ? YELLOW : '#4A4A4A',
-                  marginRight: 22, fontVariantNumeric: 'tabular-nums',
+                  fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 26,
+                  letterSpacing: '0.12em', color: r.hot ? T.ink : T.soft,
+                  display: 'inline-block', width: 74,
+                  fontVariantNumeric: 'tabular-nums',
                 }}
               >
                 {String(i + 1).padStart(2, '0')}
@@ -58,7 +68,7 @@ export const YRankBarsCard = ({
               <span
                 style={{
                   fontFamily: r.hot ? 'A2Z Regular, sans-serif' : 'A2Z Light, sans-serif',
-                  fontSize: 36, letterSpacing: '0.04em', color: r.hot ? WHITE : GRAY,
+                  fontSize: 36, letterSpacing: '0.04em', color: r.hot ? T.ink : T.soft,
                 }}
               >
                 {r.name}
@@ -68,9 +78,8 @@ export const YRankBarsCard = ({
             <div
               style={{
                 position: 'absolute', top: y, left: barX, width: w, height: 44,
-                borderRadius: 4,
-                background: r.hot ? YELLOW : '#3E3E3E',
-                boxShadow: r.hot ? '0 0 18px rgba(250,255,46,0.55)' : 'none',
+                                background: r.hot ? YELLOW : T.tones[0],
+                border: `2px solid ${T.ink}`,
               }}
             />
             {/* 값 + 증감 주석 */}
@@ -86,15 +95,14 @@ export const YRankBarsCard = ({
                   fontFamily: 'A2Z Medium, sans-serif',
                   fontSize: r.hot ? 44 : 36,
                   letterSpacing: '0.02em',
-                  color: r.hot ? YELLOW : GRAY,
-                  textShadow: r.hot ? glow(0.5) : 'none',
+                  color: T.ink,
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >
                 {r.display}
               </span>
               {r.delta ? (
-                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26, letterSpacing: '0.05em', color: r.hot ? WHITE : MUTE}}>
+                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26, letterSpacing: '0.05em', color: r.hot ? T.ink : T.soft}}>
                   {r.delta}
                 </span>
               ) : null}
@@ -102,8 +110,8 @@ export const YRankBarsCard = ({
           </React.Fragment>
         );
       })}
-
-      <Footer caption={caption} source={source} opacity={fadeIn(frame, 12 + rows.length * 7 + 14)} />
+      <PaperCaption theme={theme} opacity={fadeIn(frame, 12 + rows.length * 7 + 14)}>{caption}</PaperCaption>
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };
