@@ -126,6 +126,19 @@ def main():
             if isinstance(v, str) and v.lower().endswith(('.mp4', '.webm', '.mov')):
                 misvid.append(f"#{e['id']} {e['card']}.{k}")
 
+    # props 키가 그 카드에 실제로 있는가.
+    # FullBleedCard 에 line1/line2 를 줘도 아무 일도 안 일어난다 — 카드는
+    # 기본값으로 그려지고 렌더는 성공한다. 화면이 비었다는 걸 시트에서야
+    # 알게 되고, 어느 컷인지 세어 봐야 안다. 여기서 이름으로 잡는다
+    unknown = []
+    for e in scenes:
+        row = design.get(str(e['id']))
+        given = row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {}
+        sk = skeleton(e['card']) or {}
+        for k in given:
+            if k not in sk:
+                unknown.append(f"#{e['id']} {e['card']}.{k}")
+
     cards = [e['card'] for e in scenes]
     cnt = collections.Counter(cards)
     runs = [(i, cards[i]) for i in range(1, len(cards)) if cards[i] == cards[i - 1]]
@@ -146,6 +159,10 @@ def main():
     if bad:
         ok = False
         print(f'  ✗ 등록 안 된 카드: {bad}  ← 이대로 렌더하면 #300 한 장이다')
+    if unknown:
+        ok = False
+        print(f'  ✗ 그 카드에 없는 props {len(unknown)}건 — 조용히 무시된다: '
+              + ', '.join(unknown[:10]))
     if misvid:
         ok = False
         print(f'  ✗ 사진 슬롯에 영상 {len(misvid)}건 — 렌더가 통째로 멈춘다: '
