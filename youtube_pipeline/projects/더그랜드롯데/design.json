@@ -574,7 +574,7 @@
     "headline": "국내 특급호텔 대부분이 비슷하다",
     "sub": "객실 절반 · 연회와 식음료가 나머지",
     "scrim": 0.5,
-    "image": "더그랜드롯데/hotel_corridor.mp4",
+    "image": "더그랜드롯데/myeongdong_night.jpg",
     "source": "Mixkit Free License"
    }
   ],
@@ -1905,7 +1905,7 @@
    "FullBleedCard",
    "사 — 롯데시티호텔 마포",
    {
-    "image": "더그랜드롯데/hotel_room.mp4",
+    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
     "source": "Mixkit Free License"
    }
   ],
@@ -2212,8 +2212,8 @@
    {
     "title": "무대 전면 초대형 파노라마 LED",
     "sub": "크리스탈볼룸",
-    "image": "더그랜드롯데/hotel_corridor.mp4",
-    "source": "이데일리 2026.8.11"
+    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "source": "simonwilliamsim / BY-SA 2.0 · 이데일리 2026.8.11"
    }
   ],
   "117": [
@@ -2947,7 +2947,7 @@
    "FullBleedCard",
    "사 — 럭셔리 호텔 어메니티",
    {
-    "image": "더그랜드롯데/hotel_room.mp4",
+    "image": "더그랜드롯데/sogong_dong_street.jpg",
     "headline": "럭셔리 호텔의 특징",
     "sub": "객실을 많이 두지 않는다",
     "source": "Mixkit Free License"
@@ -3424,7 +3424,7 @@
    "FullBleedCard",
    "사 — 명동을 걷는 외국인 관광객",
    {
-    "image": "더그랜드롯데/seoul_gate_night.mp4",
+    "image": "더그랜드롯데/myeongdong_night.jpg",
     "headline": "서울이 외국인에게 친숙한 도시가 되고 있다",
     "source": "Mixkit Free License"
    }
@@ -3480,11 +3480,11 @@
    "FullBleedCard",
    "사 — 명동 야경으로 닫는다",
    {
-    "image": "더그랜드롯데/city_aerial_night.mp4",
-    "source": "Mixkit Free License",
+    "image": "더그랜드롯데/seoul_station_now.jpg",
+    "source": "Abasaa / Public domain",
     "line1": "공간을 기획하고 개발하는 입장에선",
     "line2": "전체적인 흐름을 살펴보는 것도 중요하다",
-    "bgImage": "더그랜드롯데/city_aerial_night.mp4"
+    "bgImage": "더그랜드롯데/myeongdong_night.jpg"
    }
   ]
  }

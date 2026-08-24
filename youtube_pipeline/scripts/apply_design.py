@@ -51,6 +51,12 @@ IMG_KEYS = {'image', 'media', 'photo', 'before', 'after', 'bgImage', 'portrait',
             'shot', 'leftImage', 'rightImage', 'logo', 'parentLogo'}
 
 
+def video_cards():
+    """<OffthreadVideo> 를 쓰는 카드. 나머지는 <Img> 뿐이라 mp4 를 주면 죽는다."""
+    src = ROOT / 'motion' / 'src'
+    return {f.stem for f in src.glob('*Card.jsx') if 'OffthreadVideo' in f.read_text()}
+
+
 def registered():
     txt = (ROOT / 'motion' / 'src' / 'cardRegistry.jsx').read_text()
     return set(re.findall(r'^  (\w+Card),', txt, re.M))
@@ -107,6 +113,19 @@ def main():
         props['scenes'][str(e['id'])] = {'card': e['card'], 'props': sk,
                                          'motion': e.get('motion', {})}
 
+    # 사진 슬롯에 영상이 들어갔나 — <Img src="…mp4"> 는 404 로 죽고,
+    # 그 컷 하나가 아니라 **렌더 전체가 멈춘다.** 렌더 30분 뒤에 알게 되면
+    # 늦다. 실제로 #116 에서 그렇게 한 번 멈췄다
+    vc = video_cards()
+    misvid = []
+    for e in scenes:
+        if e['card'] in vc:
+            continue
+        row = design.get(str(e['id']))
+        for k, v in ((row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {})).items():
+            if isinstance(v, str) and v.lower().endswith(('.mp4', '.webm', '.mov')):
+                misvid.append(f"#{e['id']} {e['card']}.{k}")
+
     cards = [e['card'] for e in scenes]
     cnt = collections.Counter(cards)
     runs = [(i, cards[i]) for i in range(1, len(cards)) if cards[i] == cards[i - 1]]
@@ -127,6 +146,10 @@ def main():
     if bad:
         ok = False
         print(f'  ✗ 등록 안 된 카드: {bad}  ← 이대로 렌더하면 #300 한 장이다')
+    if misvid:
+        ok = False
+        print(f'  ✗ 사진 슬롯에 영상 {len(misvid)}건 — 렌더가 통째로 멈춘다: '
+              + ', '.join(misvid[:6]))
     if runs:
         ok = False
         print(f'  ✗ 같은 카드 연속 {len(runs)}곳: ' +
