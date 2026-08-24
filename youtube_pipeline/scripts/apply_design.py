@@ -40,6 +40,15 @@ GEO = {'MapCard', 'GeoMapCard', 'SitePlotCard'}
 # 하한을 40% 로 뒀는데, 그러면 설명 위주 대본을 억지로 사진으로 채우게 된다.
 PHOTO_BAND = (0.25, 0.52)
 
+# 사진 자리 — 아직 소재를 안 붙인 컷을 렌더할 때 쓴다.
+# 빈 문자열을 그대로 두면 <Img src=""> 가 404 로 죽어서 **그 컷만이 아니라
+# 렌더 전체가 멈춘다.** 검수용 스틸을 뽑으려는데 사진 한 장 없다고 시트를
+# 못 만드는 건 말이 안 된다. 회색 사선 판을 깔아 두면 "여기 사진이 아직
+# 없다" 가 시트에서 한눈에 보이고, 레이아웃은 그대로 검수할 수 있다.
+PLACEHOLDER = '_ph/photo.png'
+IMG_KEYS = {'image', 'media', 'photo', 'before', 'after', 'bgImage', 'portrait',
+            'shot', 'leftImage', 'rightImage', 'logo', 'parentLogo'}
+
 
 def registered():
     txt = (ROOT / 'motion' / 'src' / 'cardRegistry.jsx').read_text()
@@ -50,6 +59,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('project')
     ap.add_argument('--check', action='store_true', help='쓰지 않고 검사만')
+    ap.add_argument('--placeholder', action='store_true',
+                    help='빈 사진 자리에 회색 판을 깐다 (검수용 스틸)')
     a = ap.parse_args()
 
     pdir = ROOT / 'projects' / a.project
@@ -59,7 +70,7 @@ def main():
 
     scenes = plan['scenes']
     miss = [i for i in range(len(scenes)) if str(i) not in design]
-    bad = sorted({c for c, _ in design.values() if c not in known})
+    bad = sorted({v[0] for v in design.values() if v[0] not in known})
 
     for e in scenes:
         row = design.get(str(e['id']))
@@ -80,6 +91,16 @@ def main():
         sk.update(given)
         if e.get('source') and not sk.get('source'):
             sk['source'] = e['source']          # 대본 `→` 줄에서 딸려 온 출처
+        if a.placeholder:
+            for k in IMG_KEYS & set(sk):
+                if sk[k] == '':
+                    sk[k] = PLACEHOLDER
+            for arr in ('steps', 'sides', 'items'):     # 배열 안에도 사진이 산다
+                for it in sk.get(arr) or []:
+                    if isinstance(it, dict):
+                        for k in IMG_KEYS & set(it):
+                            if it[k] == '':
+                                it[k] = PLACEHOLDER
         if given:
             filled += 1
         props['scenes'][str(e['id'])] = {'card': e['card'], 'props': sk,
