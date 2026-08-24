@@ -66,6 +66,7 @@ import {UnitPriceCard} from './UnitPriceCard';
 import {UnitDensityCard} from './UnitDensityCard';
 import {PriceLadderCard} from './PriceLadderCard';
 import {VolatilityCard} from './VolatilityCard';
+import {ArchiveCard} from './ArchiveCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -101,6 +102,7 @@ export const CARDS = {
   UnitDensityCard,
   PriceLadderCard,
   VolatilityCard,
+  ArchiveCard,
   IsoDiagramCard,
   MapCard,
   SectionDiagramCard,

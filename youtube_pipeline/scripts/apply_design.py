@@ -31,7 +31,8 @@ SHARE_MAX = 0.10
 # 도형만 남기면 실존 건물·인물·장소를 다루는 영상이 슬라이드가 된다.
 # 채널 규칙: 실존하는 것은 사진이 먼저고, 도형은 구조·개념을 설명할 때다.
 PHOTO = {'PaperImageCard', 'FullBleedCard', 'LowerThirdCard', 'AnnotatedShotCard',
-         'SectionPhotoCard', 'PhotoSplitCard', 'PhotoStepsCard', 'BeforeAfterCard'}
+         'SectionPhotoCard', 'PhotoSplitCard', 'PhotoStepsCard', 'BeforeAfterCard',
+         'ArchiveCard'}          # 아카이브도 사진이 주인공이다 — 필름 처리를 얹었을 뿐
 PLATE = {'MediaPlateCard', 'ArticleCard', 'NewsHeadlineCard', 'QuoteCard', 'NewsQuoteCard'}
 GEO = {'MapCard', 'GeoMapCard', 'SitePlotCard'}
 # 위쪽 52% 는 상한이다 — 올리브영 편이 80% 라서 "같은 포맷이 또" 가 나왔다.
