@@ -9,6 +9,11 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeI
 // groups: [{label, value, sub, hot}] / perDot: 점 하나가 몇을 뜻하는지
 export const DotMatrixCard = ({
   title = '', sub = '', groups = [], perDot = 10, cols = 13,
+  // merge=true 면 **한 덩어리**로 그린다.
+  // 두 블록을 나란히 놓으면 '590 과 147' 이라는 두 수의 비교가 되는데,
+  // 원래 하려던 말은 '737 중에 147 이 꺼졌다' 다. 전체를 먼저 깔고
+  // 그중 일부를 흐리게 해야 **사라졌다는 게** 보인다
+  merge = false,
   unit = '', source = '', caption = '',
   theme, align = 'center',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
@@ -38,7 +43,10 @@ export const DotMatrixCard = ({
   const startX = (1920 - slot * n) / 2 + slot / 2;
   // 그룹마다 행 수가 달라도 수치·라벨은 **가장 큰 격자 아래 한 줄**에 맞춘다.
   // 제각각 높이에 두면 격자 크기 차이가 아니라 배치 실수처럼 보인다.
-  const maxRows = Math.max(...groups.map((g) => Math.ceil(Math.max(1, Math.round(g.value / perDot)) / nCol)));
+  const dotsAll = groups.reduce((s, g) => s + Math.max(1, Math.round(g.value / perDot)), 0);
+  const maxRows = merge
+    ? Math.ceil(dotsAll / nCol)
+    : Math.max(...groups.map((g) => Math.ceil(Math.max(1, Math.round(g.value / perDot)) / nCol)));
   const LABEL_Y = TOP + (maxRows - 1) * PITCH + R + 38;
   // 점이 순서대로 찍히는 속도 (그룹마다 살짝 시차)
   const dotsOf = (v) => Math.max(1, Math.round(v / perDot));
@@ -48,7 +56,31 @@ export const DotMatrixCard = ({
       <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        {groups.map((g, gi) => {
+        {merge ? (() => {
+          // 한 격자에 이어 붙인다. 앞 그룹부터 채우고, 각 점의 색은
+          // 그 점이 어느 그룹 몫인지로 정한다
+          const cx0 = (1920 - nCol * PITCH) / 2 + PITCH / 2;
+          const per = 52 / Math.max(1, dotsAll);
+          let acc = 0;
+          const bands = groups.map((g) => {
+            const nd = Math.max(1, Math.round(g.value / perDot));
+            const from = acc; acc += nd;
+            return {g, from, to: acc};
+          });
+          return Array.from({length: dotsAll}, (_, k) => {
+            const o = fadeIn(frame, 16 + k * per, 6);
+            if (o <= 0) return null;
+            const b = bands.find((x) => k >= x.from && k < x.to) || bands[0];
+            const r = Math.floor(k / nCol), c = k % nCol;
+            const gone = b.g.gone;                 // 사라진 몫 — 흐린 회색
+            return (
+              <circle key={k} cx={cx0 + c * PITCH} cy={TOP + r * PITCH} r={R}
+                      fill={gone ? T.tones[0] : (b.g.hot ? YELLOW : T.tones[3])}
+                      stroke={gone ? 'none' : T.ink} strokeWidth={1.6}
+                      opacity={o * (gone ? 0.34 : 1)} />
+            );
+          });
+        })() : groups.map((g, gi) => {
           const total = dotsOf(g.value);
           const cx0 = startX + gi * slot - blockW / 2 + PITCH / 2;
           const t0 = 16 + gi * 14;
@@ -71,8 +103,11 @@ export const DotMatrixCard = ({
       </svg>
 
       {groups.map((g, gi) => {
+        const L = merge ? (1920 - nCol * PITCH) / 2 + gi * (nCol * PITCH / groups.length)
+                        : startX + gi * slot - slot / 2;
+        const Wd = merge ? nCol * PITCH / groups.length : slot;
         return (
-          <div key={gi} style={{position: 'absolute', left: startX + gi * slot - slot / 2, width: slot,
+          <div key={gi} style={{position: 'absolute', left: L, width: Wd,
                                 top: LABEL_Y, textAlign: 'center',
                                 opacity: fadeIn(frame, 26 + gi * 14)}}>
             <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, color: T.ink,

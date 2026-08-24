@@ -45,29 +45,44 @@ export const StatCard = ({
   // 숫자가 길면 줄인다. 96 고정이라 '2조 6,560억원' 같은 값이 화면을 넘었다
   const size = (v) => Math.min(150, Math.max(76, Math.floor(1560 / Math.max(4, String(v).length))));
 
+  const onPhoto = Boolean(bgImage);
+  const ink = onPhoto ? '#FFFFFF' : T.ink;
+  const soft = onPhoto ? 'rgba(255,255,255,0.82)' : T.soft;
+  const sh = onPhoto ? {textShadow: '0 3px 20px rgba(0,0,0,0.85)'} : {};
+
   const stage = (v, s, o, scale) => (
     <div style={{position: 'absolute', left: 0, width: 1920, top: 388, textAlign: 'center',
                  opacity: o, transform: `scale(${scale})`}}>
+      {count != null ? (
+        <div style={{fontSize: 0, ...sh}}>
+          <NumberIn to={Number(count)} start={10} dur={40} decimals={countDecimals}
+                    unit={countUnit} size={size(String(count) + countUnit)}
+                    color={ink} align="center" />
+        </div>
+      ) : (
       <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                   fontSize: size(v), lineHeight: 1.1, color: T.ink,
-                   fontVariantNumeric: 'tabular-nums', wordBreak: 'keep-all'}}>
+                   fontSize: size(v), lineHeight: 1.1, color: ink,
+                   fontVariantNumeric: 'tabular-nums', wordBreak: 'keep-all', ...sh}}>
         {v}
       </div>
+      )}
       {s ? (
         <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Regular, sans-serif',
-                     fontSize: 44, color: T.soft, wordBreak: 'keep-all'}}>{s}</div>
+                     fontSize: 44, color: soft, wordBreak: 'keep-all', ...sh}}>{s}</div>
       ) : null}
     </div>
   );
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} backdrop={bgImage} veil={0.88} {...bg} />
+      {/* 영상을 깔 때는 베일을 걷는다. 0.88 이면 배경이 안 보인다 */}
+      <PaperBg theme={theme} backdrop={bgImage}
+               veil={veil == null ? (bgImage ? 0.42 : 0.88) : veil} {...bg} />
 
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 214, textAlign: 'center',
                      fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                     fontSize: 44, color: T.ink, opacity: fadeIn(frame, 0),
+                     fontSize: 44, color: ink, opacity: fadeIn(frame, 0), ...sh,
                      wordBreak: 'keep-all'}}>
           {title}
         </div>
