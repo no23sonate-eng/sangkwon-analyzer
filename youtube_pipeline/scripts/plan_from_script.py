@@ -75,6 +75,58 @@ COMPANY = r'[가-힣A-Za-z][가-힣A-Za-z0-9&·\'\-]{1,14}' \
           r'엔지니어링|디자인|스튜디오|자산운용|증권|은행|공사|공단|재단|사|社)'
 
 RULES = [
+    # ── §40 구조·설명 규칙 (2026-08-22 추가) ─────────────────────────────
+    # 이 아래 기존 규칙들보다 **먼저** 걸려야 한다. 기존 규칙은 숫자만 보면
+    # BigStatsCard 로 보내 버려서, "층고가 낮으면 조형물을 못 세운다" 같은
+    # 구조 문장까지 큰 숫자 카드로 갔다. 구조 문장은 숫자가 결론이 아니다.
+
+    # 크기·높이 때문에 **못 하는 것**이 있다 → 단면에 물건을 넣어 본다
+    (r'((층고|천장|높이|폭|깊이)[^.]{0,30}(낮|좁|짧|모자라|안 되|안되|못|어렵|한계)|'
+     r'(못|안)\s*(세우|넣|들어가|올리|걸)|들어가지\s*(않|못)|'
+     r'(뚫려|열려|보이드|오픈)[^.]{0,20}(있|되어))',
+     'SectionScaleCard', '크기 때문에 못 하는 것 = 단면에 넣어 보기'),
+
+    # 전체가 **무엇에 먹히는가** → 면적을 떼어 낸다
+    (r'((대지|면적|평|㎡)[^.]{0,40}(때문에|이라|라서|밖에|채 안|부족|쉽지 않)|'
+     r'(주차|코어|램프|공용부|설비)[^.]{0,30}(차지|먹|빼면|제외하면)|'
+     r'남는\s*(면적|자리|공간))',
+     'AreaBudgetCard', '면적이 무엇에 먹히나 = 떼어 내기'),
+
+    # 지분을 여럿이 나눠 갖는다 → 나눌 수 없다는 그림
+    (r'(지분|공유물|공유자|소유자\s*\d+\s*명|나눠\s*(갖|가지)|분할)',
+     'ShareSplitCard', '지분 분할'),
+
+    # 원인 → 결과 사슬
+    (r'((바뀌|오르|늘|줄)면[^.]{0,40}(오르|늘|줄|바뀌|생기|개선)|'
+     r'그러면[^.]{0,30}(되고|지고|집니다)|'
+     r'(때문에|덕분에|결과)[^.]{0,30}(다시|또|이어)|연쇄|이어집니다)',
+     'YFlowCard', '원인 → 결과 사슬'),
+
+    # 둘 중 **하나를 고른다**
+    (r'((둘 중|어느 쪽|택할|고를|갈림길|갈래)|'
+     r'(할지|갈지|만들지|살지|팔지)[^.]{0,20}(,|아니면|선택|고민))',
+     'ForkPathCard', '택일 = 갈림길'),
+
+    # **둘 다** 동시에
+    (r'((동시에|양쪽 다|둘 다|뿐 아니라|물론이고)[^.]{0,40}(도|까지)|'
+     r'두 가지[^.]{0,20}(모두|동시))',
+     'TwoPanelCard', '둘 다 = 좌우 판'),
+
+    # 자료(사진·조감도·도면)를 **보여 준다**
+    (r'(조감도|투시도|렌더링|설계안|공식 이미지|자료 사진|'
+     r'(사례|예를 들면|처럼)[^.]{0,30}(있|합니다|입니다))',
+     'MediaPlateCard', '자료를 판 위에 얹기'),
+
+    # 건물들을 **형상으로** 견준다
+    (r'((\d[\d,.]*)\s*(m|미터|층)[^.]{0,60}(\d[\d,.]*)\s*(m|미터|층)[^.]{0,40}'
+     r'(건물|사옥|타워|빌딩))',
+     'SilhouetteCompareCard', '건물 여럿 = 실루엣 비교'),
+
+    # 안(案)·장(章)의 이름을 부른다
+    (r'((첫 번째|두 번째|세 번째)\s*(방법|방향|안|선택지)|'
+     r'(방법|방향|안)\s*(하나|둘|셋|1|2|3)\b)',
+     'PlanTitleCard', '안의 이름 = 거친 박스 제목'),
+
     # 회사·브랜드가 처음 나오며 무슨 역할을 했다 → 로고를 박는다 (§30-1)
     (rf'({COMPANY}|[A-Z]{{2,}})[가이는을를과와]?\s*[^.]{{0,30}}'
      r'(맡았|참여했|담당했|설계했|시공|짓고|짓는|체결|제휴|손잡|합작)', 'BrandCard', '회사 등장 = 로고'),
@@ -264,6 +316,17 @@ def build_scenes(sections):
 
 # 같은 문법이 연속될 때 돌려 쓸 대안. 뜻이 안 깨지는 짝만 넣는다.
 ALT = {
+    # §40 카드 — 이게 없으면 총량 초과분을 돌릴 데가 없어 그대로 몰린다
+    'LowerThirdCard':      ['MediaPlateCard', 'AnnotatedShotCard', 'FullBleedCard'],
+    'MediaPlateCard':      ['AnnotatedShotCard', 'LowerThirdCard', 'PaperImageCard'],
+    'SectionScaleCard':    ['IsoDiagramCard', 'SectionDiagramCard'],
+    'AreaBudgetCard':      ['SitePlotCard', 'AreaNestCard'],
+    'SilhouetteCompareCard': ['ScaleCompareCard', 'SkylineCompareCard'],
+    'ForkPathCard':        ['TwoPanelCard', 'SplitCard'],
+    'TwoPanelCard':        ['ForkPathCard', 'SplitCard'],
+    'YFlowCard':           ['PaperFlowCard', 'TimelineRailCard'],
+    'PlanTitleCard':       ['HeadlineCard', 'YHeadlineCard'],
+    'ShareSplitCard':      ['AreaNestCard', 'DotMatrixCard'],
     'PaperImageCard':      ['FullBleedCard', 'AnnotatedShotCard'],
     'FullBleedCard':       ['PaperImageCard', 'AnnotatedShotCard'],
     'SkylineCompareCard':  ['ScaleCompareCard', 'BigStatsCard'],
@@ -293,14 +356,40 @@ def suggest_card(text):
     return DEFAULT_CARD, NO_DIAGRAM
 
 
-def vary(cards):
-    """같은 카드가 REPEAT_MAX 를 넘겨 연속되면 대안으로 바꾼다.
+# 한 카드가 전체에서 차지해도 되는 몫. 이걸 넘으면 그 카드로 때우고 있는 것이다.
+SHARE_MAX = 0.32
 
-    컷을 잘게 쪼개면 인접 장면이 비슷해져 같은 카드가 줄줄이 나온다.
-    컷은 빨라졌는데 화면은 안 바뀌는 상태 — 그게 제일 나쁘다.
+REPORT = []      # 자동으로 못 푼 것을 담는다. 마지막에 사람에게 보여 준다
+
+# ── 계열 ──────────────────────────────────────────────────────────────────
+# 카드별 상한만 걸었더니 PaperImage → FullBleed → AnnotatedShot 으로 **이름만
+# 바꿔 돌려막았다.** 셋 다 "사진 위에 글자" 라 화면에서는 같은 것이다.
+# 실측: 카드별 상한을 건 뒤에도 이 세 장이 113컷 중 81컷(72%)이었다.
+#
+# 그래서 계열로 다시 묶어 상한을 건다. B1M 은 대략 절반이 실사, 절반이 그래픽이다.
+FAMILY = {
+    'LowerThirdCard': '실사', 'FullBleedCard': '실사', 'PaperImageCard': '실사',
+    'AnnotatedShotCard': '실사', 'SectionPhotoCard': '실사', 'PhotoSplitCard': '실사',
+    'BrandCard': '실사', 'YHeadlineCard': '실사',
+    'MediaPlateCard': '자료판', 'ArticleCard': '자료판', 'SplitProofCard': '자료판',
+    'MapCard': '지도', 'GeoMapCard': '지도',
+}
+FAMILY_MAX = {'실사': 0.52}      # 나머지 계열은 애초에 그렇게 안 몰린다
+
+
+def vary(cards):
+    """카드가 몰리는 걸 두 방향으로 푼다 — **연속**과 **총량**.
+
+    예전엔 연속만 막았다. 그런데 올리브영 성수편에서 123컷 중 82컷(67%)이
+    LowerThirdCard 였다. 연속 3개를 넘긴 적이 없어서 검사를 통과한 것이다.
+    **흩어져 있으면 안 걸리는 검사**였다.
+
+    화면이 지겨운 건 같은 카드가 붙어 있어서가 아니라 **그 카드밖에 없어서**다.
+    그래서 총량도 본다 — 한 카드가 SHARE_MAX 를 넘으면 넘친 만큼을 대안으로
+    돌린다. 돌릴 때는 **연속이 가장 긴 구간부터** 손댄다. 거기가 제일 티가 난다.
     """
     out, run = [], 0
-    for i, c in enumerate(cards):
+    for c in cards:
         if out and c == out[-1]:
             run += 1
         else:
@@ -311,6 +400,47 @@ def vary(cards):
                     c, run = a, 1
                     break
         out.append(c)
+
+    # ── 총량 ──
+    n = len(out)
+    if n < 8:
+        return out
+    cap = max(2, int(n * SHARE_MAX))
+    from collections import Counter
+    while True:
+        cnt = Counter(out)
+        card, k = cnt.most_common(1)[0]
+        if k <= cap:
+            break
+        alts = [a for a in ALT.get(card, []) if cnt[a] < cap]
+        if not alts:
+            break                      # 바꿀 데가 없으면 그대로 둔다 — 억지로
+                                       # 안 맞는 카드를 넣는 게 더 나쁘다
+        # 연속으로 붙어 있는 자리부터 바꾼다
+        idx = [i for i in range(1, n) if out[i] == card and out[i - 1] == card]
+        idx += [i for i in range(n) if out[i] == card and i not in idx]
+        for i in idx[:k - cap]:
+            for a in alts:
+                if (i == 0 or out[i - 1] != a) and (i == n - 1 or out[i + 1] != a):
+                    out[i] = a
+                    break
+
+    # ── 계열은 **고치지 않고 알린다** ──
+    # 계열이 넘칠 때 자동으로 다른 계열 카드로 돌려 봤다. 안 됐다 — 실사 카드의
+    # 대안이 전부 같은 계열이라 보낼 곳이 없었다.
+    #
+    # 여기서 억지로 아무 그래픽 카드에 밀어 넣을 수도 있었지만 그러면 안 된다.
+    # 남은 컷들은 **규칙에 안 걸린 문장**이고, 뜻이 안 맞는 그림을 얹는 건
+    # 지겨운 것보다 나쁘다. 자동화가 할 수 있는 건 여기까지다.
+    #
+    # 그래서 조용히 바꾸는 대신 **몇 컷이 남았는지 드러낸다.** 그 숫자가
+    # "여기부터는 사람이 설계해야 한다" 는 뜻이고, 그게 이 도구의 정직한 출력이다.
+    for fam, ratio in FAMILY_MAX.items():
+        k = sum(1 for c in out if FAMILY.get(c) == fam)
+        if k > max(2, int(n * ratio)):
+            REPORT.append(
+                f'{fam} 계열 {k}/{n}컷 ({k / n * 100:.0f}%) — 권장 {ratio * 100:.0f}%. '
+                f'약 {k - int(n * ratio)}컷은 직접 설계해야 한다')
     return out
 
 
@@ -511,6 +641,26 @@ def main():
               f"({e['_why']})  {e['text'][:34]}…")
 
     chs = chapters(plan)
+    # ── 자동화가 못 푼 것 ──
+    # 이 리포트가 이 도구의 진짜 출력이다. 컷을 다 채웠다고 끝난 게 아니라,
+    # **몇 컷이 아직 설계되지 않았는지**를 알아야 다음 작업이 시작된다.
+    import collections as _c
+    _cards = [e['card'] for e in plan]
+    _cnt = _c.Counter(_cards)
+    _fam = _c.Counter(FAMILY.get(x, '그래픽') for x in _cards)
+    _nod = sum(1 for e in plan if str(e.get('_why', '')).startswith(NO_DIAGRAM))
+    print('\n── 설계 상태 ──')
+    print(f'   카드 {len(_cnt)}종 · 최다 {_cnt.most_common(1)[0][0]} '
+          f'{_cnt.most_common(1)[0][1]}컷 ({_cnt.most_common(1)[0][1] / len(_cards) * 100:.0f}%)')
+    print('   계열  ' + ' · '.join(f'{k} {v}컷({v / len(_cards) * 100:.0f}%)'
+                                   for k, v in _fam.most_common()))
+    if _nod:
+        print(f'   ⚠ 규칙에 안 걸린 문장 {_nod}컷 — **직접 설계해야 한다.**')
+        print('     숫자·비교·인과가 없는 문장이라 도구가 고를 수 없다.')
+        print('     references/카드-고르기.md 의 5번(구조·배분) 부터 본다.')
+    for _r in REPORT:
+        print(f'   ⚠ {_r}')
+
     print(f'\n챕터 {len(chs)}개 · 길이 중앙 '
           f'{sorted(c["dur"] for c in chs)[len(chs) // 2]:.0f}초 (B1M 실측 8개 · 90초)')
     for c in chs:
