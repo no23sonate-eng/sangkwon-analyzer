@@ -139,6 +139,29 @@ def main():
             if k not in sk:
                 unknown.append(f"#{e['id']} {e['card']}.{k}")
 
+    # 같은 소재를 몇 컷에서 쓰는가.
+    # 채널 규칙은 **0중복**이다. 그런데 이걸 세는 데가 없어서 롯데호텔
+    # 파사드 한 장이 10컷에 들어가 있는 걸 시트를 다 보고서야 알았다.
+    # 소재가 모자라면 모자란다고 나와야 다음 수를 정한다
+    seen = collections.defaultdict(list)
+
+    def walk(o, cid):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v, cid)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v, cid)
+        elif isinstance(o, str) and re.search(r'\.(jpg|jpeg|png|webp|mp4|webm|mov)$', o, re.I):
+            if PLACEHOLDER not in o:
+                seen[o.split('/')[-1]].append(cid)
+
+    for e in scenes:
+        row = design.get(str(e['id']))
+        walk(row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {}, e['id'])
+    dup = sorted(((f, ks) for f, ks in seen.items() if len(ks) > 1),
+                 key=lambda x: -len(x[1]))
+
     cards = [e['card'] for e in scenes]
     cnt = collections.Counter(cards)
     runs = [(i, cards[i]) for i in range(1, len(cards)) if cards[i] == cards[i - 1]]
@@ -175,6 +198,12 @@ def main():
         ok = False
         print(f'  ✗ 상한 {SHARE_MAX:.0%} 초과: ' +
               ', '.join(f'{c} {n}컷({n / len(cards) * 100:.0f}%)' for c, n in over))
+    if dup:
+        ok = False
+        worst = ', '.join(f'{f} {len(k)}컷' for f, k in dup[:4])
+        print(f'  ✗ 같은 소재를 여러 컷에 씀 {len(dup)}건 (채널 규칙: 0중복) — {worst}')
+    print(f'  소재 {len(seen)}종 / 사진·자료 컷 '
+          f'{sum(1 for c in cards if c in PHOTO | PLATE)}개')
     print('  계열  ' + ' · '.join(f'{k} {v}컷({v / len(cards) * 100:.0f}%)'
                                   for k, v in fams.most_common()))
     if not PHOTO_BAND[0] <= pshare <= PHOTO_BAND[1]:

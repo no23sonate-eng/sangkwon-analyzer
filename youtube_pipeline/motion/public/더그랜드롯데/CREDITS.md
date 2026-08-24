@@ -17,3 +17,7 @@
 | `city_aerial_night.mp4` | mixkit 1146 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `logo_lotte_hotel.png` | LotteHotels&Resorts logo.jpg (commons) | Lotte Hotes &amp; Resorts, **Public domain** | `Lotte Hotes &amp; Resorts / Public domain` |
 | `logo_ritz_carlton.png` | Logo The Ritz-Carlton Hotel de la Paix Geneva (openverse) | Marriott InternationalⓇ, **BY-SA 4.0** | `Marriott InternationalⓇ / BY-SA 4.0` |
+| `seoul_gate_night.mp4` | mixkit 20089 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `hotel_corridor.mp4` | mixkit 21817 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `hotel_room.mp4` | mixkit 4488 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `city_aerial_night.mp4` | mixkit 1146 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |

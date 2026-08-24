@@ -8,15 +8,14 @@
  ],
  "cuts": {
   "0": [
-   "BeforeAfterCard",
-   "사 — 47년 간판과 새 간판 두 장",
+   "FullBleedCard",
+   "사 — 롯데호텔 서울 실물. 간판 교체는 문장으로 박는다",
    {
-    "beforeLabel": "1979 — 2026",
-    "afterLabel": "2026.8.14 —",
-    "beforeNote": "롯데호텔 서울",
-    "afterNote": "더그랜드롯데 서울",
-    "headline": "47년 만에 간판이 바뀌었다",
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "headline": "47년간 걸려 있던 간판이 바뀌었다",
+    "sub": "롯데호텔 서울 → 더그랜드롯데 서울 · 2026.8.14",
+    "scrim": 0.5,
+    "source": "simonwilliamsim / BY-SA 2.0"
    }
   ],
   "1": [
@@ -2550,14 +2549,31 @@
    }
   ],
   "135": [
-   "LowerThirdCard",
-   "사 — 더 플라자 클럽라운지",
+   "SpecGridCard",
+   "그 — 더 플라자 리모델링 내용 (소재 없음, 도해로)",
    {
-    "num": "",
-    "label": "더 플라자",
-    "sub": "클럽라운지 격상 · 2029년 재개관",
-    "kicker": "한화호텔앤드리조트",
-    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "title": "더 플라자 전면 리모델링",
+    "sub": "한화호텔앤드리조트 · 2026.8.19 발표",
+    "items": [
+     {
+      "label": "객실",
+      "value": "최상위 스위트",
+      "note": "디럭스 위주에서"
+     },
+     {
+      "label": "클럽라운지",
+      "value": "격 상향",
+      "note": "대폭"
+     },
+     {
+      "label": "영업 중단",
+      "value": "2026.9.30"
+     },
+     {
+      "label": "재개관 목표",
+      "value": "2029년"
+     }
+    ],
     "source": "경향신문 2026.8.19 · 이코노미톡뉴스 2026.8.19"
    }
   ],
@@ -2597,12 +2613,12 @@
    }
   ],
   "137": [
-   "PaperImageCard",
-   "사 — 더 플라자 외관 · 16년 만의 공사",
+   "StatCard",
+   "그 — 16년 만의 공사 (소재 없음, 숫자로)",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "title": "16년 만의 공사",
-    "sub": "2010년 리모델링 이후",
+    "title": "2010년 리모델링 이후",
+    "value": "16년",
+    "subtitle": "만의 공사",
     "caption": "이번엔 2029년까지 약 3년간 문을 닫는다",
     "source": "경향신문 2026.8.19"
    }
