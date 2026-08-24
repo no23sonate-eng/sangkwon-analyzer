@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, continueRender, delayRender, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BLACK, YELLOW, WHITE, MUTE, GRAY, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // v2 지도 카드 — 순블랙 위 다크 랜드매스 + 발광 마커 (Cleo 지도 문법).
 // focus: [lonMin, latMin, lonMax, latMax] 로 영역을 잘라 보여준다.
@@ -33,11 +34,12 @@ export const GeoMapCard = ({
   markers = [],
   rings = false,
   caption = '',
-  source = '',
+  source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const T = themeOf(theme);
   const enter = fadeIn(frame, 0, 16);
   const [paths, setPaths] = useState(null);
   const [handle] = useState(() => delayRender('세계지도 로드'));
@@ -63,10 +65,12 @@ export const GeoMapCard = ({
   }, []);
 
   return (
-    <AbsoluteFill style={{background: BLACK, fontFamily: 'A2Z Regular, sans-serif'}}>
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+      <PaperBg theme={theme} {...bg} />
       {paths ? (
         <svg width={W} height={H} style={{position: 'absolute', top: 0, left: 0, opacity: enter}}>
-          <path d={paths} fill="#181A1D" stroke="#33363B" strokeWidth={1.2} />
+          <path d={paths} fill={T.tones[0]} fillOpacity={0.5}
+                stroke={T.ink} strokeOpacity={0.5} strokeWidth={1.2} />
         </svg>
       ) : null}
 
@@ -75,7 +79,7 @@ export const GeoMapCard = ({
         const [x, y] = project(m.lon, m.lat, focus);
         const pop = spring({frame: frame - 14 - i * 10, fps, config: {damping: 200}, durationInFrames: 22});
         const pulse = 0.5 + 0.5 * Math.sin(frame / 9 + i);
-        const col = m.dead ? '#6A6A6A' : m.hot ? YELLOW : WHITE;
+        const col = m.dead ? T.soft : m.hot ? YELLOW : T.ink;
         return (
           <React.Fragment key={i}>
             <svg width={W} height={H} style={{position: 'absolute', top: 0, left: 0, opacity: pop}}>
@@ -122,13 +126,13 @@ export const GeoMapCard = ({
                   fontFamily: 'A2Z Medium, sans-serif',
                   fontSize: 44,
                   letterSpacing: '0.04em',
-                  color: m.dead ? col : WHITE,
+                  color: m.dead ? col : T.ink,
                 }}
               >
                 {m.label}
               </div>
               {m.sub ? (
-                <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.05em', color: m.hot ? WHITE : MUTE}}>
+                <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.05em', color: m.hot ? T.ink : T.soft}}>
                   {m.sub}
                 </div>
               ) : null}
@@ -137,8 +141,9 @@ export const GeoMapCard = ({
         );
       })}
 
-      <Kicker title={kicker} sub={sub} opacity={enter} />
-      <Footer caption={caption} source={source} opacity={fadeIn(frame, 40)} />
+      <PaperKicker title={kicker} sub={sub} theme={theme} opacity={enter} />
+      <PaperCaption theme={theme} opacity={fadeIn(frame, 40)}>{caption}</PaperCaption>
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

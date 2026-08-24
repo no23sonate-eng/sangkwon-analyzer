@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn} from './paper';
+import {YELLOW, fadeIn, PaperSource} from './paper';
 
 // 실측 단면 도면 위에 치수·강조를 얹는 카드.
 // 도식으로 그린 SectionCard 와 달리 **실제 단면 렌더**를 쓰므로, 지상 타워와
@@ -23,7 +23,7 @@ export const SectionPhotoCard = ({
   above = {floors: 20, label: '지상', note: ''},
   below = {floors: 7, label: '지하', note: ''},
   bands = [],
-  source = '',
+  source = '', theme,
   kenBurns = true,
 }) => {
   useA2ZFonts();
@@ -129,13 +129,10 @@ export const SectionPhotoCard = ({
         </div>
       ))}
 
-      {source ? (
-        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.05em',
-                     color: '#FFFFFF', opacity: 0.8 * fadeIn(frame, 40), textShadow: SHADOW}}>
-          {source}
-        </div>
-      ) : null}
+      {/* 출처는 우측 **상단** · `Source : …` — 채널 규칙.
+          사진 카드만 하단에 있어서 컷이 넘어갈 때마다 출처가 위아래로
+          튀었다 */}
+      <PaperSource source={source} theme={theme} onPhoto />
     </AbsoluteFill>
   );
 };

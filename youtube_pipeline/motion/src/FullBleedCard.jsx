@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn} from './paper';
+import {YELLOW, fadeIn, PaperSource} from './paper';
 
 // 전체 화면 이미지 + 가운데(또는 아래) 한 줄 문구.
 // 설명이 필요 없고 "장면 하나"로 밀어붙일 때 — 훅 전환, 배치도 전체보기, 클로징.
@@ -12,7 +12,7 @@ export const FullBleedCard = ({
   align = 'center',        // 'center' | 'bottom'
   scrim = 0.42,            // 이미지를 누르는 정도
   kenBurns = true, fit = 'cover',
-  source = '',
+  source = '', theme,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -60,13 +60,10 @@ export const FullBleedCard = ({
         </div>
       ) : null}
 
-      {source ? (
-        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.05em',
-                     color: '#FFFFFF', opacity: 0.78 * fadeIn(frame, 40), textShadow: SHADOW}}>
-          {source}
-        </div>
-      ) : null}
+      {/* 출처는 우측 **상단** · `Source : …` — 채널 규칙.
+          사진 카드만 하단에 있어서 컷이 넘어갈 때마다 출처가 위아래로
+          튀었다 */}
+      <PaperSource source={source} theme={theme} onPhoto />
     </AbsoluteFill>
   );
 };

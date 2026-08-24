@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn} from './paper';
+import {YELLOW, fadeIn, PaperSource} from './paper';
 
 // 좌우 분할 실사 대비 카드 — 두 대상을 각각 실사 반쪽에 놓고 수치·특징을 얹는다.
 // SplitCard(종이·글자만)와 달리 **둘이 실제로 어떻게 생겼는지**가 같이 보인다.
@@ -57,7 +57,7 @@ const Side = ({s, x, w, frame, i}) => {
   );
 };
 
-export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '', source = ''}) => {
+export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '', source = '', theme}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   if (sides.length < 2) return <AbsoluteFill style={{background: '#12151a'}} />;
@@ -85,13 +85,10 @@ export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '', 
                         color: '#12151a', background: YELLOW, padding: '8px 24px'}}>{verdict}</span>
         </div>
       ) : null}
-      {source ? (
-        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.05em',
-                     color: '#FFFFFF', opacity: 0.75 * fadeIn(frame, 40), textShadow: SHADOW}}>
-          {source}
-        </div>
-      ) : null}
+      {/* 출처는 우측 **상단** · `Source : …` — 채널 규칙.
+          사진 카드만 하단에 있어서 컷이 넘어갈 때마다 출처가 위아래로
+          튀었다 */}
+      <PaperSource source={source} theme={theme} onPhoto />
     </AbsoluteFill>
   );
 };

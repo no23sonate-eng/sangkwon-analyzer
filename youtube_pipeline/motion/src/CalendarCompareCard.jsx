@@ -1,7 +1,8 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
+import {themeOf, PaperBg, PaperSource, PaperCaption,
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // 기간 비교를 "달력 아이콘 개수"로 보여주는 카드 — 42개월(달력 42개)이
 // 화살표를 지나 21개월(달력 21개)로 반토막 나는 걸 아이콘 개수 차이로
@@ -48,11 +49,12 @@ export const CalendarCompareCard = ({
   rightValue = '21개월',
   leftLabel = '기존',
   rightLabel = '패스트트랙',
-  closingLine = '',
-  accent = ACCENT,
+  closingLine = '', caption = '',
+  source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const T = themeOf(theme);
   const {durationInFrames} = useVideoConfig();
 
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
@@ -82,13 +84,13 @@ export const CalendarCompareCard = ({
   const NUM_TOP = GRID_TOP + 6 * (CELL + GAP) + 40;
 
   return (
-    <AbsoluteFill style={BG_STYLE}>
-      <GridBg />
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+      <PaperBg theme={theme} {...bg} />
 
       <div
         style={{
           position: 'absolute', top: 110, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, ...TEXT.title,
+          fontSize: 34, opacity: titleOpacity, color: T.ink, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
         }}
       >
         {title}
@@ -118,11 +120,11 @@ export const CalendarCompareCard = ({
 
       <div style={{position: 'absolute', top: NUM_TOP, left: LEFT_X, width: GRID_W, textAlign: 'center', opacity: leftNumOpacity}}>
         <div style={{fontSize: 54, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.03em'}}>{leftValue}</div>
-        <div style={{fontSize: 28, marginTop: 12, ...TEXT.label}}>{leftLabel}</div>
+        <div style={{fontSize: 28, marginTop: 12, color: T.soft, fontFamily: 'A2Z Light, sans-serif'}}>{leftLabel}</div>
       </div>
       <div style={{position: 'absolute', top: NUM_TOP, left: RIGHT_X, width: GRID_W, textAlign: 'center', opacity: rightNumOpacity}}>
         <div style={{fontSize: 54, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.03em'}}>{rightValue}</div>
-        <div style={{fontSize: 28, marginTop: 12, ...TEXT.label}}>{rightLabel}</div>
+        <div style={{fontSize: 28, marginTop: 12, color: T.soft, fontFamily: 'A2Z Light, sans-serif'}}>{rightLabel}</div>
       </div>
 
       {closingLine ? (
@@ -136,6 +138,7 @@ export const CalendarCompareCard = ({
           {closingLine}
         </div>
       ) : null}
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };

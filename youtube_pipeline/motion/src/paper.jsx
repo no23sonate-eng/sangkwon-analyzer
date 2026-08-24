@@ -302,7 +302,7 @@ export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'cente
 //   ② 카드마다 아래쪽 여백이 달라 출처 높이가 들쭉날쭉했다
 // 위쪽은 어느 카드든 타이틀 옆이 비어 있어 **항상 같은 자리**가 나온다.
 // 접두어를 붙이는 이유: 출처인지 캡션인지 한눈에 갈리게 하려고.
-export const PaperSource = ({source = '', dark = false, theme}) => {
+export const PaperSource = ({source = '', dark = false, theme, onPhoto = false}) => {
   const frame = useCurrentFrame();
   if (!source) return null;
   const T = themeOf(theme, dark);
@@ -311,7 +311,11 @@ export const PaperSource = ({source = '', dark = false, theme}) => {
     <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right',
                  maxWidth: 760,
                  fontFamily: 'A2Z Light, sans-serif', fontSize: 23,
-                 letterSpacing: '0.04em', lineHeight: 1.3, color: T.soft,
+                 letterSpacing: '0.04em', lineHeight: 1.3,
+                 // 사진을 꽉 채우는 카드는 무대 색이 없다. 사진이 밝을지
+                 // 어두울지 모르니 흰 글자 + 그림자로 고정한다
+                 color: onPhoto ? '#FFFFFF' : T.soft,
+                 textShadow: onPhoto ? '0 2px 10px rgba(0,0,0,0.8)' : 'none',
                  opacity: 0.85 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
       {txt}
     </div>

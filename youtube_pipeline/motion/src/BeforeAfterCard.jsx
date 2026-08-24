@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn} from './paper';
+import {YELLOW, fadeIn, PaperSource} from './paper';
 import {estWidth} from './layout';
 
 // ── 전후 와이프 ──────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ export const BeforeAfterCard = ({
   align = {x: 0, y: 0, zoom: 1},   // after 만 미세 보정 (px, px, 배율)
   startSec = 0.6,                  // before 를 먼저 보여 주는 시간
   pauseAt = 0.6,                   // 손잡이가 멈추는 지점 (0~1)
-  source = '',
+  source = '', theme,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -95,13 +95,10 @@ export const BeforeAfterCard = ({
         </div>
       ) : null}
 
-      {source ? (
-        <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.05em',
-                     color: '#FFFFFF', opacity: 0.8 * fadeIn(frame, 30), textShadow: SHADOW}}>
-          {source}
-        </div>
-      ) : null}
+      {/* 출처는 우측 **상단** · `Source : …` — 채널 규칙.
+          사진 카드만 하단에 있어서 컷이 넘어갈 때마다 출처가 위아래로
+          튀었다 */}
+      <PaperSource source={source} theme={theme} onPhoto />
     </AbsoluteFill>
   );
 };

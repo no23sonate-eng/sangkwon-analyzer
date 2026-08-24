@@ -1,7 +1,8 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, interpolate, Img, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {BG_STYLE, GridBg, TEXT, ACCENT} from './shared';
+import {themeOf, PaperBg, PaperSource, PaperCaption,
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
 
 // 두 입장/두 항목을 좌우로 대비하는 카드 — 한쪽은 내용이 있고 한쪽은
 // "확인되지 않음"류 공백일 때 비대칭이 시각적으로 드러난다(예: 하남시
@@ -23,12 +24,14 @@ export const CompareCard = ({
   leftValue = '',
   rightValue = '',
   caption = '',
-  accent = ACCENT,
+  
   leftImage = '',
   rightImage = '',
+  source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const T = themeOf(theme);
 
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
   const leftOpacity = interpolate(frame, [16, 30], [0, 1], {extrapolateRight: 'clamp'});
@@ -55,8 +58,8 @@ export const CompareCard = ({
   };
 
   return (
-    <AbsoluteFill style={BG_STYLE}>
-      {!leftImage && !rightImage ? <GridBg /> : null}
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+      <PaperBg theme={theme} {...bg} />
       {leftImage ? (
         <div style={{position: 'absolute', top: 0, left: 0, width: 960, height: 1080, opacity: imageOpacity, overflow: 'hidden'}}>
           <Img src={staticFile(leftImage)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
@@ -72,7 +75,7 @@ export const CompareCard = ({
       <div
         style={{
           position: 'absolute', top: 80, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 50, opacity: titleOpacity, ...TEXT.title,
+          fontSize: 50, opacity: titleOpacity, color: T.ink, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
         }}
       >
         {title}
@@ -88,7 +91,7 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: LEFT_X, width: COL_W, opacity: leftOpacity}}>
         {hasImage ? <div style={textPanel} /> : null}
-        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, ...TEXT.label, color: hasImage ? '#D7DBE1' : TEXT.label.color}}>{leftTitle}</div>
+        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{leftTitle}</div>
         {leftValue ? (
           <div style={{position: 'relative', fontSize: 80, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif'}}>{leftValue}</div>
         ) : null}
@@ -107,7 +110,7 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: RIGHT_X, width: COL_W, opacity: rightOpacity}}>
         {hasImage ? <div style={textPanel} /> : null}
-        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, ...TEXT.label, color: hasImage ? '#D7DBE1' : TEXT.label.color}}>{rightTitle}</div>
+        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{rightTitle}</div>
         {rightValue ? (
           <div style={{position: 'relative', fontSize: 80, color: accent, fontFamily: 'A2Z Regular, sans-serif'}}>{rightValue}</div>
         ) : null}
@@ -144,6 +147,7 @@ export const CompareCard = ({
           {caption}
         </div>
       ) : null}
+      <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );
 };
