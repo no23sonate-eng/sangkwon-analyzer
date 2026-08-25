@@ -676,8 +676,8 @@
    "ExplodedStackCard",
    "그 — 객실 + 임대상가 + 사무실을 분해해 쌓는다",
    {
-    "title": "한 건물에 세 가지가 들어 있었다",
-    "sub": "반도호텔 · 1938",
+    "title": "",
+    "sub": "",
     "layers": [
      {
       "label": "호텔 객실",
@@ -692,7 +692,8 @@
       "note": "저층부"
      }
     ],
-    "source": "경향신문 2024.1.11 · 여행신문 1998.1.23"
+    "source": "경향신문 2024.1.11 · 여행신문 1998.1.23",
+    "align": "center"
    }
   ],
   "39": [
@@ -732,8 +733,6 @@
    "SilhouetteCompareCard",
    "그 — 조선호텔 4층 vs 반도호텔 8층",
    {
-    "title": "조선호텔보다 두 배 높았다",
-    "sub": "동양에서 네 번째로 큰 호텔",
     "items": [
      {
       "label": "조선호텔",
@@ -750,7 +749,7 @@
       "hot": true
      }
     ],
-    "caption": "층수 기준 · 실제 높이는 층고에 따라 다르다",
+    "baseline": true,
     "source": "경향신문 2024.1.11 · 여행신문 1998.1.23"
    }
   ],
@@ -823,8 +822,8 @@
    "ScaleCompareCard",
    "그 — 4층 vs 8층 = 두 배",
    {
-    "title": "4층 vs 8층",
-    "sub": "두 배 높이",
+    "title": "",
+    "sub": "",
     "unit": "층",
     "items": [
      {
@@ -847,28 +846,13 @@
    }
   ],
   "47": [
-   "SightlineCard",
-   "그 — 5층에서 조선호텔을 내려다본다",
+   "PaperImageCard",
+   "사 — 조선호텔 · 5층에서 내려다보는 자리",
    {
-    "title": "5층에서 조선호텔을 내려다본다",
-    "sub": "노구치의 사무실 자리",
-    "viewer": {
-     "label": "노구치 사무실 · 5층",
-     "x": 0.18
-    },
-    "building": {
-     "label": "조선호텔",
-     "x": 0.72,
-     "w": 0.14,
-     "h": 0.3,
-     "note": "4층"
-    },
-    "peak": {
-     "label": "",
-     "x": 0.5,
-     "ridgeLabel": ""
-    },
-    "source": "경향신문 2024.1.11 · 여행신문 1998.1.23"
+    "image": "더그랜드롯데/chosun_hotel_palmcourt.jpg",
+    "title": "",
+    "caption": "노구치는 자기 사무실을 조선호텔이 내려다보이는 5층에 뒀다",
+    "source": "michaelseangallagher / BY-SA 2.0"
    }
   ],
   "48": [
@@ -900,23 +884,13 @@
    }
   ],
   "49": [
-   "SectionPhotoCard",
-   "사 — 1970년대 서울 호텔가",
+   "FullBleedCard",
+   "사 — 1960년대 서울 · 한 줄만",
    {
-    "title": "1970년대, 상황이 바뀐다",
-    "sub": "민간 호텔이 들어서기 시작한다",
-    "image": "더그랜드롯데/bando_hotel_street_1960.jpg",
-    "above": {
-     "floors": 8,
-     "label": "반도호텔",
-     "note": ""
-    },
-    "below": {
-     "floors": 0,
-     "label": "",
-     "note": ""
-    },
-    "source": "한국저작권위원회 / CC BY 4.0"
+    "image": "더그랜드롯데/seoul_street_1960s.jpg",
+    "headline": "1970년대, 상황이 바뀐다",
+    "scrim": 0.48,
+    "source": "서울 옛 거리 자료사진"
    }
   ],
   "50": [
@@ -944,26 +918,15 @@
    }
   ],
   "51": [
-   "TrendCard",
-   "그 — 노후화 → 적자",
+   "StrikeSwapCard",
+   "그 — 최고에서 적자로",
    {
-    "kicker": "반도호텔이 밀린 이유",
-    "sub": "시설 노후화와 적자",
-    "series": [
-     {
-      "label": "민간 신규 호텔",
-      "pct": 60,
-      "display": "증가"
-     },
-     {
-      "label": "반도호텔 경쟁력",
-      "pct": -45,
-      "display": "적자",
-      "hot": true
-     }
-    ],
-    "caption": "방향만 보여 주는 도해 — 실제 수치가 아니다",
-    "source": "한국경제인협회 e뮤지엄"
+    "from": "동양에서 네 번째로 큰 호텔",
+    "fromLabel": "1938",
+    "to": "시설 노후화 · 대규모 적자",
+    "toLabel": "1970년대",
+    "image": "더그랜드롯데/bando_hotel_front_1960.jpg",
+    "source": "한국저작권위원회 / CC BY 4.0"
    }
   ],
   "52": [
@@ -997,18 +960,19 @@
    "ArchiveCard",
    "아카이브 — 1970년 청와대 (film)",
    {
-    "era": "film",
-    "year": "1945",
-    "label": "서울",
+    "era": "photo",
+    "year": "1970",
+    "label": "청와대",
     "zoom": 0.13,
     "pan": [
      20,
      -10
     ],
-    "headline": "해방 뒤 미군정으로, 정부 수립 뒤엔 국영으로",
-    "sub": "반도호텔 민영화",
-    "source": "Don O'Brien / CC BY 2.0",
-    "media": "더그랜드롯데/seoul_1945.jpg"
+    "headline": "",
+    "sub": "",
+    "source": "옛 청와대 자료사진",
+    "media": "더그랜드롯데/cheongwadae_old.jpg",
+    "gate": 1.333
    }
   ],
   "54": [
@@ -1025,12 +989,13 @@
    }
   ],
   "55": [
-   "QuoteCard",
-   "그 — 모국 투자를 바랐다",
+   "ArticleCard",
+   "자료 — 인수 배경 기록 발췌",
    {
-    "quote": "일본에서 큰 부를 쌓은 재일교포 사업가가\n호텔 사업을 통해 모국에 대규모 투자를 하길 바랐다.",
-    "name": "1970년 · 청와대",
-    "role": "박정희 대통령의 요청",
+    "outlet": "한국경제인협회 e뮤지엄",
+    "date": "롯데호텔 인수 기록",
+    "body": "정부는 반도호텔의 경쟁력을 높이기 위해 민영화를 추진했다. «일본에서 큰 부를 쌓은 재일교포 사업가가 호텔 사업을 통해 모국에 대규모 투자를 하기를 바랐다.» 신격호 회장은 호텔 사업 경험이 없어 잠시 망설였으나 관광산업이 한국에 보탬이 될 것으로 보고 인수를 결심한다.",
+    "serif": true,
     "source": "한국경제인협회 e뮤지엄"
    }
   ],
@@ -1055,13 +1020,13 @@
    }
   ],
   "57": [
-   "FullBleedCard",
-   "사 — 인수 결심 · 착공",
+   "PaperImageCard",
+   "사 — 1960년 반도호텔 주변",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "headline": "인수를 결심한다",
-    "sub": "관광산업이 한국에 보탬이 될 거라고 봤다",
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "image": "더그랜드롯데/bando_hotel_street_1960.jpg",
+    "title": "",
+    "caption": "인수를 결심한다",
+    "source": "한국저작권위원회 / CC BY 4.0"
    }
   ],
   "58": [
@@ -1134,19 +1099,15 @@
    }
   ],
   "63": [
-   "BrandCard",
-   "그 — 독자 브랜드 지시",
+   "MediaPlateCard",
+   "사 — 옛 롯데호텔 로고",
    {
-    "title": "독자 브랜드로 간다",
-    "name": "롯데호텔",
-    "line": "외국 기업에 로열티를 주지 않는다",
-    "logo": "더그랜드롯데/logo_lotte_hotel.png",
-    "tags": [
-     "직영",
-     "독자 브랜드",
-     "1979"
-    ],
-    "source": "Lotte Hotels & Resorts"
+    "media": "더그랜드롯데/logo_lotte_hotel_old.jpg",
+    "aspect": 2.38,
+    "label": "독자 브랜드",
+    "note": "외국 기업에 로열티를 주지 않는다",
+    "caption": "참고 이미지 — 시기에 따라 실제 로고와 다를 수 있다",
+    "source": "롯데호텔 (참고 이미지)"
    }
   ],
   "64": [
@@ -1231,72 +1192,75 @@
    }
   ],
   "68": [
-   "SpecGridCard",
-   "그 — 지하3/지상38/138m/1,020실",
+   "AnnotatedShotCard",
+   "사 — 1979 개관식 · 제원 주석",
    {
-    "title": "1979년 3월 10일, 문을 연다",
-    "sub": "당시 동양 최대 특급호텔",
-    "items": [
+    "image": "더그랜드롯데/lotte_opening_1979.jpg",
+    "beats": [
      {
-      "label": "규모",
-      "value": "지하 3층 · 지상 38층"
-     },
-     {
-      "label": "높이",
-      "value": "138m"
-     },
-     {
-      "label": "객실",
-      "value": "1,020실"
-     },
-     {
-      "label": "건설비",
-      "value": "1억 5,000만 달러"
+      "x": 0.5,
+      "y": 0.5,
+      "zoom": 1.18,
+      "label": "지상 38층 · 138m",
+      "sub": "1,020실 · 1979.3.10",
+      "side": "right",
+      "hot": true,
+      "hold": 44
      }
     ],
-    "source": "위키백과 롯데호텔 서울 · 한국경제인협회 e뮤지엄"
+    "source": "연합뉴스"
    }
   ],
   "69": [
    "FullBleedCard",
    "사 — 1979년 롯데호텔 전경",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "image": "더그랜드롯데/grand_lotte_dusk.jpg",
     "headline": "당시 동양 최대 특급호텔",
-    "sub": "지하 3층 지상 38층 · 1,020실",
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "sub": "",
+    "source": "뉴스1"
    }
   ],
   "70": [
    "StatCard",
    "그 — 건설비 1억 5,000만 달러",
    {
-    "title": "건설비만",
     "value": "1억 5,000만 달러",
-    "subtitle": "1979년 롯데호텔 서울",
-    "caption": "같은 시기 경부고속도로 총공사비가 1억 9,000만 달러였다",
+    "subtitle": "1979년 롯데호텔 서울 건설비",
+    "bgImage": "더그랜드롯데/lotte_opening_1979.jpg",
+    "veil": 0.5,
     "source": "한국경제인협회 e뮤지엄"
    }
   ],
   "71": [
-   "CompareCard",
-   "그 — 경부고속도로 총공사비와 견주기",
+   "PhotoSplitCard",
+   "사 — 롯데호텔 | 경부고속도로",
    {
-    "title": "같은 시기, 무엇과 견줄 수 있나",
-    "leftTitle": "롯데호텔 서울",
-    "leftValue": "1억 5,000만 달러",
-    "leftLines": [
-     "1979년 개관",
-     "지상 38층 · 1,020실"
+    "sides": [
+     {
+      "name": "롯데호텔 서울",
+      "sub": "1979년 건설비",
+      "photo": "더그랜드롯데/lotte_opening_1979.jpg",
+      "stat": "1억 5,000만",
+      "statUnit": "달러",
+      "lines": [
+       "지상 38층 · 1,020실"
+      ]
+     },
+     {
+      "name": "경부고속도로",
+      "sub": "총공사비",
+      "photo": "더그랜드롯데/gyeongbu_opening_1970.jpg",
+      "stat": "1억 9,000만",
+      "statUnit": "달러",
+      "lines": [
+       "서울–부산 428km"
+      ],
+      "hot": true
+     }
     ],
-    "rightTitle": "경부고속도로",
-    "rightValue": "1억 9,000만 달러",
-    "rightLines": [
-     "총공사비",
-     "서울–부산 428km"
-    ],
-    "caption": "호텔 하나가 고속도로 총공사비의 79% 수준이었다",
-    "source": "한국경제인협회 e뮤지엄"
+    "verdict": "환율 기준에 따라 달라지는 값 — 대본 수치를 그대로 옮겼다",
+    "source": "한국경제인협회 e뮤지엄 · 뉴스뱅크이미지"
    }
   ],
   "72": [
@@ -1311,9 +1275,10 @@
      -30,
      0
     ],
-    "headline": "그해 12월, 바로 옆에 백화점이 열린다",
-    "source": "kallerna / CC BY-SA 4.0",
-    "media": "더그랜드롯데/sogong_dong_street.jpg"
+    "headline": "",
+    "source": "롯데",
+    "media": "더그랜드롯데/lotte_town_myeongdong.jpg",
+    "sub": ""
    }
   ],
   "73": [
@@ -1389,10 +1354,8 @@
   ],
   "77": [
    "YTableCard",
-   "그 — 객실 4종 면적·요금 표",
+   "그 — 객실 4종 요금표",
    {
-    "kicker": "리뉴얼된 객실별 요금",
-    "sub": "직접 조회한 값",
     "rows": [
      {
       "label": "그랜드 슈페리어",
@@ -1416,35 +1379,17 @@
       "note": "57.7㎡"
      }
     ],
-    "closingLine": "전부 메인타워 시티뷰",
+    "caption": "주말 1박 · 성인 2명 · 세금·봉사료 포함 · 메인타워 시티뷰",
     "source": "롯데호텔 공식 예약 페이지 직접 조회"
    }
   ],
   "78": [
-   "SpecGridCard",
-   "그 — 조회 조건",
+   "FullBleedCard",
+   "사 — 리뉴얼된 객실",
    {
-    "title": "조회 조건",
-    "sub": "이 값이 무엇을 기준으로 한 값인가",
-    "items": [
-     {
-      "label": "숙박",
-      "value": "주말 1박"
-     },
-     {
-      "label": "인원",
-      "value": "성인 2명"
-     },
-     {
-      "label": "요금",
-      "value": "세금·봉사료 포함"
-     },
-     {
-      "label": "객실",
-      "value": "메인타워 시티뷰"
-     }
-    ],
-    "source": "롯데호텔 공식 예약 페이지 직접 조회"
+    "image": "더그랜드롯데/grand_lotte_room.jpg",
+    "scrim": 0.2,
+    "source": "롯데호텔"
    }
   ],
   "79": [
@@ -1463,7 +1408,8 @@
       }
      ]
     ],
-    "sub": "면적과 요금이 같은 방향으로 안 간다"
+    "sub": "면적과 요금이 같은 방향으로 안 간다",
+    "bgImage": "더그랜드롯데/grand_lotte_room.jpg"
    }
   ],
   "80": [
@@ -1550,8 +1496,8 @@
    "UnitDensityCard",
    "그 — 같은 돈을 넓은 바닥에 펴면 얇아진다",
    {
-    "title": "넓어질수록 ㎡당 값은 떨어진다",
-    "sub": "면적 +49% · 요금 +10%",
+    "title": "",
+    "sub": "",
     "hot": 1,
     "blockLabel": "칸 하나 = 약 1만 3천원",
     "items": [
@@ -1604,59 +1550,52 @@
    }
   ],
   "88": [
-   "YRankBarsCard",
-   "그 — 브랜드별 매출 비중",
+   "BarChartCard",
+   "그 — 브랜드별 매출 비중 6개",
    {
-    "kicker": "롯데호텔 브랜드별 매출 비중",
-    "sub": "2026년 상반기",
-    "rows": [
+    "bars": [
      {
-      "name": "롯데호텔",
-      "value": 39,
-      "display": "39%",
-      "hot": true
-     },
-     {
-      "name": "롯데시티",
-      "value": 19.5,
-      "display": "19.5%"
-     },
-     {
-      "name": "L7",
-      "value": 19.5,
-      "display": "19.5%"
-     },
-     {
-      "name": "리조트",
-      "value": 10,
-      "display": "10%"
-     },
-     {
-      "name": "시그니엘",
-      "value": 5,
-      "display": "5%"
-     },
-     {
-      "name": "브리브",
+      "label": "브리브",
       "value": 2,
-      "display": "2%"
+      "displayValue": "2%"
+     },
+     {
+      "label": "시그니엘",
+      "value": 5,
+      "displayValue": "5%"
+     },
+     {
+      "label": "리조트",
+      "value": 10,
+      "displayValue": "10%"
+     },
+     {
+      "label": "L7",
+      "value": 19.5,
+      "displayValue": "19.5%"
+     },
+     {
+      "label": "롯데시티",
+      "value": 19.5,
+      "displayValue": "19.5%"
+     },
+     {
+      "label": "롯데호텔",
+      "value": 39,
+      "displayValue": "39%",
+      "hot": true
      }
     ],
-    "caption": "프리미엄 라인은 롯데호텔이 맡고 있다",
-    "source": "DART 호텔롯데 반기보고서 2026.8.14"
+    "source": "DART 2026.8.14"
    }
   ],
   "89": [
-   "ShareSplitCard",
-   "그 — 6개 브랜드의 몫",
+   "FullBleedCard",
+   "사 — 롯데호텔 서울 외관",
    {
-    "title": "여섯 브랜드가 나눠 갖는다",
-    "n": 6,
-    "ownerLabel": "호텔롯데 매출",
-    "cutLabel": "롯데호텔 39%",
-    "bidLabel": "나머지 5개 61%",
-    "note": "가장 큰 브랜드가 프리미엄 라인을 맡고 있다",
-    "source": "DART 호텔롯데 반기보고서 2026.8.14"
+    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "scrim": 0.3,
+    "source": "simonwilliamsim / BY-SA 2.0"
    }
   ],
   "90": [
@@ -1693,22 +1632,30 @@
    }
   ],
   "92": [
-   "YHeadlineCard",
-   "그 — 그 위로 올리기 어렵다",
+   "PriceLadderCard",
+   "그 — 롯데호텔 위, 시그니엘 아래의 빈 칸",
    {
-    "kicker": "그래서",
-    "lines": [
-     [
-      {
-       "t": "그 이름 위로 "
-      },
-      {
-       "t": "올리기가 어렵다",
-       "hot": true
-      }
-     ]
+    "fill": 1,
+    "axisLabel": "1박 공시 요금 (0원부터가 아님)",
+    "rungs": [
+     {
+      "name": "롯데호텔 서울",
+      "price": 300000,
+      "priceLabel": "약 30만원"
+     },
+     {
+      "name": "",
+      "price": 700000,
+      "priceLabel": ""
+     },
+     {
+      "name": "시그니엘 서울",
+      "price": 1200000,
+      "priceLabel": "약 120만원"
+     }
     ],
-    "sub": "가격을 올리려면 이름을 바꿔야 한다"
+    "caption": "공시 요금 기준 · 대표값으로 단순화했다",
+    "source": "뉴스웨이 2026.7.28"
    }
   ],
   "93": [
@@ -1744,16 +1691,14 @@
    }
   ],
   "94": [
-   "StrikeSwapCard",
-   "그 — 새 이름 → 새 가격표",
+   "MediaPlateCard",
+   "사 — 새 이름표",
    {
-    "title": "새 이름이 있어야 새 가격표가 붙는다",
-    "from": "롯데호텔 · 기존 가격표",
-    "fromLabel": "그대로면",
-    "to": "더그랜드롯데 · 새 가격표",
-    "toLabel": "이름을 바꾸면",
-    "note": "브랜드를 새로 만든 이유",
-    "source": "뉴스웨이 2026.7.28"
+    "media": "더그랜드롯데/logo_grand_lotte.jpg",
+    "aspect": 1.667,
+    "label": "새 이름",
+    "note": "새 가격표",
+    "source": "롯데호텔"
    }
   ],
   "95": [
@@ -1796,26 +1741,18 @@
      }
     ],
     "caption": "배분 비율은 공개되지 않았다 — 방향만 보여 주는 추정치다",
-    "source": "비즈워치 2026.8.14"
+    "source": "비즈워치 2026.8.14",
+    "align": "center"
    }
   ],
   "97": [
-   "YHeadlineCard",
-   "그 — 갑자기 의료시설?",
+   "FullBleedCard",
+   "사 — 의료시설",
    {
-    "kicker": "갑자기",
-    "lines": [
-     [
-      {
-       "t": "의료시설"
-      },
-      {
-       "t": "?",
-       "hot": true
-      }
-     ]
-    ],
-    "sub": "호텔 안에 피부과가 들어온다"
+    "image": "더그랜드롯데/clinic.jpg",
+    "headline": "갑자기 의료시설?",
+    "scrim": 0.45,
+    "source": "Pexels"
    }
   ],
   "98": [
@@ -1842,24 +1779,12 @@
    }
   ],
   "99": [
-   "RatioCard",
-   "그 — 92.8%가 서울",
+   "ArticleCard",
+   "자료 — 외국인 의료 이용금액 기사",
    {
-    "title": "그중 서울에서 발생",
-    "unit": "%",
-    "items": [
-     {
-      "label": "서울",
-      "pct": 92.8,
-      "sub": "외국인 의료 이용금액",
-      "hot": true
-     },
-     {
-      "label": "그 외 지역",
-      "pct": 7.2,
-      "sub": ""
-     }
-    ],
+    "outlet": "비즈워치",
+    "date": "2026.8.14",
+    "body": "BC카드 기준 2026년 상반기 외국인 의료 이용금액은 전년 동기 대비 98% 늘었다. «그중 92.8%가 서울에서 발생했다.» 명동·강남 등 관광객이 몰리는 상권에 집중되는 흐름이다.",
     "source": "비즈워치 2026.8.14"
    }
   ],
@@ -1920,30 +1845,23 @@
    }
   ],
   "103": [
-   "YFlowCard",
-   "그 — 묵는다 → 시술받는다 → 더 머문다",
+   "TimelineBarsCard",
+   "그 — 체류 기간이 늘어난다",
    {
-    "kicker": "호텔 + 의료",
-    "sub": "집객력이 올라가는 구조",
-    "nodes": [
+    "kicker": "체류 기간",
+    "sub": "일반 관광 vs 의료 관광",
+    "bars": [
      {
-      "label": "명동에 묵는다",
-      "sub": "관광객",
-      "tag": "①"
+      "label": "일반 관광",
+      "months": 3
      },
      {
-      "label": "시술을 받는다",
-      "sub": "호텔 안에서",
-      "tag": "②"
-     },
-     {
-      "label": "더 오래 머문다",
-      "sub": "회복 기간",
-      "tag": "③",
+      "label": "의료 관광",
+      "months": 7,
       "hot": true
      }
     ],
-    "caption": "의료 관광의 체류 기간이 일반 관광보다 길다",
+    "caption": "칸 하나가 1박 — 업계 통상 범위를 적용한 개략값",
     "source": "비즈워치 2026.8.14"
    }
   ],
@@ -1958,15 +1876,16 @@
    }
   ],
   "105": [
-   "NewsHeadlineCard",
-   "자료 — 청담동 1번지 낙찰 기사",
+   "ArticleCard",
+   "자료 — 청담동 1번지 낙찰 기사 + 건물",
    {
     "outlet": "뉴스퀘스트",
     "date": "2026.6.26",
-    "headline": "아정당 김민기 대표, 청담동 1번지 건물 낙찰",
-    "outlet2": "아시아투데이",
-    "date2": "2026.6.26",
-    "headline2": "5차례 유찰된 하이엔드 사교클럽 건물 — 뷰티·성형 복합시설로 전환 계획"
+    "body": "아정당 김민기 대표가 청담동 1번지 건물을 낙찰받았다. «5차례 유찰된 하이엔드 사교클럽 건물로, 헐지 않고 리모델링해 외국인 대상 뷰티·성형 복합시설로 전환할 계획인 것으로 알려졌다.»",
+    "portrait": "더그랜드롯데/ajeongdang_thumb.jpg",
+    "who": "청담동 1번지",
+    "role": "낙찰 대상 건물",
+    "source": "뉴스퀘스트 2026.6.26 · 본 채널"
    }
   ],
   "106": [
