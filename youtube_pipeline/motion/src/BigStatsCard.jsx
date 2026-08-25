@@ -24,12 +24,28 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   const bandTop = title ? (sub ? 300 : 246) : 150;
   const hasSub = items.some((it) => it.sub);
   const blockH = 148 + SP.GAP + 56 + (hasSub ? 44 : 0);      // 수치 + 라벨 (+ 보조줄)
-  const TOPY = Math.round(bandTop + Math.max(0, (CONTENT_BOTTOM - bandTop - blockH) / 2));
+  // 수치가 **하나뿐이면** 제목과 수치가 한 덩어리다. 둘 사이를 띠 절반만큼
+  // 벌려 놓으면 제목은 위에 떠 있고 숫자는 아래에 떨어져 두 화면처럼 읽힌다.
+  // 여럿일 때는 칸을 나눠 견주는 그림이라 띠 한가운데가 맞다.
+  const one = n === 1 && Boolean(title);
+  const TOPY = one
+    ? bandTop + 24
+    : Math.round(bandTop + Math.max(0, (CONTENT_BOTTOM - bandTop - blockH) / 2));
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} {...bg} />
-      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+      {one ? (
+        <div style={{position: 'absolute', top: 150, left: 0, width: 1920,
+                     textAlign: 'center', opacity: fadeIn(frame, 0),
+                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                     fontSize: 92, letterSpacing: '-0.01em', color: T.ink,
+                     wordBreak: 'keep-all'}}>
+          {title}
+        </div>
+      ) : (
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+      )}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.slice(1).map((_, i) => (
           <line key={i} x1={startX + slot * (i + 1)} y1={TOPY - 12}

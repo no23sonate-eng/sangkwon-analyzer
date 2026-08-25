@@ -49,6 +49,20 @@ PHOTO_BAND = (0.25, 0.52)
 PLACEHOLDER = '_ph/photo.png'
 IMG_KEYS = {'image', 'media', 'photo', 'before', 'after', 'bgImage', 'portrait',
             'shot', 'leftImage', 'rightImage', 'logo', 'parentLogo'}
+# 빈 채로 둬도 되는 자리 — **선택 배경**이다. 여기에 회색 판을 깔면
+# 배경 없이 서라고 만든 컷이 통째로 회색 사선이 된다. `<Img src="">` 로
+# 죽는 자리도 아니다: bgImage 는 PaperBg → LiveBackdrop 으로 흘러가고,
+# LiveBackdrop 은 빈 문자열이면 아무것도 안 그린다.
+# HeadlineCard·YHeadlineCard 처럼 문장만 세우는 카드가 여기 걸렸다
+# logo·parentLogo 도 마찬가지다. BrandCard·LogoOrgCard 는 로고가 없으면
+# 이름을 크게 세우도록 만들어져 있다 — 회색 판을 끼우면 그 자리를 뺏는다
+OPTIONAL_IMG = {'bgImage', 'backdrop', 'logo', 'parentLogo'}
+
+# 그리고 **사진이 주인공인 카드에서만** 판을 깐다.
+# BrandCard 의 photo 는 오른쪽 절반을 차지하는 선택 패널이라, 비워 두면
+# 이름이 화면 가운데로 온다. 거기에 회색 판을 끼우니 이름이 왼쪽으로
+# 밀리고 제목이 판에 가려졌다 (#8). 회색 판은 "여기 사진이 아직 없다" 는
+# 표시지, 안 쓰기로 한 자리에까지 놓을 것은 아니다.
 
 
 def video_cards():
@@ -123,10 +137,11 @@ def main():
         sk.update(given)
         if e.get('source') and not sk.get('source'):
             sk['source'] = e['source']          # 대본 `→` 줄에서 딸려 온 출처
-        if a.placeholder:
-            for k in IMG_KEYS & set(sk):
+        if a.placeholder and e['card'] in PHOTO | PLATE:
+            for k in (IMG_KEYS - OPTIONAL_IMG) & set(sk):
                 if sk[k] == '':
                     sk[k] = PLACEHOLDER
+        if a.placeholder:
             for arr in ('steps', 'sides', 'items'):     # 배열 안에도 사진이 산다
                 for it in sk.get(arr) or []:
                     if isinstance(it, dict):

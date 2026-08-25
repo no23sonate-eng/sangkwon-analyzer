@@ -2134,20 +2134,12 @@
    }
   ],
   "119": [
-   "TimelineBarsCard",
-   "그 — 매일 17시~자정 상영",
+   "MediaPlateCard",
+   "사 — 밤마다 켜지는 파사드",
    {
-    "kicker": "상영 시간",
-    "sub": "매일 오후 5시부터 자정까지",
-    "bars": [
-     {
-      "label": "미디어파사드 상영",
-      "months": 7,
-      "hot": true
-     }
-    ],
-    "caption": "칸 하나가 1시간 — 하루 7시간",
-    "source": "신세계그룹 뉴스룸"
+    "media": "더그랜드롯데/shinsegae_night.jpg",
+    "label": "매일 상영",
+    "source": "신세계백화점 본점"
    }
   ],
   "120": [

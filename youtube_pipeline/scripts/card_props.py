@@ -75,10 +75,24 @@ def _split_top(s):
     return spans
 
 
+# 못 읽은 기본값과 "정말 null 이 기본값" 을 구분하는 표식.
+# 이걸 안 나누면 `aspect = 16 / 9` 같은 식을 null 로 뱉고, 그 null 이
+# scene_props 로 들어가 **작동하던 기본값을 덮는다.** MediaPlateCard 가
+# 그래서 판 너비가 NaN 이 돼 세로 실선 하나로 렌더됐다 (#14·#30·#89·#113…).
+# 렌더는 성공하고 화면만 비어서, 시트를 눈으로 보기 전엔 모른다.
+UNREAD = object()
+
+
 def _value(raw, blank):
-    """JSX 기본값 → JSON 값. 문자열·숫자·참거짓·빈 배열/객체만 본다."""
+    """JSX 기본값 → JSON 값. 문자열·숫자·참거짓·빈 배열/객체만 본다.
+
+    읽어낼 수 없는 식(`16 / 9`, `() => {}`, `A || B`)은 UNREAD 를 준다 —
+    껍데기에서 **아예 빼야** 카드의 기본값이 그대로 산다.
+    """
     v = raw.strip()
-    if v in ('', 'undefined', 'null'):
+    if v in ('', 'undefined'):
+        return UNREAD
+    if v == 'null':
         return None
     if v in ('true', 'false'):
         return v == 'true'
@@ -90,7 +104,7 @@ def _value(raw, blank):
         return []
     if v.startswith('{'):
         return {}
-    return None
+    return UNREAD
 
 
 def skeleton(card, blank=True):
@@ -126,7 +140,10 @@ def skeleton(card, blank=True):
         # 무대 설정은 컷마다 채우는 값이 아니다 — 껍데기에서 뺀다
         if name in ('theme', 'bg', 'children'):
             continue
-        out[name] = _value(raw[s + k + 1:e], blank)
+        val = _value(raw[s + k + 1:e], blank)
+        if val is UNREAD:
+            continue                     # 카드 기본값을 그대로 쓰게 둔다
+        out[name] = val
     return out
 
 
