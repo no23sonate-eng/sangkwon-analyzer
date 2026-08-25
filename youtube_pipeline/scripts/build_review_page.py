@@ -12,7 +12,9 @@
 
 이미지는 data URI 로 박는다. 아티팩트는 외부 호스트를 못 부르고,
 로컬 경로는 열리지 않는다. 16MB 안에 들어가야 해서 폭과 품질을 재 본 뒤
-정한다 (1280px q78 → 8.3MB).
+정한다. 182컷이 다 나오면서 1280px q78 이 14.9MB 가 됐다 — 16MB 상한에
+너무 붙는다. 1120px q74 로 내린다 (→ 약 11MB). 검수는 배치와 글자 크기를
+보는 일이라 이 해상도로 충분하다.
 
   python3 scripts/build_review_page.py 더그랜드롯데
 """
@@ -27,7 +29,7 @@ import re
 from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-W, Q = 1280, 78
+W, Q = 1120, 74
 
 CSS = """
 :root{
