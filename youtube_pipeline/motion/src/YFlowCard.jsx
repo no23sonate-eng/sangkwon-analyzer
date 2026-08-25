@@ -20,6 +20,10 @@ export const YFlowCard = ({
   source = '',
   theme, bg = {},
   title = '',
+  // branch=true 면 **첫 노드만 왼쪽**에 두고 나머지를 오른쪽에 위아래로 쌓는다.
+  // '객실 수가 ADR 과 OCC 를 함께 정한다' 는 사슬이 아니라 **갈라짐**이다.
+  // 한 줄로 늘어놓으면 ADR 다음에 OCC 가 온다는 순서가 생겨 버린다
+  branch = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -47,17 +51,31 @@ export const YFlowCard = ({
       <PaperTitle title={title || kicker} sub={sub} theme={theme} />
 
       {nodes.map((node, i) => {
-        const x = startX + i * (nodeW + arrowW);
+        // 갈라짐 배치 — 0번은 왼쪽 가운데, 나머지는 오른쪽에 위아래로
+        const bN = Math.max(1, n - 1);
+        const bH = Math.min(nodeH, (CONTENT_BOTTOM - bandTop - 40) / bN - 24);
+        // 덩어리 폭 = 왼쪽 노드 + 화살표 + 오른쪽 노드. 그걸 화면 가운데에 놓는다.
+        // 화살표 가운데를 1920/2 로 잡았더니 무게가 오른쪽으로 쏠렸다
+        const bTotalW = nodeW * 2 + arrowW;
+        const bLeft = (1920 - bTotalW) / 2;
+        const bx = branch ? (i === 0 ? bLeft : bLeft + nodeW + arrowW) : null;
+        const by = branch
+          ? (i === 0
+              ? nodeY
+              : Math.round(bandTop + (CONTENT_BOTTOM - bandTop - (bH + 24) * bN + 24) / 2
+                           + (i - 1) * (bH + 24)))
+          : null;
+        const x = branch ? bx : startX + i * (nodeW + arrowW);
         const pop = nodePop(i);
         return (
           <React.Fragment key={i}>
             <div
               style={{
-                position: 'absolute', top: nodeY, left: x, width: nodeW, height: nodeH,
+                position: 'absolute', top: branch ? by : nodeY, left: x,
+                width: nodeW, height: branch && i > 0 ? bH : nodeH,
                 border: `2.5px solid ${node.hot ? YELLOW : T.ink}`,
                 borderRadius: 6,
                 background: node.hot ? 'rgba(250,255,46,0.12)' : T.mute,
-                opacity: 1,
                 opacity: pop,
                 transform: `scale(${0.92 + 0.08 * pop})`,
                 display: 'flex', flexDirection: 'column',
@@ -102,17 +120,29 @@ export const YFlowCard = ({
               ) : null}
             </div>
 
-            {/* 노드 사이 화살표 + 라벨 */}
-            {i < n - 1 ? (
-              <ArrowBetween
-                x={x + nodeW}
-                y={nodeY + nodeH / 2}
-                w={arrowW}
-                grow={arrowGrow(i)}
-                label={arrows[i]?.label || ''}
-                T={T}
-              />
-            ) : null}
+            {/* 노드 사이 화살표 + 라벨.
+                갈라짐일 때는 0번에서 **각 가지로** 하나씩 뻗는다 */}
+            {branch
+              ? (i > 0 ? (
+                  <ArrowBetween
+                    x={bLeft + nodeW}
+                    y={by + (i > 0 ? bH : nodeH) / 2}
+                    w={arrowW}
+                    grow={arrowGrow(i - 1)}
+                    label={arrows[i - 1]?.label || ''}
+                    T={T}
+                  />
+                ) : null)
+              : (i < n - 1 ? (
+                  <ArrowBetween
+                    x={x + nodeW}
+                    y={nodeY + nodeH / 2}
+                    w={arrowW}
+                    grow={arrowGrow(i)}
+                    label={arrows[i]?.label || ''}
+                    T={T}
+                  />
+                ) : null)}
           </React.Fragment>
         );
       })}
