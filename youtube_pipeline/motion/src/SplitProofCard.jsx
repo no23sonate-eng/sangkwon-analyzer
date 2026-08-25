@@ -71,7 +71,7 @@ export const SplitProofCard = ({
              style={{width: '100%', height: '100%', objectFit: 'cover'}} />
         {photoCaption ? (
           <div style={{position: 'absolute', left: 24, bottom: 20,
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 26,
+                       fontFamily: 'A2Z Medium, sans-serif', fontSize: 26,
                        color: '#FFFFFF', textShadow: '0 2px 10px rgba(0,0,0,0.7)'}}>
             {photoCaption}
           </div>
@@ -103,7 +103,7 @@ export const SplitProofCard = ({
       {value && eD > 0.9 ? (
         <div style={{position: 'absolute', left: shaftX - 4, top: shaftY + 14, opacity: valOp,
                      textAlign: 'center', transform: 'translateX(-50%)'}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: fit(value, 58, 460), color: '#FFFFFF', whiteSpace: 'nowrap',
                        textShadow: '0 2px 4px rgba(0,0,0,0.55), 0 0 22px rgba(0,0,0,0.5)'}}>
             {value}

@@ -37,7 +37,7 @@ export const SpecGridCard = ({
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 150, textAlign: 'center',
                      opacity: fadeIn(frame, 0)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
@@ -74,7 +74,7 @@ export const SpecGridCard = ({
                            marginBottom: SP.NEAR, wordBreak: 'keep-all', textAlign: 'center'}}>
                 {it.label}
               </div>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <div style={{fontFamily: 'A2Z Medium, sans-serif',
                            fontSize: Math.min(56, Math.max(32, Math.floor(cellW / Math.max(3, v.length) * 1.7))),
                            color: T.ink, textAlign: 'center', wordBreak: 'keep-all',
                            fontVariantNumeric: 'tabular-nums'}}>

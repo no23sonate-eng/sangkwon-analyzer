@@ -147,6 +147,40 @@ def skeleton(card, blank=True):
     return out
 
 
+def param_names(card):
+    """카드가 **받는 인자 이름 전부.**
+
+    `skeleton()` 은 기본값을 못 읽는 인자를 뺀다 (`aspect = 16 / 9` 같은 식).
+    그게 옳다 — 껍데기에 null 을 넣으면 카드 기본값을 덮으니까. 하지만
+    "이 인자가 이 카드에 있나" 를 물을 때 껍데기로 판단하면 멀쩡한 인자를
+    없다고 한다. 그럴 땐 이름만 본다.
+    """
+    f = SRC / f'{card}.jsx'
+    if not f.exists():
+        return None
+    txt = _strip(f.read_text())
+    m = re.search(rf'export const {card} = \(\{{', txt)
+    if not m:
+        return None
+    i, depth = m.end() - 1, 0
+    for j in range(i, len(txt)):
+        if txt[j] == '{':
+            depth += 1
+        elif txt[j] == '}':
+            depth -= 1
+            if depth == 0:
+                break
+    else:
+        return None
+    args = txt[m.end():j]
+    out = set()
+    for s, e in _split_top(args):
+        name = args[s:e].split('=')[0].strip()
+        if re.fullmatch(r'\w+', name):
+            out.add(name)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('card', nargs='?')

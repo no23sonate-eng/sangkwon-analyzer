@@ -77,12 +77,12 @@ export const SightlineCard = ({
 
       {/* 라벨 */}
       <div style={{position: 'absolute', left: Math.max(24, Math.min(1920 - 444, viewer.x - 210)), width: 420, top: groundY + 22, textAlign: 'center',
-                   opacity: fadeIn(frame, 8), fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                   opacity: fadeIn(frame, 8), fontFamily: 'A2Z Medium, sans-serif',
                    fontSize: 43, color: T.ink, wordBreak: 'keep-all'}}>
         {viewer.label}
       </div>
       <div style={{position: 'absolute', left: Math.max(24, Math.min(1920 - 444, mx - 210)), width: 420, top: groundY + 22, textAlign: 'center',
-                   opacity: fadeIn(frame, 8), fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                   opacity: fadeIn(frame, 8), fontFamily: 'A2Z Medium, sans-serif',
                    fontSize: 43, color: T.ink}}>
         {peak.label}
       </div>
@@ -96,7 +96,7 @@ export const SightlineCard = ({
       {building.label ? (
         <div style={{position: 'absolute', left: Math.max(24, Math.min(1920 - 484, building.x - 230)), width: 460, top: groundY - building.h - 108,
                      textAlign: 'center', opacity: fadeIn(frame, 20)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 45, color: T.ink}}>{building.label}</div>
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 45, color: T.ink}}>{building.label}</div>
           {building.note ? (
             <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>{building.note}</div>
           ) : null}

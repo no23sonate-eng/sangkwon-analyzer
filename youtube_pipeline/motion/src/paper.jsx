@@ -279,7 +279,7 @@ export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'cente
       {left ? (
         <div style={{width: 96 * grow, height: 8, background: YELLOW, marginBottom: 22}} />
       ) : null}
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+      <div style={{fontFamily: 'A2Z Medium, sans-serif',
                    fontSize: left ? 76 : 68, letterSpacing: '-0.01em', color: T.ink,
                    wordBreak: 'keep-all'}}>
         {title}
@@ -356,7 +356,7 @@ export const NumberIn = ({
       <span style={{display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom',
                     lineHeight: 1.02, height: size * 1.02}}>
         <span style={{display: 'inline-block', transform: `translateY(${rise}px)`,
-                      fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: size,
+                      fontFamily: 'A2Z Medium, sans-serif', fontSize: size,
                       color, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.01em'}}>
           {shown}<span style={{fontSize: size * unitSize}}>{unit}</span>
         </span>
@@ -386,7 +386,7 @@ export const ValueChip = ({children, size = 44, hot = false, theme, dark = false
     <span style={{display: 'inline-block',
                   background: hot ? YELLOW : T.ink,
                   color: hot ? '#1B1E24' : T.bg,
-                  fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                  fontFamily: 'A2Z Medium, sans-serif',
                   fontSize: size, lineHeight: 1.14,
                   padding: `${Math.round(size * 0.16)}px ${Math.round(size * 0.34)}px`,
                   borderRadius: 3, letterSpacing: '0.01em',
@@ -413,7 +413,7 @@ export const PaperKicker = ({title = '', sub = '', theme, dark = false, opacity 
     <div style={{position: 'absolute', left, top, opacity}}>
       <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
         <div style={{width: 46, height: 5, background: YELLOW}} />
-        <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <span style={{fontFamily: 'A2Z Medium, sans-serif',
                       fontSize: 34, letterSpacing: '0.06em', color: T.ink,
                       wordBreak: 'keep-all'}}>{title}</span>
       </div>

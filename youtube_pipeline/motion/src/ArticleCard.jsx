@@ -117,7 +117,7 @@ export const ArticleCard = ({
         {(outlet || date) ? (
           <div style={{position: 'absolute', left: 0, right: 0, top: 74, textAlign: 'center',
                        opacity: fadeIn(frame, 4),
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 30, letterSpacing: '0.14em', color: T.ink}}>
             {[outlet, date].filter(Boolean).join('  ')}
           </div>
@@ -145,7 +145,7 @@ export const ArticleCard = ({
         {/* 매체 + 날짜 — 지면 맨 위 머리글 */}
         {(outlet || date) ? (
           <div style={{opacity: fadeIn(frame, 4), marginBottom: 54, textAlign: 'center',
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 30, letterSpacing: '0.14em', color: TEXT,
                        paddingBottom: 18, borderBottom: `2px solid ${TEXT}`,
                        minWidth: 360}}>
@@ -161,7 +161,7 @@ export const ArticleCard = ({
                    style={{width: 280, height: 340, objectFit: 'cover',
                            filter: 'grayscale(1) contrast(1.05)'}} />
               {who ? (
-                <div style={{marginTop: 16, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                <div style={{marginTop: 16, fontFamily: 'A2Z Medium, sans-serif',
                              fontSize: 26, color: TEXT, wordBreak: 'keep-all'}}>{who}</div>
               ) : null}
               {role ? (

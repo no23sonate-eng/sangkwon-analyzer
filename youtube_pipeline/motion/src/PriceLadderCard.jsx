@@ -114,7 +114,7 @@ export const PriceLadderCard = ({
                                display: 'flex', alignItems: 'flex-end',
                                justifyContent: 'space-between', gap: SP.GAP}}>
             <div>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <span style={{fontFamily: 'A2Z Medium, sans-serif',
                             fontSize: isNew ? 46 : 38, color: T.ink, wordBreak: 'keep-all'}}>
                 {r.name}
               </span>

@@ -81,7 +81,7 @@ export const CompareCard = ({
       <div
         style={{
           position: 'absolute', top: 80, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 50, opacity: titleOpacity, color: T.ink, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          fontSize: 50, opacity: titleOpacity, color: T.ink, fontFamily: 'A2Z Medium, sans-serif',
         }}
       >
         {title}

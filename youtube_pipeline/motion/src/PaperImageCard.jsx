@@ -44,7 +44,7 @@ export const PaperImageCard = ({
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {imageTitle ? (
         <div style={{position: 'absolute', left, width: W, top: top - 56, textAlign: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 43, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 43, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
           {imageTitle}
         </div>
       ) : null}

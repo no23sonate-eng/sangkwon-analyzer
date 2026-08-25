@@ -102,7 +102,7 @@ export const YardViewCard = ({
       <div style={{position: 'absolute', left: BX - 60, width: 320, top: 0,
                    marginTop: Math.max(200, bTop - 58), textAlign: 'center',
                    opacity: fadeIn(frame, 20),
-                   fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                   fontFamily: 'A2Z Medium, sans-serif',
                    fontSize: 34, color: T.ink}}>
         {buildingLabel}
       </div>
@@ -110,7 +110,7 @@ export const YardViewCard = ({
       {verdict ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 76,
                      textAlign: 'center', opacity: fadeIn(frame, 62),
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                     fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: fit(verdict, 44, 1500),
                      color: clipped ? RED : T.ink, wordBreak: 'keep-all'}}>
           {verdict}

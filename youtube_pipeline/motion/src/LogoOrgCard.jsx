@@ -77,7 +77,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
           style={{
             position: 'absolute', top: PARENT_TOP + PARENT_H + 14, left: CX - PARENT_W / 2, width: PARENT_W,
             textAlign: 'center', fontSize: 26, opacity: parentOpacity, color: T.ink,
-            fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            fontFamily: 'A2Z Medium, sans-serif',
           }}
         >
           {parentLabel}
@@ -135,7 +135,7 @@ export const LogoOrgCard = ({title = '', subtitle = '', parentLogo = '', parentL
         style={{
           position: 'absolute', top: 150, left: 0, width: '100%', textAlign: 'center',
           fontSize: 44, opacity: titleOpacity, color: themeOf(theme).ink,
-          fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          fontFamily: 'A2Z Medium, sans-serif',
         }}
       >
         {title}

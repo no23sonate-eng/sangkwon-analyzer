@@ -47,7 +47,7 @@ export const YHeadlineCard = ({
         <div style={{position: 'absolute', left: 120, top: 150, opacity: enter}}>
           <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
             <div style={{width: 46, height: 5, background: YELLOW}} />
-            <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            <span style={{fontFamily: 'A2Z Medium, sans-serif',
                           fontSize: 34, letterSpacing: '0.06em', color: T.ink,
                           wordBreak: 'keep-all'}}>{kicker}</span>
           </div>

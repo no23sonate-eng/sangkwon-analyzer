@@ -97,7 +97,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => (
       ) : node.wordmark ? (
         <div style={{width: 236, height: 152, border: `4px solid ${T.ink}`, display: 'flex',
                      alignItems: 'center', justifyContent: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 84,
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 84,
                      letterSpacing: '0.04em', color: T.ink}}>
           {node.wordmark}
         </div>
@@ -108,7 +108,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => (
       )}
     </div>
     <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 50, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
+      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 50, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
       {node.sub ? (
         <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: T.soft}}>{node.sub}</div>
       ) : null}
@@ -175,7 +175,7 @@ export const PaperFlowCard = ({
               </div>
               <div style={{position: 'absolute', left: x - 40, width: SW + 80, top: y - 142,
                            transform: 'translateY(-100%)', textAlign: 'center', opacity: o, wordBreak: 'keep-all'}}>
-                <span style={{fontFamily: nd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                <span style={{fontFamily: nd.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                               fontSize: nd.hot ? 46 : 40, color: T.ink, lineHeight: 1.25, padding: '2px 10px',
                               background: nd.hot ? 'rgba(250,255,46,0.75)' : 'none',
                               boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>
@@ -229,7 +229,7 @@ export const PaperFlowCard = ({
               </div>
               <div style={{position: 'absolute', left: IX + 96, width: 780, top: y,
                            transform: 'translateY(-50%)', opacity: o, wordBreak: 'keep-all'}}>
-                <span style={{fontFamily: nd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                <span style={{fontFamily: nd.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                               fontSize: nd.hot ? 50 : 45, color: T.ink, lineHeight: 1.25, padding: '2px 10px',
                               background: nd.hot ? 'rgba(250,255,46,0.75)' : 'none',
                               boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>

@@ -88,13 +88,13 @@ export const RankTrendCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: px(i) - 180, width: 360, top: py(p.rank) - (hot ? 150 : 126),
                          textAlign: 'center', opacity: o}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: hot ? 110 : 84,
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: hot ? 110 : 84,
                             color: T.ink, lineHeight: 1, fontVariantNumeric: 'tabular-nums'}}>
                 {p.rank}<span style={{fontSize: hot ? 60 : 47}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: px(i) - 180, width: 360, top: Y1 + 54, textAlign: 'center', opacity: o}}>
-              <div style={{fontFamily: hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+              <div style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                            fontSize: 45, color: hot ? T.ink : T.soft, letterSpacing: '0.02em'}}>
                 {p.x}
               </div>

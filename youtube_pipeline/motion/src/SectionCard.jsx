@@ -105,7 +105,7 @@ export const SectionCard = ({
                              transform: k === 'above' ? 'translateY(-50%)' : 'none', textAlign: 'right',
                              opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
           <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: T.soft, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 94, color: T.ink, lineHeight: 1.08}}>
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 94, color: T.ink, lineHeight: 1.08}}>
             {o.floors}<span style={{fontSize: 56}}>층</span>
           </div>
           {o.note ? (
@@ -121,7 +121,7 @@ export const SectionCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: x0 + W + 78, top: (yTop + yBot) / 2 - 30, width: 640,
                                opacity: fadeIn(frame, 50 + i * 8)}}>
-            <div style={{fontFamily: bd.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            <div style={{fontFamily: bd.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 45, color: T.ink, wordBreak: 'keep-all'}}>{bd.label}</div>
           </div>
         );

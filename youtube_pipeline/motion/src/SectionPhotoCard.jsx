@@ -82,7 +82,7 @@ export const SectionPhotoCard = ({
 
       {/* 타이틀 */}
       <div style={{position: 'absolute', top: 92, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 68,
                      letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: SHADOW}}>
           {title}
         </div>
@@ -103,7 +103,7 @@ export const SectionPhotoCard = ({
                              transform: `translateY(${ty})`, textAlign: 'right', opacity: fadeIn(frame, t)}}>
           <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: '#D8DDE4',
                        letterSpacing: '0.05em', lineHeight: 1.1, textShadow: SHADOW}}>{o.label}</div>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 100,
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 100,
                        color: '#FFFFFF', lineHeight: 1.06, textShadow: SHADOW}}>
             {o.floors}<span style={{fontSize: 58}}>층</span>
           </div>
@@ -119,7 +119,7 @@ export const SectionPhotoCard = ({
         <div key={i} style={{position: 'absolute', right: 84, width: 900, top: yOf(b.y0) - 14,
                              transform: 'translateY(-100%)', textAlign: 'right',
                              opacity: fadeIn(frame, 50 + i * 8)}}>
-          <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                         color: b.hot ? '#12151a' : '#FFFFFF', wordBreak: 'keep-all',
                         background: b.hot ? YELLOW : 'rgba(11,14,18,0.88)', padding: '6px 18px',
                         boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone',

@@ -79,7 +79,7 @@ export const TrendCard = ({
         return (
           <div key={e.i} style={{position: 'absolute', left: x0 + len + 46, width: 460,
                                  top: e.ly - 54, opacity: fadeIn(frame, 52)}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            <div style={{fontFamily: 'A2Z Medium, sans-serif',
                          fontSize: on ? 84 : 58, color: T.ink,
                          fontVariantNumeric: 'tabular-nums'}}>
               {e.s.display}

@@ -64,7 +64,7 @@ export const QuoteCard = ({
 
           <div style={{position: 'absolute', left: 88, bottom: 56, opacity: attr}}>
             <div style={{width: 48, height: 3, background: YELLOW, marginBottom: SP.NEAR}} />
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            <div style={{fontFamily: 'A2Z Medium, sans-serif',
                          fontSize: 30, color: TEXT}}>{name}</div>
             {role ? (
               <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',

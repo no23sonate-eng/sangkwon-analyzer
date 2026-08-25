@@ -35,7 +35,7 @@ export const HeadlineCard = ({
                    top: (CONTENT_BOTTOM - (line2 ? 200 : 100)) / 2,
                    textAlign: 'center', opacity: o, transform: `translateY(${y}px)`}}>
         <div style={{fontSize: size(line1), color: T.ink, lineHeight: 1.4,
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                     fontFamily: 'A2Z Medium, sans-serif',
                      wordBreak: 'keep-all'}}>
           {line1}
         </div>

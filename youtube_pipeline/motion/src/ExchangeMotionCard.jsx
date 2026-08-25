@@ -73,7 +73,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => {
         ) : (
           <div style={{width: 230, height: 142, border: `4px solid ${T.ink}`, display: 'flex',
                        alignItems: 'center', justifyContent: 'center',
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 80,
+                       fontFamily: 'A2Z Medium, sans-serif', fontSize: 80,
                        letterSpacing: '0.04em', color: T.ink}}>
             {node.wordmark}
           </div>
@@ -81,7 +81,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => {
       </div>
       <div style={{position: 'absolute', left: cx - 165, width: 330, top: top + LOGO_H + 14,
                    textAlign: 'center', opacity: o}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, color: T.ink,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52, color: T.ink,
                      lineHeight: 1.2, wordBreak: 'keep-all'}}>{node.label}</div>
         {node.sub ? (
           <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
@@ -143,7 +143,7 @@ export const ExchangeMotionCard = ({
               <Pict T={T} name={item.icon} stroke={T.ink} />
             </svg>
             <div style={{textAlign: 'left'}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46,
+              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                            color: T.ink, lineHeight: 1.15, whiteSpace: 'nowrap'}}>
                 <span style={{background: item.hot ? YELLOW : 'none', padding: item.hot ? '2px 10px' : 0}}>
                   {item.label}

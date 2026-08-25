@@ -52,7 +52,7 @@ export const ArchiveCard = ({
                           textAlign: 'center'}
                        : {bottom: 366}),
                      opacity: fadeIn(frame, 14)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: Math.min(68, Math.max(40, Math.floor(2600 / Math.max(10, headline.length)))),
                        lineHeight: 1.3, color: '#FFFFFF',
                        textShadow: '0 3px 18px rgba(0,0,0,0.92)', wordBreak: 'keep-all'}}>

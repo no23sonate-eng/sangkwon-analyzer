@@ -68,7 +68,7 @@ export const TwoPanelCard = ({
               </div>
             ) : null}
             <div style={{marginTop: SP.NEAR,
-                         fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                         fontFamily: 'A2Z Medium, sans-serif',
                          fontSize: fit(p.label, 72, HALF * 2 - 40), lineHeight: 1.15,
                          color: T.ink, letterSpacing: '-0.02em', wordBreak: 'keep-all'}}>
               {p.label}

@@ -140,7 +140,7 @@ export const ArchiveStamp = ({label = '', year = '', theme, opacity = 1}) => {
       <span style={{width: 9, height: 9, borderRadius: '50%',
                     background: '#E0483A', boxShadow: '0 0 12px rgba(224,72,58,0.8)'}} />
       {year ? (
-        <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 30,
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 30,
                       letterSpacing: '0.12em', color: '#FFFFFF',
                       textShadow: '0 2px 10px rgba(0,0,0,0.9)'}}>{year}</span>
       ) : null}

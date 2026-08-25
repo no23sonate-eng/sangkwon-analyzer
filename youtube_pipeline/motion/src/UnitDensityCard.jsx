@@ -130,7 +130,7 @@ export const UnitDensityCard = ({
         <div key={i} style={{position: 'absolute', left: r.x, width: r.w,
                              top: baseY - r.h - NAMEH + 4, textAlign: 'center',
                              opacity: fadeIn(frame, 4 + i * 4)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 40, color: T.ink, wordBreak: 'keep-all'}}>
             {r.it.name}
           </div>

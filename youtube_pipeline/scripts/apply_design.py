@@ -21,7 +21,7 @@ import re
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from card_props import skeleton                                   # noqa: E402
+from card_props import skeleton, param_names                     # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SHARE_MAX = 0.10
@@ -103,6 +103,24 @@ def video_slots():
     out = {}
     for f in src.glob('*Card.jsx'):
         out[f.stem] = set(re.findall(r'backdrop=\{(\w+)\}', f.read_text()))
+    return out
+
+
+def slice_caps():
+    """카드가 배열을 몇 개까지 그리는가.
+
+    `bars.slice(0, 5)` 처럼 **말없이 자르는** 코드가 여럿 있다. 여섯 번째를
+    줘도 렌더는 [ok] 로 끝나고 화면에서만 사라진다. 더그랜드롯데 #88 은
+    브랜드 여섯 개를 견주는 컷이었는데 잘려 나간 여섯 번째가 롯데호텔 39%,
+    그 컷의 결론이었다. 시트를 눈으로 보기 전엔 몰랐다.
+    """
+    src = ROOT / 'motion' / 'src'
+    out = {}
+    for f in src.glob('*Card.jsx'):
+        caps = {m[0]: int(m[1])
+                for m in re.findall(r'(\w+)\.slice\(0,\s*(\d+)\)', f.read_text())}
+        if caps:
+            out[f.stem] = caps
     return out
 
 
@@ -188,6 +206,17 @@ def main():
             if isinstance(v, str) and v.lower().endswith(('.mp4', '.webm', '.mov')):
                 misvid.append(f"#{e['id']} {e['card']}.{k}")
 
+    # 배열을 준 개수만큼 다 그리는가 — 카드가 말없이 자르지 않는가
+    cut_off = []
+    for e in scenes:
+        caps = slice_caps().get(e['card'], {})
+        row = design.get(str(e['id']))
+        given = row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {}
+        for k, cap in caps.items():
+            v = given.get(k)
+            if isinstance(v, list) and len(v) > cap:
+                cut_off.append(f"#{e['id']} {e['card']}.{k} {len(v)}개 중 {cap}개만")
+
     # props 키가 그 카드에 실제로 있는가.
     # FullBleedCard 에 line1/line2 를 줘도 아무 일도 안 일어난다 — 카드는
     # 기본값으로 그려지고 렌더는 성공한다. 화면이 비었다는 걸 시트에서야
@@ -196,9 +225,11 @@ def main():
     for e in scenes:
         row = design.get(str(e['id']))
         given = row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {}
-        sk = skeleton(e['card']) or {}
+        # 껍데기가 아니라 **인자 이름**으로 본다 — 껍데기는 기본값을 못 읽은
+        # 인자를 빼므로(aspect = 16 / 9), 멀쩡한 인자를 없다고 하게 된다
+        names = param_names(e['card']) or set()
         for k in given:
-            if k not in sk:
+            if k not in names:
                 unknown.append(f"#{e['id']} {e['card']}.{k}")
 
     # 같은 소재를 몇 컷에서 쓰는가.
@@ -261,6 +292,10 @@ def main():
         ok = False
         print(f'  ✗ 사진 슬롯에 영상 {len(misvid)}건 — 렌더가 통째로 멈춘다: '
               + ', '.join(misvid[:6]))
+    if cut_off:
+        ok = False
+        print(f'  ✗ 카드가 말없이 자르는 배열 {len(cut_off)}건 — 화면에서만 사라진다: '
+              + ', '.join(cut_off[:6]))
     if runs:
         ok = False
         print(f'  ✗ 같은 카드 연속 {len(runs)}곳: ' +

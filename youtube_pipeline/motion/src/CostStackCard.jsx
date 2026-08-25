@@ -109,7 +109,7 @@ export const CostStackCard = ({
                              opacity: fadeIn(frame, 26 + i * STEP)}}>
           <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, lineHeight: 1.2,
                        color: T.soft, wordBreak: 'keep-all'}}>{r.label}</div>
-          <div style={{marginTop: SP.TIGHT, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 46, lineHeight: 1, color: T.ink,
                        fontVariantNumeric: 'tabular-nums'}}>
             {r.prefix ? <span style={{fontSize: 30, color: T.soft, marginRight: 7,
@@ -126,7 +126,7 @@ export const CostStackCard = ({
         <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, lineHeight: 1,
                      letterSpacing: '0.14em', color: T.soft}}>{totalLabel}</div>
         {/* 총액 선이 지나는 높이를 비워 둔다 — 옐로 박스가 선을 물면 둘 다 지저분해진다 */}
-        <div style={{marginTop: SP.GAP, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: 92, lineHeight: 1.05, color: '#1B1E24',
                      fontVariantNumeric: 'tabular-nums'}}>
           <span style={{background: YELLOW, padding: '0 14px'}}>

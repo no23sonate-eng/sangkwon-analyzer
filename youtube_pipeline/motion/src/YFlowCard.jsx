@@ -95,7 +95,7 @@ export const YFlowCard = ({
                   {node.tag}
                 </div>
               ) : null}
-              <div style={{fontFamily: node.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+              <div style={{fontFamily: node.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                            fontSize: 38, letterSpacing: '0.02em', color: T.ink,
                            wordBreak: 'keep-all', textAlign: 'center', padding: '0 14px'}}>
                 {node.label}

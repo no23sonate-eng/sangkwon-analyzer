@@ -40,7 +40,7 @@ export const NewsHeadlineCard = ({
                  boxShadow: '0 24px 70px rgba(0,0,0,0.30)'}}>
       <div style={{display: 'flex', alignItems: 'center', marginBottom: SP.GAP}}>
         <div style={{width: 6, height: 34, background: YELLOW, marginRight: 18}} />
-        <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <span style={{fontFamily: 'A2Z Medium, sans-serif',
                       fontSize: 30, letterSpacing: '0.08em', color: '#16181C'}}>
           {ol}
         </span>

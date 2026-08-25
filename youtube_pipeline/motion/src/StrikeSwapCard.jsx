@@ -72,7 +72,7 @@ export const StrikeSwapCard = ({
                    paddingLeft: center ? 0 : 150,
                    opacity: fadeIn(frame, 2)}}>
         <div style={{position: 'relative', display: 'inline-block',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                     fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: fromSize, color: T.ink, opacity: 0.66, lineHeight: 1.1,
                      whiteSpace: 'nowrap', letterSpacing: '-0.02em'}}>
           {from}
@@ -114,7 +114,7 @@ export const StrikeSwapCard = ({
                    textAlign: center ? 'center' : 'left',
                    paddingLeft: center ? 0 : 150,
                    opacity: r2, transform: `translateY(${(1 - r2) * 26}px)`}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <div style={{fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: toSize, color: T.ink, lineHeight: 1.05,
                      letterSpacing: '-0.03em', whiteSpace: 'nowrap'}}>
           <span style={{background: YELLOW, color: '#23262B', padding: '0 12px 4px',
@@ -122,7 +122,7 @@ export const StrikeSwapCard = ({
         </div>
         {toLabel ? (
           <div style={{marginTop: 16,
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 48, color: T.ink, whiteSpace: 'nowrap',
                        letterSpacing: '-0.01em'}}>
             {toLabel}

@@ -110,7 +110,7 @@ export const AspectRatioCard = ({
                          opacity: fadeIn(frame, 52 + i * 10)}}>
               {/* 수치와 이름을 한 줄에 붙인다 — 두 줄로 쪼개면 아래 글자 블록이
                   길어지고 그만큼 도형이 작아진다. 도형이 주인공인 카드다 */}
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <div style={{fontFamily: 'A2Z Medium, sans-serif',
                            fontSize: 58, lineHeight: 1, color: T.ink,
                            fontVariantNumeric: 'tabular-nums'}}>
                 {it.w}{unit}
@@ -121,7 +121,7 @@ export const AspectRatioCard = ({
               </div>
               {it.label ? (
                 <div style={{marginTop: SP.NEAR, fontSize: 40, color: T.ink,
-                             fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                             fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              wordBreak: 'keep-all'}}>
                   {it.hot
                     ? <span style={{background: YELLOW, color: '#1B1E24', padding: '2px 14px'}}>{it.label}</span>

@@ -82,7 +82,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
           <div key={i} style={{position: 'absolute', left: SHAFT_X + SHAFT_W + 62, width: 860, top: y,
                                transform: 'translateY(-50%)',
                                opacity: on ? 1 : 0.35, transition: 'none'}}>
-            <div style={{fontFamily: s.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            <div style={{fontFamily: s.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 48, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
               {s.label}
             </div>
@@ -99,7 +99,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
         <div key={i} style={{position: 'absolute', left: 280, width: SHAFT_X - 340, top: yOf(i),
                              transform: 'translateY(-50%)', textAlign: 'right',
                              opacity: arrived(i) ? 0.95 : 0.3,
-                             fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 36, color: T.ink}}>
+                             fontFamily: 'A2Z Medium, sans-serif', fontSize: 36, color: T.ink}}>
           {s.floor || ''}
         </div>
       ))}

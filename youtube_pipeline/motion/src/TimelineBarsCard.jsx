@@ -62,7 +62,7 @@ export const TimelineBarsCard = ({
           <React.Fragment key={bi}>
             <div style={{position: 'absolute', left: 120, width: 280, top: y + cellH / 2 - 22,
                          opacity: fadeIn(frame, 12 + bi * 10)}}>
-              <span style={{fontFamily: hot ? 'Pretendard Bold, A2Z Medium, sans-serif'
+              <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif'
                                             : 'A2Z Light, sans-serif',
                             fontSize: 33, color: hot ? T.ink : T.soft,
                             wordBreak: 'keep-all'}}>{b.label}</span>
@@ -80,7 +80,7 @@ export const TimelineBarsCard = ({
                          left: left + months * (cellW + gap) + 26,
                          top: y + cellH / 2 - 30, whiteSpace: 'nowrap',
                          opacity: fadeIn(frame, 46 + bi * 10)}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <span style={{fontFamily: 'A2Z Medium, sans-serif',
                             fontSize: 52, color: hot ? T.ink : T.soft,
                             fontVariantNumeric: 'tabular-nums'}}>
                 {months}개월

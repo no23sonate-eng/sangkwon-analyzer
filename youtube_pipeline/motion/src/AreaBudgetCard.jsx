@@ -93,7 +93,7 @@ export const AreaBudgetCard = ({
 
       {/* 전체 크기 — 대지 왼쪽 위 */}
       <div style={{position: 'absolute', left: X, top: Y - 62, opacity: fadeIn(frame, 4)}}>
-        <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46,
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                       color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
           {total}{unit}
         </span>
@@ -114,7 +114,7 @@ export const AreaBudgetCard = ({
                           background: b.hot ? YELLOW : T.tones[b.i % T.tones.length]}} />
             <div>
               <div style={{fontFamily: b.hot
-                             ? 'Pretendard Bold, A2Z Medium, sans-serif'
+                             ? 'A2Z Medium, sans-serif'
                              : 'A2Z Regular, sans-serif',
                            fontSize: fit(b.label || '', 40, 620), color: T.ink,
                            wordBreak: 'keep-all'}}>
@@ -143,7 +143,7 @@ export const AreaBudgetCard = ({
             <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
               {over > 0 ? '모자란 면적' : '남는 면적'}
             </span>
-            <span style={{marginLeft: SP.GAP, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            <span style={{marginLeft: SP.GAP, fontFamily: 'A2Z Medium, sans-serif',
                           fontSize: 54, color: over > 0 ? T.ink : T.ink,
                           fontVariantNumeric: 'tabular-nums'}}>
               {over > 0 ? `-${Math.round(over)}` : Math.round(rest)}{unit}

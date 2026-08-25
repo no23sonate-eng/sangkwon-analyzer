@@ -148,7 +148,7 @@ export const SectionDiagramCard = ({
                                left: right ? SX(m.x) + 16 : undefined,
                                right: right ? undefined : 1920 - SX(m.x) + 16,
                                opacity: o, whiteSpace: 'nowrap',
-                               fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                               fontFamily: 'A2Z Medium, sans-serif',
                                fontSize: fit(m.label, 34, 480), color: T.ink}}>
             {m.label}
           </div>

@@ -38,7 +38,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
       {one ? (
         <div style={{position: 'absolute', top: 150, left: 0, width: 1920,
                      textAlign: 'center', opacity: fadeIn(frame, 0),
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                     fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: 92, letterSpacing: '-0.01em', color: T.ink,
                      wordBreak: 'keep-all'}}>
           {title}
@@ -62,7 +62,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
             {/* 강조 수치만 밑줄까지 그어 "확정"시킨다 — §27 */}
             <div style={{lineHeight: 1}}>
               {it.display != null ? (
-                <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                <span style={{fontFamily: 'A2Z Medium, sans-serif',
                               fontSize: it.hot ? 148 : 124, color: T.ink,
                               fontVariantNumeric: 'tabular-nums'}}>
                   {/* "약", "최대" 같은 한정어는 **수치보다 작게**. 같은 크기로 두면
@@ -93,7 +93,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                           underline={it.hot ? YELLOW : null} />
               )}
             </div>
-            <div style={{marginTop: SP.GAP, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            <div style={{marginTop: SP.GAP, fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 46, color: T.ink, wordBreak: 'keep-all'}}>
               {/* 칩을 쓰면 라벨은 맨 글자로 둔다 — 값도 옐로, 라벨도 옐로면
                   강조가 두 군데로 갈려서 아무것도 강조가 안 된다 (§40-6) */}

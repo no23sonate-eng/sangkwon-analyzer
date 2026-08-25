@@ -90,7 +90,7 @@ export const CalendarCompareCard = ({
       <div
         style={{
           position: 'absolute', top: 110, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, color: T.ink, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          fontSize: 34, opacity: titleOpacity, color: T.ink, fontFamily: 'A2Z Medium, sans-serif',
         }}
       >
         {title}

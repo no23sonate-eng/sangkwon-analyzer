@@ -93,7 +93,7 @@ export const ExplodedStackCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: CX + W / 2 + 74, top: cy, width: 640,
                                transform: 'translateY(-50%)', opacity: fadeIn(frame, 22 + (n - 1 - i) * 5)}}>
-            <div style={{fontFamily: L.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            <div style={{fontFamily: L.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 42, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
               {L.hot ? <span style={{background: 'rgba(250,255,46,0.75)', padding: '2px 10px'}}>{L.label}</span> : L.label}
             </div>

@@ -155,7 +155,7 @@ export const FrontageCard = ({
         return (
           <div key={oi} style={{position: 'absolute', left: cx - 300, width: 600, top: labelTop,
                                 textAlign: 'center', opacity: op}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            <div style={{fontFamily: 'A2Z Medium, sans-serif',
                          fontSize: fit(o.label, 46, 560), color: o.hot ? T.ink : T.soft}}>
               {o.label}
             </div>
@@ -176,7 +176,7 @@ export const FrontageCard = ({
         return (
           <div key={oi} style={{position: 'absolute', left: cx - 300, width: 600,
                                 top: noteTop, textAlign: 'center', opacity: op,
-                                fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                                fontFamily: 'A2Z Medium, sans-serif',
                                 fontSize: fit(o.note, 38, 560),
                                 color: T.ink, opacity: o.hot ? 1 : 0.72}}>
             {o.note}

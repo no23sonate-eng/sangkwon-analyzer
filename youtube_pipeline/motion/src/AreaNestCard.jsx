@@ -93,11 +93,11 @@ export const AreaNestCard = ({
             </svg>
             <div style={{position: 'absolute', left: CX + BOX / 2 + 100, width: 700, top: ly,
                          transform: 'translateY(-50%)', opacity: o}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 62, color: T.ink,
+              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 62, color: T.ink,
                            lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
                 {it.display ?? it.value}<span style={{fontSize: 38, marginLeft: 6}}>{unit}</span>
               </div>
-              <div style={{marginTop: 6, fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+              <div style={{marginTop: 6, fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                            fontSize: 40, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
@@ -115,7 +115,7 @@ export const AreaNestCard = ({
       {multipleNote ? (
         <div style={{position: 'absolute', left: 40, width: CX - BOX / 2 - 100, top: 452,
                      textAlign: 'right', opacity: fadeIn(frame, 70)}}>
-          <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 56, color: T.ink,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, color: T.ink,
                         background: 'rgba(250,255,46,0.8)', padding: '6px 20px'}}>
             {multipleNote}
           </span>

@@ -65,7 +65,7 @@ export const StatCard = ({
                     color={ink} align="center" />
         </div>
       ) : (
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+      <div style={{fontFamily: 'A2Z Medium, sans-serif',
                    fontSize: size(v), lineHeight: 1.1, color: ink,
                    fontVariantNumeric: 'tabular-nums', wordBreak: 'keep-all', ...sh}}>
         {v}
@@ -86,7 +86,7 @@ export const StatCard = ({
 
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 214, textAlign: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                     fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: 44, color: ink, opacity: fadeIn(frame, 0), ...sh,
                      wordBreak: 'keep-all'}}>
           {title}

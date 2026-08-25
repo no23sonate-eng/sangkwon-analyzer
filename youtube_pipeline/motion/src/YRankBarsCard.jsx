@@ -57,7 +57,7 @@ export const YRankBarsCard = ({
                          width: barX - numX - 30, whiteSpace: 'nowrap', opacity: grow}}>
               <span
                 style={{
-                  fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 26,
+                  fontFamily: 'A2Z Medium, sans-serif', fontSize: 26,
                   letterSpacing: '0.12em', color: r.hot ? T.ink : T.soft,
                   display: 'inline-block', width: 74,
                   fontVariantNumeric: 'tabular-nums',

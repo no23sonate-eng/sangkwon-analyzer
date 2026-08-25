@@ -62,7 +62,7 @@ export const BrandCard = ({
                                            objectFit: 'contain',
                                            filter: logoFilter}} />
             ) : (
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <div style={{fontFamily: 'A2Z Medium, sans-serif',
                            fontSize: fit(name, 108, 1400), color: T.ink, letterSpacing: -1}}>
                 {name}
               </div>
@@ -134,7 +134,7 @@ export const BrandCard = ({
                                        objectFit: 'contain', objectPosition: 'left center',
                                        filter: logoFilter}} />
         ) : (
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: fit(name, 82, 780), color: T.ink, letterSpacing: -1,
                        wordBreak: 'keep-all'}}>
             {name}

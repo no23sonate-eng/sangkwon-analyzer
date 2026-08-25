@@ -119,12 +119,12 @@ export const PhotoStepsCard = ({
             <div style={{position: 'absolute', left: x - 14, top: y - 14, width: 54, height: 54,
                          borderRadius: 27, background: T.ink, color: '#FFF', opacity: pop,
                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                         fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 30}}>
+                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 30}}>
               {i + 1}
             </div>
             <div style={{position: 'absolute', left: x - 30, width: TW + 60, top: y + TH + 26,
                          textAlign: 'center', opacity: fadeIn(frame, T0 + STEP * i + 6), wordBreak: 'keep-all'}}>
-              <span style={{fontFamily: st.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+              <span style={{fontFamily: st.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                             fontSize: st.hot ? 46 : 42, color: T.ink, lineHeight: 1.25, padding: '2px 10px',
                             background: st.hot ? 'rgba(250,255,46,0.8)' : 'none',
                             boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'}}>

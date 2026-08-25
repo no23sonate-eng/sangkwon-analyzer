@@ -37,7 +37,7 @@ export const FullBleedCard = ({
                    justifyContent: align === 'bottom' ? 'flex-start' : 'center',
                    textAlign: 'center', opacity: o, transform: `translateY(${rise}px)`}}>
         {headline ? (
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 92,
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 92,
                        lineHeight: 1.25, letterSpacing: '-0.01em', color: '#FFFFFF',
                        textShadow: SHADOW, wordBreak: 'keep-all'}}>
             {headline}
@@ -54,7 +54,7 @@ export const FullBleedCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 800, textAlign: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52, color: '#FFFFFF',
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 52, color: '#FFFFFF',
                      textShadow: SHADOW, opacity: fadeIn(frame, 30), wordBreak: 'keep-all'}}>
           {caption}
         </div>

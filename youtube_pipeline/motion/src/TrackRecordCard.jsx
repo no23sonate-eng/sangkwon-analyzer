@@ -73,7 +73,7 @@ export const TrackRecordCard = ({
       {/* 주체 이름 — 이력의 주어. 가장 크게 */}
       <div style={{position: 'absolute', left: X, width: 1500, top: L.name.top + DY,
                    opacity: fadeIn(frame, 4)}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <div style={{fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: fit(name, 76, 1440), color: T.ink, lineHeight: 1.15,
                      wordBreak: 'keep-all'}}>
           {name}
@@ -116,7 +116,7 @@ export const TrackRecordCard = ({
             <div style={{position: 'absolute', left: X, top: y,
                          width: estWidth(it.label || '', size) + 40,
                          clipPath: `inset(0 ${(1 - e) * 100}% 0 0)`}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: size,
+              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: size,
                            color: T.ink, lineHeight: 1.2, whiteSpace: 'nowrap'}}>
                 <span style={{background: it.hot ? YELLOW : 'none', color: it.hot ? INK : T.ink,
                               padding: it.hot ? '2px 12px' : 0}}>{it.label}</span>

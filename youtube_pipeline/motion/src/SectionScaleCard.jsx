@@ -199,7 +199,7 @@ export const SectionScaleCard = ({
           <React.Fragment key={ci}>
             <div style={{position: 'absolute', left: cx + CW / 2 + 54,
                          top: BOT - clearPx / 2 - 26, opacity: fadeIn(frame, 30)}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <span style={{fontFamily: 'A2Z Medium, sans-serif',
                             fontSize: 40, color: c.hot ? T.ink : T.soft,
                             fontVariantNumeric: 'tabular-nums'}}>
                 {clearM}m
@@ -207,7 +207,7 @@ export const SectionScaleCard = ({
             </div>
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot,
                          top: BOT + 26, textAlign: 'center', opacity: fadeIn(frame, 20 + ci * 6)}}>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <div style={{fontFamily: 'A2Z Medium, sans-serif',
                            fontSize: fit(c.label || '', 42, slot - 20), color: T.ink,
                            wordBreak: 'keep-all'}}>
                 {c.label}

@@ -44,11 +44,11 @@ const Side = ({s, x, w, frame, i, shapeW, shapeH, shapeCY}) => {
 
       <div style={{position: 'absolute', left: x, width: w, top: 690, textAlign: 'center',
                    opacity: fadeIn(frame, 34 + i * 10)}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52,
                      letterSpacing: '0.02em', color: '#FFFFFF', textShadow: SHADOW}}>
           {s.name}
         </div>
-        <div style={{marginTop: 10, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 66,
+        <div style={{marginTop: 10, fontFamily: 'A2Z Medium, sans-serif', fontSize: 66,
                      color: s.hot ? YELLOW : '#FFFFFF', fontVariantNumeric: 'tabular-nums', textShadow: SHADOW}}>
           {s.area}
         </div>
@@ -83,7 +83,7 @@ export const ParkCompareCard = ({title = '', sub = '', sides = [], note = '', so
                    background: 'rgba(255,255,255,0.35)'}} />
 
       <div style={{position: 'absolute', top: 96, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 68,
                      letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: SHADOW}}>
           {title}
         </div>
@@ -96,7 +96,7 @@ export const ParkCompareCard = ({title = '', sub = '', sides = [], note = '', so
       {note ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: 208, textAlign: 'center',
                      opacity: fadeIn(frame, 62)}}>
-          <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 44,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 44,
                         color: '#12151a', background: YELLOW, padding: '6px 20px'}}>{note}</span>
         </div>
       ) : null}

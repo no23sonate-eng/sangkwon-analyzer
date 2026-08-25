@@ -64,7 +64,7 @@ export const LowerThirdCard = ({
                             padding: left ? '0 0 90px 150px' : '0 150px 90px',
                             textAlign: left ? 'left' : 'center'}}>
         {num ? (
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 128, lineHeight: 1, color: YELLOW,
                        letterSpacing: '-0.03em',
                        opacity: numIn,
@@ -83,7 +83,7 @@ export const LowerThirdCard = ({
 
         {label ? (
           <div style={{marginTop: num ? SP.NEAR : 0,
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: labSize, lineHeight: 1.2, color: fg,
                        letterSpacing: '-0.015em', wordBreak: 'keep-all',
                        maxWidth: 1560,

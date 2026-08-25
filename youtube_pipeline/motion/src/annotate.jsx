@@ -111,8 +111,8 @@ export const StampLabel = ({top, sub = '', size = 54, hot = false, align = 'left
                    fontFamily: caps
                      ? 'A2Z Light, sans-serif'
                      : weight === 'bold'
-                     ? 'Pretendard Bold, A2Z Medium, sans-serif'
-                     : 'Pretendard Bold, A2Z Regular, sans-serif',
+                     ? 'A2Z Medium, sans-serif'
+                     : 'A2Z Medium, sans-serif',
                    fontSize: caps ? Math.round(s * 1.12) : s,
                    lineHeight: 1.16,
                    letterSpacing: caps ? '0.16em' : '-0.01em',
@@ -211,7 +211,7 @@ export const DimLine = ({x1, y1, x2, y2, progress = 1, color = '#FFFFFF',
         return (
           <text x={lx} y={ly} fill={color} fontSize={labelSize}
                 textAnchor={vertical ? (flip ? 'end' : 'start') : 'middle'}
-                style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                style={{fontFamily: 'A2Z Medium, sans-serif',
                         paintOrder: 'stroke', stroke: 'rgba(0,0,0,0.45)', strokeWidth: 6}}>
             {label}
           </text>
@@ -332,7 +332,7 @@ export const RoughTitle = ({lines = [], kicker = '', size = 76, reveal = 1,
               <polygon points={roughRect(100, 100, i + 1, 2.4)} fill={fill} />
             </svg>
             <span style={{position: 'relative',
-                          fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                          fontFamily: 'A2Z Medium, sans-serif',
                           fontSize: size, lineHeight: 1.2, color,
                           letterSpacing: '-0.015em', whiteSpace: 'nowrap'}}>
               {t}

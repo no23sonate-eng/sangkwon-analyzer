@@ -190,14 +190,14 @@ export const ScaleCompareCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: y - 76,
                          textAlign: 'center', opacity: o}}>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52,
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52,
                             color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
                 {Math.round(shown).toLocaleString('ko-KR')}<span style={{fontSize: 34}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: baseY + 18,
                          textAlign: 'center', opacity: o}}>
-              <div style={{fontFamily: it.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+              <div style={{fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                            fontSize: labelSize, color: it.hot ? T.ink : T.soft, lineHeight: 1.3,
                            wordBreak: 'keep-all'}}>
                 {it.label}

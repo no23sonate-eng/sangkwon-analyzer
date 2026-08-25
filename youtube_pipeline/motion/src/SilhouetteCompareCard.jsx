@@ -90,7 +90,7 @@ export const SilhouetteCompareCard = ({
           <div key={i} style={{position: 'absolute', left: cx - slot / 2, width: slot,
                                top: BOT + 16, textAlign: 'center', opacity: o}}>
             <div style={{fontFamily: it.hot
-                           ? 'Pretendard Bold, A2Z Medium, sans-serif'
+                           ? 'A2Z Medium, sans-serif'
                            : 'A2Z Regular, sans-serif',
                          fontSize: fit(it.label || '', 34, slot - 16),
                          lineHeight: 1.22, color: T.ink, wordBreak: 'keep-all'}}>

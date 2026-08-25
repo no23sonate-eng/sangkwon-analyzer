@@ -128,7 +128,7 @@ export const VolatilityCard = ({
                       stroke={T.ink} strokeWidth={on ? 6 : 3.5} opacity={on ? 1 : 0.42} />
                 {on ? <circle cx={23} cy={8} r={5} fill={YELLOW} stroke={T.ink} strokeWidth={2} /> : null}
               </svg>
-              <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <span style={{fontFamily: 'A2Z Medium, sans-serif',
                             fontSize: on ? 32 : 28, color: on ? T.ink : T.soft,
                             wordBreak: 'keep-all'}}>{s.name}</span>
               {s.note ? (
@@ -158,7 +158,7 @@ export const VolatilityCard = ({
           return (
             <div key={r.si} style={{position: 'absolute', left: LBX, width: 330, top: y - 22,
                                     opacity: brac,
-                                    fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                                    fontFamily: 'A2Z Medium, sans-serif',
                                     fontSize: r.s.hot ? 34 : 28,
                                     color: r.s.hot ? T.ink : T.soft, wordBreak: 'keep-all'}}>
               {r.s.swingLabel}

@@ -110,12 +110,12 @@ export const DotMatrixCard = ({
           <div key={gi} style={{position: 'absolute', left: L, width: Wd,
                                 top: LABEL_Y, textAlign: 'center',
                                 opacity: fadeIn(frame, 26 + gi * 14)}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 68, color: T.ink,
+            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 68, color: T.ink,
                          lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
               {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
               <span style={{fontSize: 42, marginLeft: 4}}>{unit}</span>
             </div>
-            <div style={{marginTop: 6, fontFamily: g.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            <div style={{marginTop: 6, fontFamily: g.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
               {g.label}
             </div>

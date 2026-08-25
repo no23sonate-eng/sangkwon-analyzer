@@ -93,7 +93,7 @@ export const ForkPathCard = ({
           <div key={i} style={{position: 'absolute', left: X1 + SP.BLOCK, top: midY + dy - 58,
                                width: 1920 - (X1 + SP.BLOCK) - 120,
                                opacity: (on ? 1 : 0.4) * fadeIn(frame, 56 + i * 8)}}>
-            <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 52,
+            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52,
                          lineHeight: 1.15, color: T.ink, wordBreak: 'keep-all'}}>
               {decided === i
                 ? <span style={{background: YELLOW, color: '#1B1E24', padding: '2px 14px'}}>{b.label}</span>

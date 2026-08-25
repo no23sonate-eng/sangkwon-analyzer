@@ -109,7 +109,7 @@ export const TimelineRailCard = ({
             {r.label ? (
               <div style={{position: 'absolute', left: 30, width: X0 - 106, top: y, transform: 'translateY(-50%)',
                            textAlign: 'right', opacity: o,
-                           fontFamily: r.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                           fontFamily: r.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                            fontSize: 42, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                 {r.label}
               </div>
@@ -117,7 +117,7 @@ export const TimelineRailCard = ({
             {r.note ? (
               <div style={{position: 'absolute', left: px(r.to ?? axis.to) + 26, width: 400, top: y,
                            transform: 'translateY(-50%)', opacity: fadeIn(frame, 56 + i * 12),
-                           fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 46, color: T.ink,
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, color: T.ink,
                            whiteSpace: 'nowrap'}}>
                 {r.note}
               </div>
@@ -126,7 +126,7 @@ export const TimelineRailCard = ({
               <div key={j} style={{position: 'absolute', left: px(e.at) - 200, width: 400, top: y - LIFT(j),
                                    transform: 'translateY(-100%)', textAlign: 'center',
                                    opacity: fadeIn(frame, 44 + i * 12 + j * 8)}}>
-                <div style={{fontFamily: e.hot ? 'Pretendard Bold, A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                <div style={{fontFamily: e.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              fontSize: 40, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                   {e.hot ? <span style={{background: 'rgba(250,255,46,0.75)', padding: '2px 10px'}}>{e.label}</span> : e.label}
                 </div>

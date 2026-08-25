@@ -70,7 +70,7 @@ export const SitePlotCard = ({
       {area ? (
         <div style={{position: 'absolute', left: 0, right: 0, top: 470,
                      textAlign: 'center', opacity: fadeIn(frame, 30)}}>
-          <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <span style={{fontFamily: 'A2Z Medium, sans-serif',
                         fontSize: 132, lineHeight: 1, color: '#1B1E24',
                         letterSpacing: '-0.02em',
                         textShadow: '0 2px 18px rgba(250,255,46,0.55)'}}>
@@ -83,7 +83,7 @@ export const SitePlotCard = ({
       {second ? (
         <div style={{position: 'absolute', left: 0, right: 0, top: CONTENT_BOTTOM - 84,
                      textAlign: 'center', opacity: fadeIn(frame, 48)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: fit(second, 62, 1200), color: T.ink, letterSpacing: '-0.01em'}}>
             {second}
           </div>

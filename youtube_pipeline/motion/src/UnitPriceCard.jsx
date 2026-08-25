@@ -104,7 +104,7 @@ export const UnitPriceCard = ({
 
       {/* 총액 — 격자 위 */}
       <div style={{position: 'absolute', left: GX, top: GY - 74, opacity: fadeIn(frame, 4)}}>
-        <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 54,
+        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 54,
                       color: T.ink, fontVariantNumeric: 'tabular-nums'}}>{total}</span>
         {totalLabel ? (
           <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
@@ -118,7 +118,7 @@ export const UnitPriceCard = ({
         <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft}}>
           ÷
         </span>
-        <span style={{marginLeft: SP.NEAR, fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Medium, sans-serif',
                       fontSize: 40, color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
           {count.toLocaleString()}
         </span>

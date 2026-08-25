@@ -42,7 +42,7 @@ export const FormulaCard = ({
   const CY = title ? 500 : 460;
   const term = (v, l, o, dy) => (
     <div style={{textAlign: 'center', opacity: o, transform: `translateY(${dy}px)`}}>
-      <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: size,
+      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: size,
                    color: T.ink, lineHeight: 1.1, fontVariantNumeric: 'tabular-nums',
                    wordBreak: 'keep-all'}}>{v}</div>
       {l ? (
@@ -58,7 +58,7 @@ export const FormulaCard = ({
 
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 190, textAlign: 'center',
-                     fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 44,
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 44,
                      color: T.ink, opacity: fadeIn(frame, 0), wordBreak: 'keep-all'}}>
           {title}
         </div>
@@ -77,7 +77,7 @@ export const FormulaCard = ({
           {term(bottom.value, bottom.label, inBot, (1 - inBot) * -18)}
         </div>
 
-        <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+        <div style={{fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: size * 0.8, color: T.soft, opacity: eq}}>=</div>
 
         {/* 결과 — 여기만 노랑 */}
@@ -85,7 +85,7 @@ export const FormulaCard = ({
                      transform: `scale(${0.94 + inRes * 0.06})`}}>
           <div style={{display: 'inline-block', background: YELLOW, color: '#1B1E24',
                        padding: '10px 26px',
-                       fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                       fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: size, lineHeight: 1.14,
                        fontVariantNumeric: 'tabular-nums', wordBreak: 'keep-all'}}>
             {result.value}

@@ -100,7 +100,7 @@ export const MediaPlateCard = ({
               <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 34,
                             color: YELLOW, fontVariantNumeric: 'tabular-nums'}}>{num}</span>
             ) : null}
-            <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+            <span style={{fontFamily: 'A2Z Medium, sans-serif',
                           fontSize: fit(label, 56, w - 80), color: T.ink,
                           letterSpacing: '-0.01em', wordBreak: 'keep-all'}}>
               {label}

@@ -26,7 +26,11 @@ export const BarChartCard = ({
   const {fps} = useVideoConfig();
   const T = themeOf(theme);
 
-  const list = bars.slice(0, 5);
+  // 예전엔 5개에서 잘랐다. **말없이 잘랐다.** 더그랜드롯데 #88 은 브랜드
+  // 여섯 개를 견주는 컷인데 여섯 번째가 롯데호텔 39% — 이 컷의 결론이었다.
+  // 그게 통째로 사라진 채 렌더가 [ok] 로 끝났다.
+  // 일곱까지 받고, 개수에 맞춰 막대와 글자를 줄인다.
+  const list = bars.slice(0, 7);
   const n = list.length || 1;
   const maxValue = Math.max(...list.map((b) => Math.abs(Number(b.value)) || 0), 1);
 
@@ -35,7 +39,7 @@ export const BarChartCard = ({
   const BASELINE = Math.min(700, CONTENT_BOTTOM - (caption || closingLine ? 96 : 40) - FOOT);
   const MAX_BAR_H = Math.max(160, BASELINE - bandTop - 20);
 
-  const side = Math.min(240, Math.round(920 / n));
+  const side = Math.min(240, Math.round(1180 / n));
   const gap = Math.min(110, Math.round(side * 0.5));
   const totalW = side * n + gap * (n - 1);
   const startX = (1920 - totalW) / 2;
@@ -47,7 +51,7 @@ export const BarChartCard = ({
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 150, textAlign: 'center',
                      opacity: fadeIn(frame, 0)}}>
-          <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
@@ -80,11 +84,12 @@ export const BarChartCard = ({
           <div key={i} style={{position: 'absolute', left: startX + i * (side + gap) - gap / 2,
                                width: side + gap, top: BASELINE + SP.NEAR, textAlign: 'center',
                                opacity: fadeIn(frame, 30 + i * 8)}}>
-            <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+            <div style={{fontFamily: 'A2Z Light, sans-serif',
+                         fontSize: n > 5 ? 25 : 30, color: T.soft,
                          wordBreak: 'keep-all'}}>{b.label}</div>
             <div style={{marginTop: SP.TIGHT,
-                         fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
-                         fontSize: on ? 54 : 44, color: T.ink,
+                         fontFamily: 'A2Z Medium, sans-serif',
+                         fontSize: (on ? 54 : 44) * (n > 5 ? 0.8 : 1), color: T.ink,
                          fontVariantNumeric: 'tabular-nums'}}>
               {b.displayValue ?? b.value}
             </div>
@@ -99,7 +104,7 @@ export const BarChartCard = ({
       {closingLine ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 78,
                      textAlign: 'center', opacity: fadeIn(frame, 60)}}>
-          <span style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+          <span style={{fontFamily: 'A2Z Medium, sans-serif',
                         fontSize: 44, color: T.ink, background: YELLOW,
                         padding: '6px 18px'}}>{closingLine}</span>
         </div>

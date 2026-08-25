@@ -130,7 +130,7 @@ export const IsoDiagramCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: p[0] - 200, top: p[1] + (under ? 14 : -62),
                                width: 400, textAlign: 'center', opacity: o,
-                               fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                               fontFamily: 'A2Z Medium, sans-serif',
                                fontSize: fit(b.label, 34, 380), color: T.ink,
                                wordBreak: 'keep-all'}}>
             {b.label}

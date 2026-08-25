@@ -44,7 +44,7 @@ const Tag = ({text}) => {
   return (
     <div style={{position: 'absolute', left: 48, top: 34, opacity: o,
                  background: YELLOW, color: INK, padding: '10px 22px',
-                 fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif', fontSize: 32}}>
+                 fontFamily: 'A2Z Medium, sans-serif', fontSize: 32}}>
       {text}
     </div>
   );

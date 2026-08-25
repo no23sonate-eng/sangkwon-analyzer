@@ -145,7 +145,7 @@ export const ShapeCompareCard = ({
                            letterSpacing: '0.16em', color: T.soft, marginBottom: SP.TIGHT}}>
                 {String(i + 1).padStart(2, '0')}
               </div>
-              <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+              <div style={{fontFamily: 'A2Z Medium, sans-serif',
                            fontSize: fit(o.label, 56, 420),
                            color: o.hot ? T.ink : T.soft, letterSpacing: '-0.01em'}}>
                 {o.label}
@@ -160,7 +160,7 @@ export const ShapeCompareCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: cx - 420, width: 840, top: y0,
                                textAlign: 'center', opacity: op,
-                               fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
+                               fontFamily: 'A2Z Medium, sans-serif',
                                fontSize: fit(o.label, 48, 800),
                                color: o.hot ? T.ink : T.soft, wordBreak: 'keep-all'}}>
             {o.label}
