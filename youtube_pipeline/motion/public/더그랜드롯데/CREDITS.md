@@ -73,3 +73,8 @@
 | `young_plaza_media.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데 영플라자` |
 | `apple_park.jpg` |  () | **저작권물 · 출처 표기 사용** | `애플 파크` |
 | `logo_lotte_shopping.png` |  () | **저작권물 · 출처 표기 사용** | `롯데쇼핑` |
+| `map_sogong.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_mapo_busan.png` | 지도 타일 z7 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_myeongdong.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_seoulstation.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_downtown.png` | 지도 타일 z14 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |

@@ -584,7 +584,14 @@
       "hot": true
      }
     ],
-    "source": "© OpenStreetMap contributors © CARTO"
+    "source": "© OpenStreetMap contributors © CARTO",
+    "image": "더그랜드롯데/map_sogong.png",
+    "bounds": [
+     126.960601,
+     37.555615,
+     127.001799,
+     37.573984
+    ]
    }
   ],
   "34": [
@@ -1821,7 +1828,14 @@
       "sub": "메디컬센터 운영한 적 있다"
      }
     ],
-    "source": "비즈워치 2026.8.14"
+    "source": "© OpenStreetMap contributors © CARTO",
+    "image": "더그랜드롯데/map_mapo_busan.png",
+    "bounds": [
+     117.453125,
+     31.428105,
+     138.546875,
+     40.979404
+    ]
    }
   ],
   "103": [
@@ -2350,7 +2364,14 @@
       "sub": "롯데타운 라이트"
      }
     ],
-    "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"
+    "source": "© OpenStreetMap contributors © CARTO",
+    "image": "더그랜드롯데/map_myeongdong.png",
+    "bounds": [
+     126.9717,
+     37.560208,
+     126.9923,
+     37.569392
+    ]
    }
   ],
   "131": [
@@ -2570,8 +2591,8 @@
    "MapCard",
    "지도 — 서울역 만다린 오리엔탈",
    {
-    "image": "",
-    "source": "한국일보 2025.9.5 · ㈜한화 건설부문 뉴스룸",
+    "image": "더그랜드롯데/map_seoulstation.png",
+    "source": "© OpenStreetMap contributors © CARTO",
     "title": "서울역 북부역세권",
     "sub": "만다린 오리엔탈 서울",
     "pins": [
@@ -2588,6 +2609,12 @@
       "label": "서울역",
       "sub": ""
      }
+    ],
+    "bounds": [
+     126.950901,
+     37.546814,
+     126.992099,
+     37.565185
     ]
    }
   ],
@@ -3156,7 +3183,14 @@
       "sub": "2029"
      }
     ],
-    "source": "한국경제 2026.8.6 · 쿠시먼앤웨이크필드 2026 서울 호텔 마켓 리포트"
+    "source": "© OpenStreetMap contributors © CARTO",
+    "image": "더그랜드롯데/map_downtown.png",
+    "bounds": [
+     126.894603,
+     37.52325,
+     127.059397,
+     37.596732
+    ]
    }
   ],
   "168": [

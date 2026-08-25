@@ -1,0 +1,8 @@
+# 지도 타일은 저장소에 안 들어간다 (.gitignore). 좌표만 적어 두고 다시 받는다.
+# scripts/fetch_map.py 가 읽는다.
+# 이름	중심 위도	중심 경도	줌	스타일
+map_sogong	37.5648	126.9812	16	light
+map_mapo_busan	36.35	128.00	7	light
+map_myeongdong	37.5648	126.9820	17	light
+map_seoulstation	37.5560	126.9715	16	light
+map_downtown	37.5600	126.9770	14	light

@@ -6,8 +6,19 @@ scene_plan.json (타이밍) + scene_props.json (카드·props) 를 합쳐 Remoti
     python3 youtube_pipeline/scripts/render_parkside.py            # 전부 mp4
     python3 youtube_pipeline/scripts/render_parkside.py --still    # 검수용 스틸(png)만
     python3 youtube_pipeline/scripts/render_parkside.py 0 3 13     # 특정 장면만
+    python3 youtube_pipeline/scripts/render_parkside.py --still -j 3  # 세 장씩 동시에
+
+**동시 실행이 왜 필요한가.** 스틸 한 장에 3~7초인데 182컷이면 30분이 넘는다.
+이 컨테이너는 파일시스템이 그보다 자주 스냅샷으로 되돌아가서, 렌더가 끝나기
+전에 산출물이 통째로 사라지는 일이 오늘만 아홉 번 있었다. 렌더를 짧게 만드는
+게 곧 작업을 끝내는 방법이다.
+
+한 장 렌더는 대부분 크로미움을 띄우고 폰트·이미지를 받는 시간이라 CPU 가
+놀고 있다. 코어 수보다 하나 적게 띄우면 벽시계 시간이 3분의 1 아래로 준다.
+동시에 여러 개를 띄우면 메모리를 많이 쓰므로 기본값은 안전하게 잡는다.
 """
 import argparse, json, os, subprocess, sys, tempfile
+from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOTION = os.path.join(ROOT, 'motion')
@@ -83,13 +94,21 @@ def main():
     ap.add_argument('ids', nargs='*', type=int)
     ap.add_argument('--still', action='store_true')
     ap.add_argument('--project', default=DEFAULT_PROJECT)
+    ap.add_argument('-j', '--jobs', type=int, default=0,
+                    help='동시에 띄울 렌더 수 (기본: 코어-1, 최대 3)')
     a = ap.parse_args()
 
     proj = os.path.join(ROOT, 'projects', a.project)
     outdir = os.path.join(proj, 'stills' if a.still else 'clips')
     os.makedirs(outdir, exist_ok=True)
     scenes = [s for s in load(proj) if not a.ids or s[0] in a.ids]
-    fails = [s[0] for s in scenes if not render(*s, a.still, outdir)]
+    jobs = max(1, a.jobs or min(3, (os.cpu_count() or 2) - 1))
+    if jobs > 1 and len(scenes) > 1:
+        with ThreadPoolExecutor(max_workers=jobs) as ex:
+            oks = list(ex.map(lambda s: render(*s, a.still, outdir), scenes))
+        fails = [s[0] for s, ok in zip(scenes, oks) if not ok]
+    else:
+        fails = [s[0] for s in scenes if not render(*s, a.still, outdir)]
     print(('FAILS: ' + str(fails)) if fails else f'all ok ({len(scenes)} scenes) → {outdir}', flush=True)
     sys.exit(1 if fails else 0)
 

@@ -58,11 +58,28 @@ IMG_KEYS = {'image', 'media', 'photo', 'before', 'after', 'bgImage', 'portrait',
 # 이름을 크게 세우도록 만들어져 있다 — 회색 판을 끼우면 그 자리를 뺏는다
 OPTIONAL_IMG = {'bgImage', 'backdrop', 'logo', 'parentLogo'}
 
-# 그리고 **사진이 주인공인 카드에서만** 판을 깐다.
-# BrandCard 의 photo 는 오른쪽 절반을 차지하는 선택 패널이라, 비워 두면
-# 이름이 화면 가운데로 온다. 거기에 회색 판을 끼우니 이름이 왼쪽으로
-# 밀리고 제목이 판에 가려졌다 (#8). 회색 판은 "여기 사진이 아직 없다" 는
-# 표시지, 안 쓰기로 한 자리에까지 놓을 것은 아니다.
+# 회색 판을 **깔아야 하는 자리**와 **깔면 안 되는 자리**를 카드가 정한다.
+#
+#   MapCard 는 `<Img src={staticFile(image)}>` 를 조건 없이 그린다 —
+#   비워 두면 404 로 렌더가 죽는다. 반드시 채워야 한다.
+#   BrandCard 는 `{photo ? … <Img …> : null}` 이라 비면 이름이 화면
+#   가운데로 온다 — 여기 판을 끼우면 그 자리를 뺏고 제목을 가린다 (#8).
+#
+# 카드 목록을 손으로 적어 두면 카드가 늘 때마다 뒤처진다.
+# 소스에서 `{이름 ?` / `이름 &&` 같은 **가드**를 읽어 그때그때 세운다.
+def guarded_slots():
+    """비워 둬도 되는 인자 — 카드가 조건으로 감싸고 있다."""
+    src = ROOT / 'motion' / 'src'
+    out = {}
+    for f in src.glob('*Card.jsx'):
+        txt = f.read_text()
+        g = set(re.findall(r'\{\s*(\w+)\s*\?', txt))
+        g |= set(re.findall(r'\b(\w+)\s*&&\s*[<(]', txt))
+        g |= set(re.findall(r'Boolean\((\w+)\)', txt))
+        # PaperBg backdrop 으로 흘러가는 인자도 <Img> 를 안 탄다
+        g |= set(re.findall(r'backdrop=\{(\w+)\}', txt))
+        out[f.stem] = g
+    return out
 
 
 def video_cards():
@@ -106,6 +123,7 @@ def main():
     plan = json.loads((pdir / 'scene_plan.json').read_text())
     design = json.loads((pdir / 'design.json').read_text())['cuts']
     known = registered()
+    guards = guarded_slots()
 
     scenes = plan['scenes']
     miss = [i for i in range(len(scenes)) if str(i) not in design]
