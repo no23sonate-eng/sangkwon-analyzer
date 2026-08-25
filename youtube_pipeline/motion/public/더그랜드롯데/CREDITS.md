@@ -21,3 +21,16 @@
 | `hotel_corridor.mp4` | mixkit 21817 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `hotel_room.mp4` | mixkit 4488 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `city_aerial_night.mp4` | mixkit 1146 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `logo_grand_lotte.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `grand_lotte_night.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `grand_lotte_exterior.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `grand_lotte_opening.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `grand_lotte_room.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `voco_myeongdong.jpg` |  () | **저작권물 · 출처 표기 사용** | `보코 서울 명동` |
+| `lotte_opening_1979.jpg` |  () | **저작권물 · 출처 표기 사용** | `연합뉴스` |
+| `logo_lotte_hotel_old.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 (참고 이미지)` |
+| `gyeongbu_opening_1970.jpg` |  () | **저작권물 · 출처 표기 사용** | `뉴스뱅크이미지` |
+| `gyeongbu_aerial.jpg` |  () | **저작권물 · 출처 표기 사용** | `경부고속도로 자료사진` |
+| `gyeongbu_ceremony.jpg` |  () | **저작권물 · 출처 표기 사용** | `경부고속도로 개통식 자료사진` |
+| `cheongwadae_old.jpg` |  () | **저작권물 · 출처 표기 사용** | `옛 청와대 자료사진` |
+| `seoul_street_1960s.jpg` |  () | **저작권물 · 출처 표기 사용** | `서울 옛 거리 자료사진` |
