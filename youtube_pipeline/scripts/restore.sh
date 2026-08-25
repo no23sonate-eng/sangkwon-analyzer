@@ -9,6 +9,7 @@
 # 그래서 **되돌아가도 잃을 게 없게** 만든다:
 #   · 대본·설계(design.json)·소재·코드·스킬 → 전부 커밋된다. 이건 살아남는다
 #   · scene_plan.json·scene_props.json → design.json 에서 다시 만든다
+#   · 영상(mp4) → VIDEOS.tsv 에 적힌 ID 로 다시 받는다
 #   · 스틸(렌더 산출물) → 이것만 다시 뽑으면 된다
 #
 #   bash scripts/restore.sh 더그랜드롯데            # 설계까지 복구
@@ -23,12 +24,15 @@ git fetch -q origin "$BRANCH"
 git reset --hard -q "origin/$BRANCH"
 git log --oneline -1
 
-echo "② scene_plan · scene_props 를 design.json 에서 다시 만든다"
+echo "② 영상 소재를 다시 받는다 (mp4 는 커밋 안 된다)"
+python3 scripts/fetch_videos.py "$PROJ" || true
+
+echo "③ scene_plan · scene_props 를 design.json 에서 다시 만든다"
 python3 scripts/plan_from_script.py "projects/$PROJ/script.md" --project "$PROJ" >/dev/null
 python3 scripts/apply_design.py "$PROJ" --placeholder | tail -4
 
 if [ "${2:-}" = "--render" ]; then
-  echo "③ 스틸을 다시 뽑는다 (약 30분)"
+  echo "④ 스틸을 다시 뽑는다 (약 30분)"
   python3 scripts/render_parkside.py --still --project "$PROJ"
   python3 scripts/name_stills.py "$PROJ"
   python3 scripts/build_review_page.py "$PROJ"

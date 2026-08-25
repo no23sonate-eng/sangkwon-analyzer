@@ -20,7 +20,11 @@ import {themeOf, PaperBg, PaperSource, PaperCaption, NumberIn,
 export const StatCard = ({
   title = '', value = '', subtitle = '', caption = '',
   value2 = '', subtitle2 = '',
-  bgImage = '',
+  // count — 값을 **굴려서** 올린다. "15개월" 처럼 기간·개수가 결론일 때,
+  // 숫자가 제자리에서 나타나는 것보다 세어 올라가는 편이 문장에 맞는다.
+  // 주면 value 대신 이 쪽이 그려진다
+  count = null, countUnit = '', countDecimals = 0,
+  bgImage = '', veil = null,
   source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
@@ -50,10 +54,11 @@ export const StatCard = ({
   const soft = onPhoto ? 'rgba(255,255,255,0.82)' : T.soft;
   const sh = onPhoto ? {textShadow: '0 3px 20px rgba(0,0,0,0.85)'} : {};
 
-  const stage = (v, s, o, scale) => (
+  // 2단계로 넘어간 뒤에도 굴러 올라간 숫자가 남으면 안 된다 — count 는 1단계만
+  const stage = (v, s, o, scale, roll = false) => (
     <div style={{position: 'absolute', left: 0, width: 1920, top: 388, textAlign: 'center',
                  opacity: o, transform: `scale(${scale})`}}>
-      {count != null ? (
+      {roll && count != null ? (
         <div style={{fontSize: 0, ...sh}}>
           <NumberIn to={Number(count)} start={10} dur={40} decimals={countDecimals}
                     unit={countUnit} size={size(String(count) + countUnit)}
@@ -88,7 +93,7 @@ export const StatCard = ({
         </div>
       ) : null}
 
-      {stage(value, subtitle, valueIn * o1, interpolate(valueIn, [0, 1], [0.94, 1]))}
+      {stage(value, subtitle, valueIn * o1, interpolate(valueIn, [0, 1], [0.94, 1]), true)}
       {has2 ? stage(value2, subtitle2, o2, interpolate(o2, [0, 1], [0.94, 1])) : null}
 
       <PaperCaption theme={theme} opacity={fadeIn(frame, 30) * o1}>{caption}</PaperCaption>

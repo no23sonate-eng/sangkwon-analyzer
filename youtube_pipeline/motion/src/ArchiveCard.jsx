@@ -22,6 +22,11 @@ export const ArchiveCard = ({
   zoom = 0.10, pan = [0, 0],
   year = '', label = '',
   headline = '', sub = '',
+  // center — 문장을 화면 한가운데로. 자료 사진의 주인공이 가운데가 아니거나
+  //          (하늘·벽·군중) 문장 자체가 그 컷의 전부일 때
+  // dim    — 자료 위에 검은 막을 한 겹. 옛 자료는 대비가 낮아 흰 글자가
+  //          묻힌다. 그림자만으로 안 될 때 0.25~0.4
+  center = false, dim = 0,
   source = '', theme,
 }) => {
   useA2ZFonts();
@@ -34,9 +39,18 @@ export const ArchiveCard = ({
       <ArchiveFilm src={media} video={video} era={era} gate={gate}
                    zoom={zoom} pan={pan} durationF={durationInFrames} />
 
+      {dim > 0 ? (
+        <AbsoluteFill style={{background: `rgba(8,9,11,${Math.min(0.75, dim)})`}} />
+      ) : null}
+
       {/* 문장은 아래쪽에. 옛 사진은 가운데가 주인공인 경우가 많다 */}
       {headline ? (
-        <div style={{position: 'absolute', left: 120, right: 120, bottom: 366,
+        <div style={{position: 'absolute', left: 120, right: 120,
+                     ...(center
+                       ? {top: 0, height: CONTENT_BOTTOM, display: 'flex',
+                          flexDirection: 'column', justifyContent: 'center',
+                          textAlign: 'center'}
+                       : {bottom: 366}),
                      opacity: fadeIn(frame, 14)}}>
           <div style={{fontFamily: 'Pretendard Bold, A2Z Medium, sans-serif',
                        fontSize: Math.min(68, Math.max(40, Math.floor(2600 / Math.max(10, headline.length)))),

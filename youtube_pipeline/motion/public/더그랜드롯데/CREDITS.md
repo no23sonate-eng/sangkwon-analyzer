@@ -12,13 +12,13 @@
 | `old_seoul_station.jpg` | Old Seoul Station (openverse) | travel oriented, **BY-SA 2.0** | `travel oriented / BY-SA 2.0` |
 | `seoul_station_now.jpg` | Seoul-station-20181122-072342.jpg (commons) | LERK, **CC BY-SA 4.0** | `LERK / CC BY-SA 4.0` |
 | `seoul_gate_night.mp4` | mixkit 20089 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
-| `hotel_corridor.mp4` | mixkit 21817 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `hotel_corridor.mp4` | pexels 31751335 (Elegant Hotel Corridor Interior View) | Pexels, **Pexels License** | `Pexels` |
 | `hotel_room.mp4` | mixkit 4488 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `city_aerial_night.mp4` | mixkit 1146 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `logo_lotte_hotel.png` | LotteHotels&Resorts logo.jpg (commons) | Lotte Hotes &amp; Resorts, **Public domain** | `Lotte Hotes &amp; Resorts / Public domain` |
 | `logo_ritz_carlton.png` | Logo The Ritz-Carlton Hotel de la Paix Geneva (openverse) | Marriott InternationalⓇ, **BY-SA 4.0** | `Marriott InternationalⓇ / BY-SA 4.0` |
 | `seoul_gate_night.mp4` | mixkit 20089 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
-| `hotel_corridor.mp4` | mixkit 21817 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
+| `hotel_corridor.mp4` | pexels 31751335 (Elegant Hotel Corridor Interior View) | Pexels, **Pexels License** | `Pexels` |
 | `hotel_room.mp4` | mixkit 4488 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `city_aerial_night.mp4` | mixkit 1146 (mixkit) | Mixkit, **Mixkit Free License** | `Mixkit` |
 | `logo_grand_lotte.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
@@ -40,3 +40,23 @@
 | `lotte_town_myeongdong.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데` |
 | `seoul_downtown_dusk.jpg` |  () | **저작권물 · 출처 표기 사용** | `서울 도심 자료사진` |
 | `crystal_ballroom.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 (연회장 참고)` |
+| `construction.mp4` | pexels 29794133 (Urban Building Construction Progress Timelapse) | Pexels, **Pexels License** | `Pexels` |
+| `worker_site.mp4` | pexels 13921040 (Construction Workers on Building Site) | Pexels, **Pexels License** | `Pexels` |
+| `housekeeping.mp4` | pexels 9472830 (Two Women in White Aprons Are Making a Bed) | Pexels, **Pexels License** | `Pexels` |
+| `clinic.jpg` | pexels 8459996 (Waiting Room in a Hospital) | Pexels, **Pexels License** | `Pexels` |
+| `shinsegae_facade.jpg` |  () | **저작권물 · 출처 표기 사용** | `신세계백화점 본점 미디어파사드` |
+| `shinsegae_night.jpg` |  () | **저작권물 · 출처 표기 사용** | `신세계백화점 본점` |
+| `myeongdong_crowd.jpg` |  () | **저작권물 · 출처 표기 사용** | `이데일리` |
+| `crystal_ballroom_led.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 서울 크리스탈볼룸` |
+| `mandarin_seoul_cgi.jpg` |  () | **저작권물 · 출처 표기 사용** | `만다린 오리엔탈 서울 조감도` |
+| `hotel_room_namsan_view.jpg` |  () | **저작권물 · 출처 표기 사용** | `만다린 오리엔탈` |
+| `airport_arrivals.jpg` |  () | **저작권물 · 출처 표기 사용** | `뉴스1` |
+| `lotte_opening_ceremony_1979.jpg` |  () | **저작권물 · 출처 표기 사용** | `연합뉴스` |
+| `lotte_hotel_lobby.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 서울` |
+| `lotte_dept_basement.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데백화점 본점` |
+| `grand_lotte_room2.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `bando_hotel_1960s.jpg` |  () | **저작권물 · 출처 표기 사용** | `뉴스1` |
+| `logo_mandarin.png` |  () | **저작권물 · 출처 표기 사용** | `만다린 오리엔탈` |
+| `plaza_hotel.jpg` |  () | **저작권물 · 출처 표기 사용** | `더플라자 호텔 서울` |
+| `lotte_hotel_seoul_aerial.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 서울` |
+| `hilton_seoul.jpg` |  () | **저작권물 · 출처 표기 사용** | `밀레니엄 힐튼 서울` |

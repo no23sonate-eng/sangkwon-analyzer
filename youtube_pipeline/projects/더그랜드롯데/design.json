@@ -222,11 +222,11 @@
    "LowerThirdCard",
    "사 — 호텔 객실 정비 영상",
    {
-    "media": "더그랜드롯데/hotel_corridor.mp4",
+    "media": "더그랜드롯데/housekeeping.mp4",
     "label": "OCC",
     "sub": "객실 가동률",
     "tone": "dark",
-    "source": "Mixkit Free License"
+    "source": "Pexels"
    }
   ],
   "14": [
@@ -348,10 +348,10 @@
    "LowerThirdCard",
    "사 — 롯데호텔 서울 외관",
    {
-    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "media": "더그랜드롯데/grand_lotte_exterior.jpg",
     "label": "롯데호텔 서울",
     "tone": "dark",
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "source": "롯데호텔"
    }
   ],
   "22": [
@@ -383,20 +383,19 @@
    }
   ],
   "23": [
-   "AreaNestCard",
-   "그 — 사각형: 호텔사업부 7,657억 ⊃ 객실 4,135억",
+   "RatioCard",
+   "그 — 전체 매출 대비 호텔사업부의 몫",
    {
-    "unit": "",
+    "mode": "bar",
+    "unit": "억원",
     "items": [
      {
-      "label": "호텔사업부 매출",
-      "value": 7657,
-      "display": "7,657억"
+      "label": "호텔롯데 전체",
+      "pct": 26560
      },
      {
-      "label": "객실 수입",
-      "value": 4135,
-      "display": "4,135억",
+      "label": "호텔사업부",
+      "pct": 7657,
       "hot": true
      }
     ],
@@ -530,14 +529,11 @@
    }
   ],
   "30": [
-   "FullBleedCard",
-   "사 — 국내 특급호텔 연회장",
+   "MediaPlateCard",
+   "사 — 특급호텔 복도. 문장은 자막이 받는다",
    {
-    "headline": "국내 특급호텔 대부분이 비슷하다",
-    "sub": "객실 절반 · 연회와 식음료가 나머지",
-    "scrim": 0.5,
-    "image": "더그랜드롯데/myeongdong_night.jpg",
-    "source": "Mixkit Free License"
+    "media": "더그랜드롯데/hotel_corridor.mp4",
+    "source": "Pexels"
    }
   ],
   "31": [
@@ -754,15 +750,16 @@
    }
   ],
   "41": [
-   "LowerThirdCard",
-   "사 — 노구치 시타가우",
+   "StrikeSwapCard",
+   "그 — 계기가 독특하다",
    {
-    "num": "",
-    "label": "노구치 시타가우",
-    "sub": "일본질소비료 사장",
-    "kicker": "지어진 계기가 독특하다",
-    "media": "더그랜드롯데/bando_hotel_front_1960.jpg",
-    "source": "한국저작권위원회 / CC BY 4.0"
+    "title": "",
+    "from": "숙박",
+    "fromLabel": "",
+    "to": "체면",
+    "toLabel": "",
+    "note": "",
+    "source": ""
    }
   ],
   "42": [
@@ -787,23 +784,19 @@
    "PaperImageCard",
    "사 — 조선호텔 정문 · 작업복 차림",
    {
-    "image": "더그랜드롯데/chosun_hotel_palmcourt.jpg",
     "title": "차림새가 어울리지 않는다는 이유로 쫓겨난다",
     "sub": "조선호텔",
     "source": "michaelseangallagher / BY-SA 2.0"
    }
   ],
   "44": [
-   "StrikeSwapCard",
-   "그 — 입장 거부",
+   "LowerThirdCard",
+   "사 — 작업자. 문장은 자막이 받는다",
    {
-    "title": "입장 거부",
-    "from": "투숙객",
-    "fromLabel": "들어가려 했다",
-    "to": "퇴장",
-    "toLabel": "차림새가 어울리지 않는다",
-    "note": "여기서 반도호텔이 시작된다",
-    "source": "경향신문 2024.1.11 · 여행신문 1998.1.23"
+    "media": "더그랜드롯데/worker_site.mp4",
+    "num": "",
+    "label": "차림새가 어울리지 않는다",
+    "source": "Pexels"
    }
   ],
   "45": [
@@ -849,38 +842,41 @@
    "PaperImageCard",
    "사 — 조선호텔 · 5층에서 내려다보는 자리",
    {
-    "image": "더그랜드롯데/chosun_hotel_palmcourt.jpg",
     "title": "",
     "caption": "노구치는 자기 사무실을 조선호텔이 내려다보이는 5층에 뒀다",
     "source": "michaelseangallagher / BY-SA 2.0"
    }
   ],
   "48": [
-   "PhotoSplitCard",
-   "사 — 미군정기 | 국영 호텔 시절",
+   "TimelineRailCard",
+   "그 — 주인이 세 번 바뀐다",
    {
-    "title": "주인이 두 번 바뀐다",
-    "sub": "해방 → 미군정 → 국영",
-    "sides": [
+    "axis": {
+     "from": 1935,
+     "to": 1950,
+     "step": 5
+    },
+    "rails": [
      {
-      "name": "미군정",
-      "sub": "1945",
-      "photo": "더그랜드롯데/seoul_1945.jpg",
-      "lines": [
-       "해방과 함께 접수"
+      "label": "",
+      "events": [
+       {
+        "at": 1938,
+        "label": "노구치"
+       },
+       {
+        "at": 1945,
+        "label": "미군정"
+       },
+       {
+        "at": 1948,
+        "label": "국영",
+        "hot": true
+       }
       ]
-     },
-     {
-      "name": "국영 호텔",
-      "sub": "정부 수립 후",
-      "photo": "더그랜드롯데/bando_hotel_front_1960.jpg",
-      "lines": [
-       "교통부 산하로"
-      ],
-      "hot": true
      }
     ],
-    "source": "Don O'Brien / CC BY 2.0 · 한국저작권위원회 / CC BY 4.0"
+    "source": ""
    }
   ],
   "49": [
@@ -925,7 +921,6 @@
     "fromLabel": "1938",
     "to": "시설 노후화 · 대규모 적자",
     "toLabel": "1970년대",
-    "image": "더그랜드롯데/bando_hotel_front_1960.jpg",
     "source": "한국저작권위원회 / CC BY 4.0"
    }
   ],
@@ -1023,10 +1018,10 @@
    "PaperImageCard",
    "사 — 1960년 반도호텔 주변",
    {
-    "image": "더그랜드롯데/bando_hotel_street_1960.jpg",
+    "image": "더그랜드롯데/bando_hotel_1960s.jpg",
     "title": "",
     "caption": "인수를 결심한다",
-    "source": "한국저작권위원회 / CC BY 4.0"
+    "source": "뉴스1"
    }
   ],
   "58": [
@@ -1187,8 +1182,8 @@
     ],
     "headline": "지하 3층 지상 38층, 1,020실",
     "sub": "당시 동양 최대 특급호텔",
-    "source": "simonwilliamsim / BY-SA 2.0",
-    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg"
+    "source": "연합뉴스",
+    "media": "더그랜드롯데/lotte_opening_ceremony_1979.jpg"
    }
   ],
   "68": [
@@ -1215,10 +1210,10 @@
    "FullBleedCard",
    "사 — 1979년 롯데호텔 전경",
    {
-    "image": "더그랜드롯데/grand_lotte_dusk.jpg",
+    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
     "headline": "당시 동양 최대 특급호텔",
     "sub": "",
-    "source": "뉴스1"
+    "source": "롯데호텔 서울"
    }
   ],
   "70": [
@@ -1227,9 +1222,9 @@
    {
     "value": "1억 5,000만 달러",
     "subtitle": "1979년 롯데호텔 서울 건설비",
-    "bgImage": "더그랜드롯데/lotte_opening_1979.jpg",
+    "bgImage": "더그랜드롯데/gyeongbu_ceremony.jpg",
     "veil": 0.5,
-    "source": "한국경제인협회 e뮤지엄"
+    "source": "경부고속도로 개통식 자료사진"
    }
   ],
   "71": [
@@ -1240,7 +1235,7 @@
      {
       "name": "롯데호텔 서울",
       "sub": "1979년 건설비",
-      "photo": "더그랜드롯데/lotte_opening_1979.jpg",
+      "photo": "더그랜드롯데/lotte_hotel_seoul_aerial.jpg",
       "stat": "1억 5,000만",
       "statUnit": "달러",
       "lines": [
@@ -1260,7 +1255,7 @@
      }
     ],
     "verdict": "환율 기준에 따라 달라지는 값 — 대본 수치를 그대로 옮겼다",
-    "source": "한국경제인협회 e뮤지엄 · 뉴스뱅크이미지"
+    "source": "롯데호텔 서울 · 뉴스뱅크이미지"
    }
   ],
   "72": [
@@ -1409,7 +1404,8 @@
      ]
     ],
     "sub": "면적과 요금이 같은 방향으로 안 간다",
-    "bgImage": "더그랜드롯데/grand_lotte_room.jpg"
+    "bgImage": "더그랜드롯데/grand_lotte_room2.jpg",
+    "source": "롯데호텔"
    }
   ],
   "80": [
@@ -1590,45 +1586,32 @@
    }
   ],
   "89": [
-   "FullBleedCard",
-   "사 — 롯데호텔 서울 외관",
+   "MediaPlateCard",
+   "사 — 롯데호텔 서울. 숫자는 #88 이 다 말했다",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "scrim": 0.3,
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "media": "더그랜드롯데/lotte_hotel_lobby.jpg",
+    "source": "롯데호텔 서울"
    }
   ],
   "90": [
    "LowerThirdCard",
    "사 — 롯데호텔 간판",
    {
-    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "media": "더그랜드롯데/grand_lotte_night.jpg",
     "num": "",
     "label": "롯데호텔",
     "sub": "이미 특정 가격대에 자리를 잡고 있다",
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "source": "롯데호텔"
    }
   ],
   "91": [
-   "AnnotatedShotCard",
-   "사 — 이름이 이미 가격대에 묶여 있다",
+   "StatCard",
+   "그 — 이미 앉아 있는 값",
    {
-    "title": "이름이 이미 가격대에 묶여 있다",
-    "titleSub": "롯데호텔 · 소공동",
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "beats": [
-     {
-      "x": 0.42,
-      "y": 0.5,
-      "zoom": 1.25,
-      "label": "롯데호텔",
-      "sub": "기존 가격대에 자리를 잡았다",
-      "side": "right",
-      "hot": true,
-      "hold": 40
-     }
-    ],
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "value": "약 30만원",
+    "subtitle": "롯데호텔 서울 1박",
+    "caption": "공시 요금 기준 · 대표값으로 단순화했다",
+    "source": "뉴스웨이 2026.7.28"
    }
   ],
   "92": [
@@ -1660,7 +1643,7 @@
   ],
   "93": [
    "PriceLadderCard",
-   "그 — 롯데호텔 위 · 시그니엘 아래의 빈 칸",
+   "이어서 — 비어 있던 칸이 채워진다",
    {
     "title": "비어 있던 칸을 가져간다",
     "sub": "롯데 브랜드 가격 사다리",
@@ -1691,13 +1674,11 @@
    }
   ],
   "94": [
-   "MediaPlateCard",
-   "사 — 새 이름표",
+   "StrikeSwapCard",
+   "그 — 이름을 갈아 끼운다",
    {
-    "media": "더그랜드롯데/logo_grand_lotte.jpg",
-    "aspect": 1.667,
-    "label": "새 이름",
-    "note": "새 가격표",
+    "from": "롯데호텔 서울",
+    "to": "더그랜드롯데 서울",
     "source": "롯데호텔"
    }
   ],
@@ -1741,8 +1722,7 @@
      }
     ],
     "caption": "배분 비율은 공개되지 않았다 — 방향만 보여 주는 추정치다",
-    "source": "비즈워치 2026.8.14",
-    "align": "center"
+    "source": "비즈워치 2026.8.14"
    }
   ],
   "97": [
@@ -1792,8 +1772,8 @@
    "FullBleedCard",
    "사 — 롯데시티호텔 마포",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "source": "Mixkit Free License"
+    "image": "더그랜드롯데/grand_lotte_opening.jpg",
+    "source": "롯데호텔"
    }
   ],
   "101": [
@@ -1869,9 +1849,9 @@
    "FullBleedCard",
    "사 — 명동을 걷는 관광객",
    {
-    "image": "더그랜드롯데/myeongdong_night.jpg",
+    "image": "더그랜드롯데/myeongdong_crowd.jpg",
     "headline": "집객력은 더 올라간다",
-    "source": "Abasaa / Public domain",
+    "source": "이데일리",
     "sub": "명동을 찾는 관광객"
    }
   ],
@@ -2042,12 +2022,12 @@
    "MediaPlateCard",
    "자료 — 크리스탈 글로우 쇼케이스",
    {
-    "media": "더그랜드롯데/hotel_corridor.mp4",
+    "media": "더그랜드롯데/crystal_ballroom_led.jpg",
     "title": "크리스탈 글로우",
     "sub": "신규 웨딩 콘셉트",
     "label": "크리스탈볼룸",
     "note": "2026.8.10 웨딩 쇼케이스",
-    "source": "이데일리 2026.8.11"
+    "source": "롯데호텔 서울 크리스탈볼룸"
    }
   ],
   "114": [
@@ -2088,15 +2068,25 @@
    }
   ],
   "116": [
-   "LowerThirdCard",
-   "사 — 무대 전면 파노라마 LED",
+   "SpecGridCard",
+   "그 — 무대 사양. 사진이 없으면 숫자가 낫다",
    {
-    "media": "더그랜드롯데/hotel_corridor.mp4",
-    "label": "초대형 파노라마 LED",
-    "sub": "크리스탈볼룸 무대 전면",
-    "kicker": "연회장 개선",
-    "tone": "dark",
-    "source": "Mixkit Free License · 이데일리 2026.8.11"
+    "items": [
+     {
+      "label": "파노라마 LED",
+      "value": "무대 전면"
+     },
+     {
+      "label": "천장고",
+      "value": "7.6m"
+     },
+     {
+      "label": "수용",
+      "value": "최대 1,000명"
+     }
+    ],
+    "source": "롯데호텔",
+    "sub": "롯데호텔 서울 크리스탈볼룸 공개 사양"
    }
   ],
   "117": [
@@ -2139,10 +2129,10 @@
    "FullBleedCard",
    "사 — 신세계 미디어파사드",
    {
-    "image": "더그랜드롯데/myeongdong_night.jpg",
+    "image": "더그랜드롯데/shinsegae_facade.jpg",
     "headline": "바로 옆 신세계백화점 본점 미디어파사드",
     "sub": "이미 관광 명소가 됐다",
-    "source": "신세계그룹 뉴스룸"
+    "source": "신세계백화점 본점 미디어파사드"
    }
   ],
   "119": [
@@ -2200,7 +2190,6 @@
      "명동",
      "2026"
     ],
-    "logo": "더그랜드롯데/logo_lotte_hotel.png",
     "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"
    }
   ],
@@ -2283,20 +2272,13 @@
    }
   ],
   "126": [
-   "ArchiveCard",
-   "아카이브 — 1988년 본점 신관 (video · 방송)",
+   "LowerThirdCard",
+   "사 — 롯데타운 일대. 지하 광장 자료는 없다",
    {
-    "era": "video",
-    "year": "1988",
-    "label": "본점 신관 · 코스모너지 광장",
-    "zoom": 0.09,
-    "pan": [
-     24,
-     0
-    ],
-    "headline": "38년 만의 리뉴얼",
-    "source": "Abasaa / Public domain",
-    "media": "더그랜드롯데/myeongdong_night.jpg"
+    "media": "더그랜드롯데/lotte_dept_basement.jpg",
+    "num": "B1",
+    "label": "코스모너지 광장 리뉴얼",
+    "source": "롯데백화점 본점"
    }
   ],
   "127": [
@@ -2335,7 +2317,6 @@
    {
     "title": "롯데호텔만이 아니다",
     "subtitle": "명동 롯데타운을 키우는 움직임",
-    "parentLogo": "더그랜드롯데/logo_lotte_hotel.png",
     "parentLabel": "롯데",
     "items": [
      {
@@ -2549,7 +2530,7 @@
    {
     "title": "롯데와 한화, 같은 방향",
     "titleSub": "소공동과 태평로 · 걸어서 5분",
-    "image": "더그랜드롯데/sogong_dong_street.jpg",
+    "image": "더그랜드롯데/plaza_hotel.jpg",
     "beats": [
      {
       "x": 0.35,
@@ -2571,7 +2552,7 @@
       "hold": 34
      }
     ],
-    "source": "kallerna / CC BY-SA 4.0"
+    "source": "더플라자 호텔 서울"
    }
   ],
   "141": [
@@ -2597,7 +2578,7 @@
    "MapCard",
    "지도 — 서울역 만다린 오리엔탈",
    {
-    "image": "더그랜드롯데/seoul_station_now.jpg",
+    "image": "",
     "source": "한국일보 2025.9.5 · ㈜한화 건설부문 뉴스룸",
     "title": "서울역 북부역세권",
     "sub": "만다린 오리엔탈 서울",
@@ -2720,25 +2701,24 @@
    }
   ],
   "147": [
-   "AnnotatedShotCard",
-   "사 — 만다린 오리엔탈 외관에 128실 주석",
+   "SpecGridCard",
+   "그 — 규모와 설계자",
    {
-    "image": "더그랜드롯데/seoul_station_now.jpg",
-    "title": "객실은 단 128실",
-    "titleSub": "만다린 오리엔탈 서울",
-    "beats": [
+    "items": [
      {
-      "x": 0.5,
-      "y": 0.45,
-      "zoom": 1.25,
-      "label": "128실",
-      "sub": "더그랜드롯데의 5분의 1도 안 된다",
-      "side": "right",
-      "hot": true,
-      "hold": 40
+      "label": "객실",
+      "value": "128실"
+     },
+     {
+      "label": "인테리어",
+      "value": "안드레 푸"
+     },
+     {
+      "label": "개관",
+      "value": "2029년 예정"
      }
     ],
-    "source": "LERK / CC BY-SA 4.0 · 한국일보 2025.9.5"
+    "source": "만다린 오리엔탈"
    }
   ],
   "148": [
@@ -2786,10 +2766,10 @@
    "FullBleedCard",
    "사 — 만다린 오리엔탈 해외 호텔",
    {
-    "image": "더그랜드롯데/seoul_station_now.jpg",
+    "image": "더그랜드롯데/mandarin_seoul_cgi.jpg",
     "headline": "한국 진출은 이번이 처음",
     "sub": "만다린 오리엔탈",
-    "source": "LERK / CC BY-SA 4.0"
+    "source": "만다린 오리엔탈 서울 조감도"
    }
   ],
   "150": [
@@ -2879,13 +2859,13 @@
    }
   ],
   "153": [
-   "FullBleedCard",
-   "사 — 럭셔리 호텔 어메니티",
+   "LowerThirdCard",
+   "사 — 만다린 오리엔탈 어메니티. 문장은 자막이 받는다",
    {
-    "image": "더그랜드롯데/sogong_dong_street.jpg",
-    "headline": "럭셔리 호텔의 특징",
-    "sub": "객실을 많이 두지 않는다",
-    "source": "kallerna / CC BY-SA 4.0"
+    "media": "더그랜드롯데/hotel_room_namsan_view.jpg",
+    "num": "",
+    "label": "",
+    "source": "만다린 오리엔탈"
    }
   ],
   "154": [
@@ -2918,8 +2898,8 @@
      18
     ],
     "headline": "2022년 영업 종료, 2025년 철거",
-    "source": "travel oriented / BY-SA 2.0",
-    "media": "더그랜드롯데/old_seoul_station.jpg"
+    "source": "밀레니엄 힐튼 서울",
+    "media": "더그랜드롯데/hilton_seoul.jpg"
    }
   ],
   "156": [
@@ -3117,12 +3097,12 @@
    "MediaPlateCard",
    "자료 — 이오타 조감도",
    {
-    "media": "더그랜드롯데/seoul_station_now.jpg",
+    "media": "더그랜드롯데/old_seoul_station.jpg",
     "title": "이오타 서울",
     "sub": "도심 속 초대형 복합시설",
     "label": "완공되면",
     "note": "한 단계 더 발전된 국내 복합개발 사례",
-    "source": "LERK / CC BY-SA 4.0"
+    "source": "옛 서울역"
    }
   ],
   "166": [
@@ -3373,40 +3353,25 @@
    "FullBleedCard",
    "사 — 명동을 걷는 외국인 관광객",
    {
-    "image": "더그랜드롯데/myeongdong_night.jpg",
+    "image": "더그랜드롯데/airport_arrivals.jpg",
     "headline": "서울이 외국인에게 친숙한 도시가 되고 있다",
-    "source": "Mixkit Free License"
+    "source": "뉴스1"
    }
   ],
   "179": [
-   "AnnotatedShotCard",
-   "사 — 소비자가 얻는 것",
+   "ForkPathCard",
+   "그 — 갈라지는 두 입장",
    {
-    "title": "소비자가 얻는 것",
-    "titleSub": "국내 호텔이 좋아진다",
-    "image": "더그랜드롯데/myeongdong_night.jpg",
-    "beats": [
+    "trunkLabel": "",
+    "branches": [
      {
-      "x": 0.4,
-      "y": 0.5,
-      "zoom": 1.2,
-      "label": "국내 호텔의 질",
-      "sub": "경쟁이 올린다",
-      "side": "right",
-      "hold": 34
+      "label": "소비자"
      },
      {
-      "x": 0.66,
-      "y": 0.5,
-      "zoom": 1.2,
-      "label": "해외 브랜드",
-      "sub": "국내에서 만난다",
-      "side": "left",
-      "hot": true,
-      "hold": 34
+      "label": "기획·개발"
      }
     ],
-    "source": "Abasaa / Public domain"
+    "source": ""
    }
   ],
   "180": [
@@ -3416,23 +3381,23 @@
     "title": "해외에서 보던 브랜드를 국내에서",
     "name": "만다린 오리엔탈 · 리츠칼튼",
     "line": "2030 · 2031 서울 개장 예정",
-    "logo": "더그랜드롯데/logo_ritz_carlton.png",
+    "logo": "더그랜드롯데/logo_mandarin.png",
     "tags": [
      "서울역",
      "도심",
      "신규 진출"
     ],
-    "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0"
+    "source": "만다린 오리엔탈"
    }
   ],
   "181": [
    "FullBleedCard",
    "사 — 명동 야경으로 닫는다",
    {
-    "image": "더그랜드롯데/myeongdong_night.jpg",
+    "image": "더그랜드롯데/seoul_downtown_dusk.jpg",
     "headline": "전체적인 흐름을 살펴보는 것도 중요하다",
     "sub": "공간을 기획하고 개발하는 입장에선",
-    "source": "Abasaa / Public domain"
+    "source": "서울 도심 자료사진"
    }
   ]
  }

@@ -57,6 +57,24 @@ def video_cards():
     return {f.stem for f in src.glob('*Card.jsx') if 'OffthreadVideo' in f.read_text()}
 
 
+def video_slots():
+    """카드별로 **영상을 줘도 되는 인자**.
+
+    카드가 직접 <Img> 를 그리지 않고 `PaperBg backdrop={bgImage}` 로 넘기면,
+    그 아래 LiveBackdrop 이 확장자를 보고 OffthreadVideo 로 갈라 준다.
+    그래서 같은 `bgImage` 라도 카드에 따라 안전하기도, 죽기도 한다 —
+    CleoStatCard 는 bgImage 를 <Img> 에 그대로 물린다.
+
+    카드 목록을 손으로 적어 두면 카드가 늘 때마다 이 파일이 뒤처진다.
+    소스에서 `backdrop={이름}` 을 읽어 그때그때 세운다.
+    """
+    src = ROOT / 'motion' / 'src'
+    out = {}
+    for f in src.glob('*Card.jsx'):
+        out[f.stem] = set(re.findall(r'backdrop=\{(\w+)\}', f.read_text()))
+    return out
+
+
 def registered():
     txt = (ROOT / 'motion' / 'src' / 'cardRegistry.jsx').read_text()
     return set(re.findall(r'^  (\w+Card),', txt, re.M))
@@ -117,12 +135,16 @@ def main():
     # 그 컷 하나가 아니라 **렌더 전체가 멈춘다.** 렌더 30분 뒤에 알게 되면
     # 늦다. 실제로 #116 에서 그렇게 한 번 멈췄다
     vc = video_cards()
+    vslot = video_slots()
     misvid = []
     for e in scenes:
         if e['card'] in vc:
             continue
+        safe = vslot.get(e['card'], set())      # PaperBg backdrop 으로 흘러가는 인자
         row = design.get(str(e['id']))
         for k, v in ((row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {})).items():
+            if k in safe:
+                continue
             if isinstance(v, str) and v.lower().endswith(('.mp4', '.webm', '.mov')):
                 misvid.append(f"#{e['id']} {e['card']}.{k}")
 
@@ -164,7 +186,16 @@ def main():
 
     cards = [e['card'] for e in scenes]
     cnt = collections.Counter(cards)
-    runs = [(i, cards[i]) for i in range(1, len(cards)) if cards[i] == cards[i - 1]]
+    # 같은 카드가 두 컷 이어지면 대개 실수다 — 두 번째 컷이 첫 컷을 되풀이한다.
+    # 다만 **일부러** 두 박자로 쪼갠 자리가 있다. #92 는 빈 칸을 보여 주고
+    # #93 이 그 칸을 채운다. 같은 카드여야 "같은 사다리" 로 읽힌다.
+    # 그런 자리는 design.json 의 설명(why)을 '이어서' 로 시작해서 표시한다
+    def cont(i):
+        row = design.get(str(scenes[i]['id']))
+        return bool(row) and str(row[1]).startswith('이어서')
+
+    runs = [(i, cards[i]) for i in range(1, len(cards))
+            if cards[i] == cards[i - 1] and not cont(i)]
     over = [(c, n) for c, n in cnt.most_common() if n / len(cards) > SHARE_MAX]
 
     def fam(c):
