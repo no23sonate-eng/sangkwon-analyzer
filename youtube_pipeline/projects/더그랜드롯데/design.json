@@ -9,81 +9,64 @@
  "cuts": {
   "0": [
    "FullBleedCard",
-   "사 — 롯데호텔 서울 실물. 간판 교체는 문장으로 박는다",
+   "사 — 더그랜드롯데 정문 · 새 간판",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "headline": "47년간 걸려 있던 간판이 바뀌었다",
-    "sub": "롯데호텔 서울 → 더그랜드롯데 서울 · 2026.8.14",
-    "scrim": 0.5,
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "image": "더그랜드롯데/grand_lotte_entrance.jpg",
+    "headline": "47년 만에 간판이 바뀌었다",
+    "scrim": 0.42,
+    "source": "롯데호텔"
    }
   ],
   "1": [
    "BigStatsCard",
-   "그 — 147 하나만",
+   "그 — 사라진 객실 147실",
    {
-    "title": "이름만 바뀐 게 아니다",
+    "title": "사라진 객실",
     "items": [
      {
       "display": "147",
       "unit": "실",
-      "label": "사라진 객실",
+      "label": "",
       "hot": true
      }
     ],
-    "caption": "메인타워 737실 → 590실",
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "source": "뉴스웨이 2026.7.28"
    }
   ],
   "2": [
-   "TimelineRailCard",
-   "그 — 15개월 기간 막대",
+   "StatCard",
+   "사+그 — 공사 영상 위에 15개월이 세어 올라간다",
    {
-    "title": "약 15개월",
-    "sub": "메인타워 리뉴얼 공사",
-    "axis": {
-     "from": 2025,
-     "to": 2027,
-     "step": 1
-    },
-    "rails": [
-     {
-      "label": "메인타워 공사",
-      "from": 2025.4,
-      "to": 2026.62,
-      "note": "약 15개월",
-      "hot": true
-     }
-    ],
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "count": 15,
+    "countUnit": "개월",
+    "value": "15개월",
+    "bgImage": "더그랜드롯데/construction.mp4",
+    "veil": 0.38,
+    "source": "뉴스웨이 2026.7.28"
    }
   ],
   "3": [
    "DotMatrixCard",
-   "그 — 737개 점 중 147개가 꺼진다",
+   "그 — 737 중 147 이 꺼진다",
    {
-    "title": "737실에서 590실로",
-    "sub": "메인타워",
     "perDot": 1,
     "cols": 38,
-    "unit": "실",
+    "merge": true,
     "groups": [
      {
       "label": "남은 객실",
       "value": 590,
-      "display": "590",
-      "sub": "리뉴얼 후"
+      "display": "590실",
+      "hot": true
      },
      {
       "label": "사라진 객실",
       "value": 147,
-      "display": "147",
-      "sub": "−20%",
-      "hot": true
+      "display": "147실",
+      "gone": true
      }
     ],
-    "caption": "점 하나가 객실 하나",
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "source": "뉴스웨이 2026.7.28"
    }
   ],
   "4": [
@@ -105,9 +88,8 @@
   ],
   "5": [
    "BarChartCard",
-   "그 — 호텔 전체 1,015 → 868",
+   "그 — 1,015 → 868",
    {
-    "title": "호텔 전체로 보면",
     "bars": [
      {
       "label": "리뉴얼 전",
@@ -117,11 +99,12 @@
      {
       "label": "리뉴얼 후",
       "value": 868,
-      "displayValue": "868실"
+      "displayValue": "868실",
+      "hot": true
      }
     ],
     "closingLine": "−147실",
-    "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
+    "source": "뉴스웨이 2026.7.28"
    }
   ],
   "6": [
@@ -146,14 +129,11 @@
   ],
   "7": [
    "MediaPlateCard",
-   "사 — 새 간판 실사를 판 위에",
+   "사 — 더그랜드롯데 로고",
    {
-    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
-    "title": "새 이름",
-    "sub": "파는 물건을 줄이는 경우는 드물다",
-    "label": "더그랜드롯데 서울",
-    "note": "2026.8.14 개관",
-    "source": "simonwilliamsim / BY-SA 2.0"
+    "media": "더그랜드롯데/logo_grand_lotte.jpg",
+    "aspect": 1.667,
+    "source": "롯데호텔"
    }
   ],
   "8": [
@@ -195,29 +175,24 @@
   ],
   "11": [
    "YFlowCard",
-   "그 — 객실 수 → ADR·OCC 사슬",
+   "그 — 객실 수 → ADR · OCC",
    {
-    "kicker": "객실 수가 정하는 것",
-    "sub": "사업성 평가의 출발점",
     "nodes": [
      {
       "label": "총 객실 수",
-      "sub": "몇 개인가",
-      "tag": "입력"
+      "sub": "몇 개인가"
      },
      {
       "label": "ADR",
-      "sub": "평균 객실 단가",
-      "tag": "결과"
+      "sub": "평균 객실 단가"
      },
      {
       "label": "OCC",
       "sub": "객실 가동률",
-      "tag": "결과",
       "hot": true
      }
     ],
-    "caption": "객실 수가 바뀌면 두 지표가 같이 움직인다"
+    "branch": true
    }
   ],
   "12": [
@@ -244,20 +219,14 @@
    }
   ],
   "13": [
-   "SeatDotsCard",
-   "그 — OCC = 찬 방과 빈 방을 점으로",
+   "LowerThirdCard",
+   "사 — 호텔 객실 정비 영상",
    {
-    "kicker": "OCC",
-    "sub": "객실 가동률 — 있는 방 중 몇 개가 찼나",
-    "perDot": 10,
-    "arenas": [
-     {
-      "label": "더그랜드롯데 서울",
-      "count": 868,
-      "sub": "리뉴얼 후 총 객실"
-     }
-    ],
-    "caption": "점 하나가 객실 10개"
+    "media": "더그랜드롯데/hotel_corridor.mp4",
+    "label": "OCC",
+    "sub": "객실 가동률",
+    "tone": "dark",
+    "source": "Mixkit Free License"
    }
   ],
   "14": [
@@ -282,24 +251,20 @@
    }
   ],
   "15": [
-   "ExchangeMotionCard",
-   "그 — 매매금액 ↔ 객실 수 맞바꾸기",
+   "FormulaCard",
+   "그 — 총 거래 금액 / 객실 수 = 객실당 단가",
    {
-    "title": "호텔은 이렇게 값이 매겨진다",
-    "sub": "총액을 객실 수로 나눈다",
-    "left": {
-     "wordmark": "매도·매수 총액",
-     "label": "거래 금액",
-     "sub": "3,686억원"
+    "top": {
+     "value": "총 거래 금액",
+     "label": "3,686억원"
     },
-    "right": {
-     "wordmark": "객실 수",
-     "label": "576실",
-     "sub": "나누는 수"
+    "bottom": {
+     "value": "객실 수",
+     "label": "576실"
     },
-    "give": {
-     "label": "÷",
-     "sub": "객실당 단가"
+    "result": {
+     "value": "6.4억원",
+     "label": "객실당 단가"
     },
     "source": "한국경제 2026.8.6"
    }
@@ -316,23 +281,22 @@
   ],
   "17": [
    "AnnotatedShotCard",
-   "사 — 명동 4성급 호텔 외관에 3,686억 주석",
+   "사 — 보코 서울 명동 · 3,686억 주석",
    {
-    "title": "올해 명동에서",
-    "titleSub": "4성급 호텔 한 곳이 팔렸다",
+    "image": "더그랜드롯데/voco_myeongdong.jpg",
     "beats": [
      {
       "x": 0.5,
       "y": 0.5,
-      "zoom": 1.3,
-      "label": "약 3,686억원",
-      "sub": "2026년 거래",
-      "side": "left",
+      "zoom": 1.2,
+      "label": "3,686억원",
+      "sub": "576실 · 2026년 거래",
+      "side": "right",
       "hot": true,
       "hold": 40
      }
     ],
-    "source": "한국경제 2026.8.6"
+    "source": "보코 서울 명동"
    }
   ],
   "18": [
@@ -356,10 +320,9 @@
    "사 — 명동 4성급 호텔 외관",
    {
     "headline": "이렇게나 중요한 객실을 줄였다",
-    "sub": "명동 · 소공동",
     "scrim": 0.5,
-    "source": "Abasaa / Public domain",
-    "image": "더그랜드롯데/myeongdong_night.jpg"
+    "source": "뉴스1",
+    "image": "더그랜드롯데/grand_lotte_dusk.jpg"
    }
   ],
   "20": [
@@ -385,21 +348,18 @@
    "LowerThirdCard",
    "사 — 롯데호텔 서울 외관",
    {
-    "num": "",
+    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
     "label": "롯데호텔 서울",
-    "sub": "1979년 개관 · 소공동",
     "tone": "dark",
-    "kicker": "여기서 숫자를 하나",
-    "source": "simonwilliamsim / BY-SA 2.0",
-    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg"
+    "source": "simonwilliamsim / BY-SA 2.0"
    }
   ],
   "22": [
    "AreaNestCard",
-   "그 — 2조 6,560억 ⊃ 7,657억 ⊃ 4,135억",
+   "그 — 원형으로 2조 6,560억 ⊃ 7,657억 ⊃ 4,135억",
    {
-    "title": "호텔롯데 매출은 이렇게 나뉜다",
-    "sub": "2026년 상반기",
+    "title": "",
+    "shape": "circle",
     "unit": "",
     "items": [
      {
@@ -419,53 +379,65 @@
       "hot": true
      }
     ],
-    "source": "DART 호텔롯데 반기보고서 2026.8.14"
+    "source": "DART 2026.8.14"
    }
   ],
   "23": [
-   "PaperImageCard",
-   "사 — 호텔 로비",
+   "AreaNestCard",
+   "그 — 사각형: 호텔사업부 7,657억 ⊃ 객실 4,135억",
    {
-    "title": "호텔사업부 매출",
-    "sub": "7,657억원 (2026 상반기)",
-    "caption": "호텔롯데 전체 2조 6,560억원 중",
+    "unit": "",
+    "items": [
+     {
+      "label": "호텔사업부 매출",
+      "value": 7657,
+      "display": "7,657억"
+     },
+     {
+      "label": "객실 수입",
+      "value": 4135,
+      "display": "4,135억",
+      "hot": true
+     }
+    ],
     "source": "DART 2026.8.14"
    }
   ],
   "24": [
-   "BigStatsCard",
-   "그 — 4,135억",
+   "CostStackCard",
+   "그 — 객실 수입이 차지하는 자리",
    {
-    "title": "그 안에서 객실 수입은",
-    "items": [
+    "unit": "억원",
+    "totalLabel": "호텔사업부",
+    "totalDisplay": "7,657억원",
+    "parts": [
      {
-      "display": "4,135",
-      "unit": "억원",
-      "label": "객실 수입 (2026 상반기)",
+      "label": "객실",
+      "value": 4135,
+      "display": "4,135억",
       "hot": true
+     },
+     {
+      "label": "임대·식음료·기타",
+      "value": 3522,
+      "display": "3,522억"
      }
     ],
-    "caption": "호텔사업부 7,657억원 중",
     "source": "DART 2026.8.14"
    }
   ],
   "25": [
    "RatioCard",
-   "그 — 54%",
+   "그 — 54% 원 하나",
    {
-    "title": "호텔사업부 매출의 절반",
     "unit": "%",
+    "mode": "circle",
     "items": [
      {
-      "label": "객실",
+      "label": "객실 매출 비중",
       "pct": 54,
-      "sub": "4,135억원",
+      "sub": "",
       "hot": true
-     },
-     {
-      "label": "임대·식음료·기타",
-      "pct": 46,
-      "sub": "3,522억원"
      }
     ],
     "source": "DART 2026.8.14"
@@ -548,22 +520,13 @@
    }
   ],
   "29": [
-   "YHeadlineCard",
-   "그 — 나머지 절반을 어떻게 쓰나",
+   "FullBleedCard",
+   "사 — 호텔 연회장 · 한 줄만",
    {
-    "kicker": "그러니까",
-    "lines": [
-     [
-      {
-       "t": "나머지 절반을 "
-      },
-      {
-       "t": "어떻게 쓰느냐",
-       "hot": true
-      }
-     ]
-    ],
-    "sub": "그만큼 중요해진다"
+    "image": "더그랜드롯데/crystal_ballroom.jpg",
+    "headline": "나머지 절반을 어떻게 쓰느냐",
+    "scrim": 0.5,
+    "source": "롯데호텔 (연회장 참고)"
    }
   ],
   "30": [
@@ -632,14 +595,14 @@
    "MapCard",
    "지도 — 소공동 이 자리",
    {
-    "title": "소공동, 이 자리",
-    "sub": "더그랜드롯데 서울",
+    "title": "",
+    "sub": "",
     "pins": [
      {
       "lat": 37.5651,
       "lon": 126.981,
       "label": "더그랜드롯데 서울",
-      "sub": "옛 반도호텔 자리",
+      "sub": "",
       "hot": true
      }
     ],
@@ -661,7 +624,10 @@
     ],
     "headline": "88년 전에도 객실만 팔지 않았다",
     "source": "한국저작권위원회 / CC BY 4.0",
-    "media": "더그랜드롯데/bando_hotel_street_1960.jpg"
+    "media": "더그랜드롯데/bando_hotel_street_1960.jpg",
+    "center": true,
+    "dim": 0.42,
+    "sub": ""
    }
   ],
   "35": [

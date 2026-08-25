@@ -34,3 +34,9 @@
 | `gyeongbu_ceremony.jpg` |  () | **저작권물 · 출처 표기 사용** | `경부고속도로 개통식 자료사진` |
 | `cheongwadae_old.jpg` |  () | **저작권물 · 출처 표기 사용** | `옛 청와대 자료사진` |
 | `seoul_street_1960s.jpg` |  () | **저작권물 · 출처 표기 사용** | `서울 옛 거리 자료사진` |
+| `ajeongdang_thumb.jpg` | 유튜브 영상 썸네일 (본인 채널) | 본인 제작 | `본 채널` |
+| `grand_lotte_entrance.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔` |
+| `grand_lotte_dusk.jpg` |  () | **저작권물 · 출처 표기 사용** | `뉴스1` |
+| `lotte_town_myeongdong.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데` |
+| `seoul_downtown_dusk.jpg` |  () | **저작권물 · 출처 표기 사용** | `서울 도심 자료사진` |
+| `crystal_ballroom.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 (연회장 참고)` |

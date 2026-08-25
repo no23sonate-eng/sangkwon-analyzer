@@ -8,7 +8,12 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper
 // 면적(㎡·평·ha)이나 "몇 배" 비교 전용.
 // items: [{label, value, sub, hot}] — 값 순서 무관, 큰 것부터 자동 정렬
 export const AreaNestCard = ({
-  title = '', sub = '', items = [], unit = '', source = '',
+  title = '', sub = '', items = [], unit = '',
+  // shape='circle' 이면 네모 대신 **동심원**으로 겹친다.
+  // 넓이를 정확히 견주는 데엔 네모가 낫지만, '전체 안의 일부' 를 말할 때는
+  // 원이 더 빨리 읽힌다 — 모서리가 없으니 경계가 안 싸운다.
+  // 원은 가운데를 공유하고, 반지름을 √값 에 비례시켜 **넓이** 비율을 지킨다
+  shape = 'square', source = '',
   multipleNote = '',   // 예: "3.3배" — 가운데에 크게 얹는다,
   theme, align = 'center',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
@@ -40,12 +45,25 @@ export const AreaNestCard = ({
           const x = CX - BOX / 2;
           return (
             <g key={i}>
-              <rect x={x} y={BASE_Y - s} width={s} height={s}
-                    fill={it.hot ? YELLOW : T.tones[(i * 2 + 1) % T.tones.length]}
-                    opacity={it.hot ? 0.92 : 0.55} />
-              <rect x={x} y={BASE_Y - s} width={s} height={s}
-                    fill="none" stroke={T.ink} strokeWidth={i === 0 ? 3 : 2.5}
-                    strokeDasharray={it.hot ? undefined : '8 6'} />
+              {shape === 'circle' ? (
+                <>
+                  <circle cx={CX} cy={BASE_Y - BOX / 2} r={s / 2}
+                          fill={it.hot ? YELLOW : T.tones[(i * 2 + 1) % T.tones.length]}
+                          opacity={it.hot ? 0.92 : 0.55} />
+                  <circle cx={CX} cy={BASE_Y - BOX / 2} r={s / 2}
+                          fill="none" stroke={T.ink} strokeWidth={i === 0 ? 3 : 2.5}
+                          strokeDasharray={it.hot ? undefined : '8 6'} />
+                </>
+              ) : (
+                <>
+                  <rect x={x} y={BASE_Y - s} width={s} height={s}
+                        fill={it.hot ? YELLOW : T.tones[(i * 2 + 1) % T.tones.length]}
+                        opacity={it.hot ? 0.92 : 0.55} />
+                  <rect x={x} y={BASE_Y - s} width={s} height={s}
+                        fill="none" stroke={T.ink} strokeWidth={i === 0 ? 3 : 2.5}
+                        strokeDasharray={it.hot ? undefined : '8 6'} />
+                </>
+              )}
             </g>
           );
         })}
@@ -61,10 +79,10 @@ export const AreaNestCard = ({
         let last = -1e9;
         return sorted.map((it, i) => {
           const s = side(it.value);
-          const yTop = BASE_Y - s;
+          const yTop = shape === 'circle' ? BASE_Y - BOX / 2 - s / 2 : BASE_Y - s;
           const ly = Math.max(yTop, last + MIN);
           last = ly;
-          const xRight = CX - BOX / 2 + s;
+          const xRight = shape === 'circle' ? CX + s / 2 * 0.71 : CX - BOX / 2 + s;
           const o = fadeIn(frame, 34 + i * 12);
           return (
           <React.Fragment key={i}>
