@@ -60,3 +60,16 @@
 | `plaza_hotel.jpg` |  () | **저작권물 · 출처 표기 사용** | `더플라자 호텔 서울` |
 | `lotte_hotel_seoul_aerial.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데호텔 서울` |
 | `hilton_seoul.jpg` |  () | **저작권물 · 출처 표기 사용** | `밀레니엄 힐튼 서울` |
+| `golf_academy.jpg` | pexels 31212256 (Indoor Golf Simulator Room) | Pexels, **Pexels License** | `Pexels` |
+| `fine_dining.jpg` | pexels 29962487 (Elegant Restaurant Interior) | Pexels, **Pexels License** | `Pexels` |
+| `clinic_derma.jpg` | pexels 16571735 (Treatment Room in a Private Clinic) | Pexels, **Pexels License** | `Pexels` |
+| `clinic_dental.jpg` | pexels 6812569 (People at a Dental Clinic) | Pexels, **Pexels License** | `Pexels` |
+| `clinic_skin.jpg` | pexels 36930338 (Skincare Procedure in Modern Aesthetic Clinic) | Pexels, **Pexels License** | `Pexels` |
+| `lotte_world_tower.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데월드타워` |
+| `grand_lotte_plaque.jpg` |  () | **저작권물 · 출처 표기 사용** | `뉴시스` |
+| `chosun_hotel_1930s.jpg` |  () | **저작권물 · 출처 표기 사용** | `조선호텔 자료사진` |
+| `chosun_hotel_keijo.jpg` |  () | **저작권물 · 출처 표기 사용** | `조선호텔 엽서 자료` |
+| `young_plaza.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데 영플라자` |
+| `young_plaza_media.jpg` |  () | **저작권물 · 출처 표기 사용** | `롯데 영플라자` |
+| `apple_park.jpg` |  () | **저작권물 · 출처 표기 사용** | `애플 파크` |
+| `logo_lotte_shopping.png` |  () | **저작권물 · 출처 표기 사용** | `롯데쇼핑` |

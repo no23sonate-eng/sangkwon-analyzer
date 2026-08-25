@@ -101,6 +101,13 @@ def main():
         row = design.get(str(e['id']))
         if row:
             e['card'], e['_why'] = row[0], row[1]
+            # plan_from_script 는 "도식이 안 나오는 문장" 을 통째로 실사(cardDur=0,
+            # broll TODO.mp4)로 넘긴다. 설계에서 그 컷에 카드를 배정했다면 그
+            # 판단은 뒤집힌 것이다 — 안 지우면 render_parkside 가 조용히 건너뛰고
+            # (`[skip] 장면 전체가 실사`) 검수 시트에 그 컷만 빈다.
+            # 더그랜드롯데 편에서 182컷 중 77컷이 이렇게 안 나왔다.
+            e.pop('broll', None)
+            e['cardDur'] = e['dur']
 
     # props 껍데기는 **확정된 카드 기준**으로 다시 만든다.
     # plan_from_script 가 만든 scene_props 는 추천 카드 기준이라, 설계로

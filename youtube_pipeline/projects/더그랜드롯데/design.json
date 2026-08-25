@@ -149,8 +149,7 @@
      "2026 신규",
      "소공동"
     ],
-    "source": "Lotte Hotels & Resorts",
-    "logo": "더그랜드롯데/logo_lotte_hotel.png"
+    "source": "Lotte Hotels & Resorts"
    }
   ],
   "9": [
@@ -230,24 +229,12 @@
    }
   ],
   "14": [
-   "AnnotatedShotCard",
-   "사 — 호텔 외관에 '이 건물의 값' 주석",
+   "MediaPlateCard",
+   "자료 — 등급판. 값을 매긴다는 말 그 자체",
    {
-    "title": "이 건물의 값은 어떻게 매기나",
-    "titleSub": "통상 객실당 얼마인지를 본다",
-    "beats": [
-     {
-      "x": 0.5,
-      "y": 0.45,
-      "zoom": 1.25,
-      "label": "객실당 얼마",
-      "sub": "호텔 거래의 기준",
-      "side": "right",
-      "hot": true,
-      "hold": 40
-     }
-    ],
-    "source": "한국경제 2026.8.6"
+    "media": "더그랜드롯데/grand_lotte_plaque.jpg",
+    "label": "객실당 얼마",
+    "source": "뉴시스"
    }
   ],
   "15": [
@@ -303,7 +290,6 @@
    "UnitPriceCard",
    "그 — 3,686억 ÷ 576실 = 6.4억",
    {
-    "title": "객실 하나에 6억 4,000만원",
     "sub": "3,686억 ÷ 576실",
     "total": "3,686억원",
     "totalLabel": "매각가 (2026)",
@@ -446,8 +432,6 @@
    "CostStackCard",
    "그 — 임대·식음료·기타가 쌓인다",
    {
-    "title": "나머지 절반은 무엇인가",
-    "sub": "호텔사업부 매출 구성",
     "unit": "억원",
     "totalLabel": "호텔사업부 매출",
     "totalDisplay": "7,657억원",
@@ -482,8 +466,6 @@
    "SplitCard",
    "그 — 객실 절반 | 나머지 절반",
    {
-    "title": "객실은 절반이다",
-    "sub": "호텔 매출에서",
     "left": {
      "label": "객실",
      "sub": "54%",
@@ -786,7 +768,8 @@
    {
     "title": "차림새가 어울리지 않는다는 이유로 쫓겨난다",
     "sub": "조선호텔",
-    "source": "michaelseangallagher / BY-SA 2.0"
+    "source": "조선호텔 자료사진",
+    "image": "더그랜드롯데/chosun_hotel_1930s.jpg"
    }
   ],
   "44": [
@@ -844,7 +827,8 @@
    {
     "title": "",
     "caption": "노구치는 자기 사무실을 조선호텔이 내려다보이는 5층에 뒀다",
-    "source": "michaelseangallagher / BY-SA 2.0"
+    "source": "조선호텔 엽서 자료",
+    "image": "더그랜드롯데/chosun_hotel_keijo.jpg"
    }
   ],
   "48": [
@@ -890,24 +874,32 @@
    }
   ],
   "50": [
-   "PhotoStepsCard",
-   "사 — 민간 호텔들이 하나둘 들어선다",
+   "TimelineRailCard",
+   "그 — 민간 호텔이 하나둘 들어선다",
    {
-    "title": "민간 호텔이 하나둘 들어선다",
-    "sub": "앰배서더호텔 등",
-    "steps": [
+    "axis": {
+     "from": 1955,
+     "to": 1980,
+     "step": 5
+    },
+    "rails": [
      {
-      "label": "국영 반도호텔",
-      "sub": "시설 노후화"
-     },
-     {
-      "label": "민간 호텔 등장",
-      "sub": "1960~70년대"
-     },
-     {
-      "label": "경쟁력 상실",
-      "sub": "대규모 적자",
-      "hot": true
+      "label": "",
+      "events": [
+       {
+        "at": 1961,
+        "label": "민간 호텔 등장"
+       },
+       {
+        "at": 1965,
+        "label": "앰배서더"
+       },
+       {
+        "at": 1974,
+        "label": "반도호텔 적자",
+        "hot": true
+       }
+      ]
      }
     ],
     "source": "한국경제인협회 e뮤지엄"
@@ -976,7 +968,6 @@
    {
     "num": "",
     "label": "신격호",
-    "sub": "롯데 창업주 · 재일교포 사업가",
     "kicker": "1970년 청와대",
     "media": "더그랜드롯데/seoul_1945.jpg",
     "tone": "dark",
@@ -1025,13 +1016,24 @@
    }
   ],
   "58": [
-   "MediaPlateCard",
-   "자료 — 자문 보고서를 판 위에",
+   "YFlowCard",
+   "그 — 한 곳에서 여러 곳으로 갈라진다",
    {
-    "title": "짓기 전에 자문을 맡긴다",
-    "label": "자문 보고서",
-    "note": "1970년대 초",
-    "sub": "여러 곳에 용역",
+    "branch": true,
+    "nodes": [
+     {
+      "label": "롯데"
+     },
+     {
+      "label": "자문 용역 · 여러 곳"
+     }
+    ],
+    "arrows": [
+     {
+      "label": ""
+     }
+    ],
+    "caption": "1970년대 초",
     "source": "한국경제인협회 e뮤지엄"
    }
   ],
@@ -1109,8 +1111,6 @@
    "BarChartCard",
    "그 — 300실 → 1,000실",
    {
-    "title": "300실이 아니라 1,000실",
-    "sub": "권고의 3배가 넘는다",
     "bars": [
      {
       "label": "자문 보고서 권고",
@@ -1180,8 +1180,6 @@
      0,
      -24
     ],
-    "headline": "지하 3층 지상 38층, 1,020실",
-    "sub": "당시 동양 최대 특급호텔",
     "source": "연합뉴스",
     "media": "더그랜드롯데/lotte_opening_ceremony_1979.jpg"
    }
@@ -1245,7 +1243,7 @@
      {
       "name": "경부고속도로",
       "sub": "총공사비",
-      "photo": "더그랜드롯데/gyeongbu_opening_1970.jpg",
+      "photo": "더그랜드롯데/gyeongbu_aerial.jpg",
       "stat": "1억 9,000만",
       "statUnit": "달러",
       "lines": [
@@ -1698,7 +1696,6 @@
    "AreaBudgetCard",
    "그 — 빠진 객실 면적이 의료시설로",
    {
-    "title": "빠진 객실 면적은 어디로 갔나",
     "sub": "메인타워",
     "total": 100,
     "unit": "%",
@@ -1781,23 +1778,26 @@
    "사 — 피부과·치과·성형외과 세 장",
    {
     "title": "롯데는 이미 해봤다",
-    "sub": "롯데시티호텔 마포 메디컬 클리닉",
+    "sub": "진료실 이미지는 참고용",
     "steps": [
      {
       "label": "피부과",
-      "sub": ""
+      "sub": "",
+      "photo": "더그랜드롯데/clinic_derma.jpg"
      },
      {
       "label": "치과",
-      "sub": ""
+      "sub": "",
+      "photo": "더그랜드롯데/clinic_dental.jpg"
      },
      {
       "label": "성형외과",
       "sub": "",
-      "hot": true
+      "hot": true,
+      "photo": "더그랜드롯데/clinic_skin.jpg"
      }
     ],
-    "source": "비즈워치 2026.8.14"
+    "source": "비즈워치 2026.8.14 · 이미지 Pexels"
    }
   ],
   "102": [
@@ -1869,11 +1869,12 @@
    }
   ],
   "106": [
-   "PaperImageCard",
-   "사 — 청담동 사교클럽 건물",
+   "StatCard",
+   "그 — 다섯 번 유찰",
    {
-    "title": "청담동 1번지",
-    "caption": "5차례 유찰된 하이엔드 사교클럽 건물",
+    "value": "5회",
+    "subtitle": "유찰",
+    "caption": "청담동 하이엔드 사교클럽 건물",
     "source": "뉴스퀘스트 2026.6.26"
    }
   ],
@@ -2024,7 +2025,6 @@
    {
     "media": "더그랜드롯데/crystal_ballroom_led.jpg",
     "title": "크리스탈 글로우",
-    "sub": "신규 웨딩 콘셉트",
     "label": "크리스탈볼룸",
     "note": "2026.8.10 웨딩 쇼케이스",
     "source": "롯데호텔 서울 크리스탈볼룸"
@@ -2093,8 +2093,6 @@
    "CostStackCard",
    "그 — 연회·웨딩이 차지하는 자리",
    {
-    "title": "연회와 웨딩이 차지하는 자리",
-    "sub": "특급호텔 매출 구성",
     "unit": "%",
     "totalLabel": "호텔 매출",
     "totalDisplay": "100%",
@@ -2175,7 +2173,8 @@
    {
     "title": "롯데도 같은 걸 준비한다",
     "caption": "영플라자 외관",
-    "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"
+    "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30",
+    "image": "더그랜드롯데/young_plaza.jpg"
    }
   ],
   "122": [
@@ -2190,7 +2189,8 @@
      "명동",
      "2026"
     ],
-    "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30"
+    "source": "헤럴드경제 2026.7.30 · 한국경제 2026.7.30",
+    "logo": "더그랜드롯데/young_plaza_media.jpg"
    }
   ],
   "123": [
@@ -2320,11 +2320,11 @@
     "parentLabel": "롯데",
     "items": [
      {
-      "logo": "",
+      "logo": "더그랜드롯데/logo_lotte_hotel.png",
       "label": "롯데호텔"
      },
      {
-      "logo": "",
+      "logo": "더그랜드롯데/logo_lotte_shopping.png",
       "label": "롯데쇼핑"
      }
     ],
@@ -2840,7 +2840,7 @@
      {
       "name": "골프 아카데미",
       "sub": "",
-      "photo": "",
+      "photo": "더그랜드롯데/golf_academy.jpg",
       "lines": [
        "도심형 시설"
       ]
@@ -2848,14 +2848,14 @@
      {
       "name": "다이닝",
       "sub": "",
-      "photo": "",
+      "photo": "더그랜드롯데/fine_dining.jpg",
       "lines": [
        "복수 브랜드"
       ],
       "hot": true
      }
     ],
-    "source": "굿모닝경제 2025.9.4"
+    "source": "굿모닝경제 2025.9.4 · 이미지 Pexels"
    }
   ],
   "153": [
@@ -3050,7 +3050,7 @@
      {
       "name": "포스터앤파트너스",
       "sub": "애플 사옥",
-      "photo": "",
+      "photo": "더그랜드롯데/apple_park.jpg",
       "lines": [
        "Apple Park"
       ]
@@ -3058,14 +3058,14 @@
      {
       "name": "SOM",
       "sub": "롯데월드타워",
-      "photo": "",
+      "photo": "더그랜드롯데/lotte_world_tower.jpg",
       "lines": [
        "555m · 서울"
       ],
       "hot": true
      }
     ],
-    "source": "스트레이트뉴스 2025.4.21"
+    "source": "스트레이트뉴스 2025.4.21 · 애플 파크 · 롯데월드타워"
    }
   ],
   "164": [
@@ -3099,8 +3099,6 @@
    {
     "media": "더그랜드롯데/old_seoul_station.jpg",
     "title": "이오타 서울",
-    "sub": "도심 속 초대형 복합시설",
-    "label": "완공되면",
     "note": "한 단계 더 발전된 국내 복합개발 사례",
     "source": "옛 서울역"
    }
