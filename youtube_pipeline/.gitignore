@@ -32,3 +32,8 @@ motion/public/*/_candidates/
 motion/public/*/*.mp4
 motion/public/*/*.webm
 motion/public/*/*.mov
+
+# 클립 원본(mp4)은 한 편에 200MB 라 안 넣는다. 대신 검수용 미리보기
+# (768px crf30, 컷당 ~60KB)는 커밋한다 — 롤백이 나도 40분짜리 클립
+# 렌더를 다시 돌 이유가 없다
+projects/*/clips/

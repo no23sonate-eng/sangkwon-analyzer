@@ -121,7 +121,14 @@ figure{
 figure.marked{border-color:var(--mark); box-shadow:0 0 0 2px var(--mark)}
 .shot{position:relative; display:block; width:100%; border:0; padding:0;
       background:#0B0C0E; cursor:zoom-in; line-height:0}
-.shot img{width:100%; height:auto; display:block}
+.shot img,.shot video{width:100%; height:auto; display:block}
+.shot .play{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:52px; height:52px; border-radius:50%; display:grid; place-items:center;
+  background:rgba(11,12,14,.62); color:#fff; font-size:17px; padding-left:3px;
+  pointer-events:none; transition:opacity .15s;
+}
+.shot.playing .play{opacity:0}
 .no{
   position:absolute; left:0; top:0; padding:4px 9px;
   background:var(--chip-bg); color:var(--chip-fg);
@@ -222,6 +229,18 @@ const dlg = document.getElementById('zoom');
 const dimg = document.getElementById('zoomimg');
 const dcap = document.getElementById('zoomcap');
 document.querySelectorAll('.shot').forEach((b) => {
+  const v = b.querySelector('video');
+  if (v) {
+    // 한 번에 하나만 돈다 — 182개가 같이 돌면 탭이 멈춘다
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.shot video').forEach((o) => {
+        if (o !== v) { o.pause(); o.closest('.shot').classList.remove('playing'); }
+      });
+      if (v.paused) { v.currentTime = 0; v.play(); b.classList.add('playing'); }
+      else { v.pause(); b.classList.remove('playing'); }
+    });
+    return;                       // 영상 컷은 확대 대신 재생
+  }
   b.addEventListener('click', () => {
     const f = b.closest('figure');
     dimg.src = f.querySelector('img').src;
@@ -239,6 +258,8 @@ refresh();
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument('--video', action='store_true',
+                    help='스틸 대신 미리보기 영상을 박는다 (모션까지 검수)')
     ap.add_argument('project')
     ap.add_argument('--out', default=None)
     a = ap.parse_args()
@@ -250,12 +271,38 @@ def main():
     acts = {1: '후크 · 객실 수의 의미', 2: '이 자리의 역사', 3: '리뉴얼을 뜯어봅니다',
             4: '서울 도심 격전지', 5: '결론'}
 
+    video = a.video
+    # `컷/` 은 name_stills 가 `000_0m00s_카드.png` 로 다시 이름 붙인 것이고
+    # 미리보기 영상은 렌더 원본 이름(`sec00_cut01.mp4`)이다. 컷 번호로 잇는다
+    previews = {}
+    if video:
+        for v in (pdir / '검수영상').glob('sec*.mp4'):
+            previews[int(re.match(r'sec(\d+)_', v.name).group(1))] = v
+
+    def media(r):
+        if not r['vid']:
+            return (f'<img loading="lazy" src="data:image/jpeg;base64,{r["b64"]}" '
+                    f'alt="컷 {r["id"]}">')
+        # 182개를 한꺼번에 자동재생하면 브라우저가 죽는다. 눌러야 돈다.
+        # poster 는 안 준다 — 첫 프레임이 그대로 정지 화면이 되고, 스틸을
+        # 따로 박으면 컷마다 바이트가 두 배가 되어 16MB 를 넘는다
+        return (f'<video class="mv" preload="metadata" muted playsinline loop '
+                f'src="data:video/mp4;base64,{r["vid"]}"></video>'
+                f'<span class="play" aria-hidden="true">▶</span>')
+
     rows = []
     for f in sorted((pdir / '컷').glob('*.png')):
         i = int(re.match(r'(\d+)_', f.name).group(1))
         e = plan.get(i, {})
         card, why = (design.get(str(i)) or ['?', ''])[:2]
         t = int(e.get('start', 0))
+        # 모션 검수 모드 — 같은 이름의 미리보기 영상이 있으면 그걸 박는다.
+        # 정지 화면으로는 형광펜이 언제 그어지는지, 숫자가 굴러 오르는지가 안 보인다
+        mp4 = previews.get(i)
+        if mp4 is not None and mp4.exists():
+            vid = base64.b64encode(mp4.read_bytes()).decode()
+        else:
+            vid = ''
         im = Image.open(f).convert('RGB')
         im.thumbnail((W, W))
         buf = io.BytesIO()
@@ -266,6 +313,7 @@ def main():
             'act': e.get('act', 1),
             'text': ' '.join(str(e.get('text', '')).split()),
             'b64': base64.b64encode(buf.getvalue()).decode(),
+            'vid': vid,
         })
 
     parts = []
@@ -280,8 +328,7 @@ def main():
 <figure data-id="{r['id']}" data-ts="{r['ts']}" data-card="{html.escape(r['card'])}"
         data-find="{html.escape(find, quote=True)}">
   <button class="shot" aria-label="#{r['id']} 크게 보기">
-    <img loading="lazy" src="data:image/jpeg;base64,{r['b64']}"
-         alt="컷 {r['id']} — {html.escape(r['card'])}">
+    {media(r)}
     <span class="no mono">#{r['id']}</span>
     <span class="ts mono">{r['ts']}</span>
   </button>
