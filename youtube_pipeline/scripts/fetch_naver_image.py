@@ -123,8 +123,21 @@ def main():
     cand.parent.mkdir(parents=True, exist_ok=True)
     cand.write_text(json.dumps(rows, ensure_ascii=False, indent=1))
     out = sheet(rows, pdir / '_candidates' / 'naver_sheet.png')
+    # 크기를 같이 찍는다. 1920 으로 렌더하는데 600px 짜리를 받으면 뭉갠다 —
+    # 시트에서는 다 그럴듯해 보여서 붙이고 나서야 안다
+    from PIL import Image
+    tmp = cand.parent / '_probe.bin'
     for i, h in enumerate(rows):
-        print(f"[{i:2d}] {h['title'][:48]:48s} {h['page'][:52]}")
+        try:
+            curl(h['url'], tmp)
+            w, hh = Image.open(tmp).size
+        except Exception:
+            w = hh = 0
+        h['w'], h['h'] = w, hh
+        mark = '' if w >= 1400 else ('  ← 작다' if w else '  ← 못 읽음')
+        print(f"[{i:2d}] {w:5d}x{hh:<5d}{mark:10s} {h['title'][:40]:40s} {h['page'][:40]}")
+    tmp.unlink(missing_ok=True)
+    cand.write_text(json.dumps(rows, ensure_ascii=False, indent=1))
     print(f'\n{len(rows)}개 → {out}')
     print('시트를 **눈으로 본 뒤** 채택한다 (출처 표기 필수):')
     print(f'  python3 scripts/fetch_naver_image.py {a.project} --get <번호> <파일명> --credit "매체명"')
