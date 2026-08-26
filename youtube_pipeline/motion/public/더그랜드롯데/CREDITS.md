@@ -99,3 +99,18 @@
 | `seoul_intersection.mp4` | pexels 37971704 (Bustling Seoul City Intersection) | Pexels, **Pexels License** | `Pexels` |
 | `seoul_riverside.mp4` | pexels 38259254 (Aerial View of Seoul's Riverside at Sunset) | Pexels, **Pexels License** | `Pexels` |
 | `seoul_downtown_aerial.mp4` | pexels 29980567 (Aerial View of Downtown Seoul Cityscape) | Pexels, **Pexels License** | `Pexels` |
+| `spa_pool.mp4` | pexels 10652457 (Tranquil Swimming Pool) | Pexels, **Pexels License** | `Pexels` |
+| `spa_massage.mp4` | pexels 36997652 (Relaxing Spa Massage) | Pexels, **Pexels License** | `Pexels` |
+| `tourists_terminal.mp4` | pexels 37921159 (Bustling International Airport Terminal) | Pexels, **Pexels License** | `Pexels` |
+| `tourists_walk.mp4` | pexels 5928085 (People Walking Inside the Airport Terminal) | Pexels, **Pexels License** | `Pexels` |
+| `office_modern.mp4` | pexels 5716999 (Modern Office Interior) | Pexels, **Pexels License** | `Pexels` |
+| `office_empty.mp4` | pexels 8347237 (An Empty Office) | Pexels, **Pexels License** | `Pexels` |
+| `banquet_setup.mp4` | pexels 31501463 (Elegant Banquet Hall Setup) | Pexels, **Pexels License** | `Pexels` |
+| `banquet_chandeliers.mp4` | pexels 35760808 (Elegant Event Hall with Crystal Chandeliers) | Pexels, **Pexels License** | `Pexels` |
+| `banquet_dinner.mp4` | pexels 34506427 (Elegant Wedding Celebration at Reception Dinner) | Pexels, **Pexels License** | `Pexels` |
+| `demolition_aerial.mp4` | pexels 36752521 (Aerial View of Building Demolition) | Pexels, **Pexels License** | `Pexels` |
+| `demolition_machine.mp4` | pexels 34241154 (Urban Building Demolition with Heavy Machinery) | Pexels, **Pexels License** | `Pexels` |
+| `mall_luxury.mp4` | pexels 35275606 (Luxurious Mall Interior) | Pexels, **Pexels License** | `Pexels` |
+| `mall_escalator.mp4` | pexels 29447858 (Modern Shopping Mall Escalators) | Pexels, **Pexels License** | `Pexels` |
+| `mall_busy.mp4` | pexels 36108273 (Busy Shopping Mall Escalator Scene) | Pexels, **Pexels License** | `Pexels` |
+| `store_interior.mp4` | pexels 32938061 (Spacious Clothing Store Interior) | Pexels, **Pexels License** | `Pexels` |

@@ -24,12 +24,14 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
   const parentOpacity = interpolate(parentPop, [0, 1], [0, 1]);
   const lineOpacity = interpolate(frame, [16, 30], [0, 1], {extrapolateRight: 'clamp'});
 
-  const PARENT_W = 300;
-  const PARENT_H = 150;
-  const CHILD_W = 230;
-  const CHILD_H = 120;
+  // 상자를 키웠다 (2026-08-26). 300×150 은 1920 화면에서 작아 보이고,
+  // 로고가 상자 안에서 다시 78% 로 줄어드니 실제 로고는 234px 밖에 안 됐다.
+  const PARENT_W = 420;
+  const PARENT_H = 200;
+  const CHILD_W = 340;
+  const CHILD_H = 172;
   const CX = 1920 / 2;
-  const PARENT_TOP = 260;
+  const PARENT_TOP = 232;
   const CHILD_TOP = 560;
   const CHILD_GAP = 300;
   const BRANCH_Y = PARENT_TOP + PARENT_H + 55; // 부모-자식 사이 분기점(465)

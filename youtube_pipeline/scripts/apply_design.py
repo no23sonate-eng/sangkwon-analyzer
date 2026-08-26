@@ -32,7 +32,15 @@ SHARE_MAX = 0.10
 # 채널 규칙: 실존하는 것은 사진이 먼저고, 도형은 구조·개념을 설명할 때다.
 PHOTO = {'PaperImageCard', 'FullBleedCard', 'LowerThirdCard', 'AnnotatedShotCard',
          'SectionPhotoCard', 'PhotoSplitCard', 'PhotoStepsCard', 'BeforeAfterCard',
-         'ArchiveCard'}          # 아카이브도 사진이 주인공이다 — 필름 처리를 얹었을 뿐
+         'ArchiveCard',          # 아카이브도 사진이 주인공이다 — 필름 처리를 얹었을 뿐
+         'StageCard'}            # 실사 전체화면 + 가운데 글자 — 이 채널의 기본 처리
+
+# **화면을 통째로 실사에 내주는 카드는 "포맷" 이 아니라 "매체" 다.**
+# 상한(10%)과 연속 금지는 도형 카드를 위한 규칙이다 — 같은 도형이 또 나오면
+# 같은 화면이 또 나온 것이지만, 실사 컷 둘이 이어지는 건 소재가 다르면
+# 다른 화면이다. 다큐멘터리에서 실사 컷이 이어진다고 나무라지 않는 것과 같다.
+# 이 카드들에 대해서는 **소재 중복**만 본다 (그건 그대로 0중복 규칙).
+MEDIUM = {'StageCard', 'FullBleedCard', 'LowerThirdCard', 'MediaPlateCard', 'ArchiveCard'}
 PLATE = {'MediaPlateCard', 'ArticleCard', 'NewsHeadlineCard', 'QuoteCard', 'NewsQuoteCard'}
 GEO = {'MapCard', 'GeoMapCard', 'SitePlotCard'}
 # 위쪽 52% 는 상한이다 — 올리브영 편이 80% 라서 "같은 포맷이 또" 가 나왔다.
@@ -302,8 +310,9 @@ def main():
         return bool(row) and str(row[1]).startswith('이어서')
 
     runs = [(i, cards[i]) for i in range(1, len(cards))
-            if cards[i] == cards[i - 1] and not cont(i)]
-    over = [(c, n) for c, n in cnt.most_common() if n / len(cards) > SHARE_MAX]
+            if cards[i] == cards[i - 1] and not cont(i) and cards[i] not in MEDIUM]
+    over = [(c, n) for c, n in cnt.most_common()
+            if n / len(cards) > SHARE_MAX and c not in MEDIUM]
 
     def fam(c):
         return '실사' if c in PHOTO else '자료' if c in PLATE else '지도' if c in GEO else '그래픽'
