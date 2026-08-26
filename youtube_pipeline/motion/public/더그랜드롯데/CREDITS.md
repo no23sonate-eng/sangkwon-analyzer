@@ -78,3 +78,8 @@
 | `map_myeongdong.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_seoulstation.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_downtown.png` | 지도 타일 z14 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_sogong_near.png` | 지도 타일 z18 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `seoul_namsan_view.jpg` |  () | **저작권물 · 출처 표기 사용** | `서울 도심 자료사진` |
+| `map_sogong_near.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_sogong_near.png` | 지도 타일 z17 (dark) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `map_sogong_near.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |

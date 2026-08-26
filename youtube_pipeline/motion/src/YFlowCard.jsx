@@ -11,6 +11,31 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn, SP, L
 // 출처 줄(우측 상단)도 없었다. 이제 다른 카드와 같은 테마·같은 자리를 쓴다.
 // nodes: [{tag, label, value, sub, hot}] / arrows: [{label}] (노드 사이 n-1개)
 // 마지막(hot) 노드만 옐로 — 시선이 결과로 흐르게(§11-3 화살표 문법).
+// 한 점에서 갈라져 나가는 화살표. 시작점을 공유하고, 중간에서 한 번
+// 부드럽게 꺾여 목표 높이로 간다 (건축 도면의 분기선 문법).
+const Fork = ({x0, y0, x1, y1, grow, label, T}) => {
+  const mx = x0 + (x1 - x0) * 0.55;
+  const d = `M ${x0} ${y0} C ${mx} ${y0} ${mx} ${y1} ${x1 - 16} ${y1}`;
+  return (
+    <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0,
+                                            pointerEvents: 'none'}}>
+      <path d={d} fill="none" stroke={T.ink} strokeWidth={LW.THIN}
+            strokeLinecap="round" opacity={0.85}
+            pathLength={1} strokeDasharray={1} strokeDashoffset={1 - grow} />
+      {grow > 0.94 ? (
+        <path d={`M ${x1 - 22} ${y1 - 9} L ${x1 - 4} ${y1} L ${x1 - 22} ${y1 + 9}`}
+              fill="none" stroke={T.ink} strokeWidth={LW.THIN}
+              strokeLinecap="round" strokeLinejoin="round" />
+      ) : null}
+      {label ? (
+        <text x={mx} y={(y0 + y1) / 2 - 12} textAnchor="middle"
+              fontFamily="A2Z Light, sans-serif" fontSize={28} fill={T.soft}
+              opacity={grow}>{label}</text>
+      ) : null}
+    </svg>
+  );
+};
+
 export const YFlowCard = ({
   kicker = '',
   sub = '',
@@ -124,10 +149,13 @@ export const YFlowCard = ({
                 갈라짐일 때는 0번에서 **각 가지로** 하나씩 뻗는다 */}
             {branch
               ? (i > 0 ? (
-                  <ArrowBetween
-                    x={bLeft + nodeW}
-                    y={by + (i > 0 ? bH : nodeH) / 2}
-                    w={arrowW}
+                  // 한 점에서 갈라진다. 예전엔 가지마다 제 높이에서 곧게
+                  // 뻗어서 **평행선 두 개**로 보였다 — 그건 갈라짐이 아니다
+                  <Fork
+                    x0={bLeft + nodeW}
+                    y0={nodeY + nodeH / 2}
+                    x1={bLeft + nodeW + arrowW}
+                    y1={by + bH / 2}
                     grow={arrowGrow(i - 1)}
                     label={arrows[i - 1]?.label || ''}
                     T={T}

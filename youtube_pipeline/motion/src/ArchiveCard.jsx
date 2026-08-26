@@ -68,7 +68,9 @@ export const ArchiveCard = ({
         </div>
       ) : null}
 
-      <ArchiveStamp year={year} label={label} />
+      {/* 문장을 가운데 얹은 컷에서는 그 문장이 이미 연도와 장소를 말한다.
+          좌하단 스탬프까지 두면 같은 말이 화면에 두 번 뜬다 (#34·#36) */}
+      {center && headline ? null : <ArchiveStamp year={year} label={label} />}
       <PaperSource source={source} theme={theme} onPhoto />
     </AbsoluteFill>
   );

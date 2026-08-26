@@ -14,7 +14,10 @@
     "image": "더그랜드롯데/grand_lotte_entrance.jpg",
     "headline": "47년 만에 간판이 바뀌었다",
     "scrim": 0.42,
-    "source": "롯데호텔"
+    "source": "롯데호텔",
+    "_motion": {
+     "still": true
+    }
    }
   ],
   "1": [
@@ -30,7 +33,10 @@
       "hot": true
      }
     ],
-    "source": "뉴스웨이 2026.7.28"
+    "source": "뉴스웨이 2026.7.28",
+    "_motion": {
+     "still": true
+    }
    }
   ],
   "2": [
@@ -107,31 +113,33 @@
    }
   ],
   "6": [
-   "ForkPathCard",
-   "그 — 보통은 늘리거나 유지 / 이번은 줄임",
+   "TwoPanelCard",
+   "그 — 흔한 두 선택을 나란히",
    {
-    "title": "리모델링이 보통 가는 길",
-    "trunkLabel": "객실 리모델링",
-    "branches": [
+    "title": "호텔 리모델링",
+    "panels": [
      {
       "label": "방을 늘린다",
       "note": "흔한 선택"
      },
      {
-      "label": "개수는 유지한다",
-      "note": "최소한"
+      "label": "최소 유지",
+      "note": "개수는 그대로"
      }
     ],
-    "question": "파는 물건을 줄이는 경우는 드물다",
+    "divider": "or",
+    "caption": "파는 물건을 줄이는 경우는 드물다",
     "source": "뉴스웨이 2026.7.28 · 비즈워치 2026.8.14"
    }
   ],
   "7": [
-   "MediaPlateCard",
-   "사 — 더그랜드롯데 로고",
+   "FullBleedCard",
+   "사 — 새 이름. 로고 한 장",
    {
-    "media": "더그랜드롯데/logo_grand_lotte.jpg",
-    "aspect": 1.667,
+    "image": "더그랜드롯데/logo_grand_lotte.jpg",
+    "fit": "contain",
+    "ground": "#FFFFFF",
+    "kenBurns": false,
     "source": "롯데호텔"
    }
   ],
@@ -147,7 +155,8 @@
      "2026 신규",
      "소공동"
     ],
-    "source": "Lotte Hotels & Resorts"
+    "source": "Lotte Hotels & Resorts",
+    "theme": "ink"
    }
   ],
   "9": [
@@ -155,7 +164,8 @@
    "그 — 왜? 한 줄",
    {
     "line1": "왜 이런 결정을",
-    "line2": "했을까요?"
+    "line2": "했을까요?",
+    "theme": "blueprint"
    }
   ],
   "10": [
@@ -166,7 +176,8 @@
     "lines": [
      "호텔에서",
      "객실 수가 갖는 의미"
-    ]
+    ],
+    "theme": "ink"
    }
   ],
   "11": [
@@ -200,17 +211,11 @@
     "left": {
      "label": "평균 객실 단가",
      "sub": "하루 한 방을 얼마에 팔았나",
-     "lines": [
-      "객실 매출 ÷ 판매 객실 수"
-     ],
      "hot": true
     },
     "right": {
      "label": "오르면",
-     "sub": "같은 방을 더 비싸게 판 것",
-     "lines": [
-      "단가가 곧 브랜드 위치"
-     ]
+     "sub": "같은 방을 더 비싸게 판 것"
     }
    }
   ],
@@ -230,7 +235,6 @@
    "자료 — 등급판. 값을 매긴다는 말 그 자체",
    {
     "media": "더그랜드롯데/grand_lotte_plaque.jpg",
-    "label": "객실당 얼마",
     "source": "뉴시스"
    }
   ],
@@ -277,17 +281,18 @@
       "sub": "576실 · 2026년 거래",
       "side": "right",
       "hot": true,
-      "hold": 40
+      "hold": 3.0,
+      "size": 96
      }
     ],
-    "source": "보코 서울 명동"
+    "source": "보코 서울 명동",
+    "leadIn": 0.2
    }
   ],
   "18": [
    "UnitPriceCard",
    "그 — 3,686억 ÷ 576실 = 6.4억",
    {
-    "sub": "3,686억 ÷ 576실",
     "total": "3,686억원",
     "totalLabel": "매각가 (2026)",
     "count": 576,
@@ -323,64 +328,50 @@
       }
      ]
     ],
-    "sub": "여기서 숫자를 하나 봐야 한다"
+    "sub": "여기서 숫자를 하나 봐야 한다",
+    "theme": "ink"
    }
   ],
   "21": [
    "LowerThirdCard",
    "사 — 롯데호텔 서울 외관",
    {
-    "media": "더그랜드롯데/grand_lotte_exterior.jpg",
+    "media": "더그랜드롯데/seoul_namsan_view.jpg",
     "label": "롯데호텔 서울",
     "tone": "dark",
-    "source": "롯데호텔"
+    "source": "서울 도심 자료사진"
    }
   ],
   "22": [
-   "AreaNestCard",
-   "그 — 원형으로 2조 6,560억 ⊃ 7,657억 ⊃ 4,135억",
+   "RatioCard",
+   "그 — 전체 매출 안에서의 몫",
    {
-    "title": "",
-    "shape": "circle",
-    "unit": "",
+    "mode": "circle",
+    "single": true,
+    "unit": "%",
     "items": [
      {
-      "label": "호텔롯데 전체",
-      "value": 26560,
-      "display": "2조 6,560억"
-     },
-     {
       "label": "호텔사업부",
-      "value": 7657,
-      "display": "7,657억"
+      "pct": 28.8,
+      "sub": "7,657억"
      },
      {
       "label": "객실 수입",
-      "value": 4135,
-      "display": "4,135억",
+      "pct": 15.6,
+      "sub": "4,135억",
       "hot": true
      }
     ],
+    "caption": "호텔롯데 전체 매출 2조 6,560억원 기준 (2026 상반기)",
     "source": "DART 2026.8.14"
    }
   ],
   "23": [
-   "RatioCard",
-   "그 — 전체 매출 대비 호텔사업부의 몫",
+   "StatCard",
+   "그 — 호텔사업부 7,657억",
    {
-    "mode": "bar",
-    "unit": "억원",
-    "items": [
-     {
-      "label": "호텔롯데 전체",
-      "pct": 26560
-     },
-     {
-      "label": "호텔사업부",
-      "pct": 7657,
-      "hot": true
-     }
-    ],
+    "value": "7,657억원",
+    "subtitle": "호텔사업부 매출",
     "source": "DART 2026.8.14"
    }
   ],
@@ -484,16 +475,15 @@
    }
   ],
   "28": [
-   "ShareSplitCard",
-   "그 — 절반만 줄어든다",
+   "StatCard",
+   "그 — 객실 −20% 는 전체로 −11%",
    {
-    "title": "객실을 줄여도 절반만 영향이 간다",
-    "n": 2,
-    "ownerLabel": "호텔사업부 매출",
-    "cutLabel": "객실 54%",
-    "bidLabel": "나머지 46%",
-    "note": "객실 −20% 는 전체 매출로 보면 약 −11% 다",
-    "source": "DART 2026.8.14"
+    "value": "약 −11%",
+    "subtitle": "객실을 20% 줄였을 때 전체 매출 영향",
+    "bgImage": "더그랜드롯데/grand_lotte_night.jpg",
+    "veil": 0.72,
+    "caption": "객실 비중 54% 를 적용한 개략값",
+    "source": "DART 2026.8.14 · 롯데호텔"
    }
   ],
   "29": [
@@ -507,10 +497,11 @@
    }
   ],
   "30": [
-   "MediaPlateCard",
-   "사 — 특급호텔 복도. 문장은 자막이 받는다",
+   "LowerThirdCard",
+   "사 — 특급호텔 복도. 전체 화면",
    {
     "media": "더그랜드롯데/hotel_corridor.mp4",
+    "tone": "dark",
     "source": "Pexels"
    }
   ],
@@ -543,26 +534,27 @@
       "display": "약 8%"
      }
     ],
-    "caption": "업계 통상 범위를 적용한 개략값 — 호텔마다 편차가 크다"
+    "caption": "업계 통상 범위를 적용한 개략값 — 호텔마다 편차가 크다",
+    "tight": true
    }
   ],
   "32": [
-   "ForkPathCard",
-   "그 — 그 나머지를 어디에 쓸까",
+   "TwoPanelCard",
+   "그 — 남는 자리를 어디에 쓰나",
    {
-    "title": "그 나머지를 어디에 쓸까",
-    "trunkLabel": "줄어든 객실 자리",
-    "branches": [
+    "title": "줄어든 객실 자리",
+    "panels": [
      {
       "label": "임대 시설",
-      "note": "의료·리테일"
+      "note": "의료 · 리테일"
      },
      {
-      "label": "연회·식음료",
+      "label": "연회 · 식음료",
       "note": "기존 강화"
      }
     ],
-    "question": "롯데는 어느 쪽을 골랐나"
+    "divider": "or",
+    "source": ""
    }
   ],
   "33": [
@@ -581,13 +573,14 @@
      }
     ],
     "source": "© OpenStreetMap contributors © CARTO",
-    "image": "더그랜드롯데/map_sogong.png",
+    "image": "더그랜드롯데/map_sogong_near.png",
     "bounds": [
-     126.960601,
-     37.555615,
-     127.001799,
-     37.573984
-    ]
+     126.9709,
+     37.560508,
+     126.9915,
+     37.569692
+    ],
+    "theme": "blueprint"
    }
   ],
   "34": [
@@ -597,7 +590,7 @@
     "era": "film",
     "gate": 1.333,
     "year": "1960",
-    "label": "소공동 · 반도호텔 주변",
+    "label": "",
     "zoom": 0.12,
     "pan": [
      -40,
@@ -607,7 +600,8 @@
     "media": "더그랜드롯데/bando_hotel_street_1960.jpg",
     "center": true,
     "dim": 0.42,
-    "sub": ""
+    "sub": "1960",
+    "headline": "소공동 · 반도호텔 주변"
    }
   ],
   "35": [
@@ -620,7 +614,7 @@
      "역사"
     ],
     "sub": "1938 — 2026",
-    "theme": "blueprint"
+    "theme": "ink"
    }
   ],
   "36": [
@@ -630,7 +624,7 @@
     "era": "film",
     "gate": 1.333,
     "year": "1960",
-    "label": "반도호텔",
+    "label": "",
     "zoom": 0.1,
     "pan": [
      30,
@@ -638,7 +632,9 @@
     ],
     "headline": "노구치 시타가우",
     "source": "한국저작권위원회 / CC BY 4.0",
-    "media": "더그랜드롯데/bando_hotel_front_1960.jpg"
+    "media": "더그랜드롯데/bando_hotel_front_1960.jpg",
+    "center": true,
+    "sub": "1938년 준공 · 사진은 1960년"
    }
   ],
   "37": [
@@ -1619,7 +1615,7 @@
    "LowerThirdCard",
    "사 — 롯데호텔 간판",
    {
-    "media": "더그랜드롯데/grand_lotte_night.jpg",
+    "media": "더그랜드롯데/grand_lotte_exterior.jpg",
     "num": "",
     "label": "롯데호텔",
     "sub": "이미 특정 가격대에 자리를 잡고 있다",

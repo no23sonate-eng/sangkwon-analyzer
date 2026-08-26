@@ -56,7 +56,11 @@ export const StatCard = ({
     + (subtitle ? SP.GAP + 52 : 0);
   const stackY = stageTop(headH + (title ? SP.BLOCK : 0) + bodyH, {top: 140});
   const valueY = stackY + headH + (title ? SP.BLOCK : 0);
-  const onPhoto = Boolean(bgImage);
+  // 베일은 **바탕색을 사진 위에 덮는 것**이라 두꺼울수록 사진이 바탕 쪽으로
+  // 씻긴다. 밝은 테마에서 베일을 두껍게 주고 흰 글자를 쓰면 흰 위에 흰 글자다
+  // (#28 이 그랬다). 사진이 아직 어두울 때만 흰 글자를 쓴다.
+  const veilNow = veil == null ? (bgImage ? 0.42 : 0.88) : veil;
+  const onPhoto = Boolean(bgImage) && (T.dark || veilNow < 0.5);
   const ink = onPhoto ? '#FFFFFF' : T.ink;
   const soft = onPhoto ? 'rgba(255,255,255,0.82)' : T.soft;
   const sh = onPhoto ? {textShadow: '0 3px 20px rgba(0,0,0,0.85)'} : {};
@@ -88,8 +92,7 @@ export const StatCard = ({
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       {/* 영상을 깔 때는 베일을 걷는다. 0.88 이면 배경이 안 보인다 */}
-      <PaperBg theme={theme} backdrop={bgImage}
-               veil={veil == null ? (bgImage ? 0.42 : 0.88) : veil} {...bg} />
+      <PaperBg theme={theme} backdrop={bgImage} veil={veilNow} {...bg} />
 
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: stackY, textAlign: 'center',

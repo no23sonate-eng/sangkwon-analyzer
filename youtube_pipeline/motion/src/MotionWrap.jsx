@@ -22,12 +22,17 @@ export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5}
   // 다 있다" 는 지적을 받았다. 전환이 늘 있으면 전환이 아무 뜻도 없다 —
   // 챕터가 바뀌거나 숫자가 뒤집히는 자리에서만 움직여야 그게 신호가 된다.
   // 그래서 motion 을 명시한 컷만 움직인다. 나머지는 하드컷이다.
-  const on = motion && Object.keys(motion).length > 0;
+  // `motion: {still: true}` 이면 **완전히 정지한다.**
+  // 기본값(모션 없음)도 1.2%/컷 만큼은 밀리는데, 그건 "죽은 화면" 을 피하려는
+  // 장치다. 후크처럼 사진 한 장으로 못을 박는 컷에서는 그 미세한 밀림조차
+  // 시선을 흔든다 — 그럴 땐 아예 세운다
+  const still = Boolean(motion && motion.still);
+  const on = !still && motion && Object.keys(motion).length > 0;
   const {dir = 'left', push = 0, punchAt = null, punch = 0.04, exitSec = 0, bg} = motion || {};
   // 정지 컷도 완전히 얼어붙으면 죽은 화면이 된다. 눈에 안 띄는 만큼만 민다
   // (1.2%/컷 — 보이지는 않고 "살아 있다" 는 느낌만 남는 폭).
-  const slow = on ? push : 0.012;
-  const enterF = on ? 16 : 0;
+  const slow = still ? 0 : (on ? push : 0.012);
+  const enterF = still ? 0 : (on ? 16 : 0);
   // 밀려 들어오는 동안 드러날 수 있는 바탕색. MotionShell 이 스케일로 메우지만
   // 안전망으로 카드 테마를 따라간다. **`props.image` 유무로 판정하면 안 된다** —
   // MapCard 도 image 를 받는데 밝은 카드라 검은 띠가 생겼다 (샘플 v2 에서 확인).

@@ -214,7 +214,9 @@ export const AnnotatedShotCard = ({
         const lt = done ? 1 : ease(Math.min(1, (settled - delay) / LABEL_F));
         if (lt <= 0.01) return null;
         const dir = dirOf(b, i);
-        const size = fit(b.label || '', 54, 560);
+        // b.size 로 컷에서 키울 수 있다. 54 상한은 여러 지점을 찍는 컷 기준이라,
+        // 지점이 하나뿐인 컷에서는 화면에 비해 너무 작다
+        const size = fit(b.label || '', b.size || 54, b.size ? 900 : 560);
         const w = estWidth(b.label || '', size) + 44;
         const gap = mode === 'arrow' ? 250 : 162;
         const X = px(b) + dir[0] * gap, Y = py(b) + dir[1] * gap;

@@ -191,8 +191,15 @@ def main():
                                 it[k] = PLACEHOLDER
         if given:
             filled += 1
+        # design.json 이 `_motion` 을 들고 있으면 그게 이긴다.
+        # 모션은 지금까지 plan_from_script 만 정했는데, 컷 단위로 "여긴
+        # 세운다" 를 말할 데가 없었다. 설계가 원본이므로 설계가 정한다
+        motion = dict(e.get('motion') or {})
+        if isinstance(given.get('_motion'), dict):
+            motion = given['_motion']
+        sk.pop('_motion', None)
         props['scenes'][str(e['id'])] = {'card': e['card'], 'props': sk,
-                                         'motion': e.get('motion', {})}
+                                         'motion': motion}
 
     # 사진 슬롯에 영상이 들어갔나 — <Img src="…mp4"> 는 404 로 죽고,
     # 그 컷 하나가 아니라 **렌더 전체가 멈춘다.** 렌더 30분 뒤에 알게 되면
@@ -256,6 +263,8 @@ def main():
         # 인자를 빼므로(aspect = 16 / 9), 멀쩡한 인자를 없다고 하게 된다
         names = param_names(e['card']) or set()
         for k in given:
+            if k.startswith('_'):
+                continue            # _motion 처럼 설계→렌더 메타 키
             if k not in names:
                 unknown.append(f"#{e['id']} {e['card']}.{k}")
 

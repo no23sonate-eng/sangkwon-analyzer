@@ -1,13 +1,15 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
 // mode='bar' 면 원 대신 가로 막대(경쟁률·배수처럼 100% 넘는 값에 적합).
 export const RatioCard = ({
   title = '', sub = '', items = [], mode = 'circle', unit = '%', source = '',
+  single = false,   // 원 하나에 여러 몫을 겹쳐 그린다 (포함관계)
+  caption = '',     // 가정·근거
   theme, align = 'center',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
 }) => {
@@ -68,7 +70,8 @@ export const RatioCard = ({
             </React.Fragment>
           );
         })}
-        <PaperSource source={source} theme={theme} />
+        <PaperCaption theme={theme} opacity={fadeIn(frame, 60)}>{caption}</PaperCaption>
+      <PaperSource source={source} theme={theme} />
       </AbsoluteFill>
     );
   }
@@ -76,11 +79,17 @@ export const RatioCard = ({
   // ── 원형 모드 ──
   // 채움을 "중심에서 자라는 작은 원"으로 하면 8.1% 같은 낮은 비중이 점처럼 보인다.
   // 파이 조각(원 전체 대비 부채꼴)이 낮은 비중에서도 읽힌다 — B1M 도넛 문법.
-  const R = 142;
+  // 반지름은 개수를 따라간다. 하나뿐인데 142 로 그리면 화면이 텅 빈 채
+  // 가운데에 작은 원 하나가 뜬다 — 도표가 주인공인 컷에서 그러면 안 된다.
+  const R = n === 1 ? 236 : (n === 2 ? 190 : 142);
   // 파이 중심. 라벨(위)·수치(아래)를 합쳐 한 덩어리로 앉힌다
   const CY = stageTop(titleH(title, sub) + 64 + 430, {top: 150})
     + titleH(title, sub) + 64 + 215;
-  const slot = Math.min(560, 1600 / n);
+  // one=true 면 **원 하나에 여러 몫**을 겹쳐 그린다. 큰 것부터 깔고 작은 것을
+  // 위에 얹으면 "전체 안의 부문, 그 안의 세부" 가 한 원에서 읽힌다.
+  // 동심원(AreaNestCard)은 크기를 견주는 그림이고, 이건 **몫**을 나누는 그림이다
+  const one = mode === 'circle' && items.length > 1 && single;
+  const slot = one ? 1600 : Math.min(560, 1600 / n);
   const wedge = (cx, cy, pct) => {
     const a = 2 * Math.PI * Math.min(99.999, Math.max(0, pct)) / 100;
     const x = cx + R * Math.sin(a), y = cy - R * Math.cos(a);
@@ -91,7 +100,29 @@ export const RatioCard = ({
       <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        {items.map((it, i) => {
+        {one ? (
+          <g>
+            <circle cx={960} cy={CY} r={R} fill={T.ink} opacity={0.07} />
+            {[...items].map((it, i) => ({it, i}))
+              .sort((a, b) => (b.it.pct ?? 0) - (a.it.pct ?? 0))
+              .map(({it, i}) => {
+                const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
+                                      {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+                return (
+                  <g key={i}>
+                    <path d={wedge(960, CY, v)}
+                          fill={it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]}
+                          opacity={it.hot ? 1 : 0.9} />
+                    {/* 중심에서 나가는 분할선 — 몫의 경계를 못 박는다 */}
+                    <path d={wedge(960, CY, v)} fill="none" stroke={T.ink}
+                          strokeWidth={LW.BODY} opacity={0.9} />
+                  </g>
+                );
+              })}
+            <circle cx={960} cy={CY} r={R} fill="none" stroke={T.ink}
+                    strokeWidth={LW.BODY} opacity={0.4} />
+          </g>
+        ) : items.map((it, i) => {
           const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;
           const cy = CY;
           const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
@@ -111,12 +142,18 @@ export const RatioCard = ({
         })}
       </svg>
       {items.map((it, i) => {
-        const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;
+        // one 모드에서는 원이 하나뿐이므로 라벨을 원 아래에 나란히 편다.
+        // 안 그러면 라벨이 전부 화면 밖 같은 자리로 간다
+        const lw = one ? 1600 / n : slot;
+        const cx = one
+          ? 160 + lw * (i + 0.5)
+          : (1920 - slot * n) / 2 + slot / 2 + i * slot;
         const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
           <React.Fragment key={i}>
-            <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: CY + R + 22, textAlign: 'center',
+            <div style={{position: 'absolute', left: cx - (one ? 1600 / n : slot) / 2,
+                         width: one ? 1600 / n : slot, top: CY + R + 22, textAlign: 'center',
                          opacity: fadeIn(frame, 24 + i * 10)}}>
               <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 96, color: T.ink,
                             fontVariantNumeric: 'tabular-nums'}}>
@@ -137,6 +174,7 @@ export const RatioCard = ({
           </React.Fragment>
         );
       })}
+      <PaperCaption theme={theme} opacity={fadeIn(frame, 60)}>{caption}</PaperCaption>
       <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );

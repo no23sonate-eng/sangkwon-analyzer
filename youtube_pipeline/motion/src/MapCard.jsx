@@ -30,6 +30,9 @@ const merc = (lat) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI / 180) / 2)
 
 export const MapCard = ({
   image = '', bounds = null,
+  // 이미 어두운 타일(CARTO dark)을 줬으면 뒤집지 않는다.
+  // 안 그러면 어두운 테마에서 도로 밝아진다
+  tileDark = false,
   title = '', sub = '',
   pins = [], area = null, route = null,
   zoomTo = null, zoomFrom = 1.0,
@@ -91,7 +94,7 @@ export const MapCard = ({
         <Img src={/^https?:/.test(image) ? image : staticFile(image)}
              style={{position: 'absolute', left: 960 - 960 * k + tx, top: 540 - 540 * k + ty,
                      width: 1920 * k, height: 1080 * k, objectFit: 'cover',
-                     filter: dark ? 'invert(1) hue-rotate(180deg) brightness(0.92)' : 'none'}} />
+                     filter: (dark && !tileDark) ? 'invert(1) hue-rotate(180deg) brightness(0.92)' : 'none'}} />
       </div>
       {scrim > 0 ? (
         <div style={{position: 'absolute', inset: 0, background: `${T.bg}`, opacity: scrim}} />

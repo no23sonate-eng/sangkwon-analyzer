@@ -12,6 +12,9 @@ export const FullBleedCard = ({
   align = 'center',        // 'center' | 'bottom'
   scrim = 0.42,            // 이미지를 누르는 정도
   kenBurns = true, fit = 'cover',
+  // fit='contain' 으로 로고나 세로 자료를 통째로 보여 줄 때, 남는 자리를
+  // 무슨 색으로 채울지. 안 주면 검정 — 로고는 대개 흰 바탕이라야 산다
+  ground = '',
   source = '', theme,
 }) => {
   useA2ZFonts();
@@ -22,14 +25,18 @@ export const FullBleedCard = ({
   const top = align === 'bottom' ? 620 : 0;
 
   return (
-    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: '#0b0e12'}}>
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: ground || '#0b0e12'}}>
       {image ? (
         <Img src={staticFile(image)}
-             style={{width: '100%', height: '100%', objectFit: fit, transform: `scale(${zoom})`}} />
+             style={{width: '100%', height: '100%', objectFit: fit,
+                   background: ground || 'transparent',
+                   transform: `scale(${zoom})`}} />
       ) : null}
-      <div style={{position: 'absolute', inset: 0, background: `rgba(11,14,18,${scrim})`}} />
-      <div style={{position: 'absolute', inset: 0,
-                   background: 'linear-gradient(180deg, rgba(11,14,18,0.45) 0%, rgba(11,14,18,0) 30%, rgba(11,14,18,0) 62%, rgba(11,14,18,0.62) 100%)'}} />
+      {ground ? null : <div style={{position: 'absolute', inset: 0, background: `rgba(11,14,18,${scrim})`}} />}
+      {ground ? null : (
+        <div style={{position: 'absolute', inset: 0,
+                     background: 'linear-gradient(180deg, rgba(11,14,18,0.45) 0%, rgba(11,14,18,0) 30%, rgba(11,14,18,0) 62%, rgba(11,14,18,0.62) 100%)'}} />
+      )}
 
       <div style={{position: 'absolute', left: 160, width: 1600, top: top,
                    height: align === 'bottom' ? 'auto' : 1080,

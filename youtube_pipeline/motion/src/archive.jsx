@@ -138,7 +138,7 @@ export const ArchiveStamp = ({label = '', year = '', theme, opacity = 1}) => {
                  display: 'flex', alignItems: 'center', gap: 16,
                  fontFamily: 'A2Z Light, sans-serif'}}>
       <span style={{width: 9, height: 9, borderRadius: '50%',
-                    background: '#E0483A', boxShadow: '0 0 12px rgba(224,72,58,0.8)'}} />
+                    background: '#FAFF2E', boxShadow: '0 0 12px rgba(250,255,46,0.7)'}} />
       {year ? (
         <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 28,
                       letterSpacing: '0.12em', color: '#FFFFFF',

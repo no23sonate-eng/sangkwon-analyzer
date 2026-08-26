@@ -35,9 +35,12 @@ export const FormulaCard = ({
   const inRes = spring({frame: frame - 56, fps, config: {damping: 200, mass: 0.8}});
 
   // 분수 폭은 위아래 글자 중 긴 쪽이 정한다
+  // 한글은 한 글자가 거의 정사각이라 폭이 글자수 × 크기 에 가깝다.
+  // 0.62 를 곱해 잡았더니 "총 거래 금액" 이 계산보다 넓어 두 줄로 꺾였다.
+  // 한 줄을 못 박고(whiteSpace: nowrap) 폭을 넉넉히 준다
   const longest = Math.max(String(top.value || '').length, String(bottom.value || '').length);
-  const size = Math.min(96, Math.max(54, Math.round(760 / Math.max(5, longest))));
-  const FW = Math.max(420, longest * size * 0.62);
+  const size = Math.min(76, Math.max(44, Math.round(720 / Math.max(6, longest))));
+  const FW = Math.max(460, Math.ceil(longest * size * 0.98) + 40);
 
   const CY = title ? 500 : 460;
   const term = (v, l, o, dy) => (
@@ -69,7 +72,7 @@ export const FormulaCard = ({
                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                    gap: SP.BLOCK}}>
         {/* 분수 */}
-        <div style={{width: FW, display: 'flex', flexDirection: 'column',
+        <div style={{width: FW, whiteSpace: 'nowrap', display: 'flex', flexDirection: 'column',
                      alignItems: 'stretch', gap: SP.NEAR}}>
           {term(top.value, top.label, inTop, (1 - inTop) * 18)}
           <div style={{height: 5, background: T.ink, transformOrigin: 'left center',

@@ -2,13 +2,13 @@ import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop} from './paper';
 
 // v2 가로 랭킹 바 — 항목명이 긴 한국어 비교에 유리한 수평 막대.
 // 1위(hot)만 옐로 발광, 나머지 뮤트그레이. 순위 번호·증감 주석 포함.
 // rows: [{name, value, display, hot, delta}] — delta 예: '↗ 증가세'
 export const YRankBarsCard = ({
-  kicker = '', sub = '', rows = [], caption = '',
+  kicker = '', sub = '', rows = [], tight = false, caption = '',
   source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
@@ -19,8 +19,16 @@ export const YRankBarsCard = ({
   const maxVal = Math.max(...rows.map((r) => r.value), 1);
 
   // 킥커와 하단 캡션 사이에 행이 다 들어가게 계산
-  const top = kicker ? 300 : 230;
-  const rowH = Math.min(rows.length > 4 ? 82 : 108,
+  // tight — 행을 좁히고 묶음을 화면 가운데로. 항목이 넷쯤이면 기본 간격에서
+  // 위아래가 벌어져 목록이 화면에 흩어진 것처럼 보인다
+  const rowH0 = Math.min(rows.length > 4 ? 82 : 108,
+                         (CONTENT_BOTTOM - 70 - (kicker ? 300 : 230)) / Math.max(1, rows.length));
+  const rowHT = tight ? Math.round(rowH0 * 0.78) : rowH0;
+  const headH = kicker ? (sub ? 116 : 76) : 0;
+  const top = tight
+    ? stageTop(headH + 56 + rows.length * rowHT, {top: 150}) + headH + 56
+    : (kicker ? 300 : 230);
+  const rowH = tight ? rowHT : Math.min(rows.length > 4 ? 82 : 108,
                         (CONTENT_BOTTOM - 70 - top) / Math.max(1, rows.length));
   // 세로 기준선은 **왼쪽 끝**에 세우고 01/02 를 그 오른쪽에 붙인다.
   // 원래는 막대 시작선에 세워서 순위 번호가 선 왼쪽에 떠 있었는데,
