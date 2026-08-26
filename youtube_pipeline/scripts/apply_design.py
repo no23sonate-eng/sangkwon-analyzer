@@ -220,11 +220,26 @@ def main():
             continue
         safe = vslot.get(e['card'], set())      # PaperBg backdrop 으로 흘러가는 인자
         row = design.get(str(e['id']))
+        # **배열 안까지 본다.** PhotoStepsCard.steps[].photo 와
+        # PhotoSplitCard.sides[].photo 는 <Img> 인데, 최상위 키만 훑던 때는
+        # 못 잡아서 #151·#152 가 렌더에서 죽었다
+        def walk(v, path):
+            if isinstance(v, str):
+                if v.lower().endswith(('.mp4', '.webm', '.mov')):
+                    misvid.append(f"#{e['id']} {e['card']}.{path}")
+            elif isinstance(v, list):
+                for i, x in enumerate(v):
+                    walk(x, f'{path}[{i}]')
+            elif isinstance(v, dict):
+                for kk, x in v.items():
+                    if kk in safe:
+                        continue
+                    walk(x, f'{path}.{kk}')
+
         for k, v in ((row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {})).items():
             if k in safe:
                 continue
-            if isinstance(v, str) and v.lower().endswith(('.mp4', '.webm', '.mov')):
-                misvid.append(f"#{e['id']} {e['card']}.{k}")
+            walk(v, k)
 
     # 배열을 준 개수만큼 다 그리는가 — 카드가 말없이 자르지 않는가
     cut_off = []

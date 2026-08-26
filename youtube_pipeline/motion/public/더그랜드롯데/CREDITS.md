@@ -114,3 +114,5 @@
 | `mall_escalator.mp4` | pexels 29447858 (Modern Shopping Mall Escalators) | Pexels, **Pexels License** | `Pexels` |
 | `mall_busy.mp4` | pexels 36108273 (Busy Shopping Mall Escalator Scene) | Pexels, **Pexels License** | `Pexels` |
 | `store_interior.mp4` | pexels 32938061 (Spacious Clothing Store Interior) | Pexels, **Pexels License** | `Pexels` |
+| `spa_lounge.jpg` | Pexels photo 7031704 | Pexels License | (표기 의무 없음) |
+| `club_lounge.jpg` | Pexels photo 9959711 | Pexels License | (표기 의무 없음) |

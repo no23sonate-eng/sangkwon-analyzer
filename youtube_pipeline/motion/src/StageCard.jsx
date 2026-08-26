@@ -41,7 +41,13 @@ export const StageCard = ({
   const zoom = interpolate(frame, [0, Math.max(1, durationInFrames)], [1, 1.05],
                            {extrapolateRight: 'clamp'});
 
-  const rows = lines.map((l) => (typeof l === 'string' ? [{t: l}] : l));
+  // 한 줄은 문자열이거나 조각 배열이다. 조각 **안에도** 문자열이 올 수 있는데
+  // (`[['서울 도심이'], [...]]` 처럼) 그걸 안 풀면 s.t 가 undefined 라 렌더가
+  // TypeError 로 죽는다 (#132). 양쪽 다 받아 준다
+  const rows = lines
+    .map((l) => (typeof l === 'string' ? [{t: l}] : (Array.isArray(l) ? l : [l])))
+    .map((segs) => segs.map((s) => (typeof s === 'string' ? {t: s} : s)))
+    .filter((segs) => segs.some((s) => s && s.t));
   const longest = Math.max(1, ...rows.map((r) => r.reduce((a, s) => a + s.t.length, 0)));
   // 한 줄이 화면을 넘지 않게. 한글은 글자수 × 크기 에 가깝다
   const FS = size || Math.min(96, Math.max(46, Math.floor(1560 / longest)));

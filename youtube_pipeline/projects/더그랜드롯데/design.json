@@ -2409,7 +2409,9 @@
     "media": "더그랜드롯데/seoul_intersection.mp4",
     "lines": [
      [
-      "서울 도심이"
+      {
+       "t": "서울 도심이"
+      }
      ],
      [
       {
@@ -2809,7 +2811,7 @@
    {
     "steps": [
      {
-      "photo": "더그랜드롯데/spa_pool.mp4",
+      "photo": "더그랜드롯데/spa_lounge.jpg",
       "label": "스파 · 웰니스"
      },
      {
@@ -2830,8 +2832,8 @@
       "photo": "더그랜드롯데/fine_dining.jpg"
      },
      {
-      "name": "스파",
-      "photo": "더그랜드롯데/spa_massage.mp4"
+      "name": "클럽 라운지",
+      "photo": "더그랜드롯데/club_lounge.jpg"
      }
     ],
     "source": "만다린 오리엔탈 · 이미지 Pexels"
