@@ -29,12 +29,15 @@ export const FullBleedCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: ground || '#0b0e12'}}>
+      {/* 여백은 **바깥 상자의 padding** 으로 준다. margin 을 %로 주면 위아래도
+          가로 폭 기준으로 계산돼 그림이 아래로 밀린다 (#7 이 그랬다) */}
       {image ? (
-        <Img src={staticFile(image)}
-             style={{width: `${100 - pad * 2}%`, height: `${100 - pad * 2}%`,
-                   margin: `${pad}% ${pad}%`, objectFit: fit,
-                   background: ground || 'transparent',
-                   transform: `scale(${zoom})`}} />
+        <div style={{position: 'absolute', inset: 0, padding: `${pad * 0.5625}% ${pad}%`,
+                     background: ground || 'transparent'}}>
+          <Img src={staticFile(image)}
+               style={{width: '100%', height: '100%', objectFit: fit,
+                     transform: `scale(${zoom})`}} />
+        </div>
       ) : null}
       {ground ? null : <div style={{position: 'absolute', inset: 0, background: `rgba(11,14,18,${scrim})`}} />}
       {ground ? null : (
@@ -74,7 +77,7 @@ export const FullBleedCard = ({
       {/* 출처는 우측 **상단** · `Source : …` — 채널 규칙.
           사진 카드만 하단에 있어서 컷이 넘어갈 때마다 출처가 위아래로
           튀었다 */}
-      <PaperSource source={source} theme={theme} onPhoto />
+      <PaperSource source={source} theme={theme} onPhoto={!ground} />
     </AbsoluteFill>
   );
 };
