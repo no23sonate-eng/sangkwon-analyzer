@@ -113,9 +113,14 @@ def fetch(project, name, lat, lon, zoom, w, h, style):
     head = f'# {project} — 자료 출처\n\n| 파일 | 원본 | 출처 / 라이선스 | 화면 표기 |\n|---|---|---|---|\n'
     if not os.path.exists(cred):
         open(cred, 'w', encoding='utf-8').write(head)
-    with open(cred, 'a', encoding='utf-8') as f:
-        f.write(f"| `{name}.png` | 지도 타일 z{zoom} ({style}) | "
-                f"{credit}, **ODbL** | `{credit}` |\n")
+    # 같은 파일 줄이 이미 있으면 **갈아 끼운다.** 그냥 붙이기만 하면 줌이나
+    # 스타일을 바꿔 다시 받을 때마다 줄이 쌓이고, 지난 줄이 지금 파일과
+    # 다른 내용을 말하게 된다 (z17 light 를 받아 놨는데 "dark" 줄이 남는 식).
+    row = (f"| `{name}.png` | 지도 타일 z{zoom} ({style}) | "
+           f"{credit}, **ODbL** | `{credit}` |\n")
+    lines = open(cred, encoding='utf-8').read().splitlines(keepends=True)
+    kept = [ln for ln in lines if not ln.startswith(f"| `{name}.png` |")]
+    open(cred, 'w', encoding='utf-8').write(''.join(kept) + row)
 
     print(f'{out}  ({got}/{n} 타일 · {int(w)}x{int(h)})')
     print(f'화면 표기: {credit}   ← 반드시 화면에 적을 것 (ODbL 의무)')
