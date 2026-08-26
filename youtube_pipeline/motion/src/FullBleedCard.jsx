@@ -12,6 +12,9 @@ export const FullBleedCard = ({
   align = 'center',        // 'center' | 'bottom'
   scrim = 0.42,            // 이미지를 누르는 정도
   kenBurns = true, fit = 'cover',
+  // pad — fit='contain' 으로 로고를 띄울 때 사방 여백(%). contain 은 화면
+  // 끝까지 채우므로 로고 한 장이 지나치게 크게 선다 (#7)
+  pad = 0,
   // fit='contain' 으로 로고나 세로 자료를 통째로 보여 줄 때, 남는 자리를
   // 무슨 색으로 채울지. 안 주면 검정 — 로고는 대개 흰 바탕이라야 산다
   ground = '',
@@ -28,7 +31,8 @@ export const FullBleedCard = ({
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: ground || '#0b0e12'}}>
       {image ? (
         <Img src={staticFile(image)}
-             style={{width: '100%', height: '100%', objectFit: fit,
+             style={{width: `${100 - pad * 2}%`, height: `${100 - pad * 2}%`,
+                   margin: `${pad}% ${pad}%`, objectFit: fit,
                    background: ground || 'transparent',
                    transform: `scale(${zoom})`}} />
       ) : null}

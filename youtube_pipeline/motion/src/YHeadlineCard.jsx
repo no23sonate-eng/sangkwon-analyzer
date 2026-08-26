@@ -19,6 +19,7 @@ import {themeOf, PaperBg, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stage
 // lines: [[{t: '소득 ', hot: false}, {t: '전국 1위', hot: true}], [...]]
 export const YHeadlineCard = ({
   kicker = '', sub = '', lines = [], caption = '',
+  align = 'left',               // 'center' 면 키커·제목·캡션을 한가운데로
   bgImage = '',                 // 실사를 뒤에 깔 때 (베일은 PaperBg 가 씌운다)
   floor = true,                 // (옛 인자 — 종이에서는 격자가 그 역할이라 무시한다)
   source = '', theme, bg = {},
@@ -48,22 +49,29 @@ export const YHeadlineCard = ({
       <PaperBg theme={theme} backdrop={bgImage} veil={0.9} {...bg} />
 
       {kicker ? (
-        <div style={{position: 'absolute', left: 120, top: stackY, opacity: enter}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
+        <div style={{position: 'absolute', left: align === 'center' ? 0 : 120,
+                     width: align === 'center' ? 1920 : undefined,
+                     top: stackY, opacity: enter}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR,
+                       justifyContent: align === 'center' ? 'center' : 'flex-start'}}>
             <div style={{width: 46, height: 5, background: YELLOW}} />
             <span style={{fontFamily: 'A2Z Medium, sans-serif',
                           fontSize: 32, letterSpacing: '0.06em', color: T.ink,
                           wordBreak: 'keep-all'}}>{kicker}</span>
           </div>
           {sub ? (
-            <div style={{marginTop: SP.TIGHT, marginLeft: 66,
+            <div style={{marginTop: SP.TIGHT,
+                         marginLeft: align === 'center' ? 0 : 66,
+                         textAlign: align === 'center' ? 'center' : 'left',
                          fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                          color: T.soft, wordBreak: 'keep-all'}}>{sub}</div>
           ) : null}
         </div>
       ) : null}
 
-      <div style={{position: 'absolute', top, left: 120, width: 1680}}>
+      <div style={{position: 'absolute', top,
+                   left: align === 'center' ? 120 : 120, width: 1680,
+                   textAlign: align === 'center' ? 'center' : 'left'}}>
         {lines.map((segs, i) => {
           const slide = spring({frame: frame - 8 - i * 9, fps,
                                 config: {damping: 200}, durationInFrames: 24});
@@ -78,7 +86,10 @@ export const YHeadlineCard = ({
                 const p = Math.max(0, Math.min(1, (frame - (16 + i * 9)) / 16));
                 return (
                   <span key={j} style={{
-                    color: T.ink,
+                    // 형광펜은 **노란 면**이다. 먹 테마에서 T.ink 는 거의 흰색이라
+                    // 노란 바탕에 흰 글자가 됐다 — #20·#75 가 그래서 안 읽혔다.
+                    // 옐로 위 글자는 테마와 무관하게 늘 먹이다
+                    color: '#23262B',
                     background: `linear-gradient(90deg, ${YELLOW} 0 100%)`,
                     backgroundSize: `${p * 100}% 100%`,
                     backgroundRepeat: 'no-repeat',

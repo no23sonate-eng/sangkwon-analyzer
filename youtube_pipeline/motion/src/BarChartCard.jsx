@@ -18,6 +18,9 @@ import {themeOf, PaperBg, PaperSource, PaperCaption, YELLOW, CONTENT_BOTTOM, fad
 // bars: [{label, value, displayValue, subValue, hot}]
 export const BarChartCard = ({
   title = '', sub = '', bars = [], closingLine = '', caption = '',
+  // arrow — 막대 사이에 작은 오른쪽 화살표. 두 막대가 **전/후** 일 때
+  // "이쪽에서 저쪽으로" 를 한 글자도 안 쓰고 말한다 (#5)
+  arrow = false,
   source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
@@ -74,6 +77,21 @@ export const BarChartCard = ({
                   stroke={T.ink} strokeWidth={on ? 3 : 2} />
           );
         })}
+        {/* 막대 사이 화살표 — 사이가 두 칸 이상이면 첫 틈에만 그린다 */}
+        {arrow && n > 1 ? (() => {
+          const ax = startX + side + gap / 2;
+          const ay = BASELINE - MAX_BAR_H * 0.42;
+          const w = Math.min(46, gap * 0.5);
+          const o = fadeIn(frame, 30, 16);
+          return (
+            <g opacity={o}>
+              <line x1={ax - w / 2} y1={ay} x2={ax + w / 2 - 10} y2={ay}
+                    stroke={T.ink} strokeWidth={LW.BODY} />
+              <polygon points={`${ax + w / 2},${ay} ${ax + w / 2 - 14},${ay - 9} ${ax + w / 2 - 14},${ay + 9}`}
+                       fill={T.ink} />
+            </g>
+          );
+        })() : null}
       </svg>
 
       {/* 값은 막대 **아래**, 라벨과 한 덩어리로. 막대 위에 얹지 않는다 */}

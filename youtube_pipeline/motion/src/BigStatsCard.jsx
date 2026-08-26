@@ -96,15 +96,20 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                           underline={it.hot ? YELLOW : null} />
               )}
             </div>
-            <div style={{marginTop: SP.GAP, fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 46, color: T.ink, wordBreak: 'keep-all'}}>
-              {/* 칩을 쓰면 라벨은 맨 글자로 둔다 — 값도 옐로, 라벨도 옐로면
-                  강조가 두 군데로 갈려서 아무것도 강조가 안 된다 (§40-6) */}
-              {it.hot && !it.chip
-                ? <span style={{background: YELLOW, color: '#1B1E24',
-                                padding: '2px 14px'}}>{it.label}</span>
-                : it.label}
-            </div>
+            {/* 라벨이 비어 있으면 아무것도 안 그린다. 예전엔 hot 이면 무조건
+                옐로 배경 span 을 씌워서, 라벨이 '' 인 컷은 **글자 없는 노란
+                네모**만 남았다 (#1 "그 아래 노란색 영역 뭐야?") */}
+            {it.label ? (
+              <div style={{marginTop: SP.GAP, fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                           fontSize: 46, color: T.ink, wordBreak: 'keep-all'}}>
+                {/* 칩을 쓰면 라벨은 맨 글자로 둔다 — 값도 옐로, 라벨도 옐로면
+                    강조가 두 군데로 갈려서 아무것도 강조가 안 된다 (§40-6) */}
+                {it.hot && !it.chip
+                  ? <span style={{background: YELLOW, color: '#1B1E24',
+                                  padding: '2px 14px'}}>{it.label}</span>
+                  : it.label}
+              </div>
+            ) : null}
             {it.sub ? (
               <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
                 {it.sub}

@@ -135,7 +135,12 @@ export const TimelineRailCard = ({
                                    opacity: fadeIn(frame, 44 + i * 12 + j * 8)}}>
                 <div style={{fontFamily: e.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              fontSize: 36, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
-                  {e.hot ? <span style={{background: 'rgba(250,255,46,0.75)', padding: '2px 10px'}}>{e.label}</span> : e.label}
+                  {/* 형광펜 위 글자는 늘 먹이다. 청사진 테마에서 T.ink 는
+                      거의 흰색이라 노란 면에 흰 글자가 됐다 (#48·#50) */}
+                  {e.hot
+                    ? <span style={{background: 'rgba(250,255,46,0.85)', padding: '2px 10px',
+                                    color: '#23262B'}}>{e.label}</span>
+                    : e.label}
                 </div>
                 {e.sub ? (
                   <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>

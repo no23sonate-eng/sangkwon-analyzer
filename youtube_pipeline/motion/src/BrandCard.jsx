@@ -63,7 +63,7 @@ export const BrandCard = ({
                                            filter: logoFilter}} />
             ) : (
               <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                           fontSize: fit(name, 108, 1400), color: T.ink, letterSpacing: -1}}>
+                           fontSize: fit(name, 92, 1400), color: T.ink, letterSpacing: -1}}>
                 {name}
               </div>
             )}
@@ -135,7 +135,7 @@ export const BrandCard = ({
                                        filter: logoFilter}} />
         ) : (
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: fit(name, 82, 780), color: T.ink, letterSpacing: -1,
+                       fontSize: fit(name, 72, 780), color: T.ink, letterSpacing: -1,
                        wordBreak: 'keep-all'}}>
             {name}
           </div>

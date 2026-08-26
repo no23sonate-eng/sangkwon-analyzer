@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
@@ -87,7 +87,7 @@ export const RatioCard = ({
   const one = mode === 'circle' && items.length > 1 && single;
   // 원 하나짜리 그림이면 원을 키운다. 예전엔 items 개수로 반지름을 정해서
   // one 모드인데도 190 으로 쪼그라들었다 — 도표가 주인공인 컷에서 그러면 안 된다
-  const R = one ? 268 : (n === 1 ? 236 : (n === 2 ? 190 : 142));
+  const R = one ? 310 : (n === 1 ? 262 : (n === 2 ? 210 : 158));
   // 파이 중심. 라벨(위)·수치(아래)를 합쳐 한 덩어리로 앉힌다
   const CY = one
     ? stageTop(titleH(title, sub) + 64 + R * 2, {top: 170}) + titleH(title, sub) + 64 + R
@@ -191,9 +191,11 @@ export const RatioCard = ({
               </span>
             </div>
             {/* 라벨은 원 **위**. 288 로 못 박아 두면 제목이 있을 때 제목을 밟고,
-                원이 작을 때는 원과 사이가 벌어져 두 덩어리로 읽힌다 */}
+                원이 작을 때는 원과 사이가 벌어져 두 덩어리로 읽힌다.
+                보조설명이 붙으면 두 줄이 되므로 그만큼 더 띄운다 —
+                116 고정이라 라벨 아랫줄이 원에 닿았다 (#4·#25·#74·#80) */}
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot,
-                         top: CY - R - 116, textAlign: 'center',
+                         top: CY - R - (it.sub ? 176 : 112) - SP.GAP, textAlign: 'center',
                          opacity: fadeIn(frame, 30 + i * 10)}}>
               <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
                 {it.label}

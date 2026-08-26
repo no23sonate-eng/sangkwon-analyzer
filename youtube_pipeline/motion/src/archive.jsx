@@ -133,22 +133,30 @@ export const ArchiveStamp = ({label = '', year = '', theme, opacity = 1}) => {
   if (!label && !year) return null;
   const o = opacity * interpolate(frame, [8, 24], [0, 1],
                                   {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  // 이름이 크고 연도가 그 아래. 예전엔 한 줄에 연도 28px · 이름 24px 로
+  // 나란히 있었는데, **이걸 휴대폰으로 본다.** 그 크기는 화면에서 사라진다.
+  // 무엇을 보고 있는지가 먼저고 언제인지가 다음이므로 이름을 위로 올린다 (#42)
+  const SH = '0 2px 14px rgba(0,0,0,0.92)';
   return (
-    <div style={{position: 'absolute', left: 64, bottom: 300, opacity: o,
-                 display: 'flex', alignItems: 'center', gap: 16,
+    <div style={{position: 'absolute', left: 96, bottom: 240, opacity: o,
                  fontFamily: 'A2Z Light, sans-serif'}}>
-      <span style={{width: 9, height: 9, borderRadius: '50%',
-                    background: '#FAFF2E', boxShadow: '0 0 12px rgba(250,255,46,0.7)'}} />
+      <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
+        <span style={{width: 12, height: 12, borderRadius: '50%',
+                      background: '#FAFF2E', boxShadow: '0 0 14px rgba(250,255,46,0.7)'}} />
+        {label ? (
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 66,
+                        letterSpacing: '-0.01em', color: '#FFFFFF',
+                        textShadow: SH, wordBreak: 'keep-all'}}>
+            {label}
+          </span>
+        ) : null}
+      </div>
       {year ? (
-        <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 28,
-                      letterSpacing: '0.12em', color: '#FFFFFF',
-                      textShadow: '0 2px 10px rgba(0,0,0,0.9)'}}>{year}</span>
-      ) : null}
-      {label ? (
-        <span style={{fontSize: 24, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.82)',
-                      textShadow: '0 2px 10px rgba(0,0,0,0.9)', wordBreak: 'keep-all'}}>
-          {label}
-        </span>
+        <div style={{marginLeft: 30, marginTop: 6, fontFamily: 'A2Z Regular, sans-serif',
+                     fontSize: 38, letterSpacing: '0.1em',
+                     color: 'rgba(255,255,255,0.86)', textShadow: SH}}>
+          {year}
+        </div>
       ) : null}
     </div>
   );
