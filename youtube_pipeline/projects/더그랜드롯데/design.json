@@ -598,7 +598,7 @@
      126.9915,
      37.569692
     ],
-    "theme": "blueprint"
+    "theme": "paper"
    }
   ],
   "34": [
@@ -669,27 +669,28 @@
    }
   ],
   "38": [
-   "ExplodedStackCard",
-   "그 — 객실 + 임대상가 + 사무실을 분해해 쌓는다",
+   "BuildingSplitCard",
+   "그 — 한 건물 안에서 층이 갈린다",
    {
-    "title": "",
-    "sub": "",
-    "layers": [
+    "bands": [
      {
-      "label": "호텔 객실",
-      "note": "6~8층"
+      "label": "임대 상가",
+      "note": "저층부",
+      "span": 1
      },
      {
       "label": "사무실",
-      "note": "1~5층"
+      "note": "1~5층",
+      "span": 2
      },
      {
-      "label": "임대 상가",
-      "note": "저층부"
+      "label": "호텔 객실",
+      "note": "6~8층",
+      "span": 2,
+      "hot": true
      }
     ],
     "source": "경향신문 2024.1.11 · 여행신문 1998.1.23",
-    "align": "center",
     "theme": "blueprint"
    }
   ],
@@ -1654,62 +1655,56 @@
    }
   ],
   "92": [
-   "PriceLadderCard",
-   "그 — 롯데호텔 위, 시그니엘 아래의 빈 칸",
+   "BarChartCard",
+   "그 — 롯데호텔 위, 시그니엘 아래가 비어 있다",
    {
-    "fill": 1,
-    "axisLabel": "1박 공시 요금 (0원부터가 아님)",
-    "rungs": [
+    "bars": [
      {
-      "name": "롯데호텔 서울",
-      "price": 300000,
-      "priceLabel": "약 30만원"
+      "label": "롯데호텔 서울",
+      "value": 30,
+      "displayValue": "약 30만원"
      },
      {
-      "name": "",
-      "price": 700000,
-      "priceLabel": ""
+      "label": "비어 있는 칸",
+      "value": 70,
+      "displayValue": "?",
+      "ghost": true
      },
      {
-      "name": "시그니엘 서울",
-      "price": 1200000,
-      "priceLabel": "약 120만원"
+      "label": "시그니엘 서울",
+      "value": 120,
+      "displayValue": "약 120만원"
      }
     ],
-    "caption": "공시 요금 기준 · 대표값으로 단순화했다",
-    "source": "뉴스웨이 2026.7.28"
+    "caption": "1박 공시 요금 · 대표값으로 단순화했다",
+    "source": "롯데호텔 공식 예약 페이지 직접 조회"
    }
   ],
   "93": [
-   "PriceLadderCard",
+   "BarChartCard",
    "이어서 — 비어 있던 칸이 채워진다",
    {
     "title": "비어 있던 칸을 가져간다",
-    "sub": "롯데 브랜드 가격 사다리",
-    "fill": 1,
-    "axisLabel": "1박 공시 요금 (0원부터가 아님)",
-    "rungs": [
+    "bars": [
      {
-      "name": "롯데호텔 서울",
-      "price": 300000,
-      "priceLabel": "약 30만원",
-      "note": "기존 프리미엄"
+      "label": "롯데호텔 서울",
+      "value": 30,
+      "displayValue": "약 30만원"
      },
      {
-      "name": "더그랜드롯데 서울",
-      "price": 700000,
-      "priceLabel": "약 70만원",
-      "note": "2026 신규"
+      "label": "더그랜드롯데 서울",
+      "value": 70,
+      "displayValue": "약 70만원",
+      "hot": true
      },
      {
-      "name": "시그니엘 서울",
-      "price": 1200000,
-      "priceLabel": "약 120만원",
-      "note": "최상위"
+      "label": "시그니엘 서울",
+      "value": 120,
+      "displayValue": "약 120만원"
      }
     ],
-    "caption": "공시 요금 기준 · 시점과 객실 타입에 따라 달라지는 값을 대표값으로 단순화했다",
-    "source": "뉴스웨이 2026.7.28 · 블로터 2026.6.25"
+    "caption": "1박 공시 요금 · 대표값으로 단순화했다",
+    "source": "롯데호텔 공식 예약 페이지 직접 조회"
    }
   ],
   "94": [

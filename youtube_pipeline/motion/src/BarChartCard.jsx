@@ -70,7 +70,14 @@ export const BarChartCard = ({
                                config: {damping: 200, mass: 0.8}, durationInFrames: 26});
           const h = (Math.abs(Number(b.value)) || 0) / maxValue * MAX_BAR_H * grow;
           const on = Boolean(b.hot);
-          return (
+          // ghost — **아직 없는 것**. 점선 윤곽만 그린다. 빈 자리가 있다는
+          // 말을 글자로 하지 않고 그림으로 한다 (#92 "비어 있던 칸")
+          return b.ghost ? (
+            <rect key={i} x={startX + i * (side + gap)} y={BASELINE - h}
+                  width={side} height={h}
+                  fill="none" stroke={T.ink} strokeWidth={LW.THIN}
+                  strokeDasharray="14 12" opacity={0.55 * grow} />
+          ) : (
             <rect key={i} x={startX + i * (side + gap)} y={BASELINE - h}
                   width={side} height={h}
                   fill={on ? YELLOW : T.tones[0]}

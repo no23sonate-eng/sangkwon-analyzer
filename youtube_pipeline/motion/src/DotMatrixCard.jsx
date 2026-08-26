@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, SP} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -110,14 +110,18 @@ export const DotMatrixCard = ({
           <div key={gi} style={{position: 'absolute', left: L, width: Wd,
                                 top: LABEL_Y, textAlign: 'center',
                                 opacity: fadeIn(frame, 26 + gi * 14)}}>
-            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64, color: T.ink,
-                         lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
-              {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
-              <span style={{fontSize: 42, marginLeft: 4}}>{unit}</span>
-            </div>
-            <div style={{marginTop: 6, fontFamily: g.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+            {/* **이름이 먼저, 숫자가 다음.** 숫자를 위에 두면 무엇을 세는
+                숫자인지 모르는 채로 읽게 된다 — #3 "남은 객실을 위로 올리고
+                그 아래 590실" */}
+            <div style={{fontFamily: g.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                          fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
               {g.label}
+            </div>
+            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Medium, sans-serif',
+                         fontSize: 76, color: T.ink,
+                         lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
+              {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
+              <span style={{fontSize: 46, marginLeft: 4}}>{unit}</span>
             </div>
             {g.sub ? (
               <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>

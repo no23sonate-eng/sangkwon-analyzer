@@ -70,6 +70,7 @@ import {ArchiveCard} from './ArchiveCard';
 import {FormulaCard} from './FormulaCard';
 import {StageCard} from './StageCard';
 import {BrandWallCard} from './BrandWallCard';
+import {BuildingSplitCard} from './BuildingSplitCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -109,6 +110,7 @@ export const CARDS = {
   FormulaCard,
   StageCard,
   BrandWallCard,
+  BuildingSplitCard,
   IsoDiagramCard,
   MapCard,
   SectionDiagramCard,
