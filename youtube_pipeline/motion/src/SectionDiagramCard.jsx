@@ -157,7 +157,7 @@ export const SectionDiagramCard = ({
 
       {planLabel && plan.length > 1 ? (
         <div style={{position: 'absolute', left: L, top: TOP - 44, opacity: fadeIn(frame, 60),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft}}>
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
           ┈┈ {planLabel}
         </div>
       ) : null}
@@ -166,7 +166,7 @@ export const SectionDiagramCard = ({
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 4,
                      textAlign: align === 'left' ? 'left' : 'center',
                      opacity: fadeIn(frame, 76),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

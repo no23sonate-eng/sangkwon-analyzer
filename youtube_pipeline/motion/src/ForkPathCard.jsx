@@ -80,7 +80,7 @@ export const ForkPathCard = ({
       {/* 줄기 이름표 — 선 아래. 위에 두면 분기점 물음표와 같은 띠에 얹힌다 */}
       {trunkLabel ? (
         <div style={{position: 'absolute', left: X0, top: midY + SP.NEAR, width: XF - X0 - 60,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 34, letterSpacing: '0.08em',
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 32, letterSpacing: '0.08em',
                      color: T.soft, opacity: fadeIn(frame, 14), wordBreak: 'keep-all'}}>
           {trunkLabel}
         </div>
@@ -94,7 +94,7 @@ export const ForkPathCard = ({
           <div key={i} style={{position: 'absolute', left: X1 + SP.BLOCK, top: midY + dy - 58,
                                width: 1920 - (X1 + SP.BLOCK) - 120,
                                opacity: (on ? 1 : 0.4) * fadeIn(frame, 56 + i * 8)}}>
-            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52,
+            <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                          lineHeight: 1.15, color: T.ink, wordBreak: 'keep-all'}}>
               {decided === i
                 ? <span style={{background: YELLOW, color: '#1B1E24', padding: '2px 14px'}}>{b.label}</span>

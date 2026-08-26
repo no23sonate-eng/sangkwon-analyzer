@@ -65,7 +65,7 @@ export const LowerThirdCard = ({
                             textAlign: left ? 'left' : 'center'}}>
         {num ? (
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 128, lineHeight: 1, color: YELLOW,
+                       fontSize: 110, lineHeight: 1, color: YELLOW,
                        letterSpacing: '-0.03em',
                        opacity: numIn,
                        transform: `translateY(${(1 - numIn) * 16}px)`,
@@ -74,7 +74,7 @@ export const LowerThirdCard = ({
             {num}
           </div>
         ) : kicker ? (
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                        letterSpacing: '0.22em', color: YELLOW, opacity: numIn,
                        marginBottom: 14}}>
             {kicker}
@@ -109,7 +109,7 @@ export const LowerThirdCard = ({
       {/* 출처는 채널 규칙대로 **우측 위 · Source :** (paper.jsx PaperSource 와 같은 자리) */}
       {source ? (
         <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right', maxWidth: 760,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 23, letterSpacing: '0.04em',
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 20, letterSpacing: '0.04em',
                      lineHeight: 1.3, color: dark ? 'rgba(255,255,255,0.7)' : 'rgba(27,30,36,0.55)',
                      opacity: fadeIn(frame, 40), wordBreak: 'keep-all'}}>
           {/^\s*source\s*:/i.test(source) ? source : `Source : ${source}`}

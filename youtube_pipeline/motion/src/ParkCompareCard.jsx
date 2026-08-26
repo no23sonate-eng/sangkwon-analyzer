@@ -44,16 +44,16 @@ const Side = ({s, x, w, frame, i, shapeW, shapeH, shapeCY}) => {
 
       <div style={{position: 'absolute', left: x, width: w, top: 690, textAlign: 'center',
                    opacity: fadeIn(frame, 34 + i * 10)}}>
-        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                      letterSpacing: '0.02em', color: '#FFFFFF', textShadow: SHADOW}}>
           {s.name}
         </div>
-        <div style={{marginTop: 10, fontFamily: 'A2Z Medium, sans-serif', fontSize: 66,
+        <div style={{marginTop: 10, fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                      color: s.hot ? YELLOW : '#FFFFFF', fontVariantNumeric: 'tabular-nums', textShadow: SHADOW}}>
           {s.area}
         </div>
         {s.sub ? (
-          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>
         ) : null}
       </div>
@@ -83,7 +83,7 @@ export const ParkCompareCard = ({title = '', sub = '', sides = [], note = '', so
                    background: 'rgba(255,255,255,0.35)'}} />
 
       <div style={{position: 'absolute', top: 96, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 68,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                      letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: SHADOW}}>
           {title}
         </div>
@@ -96,14 +96,14 @@ export const ParkCompareCard = ({title = '', sub = '', sides = [], note = '', so
       {note ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: 208, textAlign: 'center',
                      opacity: fadeIn(frame, 62)}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 44,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 42,
                         color: '#12151a', background: YELLOW, padding: '6px 20px'}}>{note}</span>
         </div>
       ) : null}
 
       {source ? (
         <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.05em',
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.05em',
                      color: '#FFFFFF', opacity: 0.75 * fadeIn(frame, 40), textShadow: SHADOW}}>
           {source}
         </div>

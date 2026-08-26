@@ -86,7 +86,7 @@ export const TwoPanelCard = ({
 
       {divider ? (
         <div style={{position: 'absolute', left: 960 - 90, width: 180, top: midY - 22,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      letterSpacing: '0.1em', color: T.soft, background: T.bg,
                      padding: '6px 0', opacity: fadeIn(frame, 26)}}>
           {divider}

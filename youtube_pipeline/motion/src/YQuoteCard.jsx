@@ -40,7 +40,7 @@ export const YQuoteCard = ({
       </div>
       <div
         style={{
-          fontFamily: 'A2Z Regular, sans-serif', fontSize: 62, lineHeight: 1.55,
+          fontFamily: 'A2Z Regular, sans-serif', fontSize: 54, lineHeight: 1.55,
           letterSpacing: '0.02em', color: WHITE, whiteSpace: 'pre-line',
         }}
       >
@@ -63,7 +63,7 @@ export const YQuoteCard = ({
             {name}
           </span>
           {role ? (
-            <span style={{marginLeft: 24, fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.06em', color: MUTE}}>
+            <span style={{marginLeft: 24, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.06em', color: MUTE}}>
               {role}
             </span>
           ) : null}

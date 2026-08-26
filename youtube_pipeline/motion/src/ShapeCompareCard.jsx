@@ -152,7 +152,7 @@ export const ShapeCompareCard = ({
               </div>
               {o.note ? (
                 <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 27, color: T.soft}}>{o.note}</div>
+                             fontSize: 24, color: T.soft}}>{o.note}</div>
               ) : null}
             </div>
           );
@@ -166,7 +166,7 @@ export const ShapeCompareCard = ({
             {o.label}
             {o.note ? (
               <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                           fontSize: 27, color: T.soft}}>{o.note}</div>
+                           fontSize: 24, color: T.soft}}>{o.note}</div>
             ) : null}
           </div>
         );

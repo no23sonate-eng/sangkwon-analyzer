@@ -160,7 +160,7 @@ export const FrontageCard = ({
               {o.label}
             </div>
             {/* 이름 바로 밑에 4px 로 붙여 놨더니 두 줄이 한 덩어리로 뭉쳤다 */}
-            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
+            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                          color: T.soft}}>
               면적 {o.w * o.d}칸 (동일)
             </div>
@@ -187,7 +187,7 @@ export const FrontageCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 8,
                      textAlign: 'center', opacity: fadeIn(frame, 88),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

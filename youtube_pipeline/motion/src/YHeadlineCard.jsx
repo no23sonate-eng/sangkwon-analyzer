@@ -52,7 +52,7 @@ export const YHeadlineCard = ({
           <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
             <div style={{width: 46, height: 5, background: YELLOW}} />
             <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                          fontSize: 34, letterSpacing: '0.06em', color: T.ink,
+                          fontSize: 32, letterSpacing: '0.06em', color: T.ink,
                           wordBreak: 'keep-all'}}>{kicker}</span>
           </div>
           {sub ? (
@@ -94,7 +94,7 @@ export const YHeadlineCard = ({
         })}
         {caption ? (
           <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Light, sans-serif',
-                       fontSize: 34, letterSpacing: '0.04em', color: T.soft,
+                       fontSize: 32, letterSpacing: '0.04em', color: T.soft,
                        opacity: fadeIn(frame, 8 + n * 9 + 10), wordBreak: 'keep-all'}}>
             {caption}
           </div>

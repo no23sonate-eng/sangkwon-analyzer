@@ -233,10 +233,10 @@ export const AnnotatedShotCard = ({
       {title ? (
         <div style={{position: 'absolute', top: 84, left: 0, width: 1920, textAlign: 'center',
                      opacity: fadeIn(frame, 0)}}>
-          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 66,
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                        color: '#FFFFFF', textShadow: SHADOW, letterSpacing: '-0.01em'}}>{title}</div>
           {titleSub ? (
-            <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+            <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                          color: '#D8DDE4', textShadow: SHADOW}}>{titleSub}</div>
           ) : null}
         </div>

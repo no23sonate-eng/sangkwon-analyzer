@@ -50,17 +50,17 @@ export const RatioCard = ({
           return (
             <React.Fragment key={i}>
               <div style={{position: 'absolute', left: x0, top: y - 78, opacity: fadeIn(frame, 10 + i * 10), lineHeight: 1,
-                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 45, color: T.ink}}>
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 42, color: T.ink}}>
                 {it.label}
               </div>
               <div style={{position: 'absolute', left: x0, width: BW, top: y - 92, textAlign: 'right',
                            opacity: fadeIn(frame, 20 + i * 10)}}>
-                <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 65, color: T.ink,
+                <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64, color: T.ink,
                               fontVariantNumeric: 'tabular-nums'}}>
-                  {Number(v.toFixed(it.decimals ?? 0)).toLocaleString('ko-KR')}<span style={{fontSize: 43}}>{unit}</span>
+                  {Number(v.toFixed(it.decimals ?? 0)).toLocaleString('ko-KR')}<span style={{fontSize: 42}}>{unit}</span>
                 </span>
                 {it.sub ? (
-                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
+                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
                     {it.sub}
                   </span>
                 ) : null}
@@ -118,14 +118,14 @@ export const RatioCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: CY + R + 22, textAlign: 'center',
                          opacity: fadeIn(frame, 24 + i * 10)}}>
-              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 104, color: T.ink,
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 96, color: T.ink,
                             fontVariantNumeric: 'tabular-nums'}}>
-                {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 62}}>{unit}</span>
+                {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 54}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: 288, textAlign: 'center',
                          opacity: fadeIn(frame, 30 + i * 10)}}>
-              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 45, color: T.ink, wordBreak: 'keep-all'}}>
+              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
               {it.sub ? (

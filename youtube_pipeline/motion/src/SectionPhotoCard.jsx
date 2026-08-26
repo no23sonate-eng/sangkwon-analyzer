@@ -82,7 +82,7 @@ export const SectionPhotoCard = ({
 
       {/* 타이틀 */}
       <div style={{position: 'absolute', top: 92, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 68,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                      letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: SHADOW}}>
           {title}
         </div>
@@ -101,14 +101,14 @@ export const SectionPhotoCard = ({
         ['below', below, groundY + 26, 34, '0%']].map(([k, o, y, t, ty]) => (
         <div key={k} style={{position: 'absolute', left: 40, width: DIM_X - 76, top: y,
                              transform: `translateY(${ty})`, textAlign: 'right', opacity: fadeIn(frame, t)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: '#D8DDE4',
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: '#D8DDE4',
                        letterSpacing: '0.05em', lineHeight: 1.1, textShadow: SHADOW}}>{o.label}</div>
-          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 100,
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 96,
                        color: '#FFFFFF', lineHeight: 1.06, textShadow: SHADOW}}>
-            {o.floors}<span style={{fontSize: 58}}>층</span>
+            {o.floors}<span style={{fontSize: 54}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                          color: '#D8DDE4', lineHeight: 1.2, textShadow: SHADOW}}>{o.note}</div>
           ) : null}
         </div>

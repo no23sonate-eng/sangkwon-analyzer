@@ -71,7 +71,7 @@ export const SplitProofCard = ({
              style={{width: '100%', height: '100%', objectFit: 'cover'}} />
         {photoCaption ? (
           <div style={{position: 'absolute', left: 24, bottom: 20,
-                       fontFamily: 'A2Z Medium, sans-serif', fontSize: 26,
+                       fontFamily: 'A2Z Medium, sans-serif', fontSize: 24,
                        color: '#FFFFFF', textShadow: '0 2px 10px rgba(0,0,0,0.7)'}}>
             {photoCaption}
           </div>
@@ -109,7 +109,7 @@ export const SplitProofCard = ({
             {value}
           </div>
           {valueLabel ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: T.soft}}>
+            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
               {valueLabel}
             </div>
           ) : null}
@@ -130,7 +130,7 @@ export const SplitProofCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: 940, textAlign: 'center',
                      opacity: fadeIn(frame, 70), fontFamily: 'A2Z Light, sans-serif',
-                     fontSize: 30, color: T.soft, wordBreak: 'keep-all'}}>
+                     fontSize: 28, color: T.soft, wordBreak: 'keep-all'}}>
           {note}
         </div>
       ) : null}

@@ -95,11 +95,11 @@ export const RankTrendCard = ({
             </div>
             <div style={{position: 'absolute', left: px(i) - 180, width: 360, top: Y1 + 54, textAlign: 'center', opacity: o}}>
               <div style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                           fontSize: 45, color: hot ? T.ink : T.soft, letterSpacing: '0.02em'}}>
+                           fontSize: 42, color: hot ? T.ink : T.soft, letterSpacing: '0.02em'}}>
                 {p.x}
               </div>
               {p.label ? (
-                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft, wordBreak: 'keep-all'}}>
+                <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
                   {p.label}
                 </div>
               ) : null}
@@ -110,7 +110,7 @@ export const RankTrendCard = ({
       {caption ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: CONTENT_BOTTOM - 58, textAlign: 'center',
                      opacity: fadeIn(frame, T0 + SEG * n + 6), fontFamily: 'A2Z Regular, sans-serif',
-                     fontSize: 38, color: T.ink, wordBreak: 'keep-all'}}>
+                     fontSize: 36, color: T.ink, wordBreak: 'keep-all'}}>
           <span style={{background: 'rgba(250,255,46,0.75)', padding: '4px 16px'}}>{caption}</span>
         </div>
       ) : null}

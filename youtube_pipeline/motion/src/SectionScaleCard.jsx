@@ -200,7 +200,7 @@ export const SectionScaleCard = ({
             <div style={{position: 'absolute', left: cx + CW / 2 + 54,
                          top: BOT - clearPx / 2 - 26, opacity: fadeIn(frame, 30)}}>
               <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                            fontSize: 40, color: c.hot ? T.ink : T.soft,
+                            fontSize: 36, color: c.hot ? T.ink : T.soft,
                             fontVariantNumeric: 'tabular-nums'}}>
                 {clearM}m
               </span>
@@ -225,7 +225,7 @@ export const SectionScaleCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      color: T.soft, opacity: fadeIn(frame, 64), wordBreak: 'keep-all'}}>
           {caption}
         </div>

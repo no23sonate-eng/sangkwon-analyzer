@@ -47,7 +47,7 @@ export const PaperImageCard = ({
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       {imageTitle ? (
         <div style={{position: 'absolute', left, width: W, top: top - 56, textAlign: 'center',
-                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 43, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 42, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
           {imageTitle}
         </div>
       ) : null}
@@ -60,7 +60,7 @@ export const PaperImageCard = ({
         </div>
       </div>
       {caption ? (
-        <div style={{position: 'absolute', left: 260, width: 1400, top: top + H + 16, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.4, letterSpacing: '0.04em', color: T.soft, opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
+        <div style={{position: 'absolute', left: 260, width: 1400, top: top + H + 16, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32, lineHeight: 1.4, letterSpacing: '0.04em', color: T.soft, opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
           {caption}
         </div>
       ) : null}

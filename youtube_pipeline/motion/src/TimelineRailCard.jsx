@@ -102,7 +102,7 @@ export const TimelineRailCard = ({
       {ticks.map((y, i) => (
         <div key={i} style={{position: 'absolute', left: px(y) - 100, width: 200, top: AXIS_Y + 22,
                              textAlign: 'center', opacity: fadeIn(frame, 6),
-                             fontFamily: 'A2Z Regular, sans-serif', fontSize: 34, color: T.soft}}>
+                             fontFamily: 'A2Z Regular, sans-serif', fontSize: 32, color: T.soft}}>
           {tickLabels ? (tickLabels[i] ?? '') : y}
         </div>
       ))}
@@ -134,7 +134,7 @@ export const TimelineRailCard = ({
                                    transform: 'translateY(-100%)', textAlign: 'center',
                                    opacity: fadeIn(frame, 44 + i * 12 + j * 8)}}>
                 <div style={{fontFamily: e.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                             fontSize: 40, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
+                             fontSize: 36, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                   {e.hot ? <span style={{background: 'rgba(250,255,46,0.75)', padding: '2px 10px'}}>{e.label}</span> : e.label}
                 </div>
                 {e.sub ? (

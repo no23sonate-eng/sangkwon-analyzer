@@ -38,10 +38,10 @@ export const SpecGridCard = ({
         <div style={{position: 'absolute', left: 200, width: 1520, top: stageTop(titleH(title, sub) + 64 + 300, {top: 150}), textAlign: 'center',
                      opacity: fadeIn(frame, 0)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
+                       fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 30, color: T.soft}}>{sub}</div>
+                         fontSize: 28, color: T.soft}}>{sub}</div>
           ) : null}
         </div>
       ) : null}
@@ -82,7 +82,7 @@ export const SpecGridCard = ({
               </div>
               {it.note ? (
                 <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 25, color: T.soft, textAlign: 'center',
+                             fontSize: 24, color: T.soft, textAlign: 'center',
                              wordBreak: 'keep-all'}}>{it.note}</div>
               ) : null}
             </div>

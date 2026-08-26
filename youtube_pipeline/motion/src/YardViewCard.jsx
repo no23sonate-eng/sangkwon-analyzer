@@ -103,7 +103,7 @@ export const YardViewCard = ({
                    marginTop: Math.max(200, bTop - 58), textAlign: 'center',
                    opacity: fadeIn(frame, 20),
                    fontFamily: 'A2Z Medium, sans-serif',
-                   fontSize: 34, color: T.ink}}>
+                   fontSize: 32, color: T.ink}}>
         {buildingLabel}
       </div>
 

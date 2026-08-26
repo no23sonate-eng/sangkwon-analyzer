@@ -71,6 +71,30 @@ def ink_box(im, tol=14):
     return (x0 * 4, y0 * 4, x1 * 4, y1 * 4), ink / (sw * sh)
 
 
+# 글자가 화면 밖으로 나갔나. 좌우 가장자리에 잉크가 닿으면 **잘렸다**는 뜻이다
+# (실사를 꽉 채운 컷은 원래 닿으므로 그건 따로 걸러야 한다).
+# 글자 크기 기준을 바꾸면 어딘가는 넘칠 수 있어서, 바꾸기 전후를 이걸로 잰다.
+EDGE = 12          # 이만큼 안쪽까지를 가장자리로 본다
+
+
+def touches_edge(im, tol=14):
+    im = im.convert('RGB')
+    w, h = im.size
+    sm = im.resize((w // 4, h // 4), Image.BILINEAR)
+    sw, sh = sm.size
+    px = sm.load()
+    corners = [px[2, 2], px[sw - 3, 2], px[2, sh - 3], px[sw - 3, sh - 3]]
+    bg = tuple(sum(c[i] for c in corners) // 4 for i in range(3))
+    lo, hi = EDGE // 4, (1080 - FURNITURE_BOTTOM) // 4
+    hit = 0
+    for y in range(FURNITURE_TOP // 4, min(sh, hi)):
+        for x in list(range(0, lo)) + list(range(sw - lo, sw)):
+            r, g, b = px[x, y]
+            if abs(r - bg[0]) + abs(g - bg[1]) + abs(b - bg[2]) > tol * 3:
+                hit += 1
+    return hit
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('project')
@@ -84,8 +108,12 @@ def main():
         raise SystemExit('스틸이 없다')
 
     rows = []
+    edge = []
     for f in files:
-        box, fill = ink_box(Image.open(f))
+        im0 = Image.open(f)
+        if touches_edge(im0) > 6:
+            edge.append(f.stem)
+        box, fill = ink_box(im0)
         if box is None:
             rows.append((f.stem, None))
             continue
@@ -120,6 +148,10 @@ def main():
     print(f'  광학 중심에서 벗어남: 중앙값 {offs[n // 2]}px · 최악 {offs[-1]}px')
     print(f'  {TOL}px 넘게 벗어난 컷 {len(bad)}개 '
           f'(위로 {sum(1 for x in bad if x[1]["off"] < 0)} · 아래로 {sum(1 for x in bad if x[1]["off"] > 0)})')
+
+    if edge:
+        print(f'  ⚠ 좌우 가장자리에 잉크가 닿는 컷 {len(edge)}개 '
+              f'(실사 꽉 찬 컷이면 정상, 글자면 잘린 것): {", ".join(edge[:8])}')
 
     print(f'\n가장 많이 벗어난 {a.top}컷 (벗어남 · 중심 · 위 · 아래)')
     for nm, r in sorted(graphic, key=lambda x: -abs(x[1]['off']))[:a.top]:

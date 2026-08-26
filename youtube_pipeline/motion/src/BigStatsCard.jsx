@@ -42,7 +42,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         <div style={{position: 'absolute', top: stackY, left: 0, width: 1920,
                      textAlign: 'center', opacity: fadeIn(frame, 0),
                      fontFamily: 'A2Z Medium, sans-serif',
-                     fontSize: 92, letterSpacing: '-0.01em', color: T.ink,
+                     fontSize: 80, letterSpacing: '-0.01em', color: T.ink,
                      wordBreak: 'keep-all'}}>
           {title}
         </div>
@@ -106,7 +106,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                 : it.label}
             </div>
             {it.sub ? (
-              <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft, wordBreak: 'keep-all'}}>
+              <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
                 {it.sub}
               </div>
             ) : null}
@@ -115,7 +115,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
       })}
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 792, textAlign: 'center',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
                      opacity: fadeIn(frame, 56), wordBreak: 'keep-all'}}>
           {caption}
         </div>

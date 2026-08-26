@@ -123,7 +123,7 @@ export const ShareSplitCard = ({
 
       {/* 지분권자 수 — 필지 위 */}
       <div style={{position: 'absolute', left: PX, top: PY - 62, opacity: fadeIn(frame, 8),
-                   fontFamily: 'A2Z Medium, sans-serif', fontSize: 38,
+                   fontFamily: 'A2Z Medium, sans-serif', fontSize: 36,
                    color: T.ink}}>
         {ownerLabel} {n}명 · 한 필지
       </div>
@@ -149,7 +149,7 @@ export const ShareSplitCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 6,
                      textAlign: 'center', opacity: fadeIn(frame, bidAt + 24),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

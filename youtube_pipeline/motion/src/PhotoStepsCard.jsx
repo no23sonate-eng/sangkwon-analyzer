@@ -119,7 +119,7 @@ export const PhotoStepsCard = ({
             <div style={{position: 'absolute', left: x - 14, top: y - 14, width: 54, height: 54,
                          borderRadius: 27, background: T.ink, color: '#FFF', opacity: pop,
                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 30}}>
+                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 28}}>
               {i + 1}
             </div>
             <div style={{position: 'absolute', left: x - 30, width: TW + 60, top: y + TH + 26,

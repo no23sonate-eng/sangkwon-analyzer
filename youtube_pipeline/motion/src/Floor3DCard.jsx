@@ -162,14 +162,14 @@ export const Floor3DCard = ({
       <div style={{position: 'absolute', top: 92, left: 120, opacity: enter}}>
         <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
           <div style={{width: 10, height: 10, borderRadius: '50%', background: YELLOW, boxShadow: glow(0.7)}} />
-          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, letterSpacing: '0.12em', color: WHITE}}>
+          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.12em', color: WHITE}}>
             {kicker}
           </span>
         </div>
         <div
           style={{
             marginTop: 14, marginLeft: 28,
-            fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
+            fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
             letterSpacing: '0.1em', color: MUTE,
           }}
         >
@@ -191,7 +191,7 @@ export const Floor3DCard = ({
             <span
               style={{
                 fontFamily: 'A2Z Medium, sans-serif',
-                fontSize: 26,
+                fontSize: 24,
                 letterSpacing: '0.18em',
                 color: r.hot ? YELLOW : '#8A8A8A',
                 border: `1.5px solid ${r.hot ? YELLOW : '#3A3A3A'}`,
@@ -201,7 +201,7 @@ export const Floor3DCard = ({
             >
               {r.tag}
             </span>
-            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.06em', color: r.hot ? WHITE : MUTE}}>
+            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.06em', color: r.hot ? WHITE : MUTE}}>
               {r.name}
             </span>
           </div>
@@ -227,7 +227,7 @@ export const Floor3DCard = ({
         <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.05em', color: WHITE}}>
           {caption}
         </div>
-        <div style={{marginTop: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.08em', color: MUTE}}>
+        <div style={{marginTop: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.08em', color: MUTE}}>
           {source}
         </div>
       </div>

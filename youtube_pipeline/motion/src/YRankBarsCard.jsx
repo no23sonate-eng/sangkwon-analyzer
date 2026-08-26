@@ -57,7 +57,7 @@ export const YRankBarsCard = ({
                          width: barX - numX - 30, whiteSpace: 'nowrap', opacity: grow}}>
               <span
                 style={{
-                  fontFamily: 'A2Z Medium, sans-serif', fontSize: 26,
+                  fontFamily: 'A2Z Medium, sans-serif', fontSize: 24,
                   letterSpacing: '0.12em', color: r.hot ? T.ink : T.soft,
                   display: 'inline-block', width: 74,
                   fontVariantNumeric: 'tabular-nums',
@@ -102,7 +102,7 @@ export const YRankBarsCard = ({
                 {r.display}
               </span>
               {r.delta ? (
-                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26, letterSpacing: '0.05em', color: r.hot ? T.ink : T.soft}}>
+                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.05em', color: r.hot ? T.ink : T.soft}}>
                   {r.delta}
                 </span>
               ) : null}

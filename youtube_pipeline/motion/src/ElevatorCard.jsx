@@ -83,11 +83,11 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
                                transform: 'translateY(-50%)',
                                opacity: on ? 1 : 0.35, transition: 'none'}}>
             <div style={{fontFamily: s.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 48, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
+                         fontSize: 46, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
               {s.label}
             </div>
             {s.sub ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.ink, opacity: 0.72}}>
+              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.ink, opacity: 0.72}}>
                 {s.sub}
               </div>
             ) : null}

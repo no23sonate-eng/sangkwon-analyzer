@@ -100,7 +100,7 @@ export const AspectRatioCard = ({
             {/* 치수 라벨은 도형 **위**에 — 도형 안에 넣으면 격자와 겹친다 */}
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot,
                          top: baseY - h - 56, textAlign: 'center',
-                         fontFamily: 'A2Z Light, sans-serif', fontSize: 38, color: T.soft,
+                         fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft,
                          opacity: fadeIn(frame, 22 + i * 10)}}>
               {it.w} × {it.h}{unit}
             </div>
@@ -111,16 +111,16 @@ export const AspectRatioCard = ({
               {/* 수치와 이름을 한 줄에 붙인다 — 두 줄로 쪼개면 아래 글자 블록이
                   길어지고 그만큼 도형이 작아진다. 도형이 주인공인 카드다 */}
               <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                           fontSize: 58, lineHeight: 1, color: T.ink,
+                           fontSize: 54, lineHeight: 1, color: T.ink,
                            fontVariantNumeric: 'tabular-nums'}}>
                 {it.w}{unit}
                 <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                              fontSize: 30, letterSpacing: '0.12em', color: T.soft}}>
+                              fontSize: 28, letterSpacing: '0.12em', color: T.soft}}>
                   {frontLabel}
                 </span>
               </div>
               {it.label ? (
-                <div style={{marginTop: SP.NEAR, fontSize: 40, color: T.ink,
+                <div style={{marginTop: SP.NEAR, fontSize: 36, color: T.ink,
                              fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              wordBreak: 'keep-all'}}>
                   {it.hot
@@ -135,7 +135,7 @@ export const AspectRatioCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: baseY + LABEL_H,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                      color: T.soft, opacity: fadeIn(frame, 66), wordBreak: 'keep-all'}}>
           {caption}
         </div>

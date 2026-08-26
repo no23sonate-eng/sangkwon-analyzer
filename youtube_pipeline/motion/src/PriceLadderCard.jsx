@@ -120,13 +120,13 @@ export const PriceLadderCard = ({
               </span>
               {r.note ? (
                 <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                              fontSize: 27, color: T.soft}}>{r.note}</span>
+                              fontSize: 24, color: T.soft}}>{r.note}</span>
               ) : null}
             </div>
             {r.priceLabel ? (
               isNew
                 ? <ValueChip size={38} hot theme={theme}>{r.priceLabel}</ValueChip>
-                : <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 34, color: T.ink,
+                : <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 32, color: T.ink,
                                 fontVariantNumeric: 'tabular-nums'}}>{r.priceLabel}</span>
             ) : null}
           </div>
@@ -144,7 +144,7 @@ export const PriceLadderCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 29,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      color: T.soft, opacity: fadeIn(frame, 96), wordBreak: 'keep-all'}}>
           {caption}
         </div>

@@ -80,7 +80,7 @@ export const StatCard = ({
       )}
       {s ? (
         <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Regular, sans-serif',
-                     fontSize: 44, color: soft, wordBreak: 'keep-all', ...sh}}>{s}</div>
+                     fontSize: 42, color: soft, wordBreak: 'keep-all', ...sh}}>{s}</div>
       ) : null}
     </div>
   );
@@ -94,7 +94,7 @@ export const StatCard = ({
       {title ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: stackY, textAlign: 'center',
                      fontFamily: 'A2Z Medium, sans-serif',
-                     fontSize: 44, color: ink, opacity: fadeIn(frame, 0), ...sh,
+                     fontSize: 42, color: ink, opacity: fadeIn(frame, 0), ...sh,
                      wordBreak: 'keep-all'}}>
           {title}
         </div>

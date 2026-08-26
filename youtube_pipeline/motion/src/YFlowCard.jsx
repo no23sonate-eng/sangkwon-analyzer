@@ -96,7 +96,7 @@ export const YFlowCard = ({
                 </div>
               ) : null}
               <div style={{fontFamily: node.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                           fontSize: 38, letterSpacing: '0.02em', color: T.ink,
+                           fontSize: 36, letterSpacing: '0.02em', color: T.ink,
                            wordBreak: 'keep-all', textAlign: 'center', padding: '0 14px'}}>
                 {node.label}
               </div>
@@ -112,7 +112,7 @@ export const YFlowCard = ({
                 {node.value}
               </div>
               {node.sub ? (
-                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
+                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
                              letterSpacing: '0.02em', color: T.soft,
                              wordBreak: 'keep-all', textAlign: 'center', padding: '0 14px'}}>
                   {node.sub}
@@ -183,7 +183,7 @@ const ArrowBetween = ({x, y, w, grow, label, T}) => {
           style={{
             position: 'absolute', top: y - 72, left: x, width: w,
             textAlign: 'center', fontFamily: 'A2Z Light, sans-serif',
-            fontSize: 25, letterSpacing: '0.04em', color: T.soft,
+            fontSize: 24, letterSpacing: '0.04em', color: T.soft,
             opacity: grow,
           }}
         >

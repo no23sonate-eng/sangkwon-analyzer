@@ -36,7 +36,7 @@ export const Kicker = ({title, sub = '', opacity = 1}) => (
   <div style={{position: 'absolute', top: 92, left: 120, opacity}}>
     <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
       <div style={{width: 10, height: 10, borderRadius: '50%', background: YELLOW, boxShadow: glow(0.7)}} />
-      <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, letterSpacing: '0.12em', color: WHITE}}>
+      <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, letterSpacing: '0.12em', color: WHITE}}>
         {title}
       </span>
     </div>
@@ -44,7 +44,7 @@ export const Kicker = ({title, sub = '', opacity = 1}) => (
       <div
         style={{
           marginTop: 14, marginLeft: 28,
-          fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
+          fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
           letterSpacing: '0.1em', color: MUTE,
         }}
       >
@@ -63,7 +63,7 @@ export const Footer = ({caption = '', source = '', opacity = 1}) => (
       </div>
     ) : null}
     {source ? (
-      <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 25, letterSpacing: '0.08em', color: MUTE}}>
+      <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.08em', color: MUTE}}>
         {source}
       </div>
     ) : null}

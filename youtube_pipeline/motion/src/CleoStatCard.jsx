@@ -109,7 +109,7 @@ export const CleoStatCard = ({
       <div style={{position: 'absolute', top: 96, left: 120, opacity: enter}}>
         <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
           <div style={{width: 10, height: 10, borderRadius: '50%', background: NEON, boxShadow: glow(0.7)}} />
-          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 34, letterSpacing: '0.14em', color: WHITE}}>
+          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 32, letterSpacing: '0.14em', color: WHITE}}>
             {kicker}
           </span>
         </div>
@@ -139,7 +139,7 @@ export const CleoStatCard = ({
           style={{
             marginTop: 18,
             fontFamily: 'A2Z Light, sans-serif',
-            fontSize: 40,
+            fontSize: 36,
             color: MUTE,
             letterSpacing: '0.05em',
             opacity: captionIn,
@@ -222,7 +222,7 @@ export const CleoStatCard = ({
       <div
         style={{
           position: 'absolute', left: 120, bottom: 300,
-          fontFamily: 'A2Z Light, sans-serif', fontSize: 26,
+          fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
           letterSpacing: '0.08em', color: MUTE, opacity: captionIn,
         }}
       >

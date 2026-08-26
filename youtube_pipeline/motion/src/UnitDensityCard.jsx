@@ -131,14 +131,14 @@ export const UnitDensityCard = ({
                              top: baseY - r.h - NAMEH + 4, textAlign: 'center',
                              opacity: fadeIn(frame, 4 + i * 4)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 40, color: T.ink, wordBreak: 'keep-all'}}>
+                       fontSize: 36, color: T.ink, wordBreak: 'keep-all'}}>
             {r.it.name}
           </div>
           {/* 면적과 요금은 한 줄로 붙인다. 요금을 방 아래로 내렸더니 칩까지
               세 줄이 되어 방 높이를 250px 밑으로 밀어냈다 */}
           {(r.it.areaLabel || r.it.priceLabel) ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 29, color: T.soft, fontVariantNumeric: 'tabular-nums'}}>
+                         fontSize: 28, color: T.soft, fontVariantNumeric: 'tabular-nums'}}>
               {[r.it.areaLabel, r.it.priceLabel].filter(Boolean).join('  ·  ')}
             </div>
           ) : null}
@@ -156,7 +156,7 @@ export const UnitDensityCard = ({
           </ValueChip>
           {r.it.unitLabel ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 26, color: T.soft}}>{r.it.unitLabel}</div>
+                         fontSize: 24, color: T.soft}}>{r.it.unitLabel}</div>
           ) : null}
         </div>
       ))}
@@ -164,7 +164,7 @@ export const UnitDensityCard = ({
       {/* 칸 하나가 얼마인지 — 안 적으면 칸이 그냥 무늬가 된다 */}
       {blockLabel ? (
         <div style={{position: 'absolute', right: 96, top: bandTop - 8,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft,
                      opacity: fadeIn(frame, 30)}}>
           {blockLabel}
         </div>
@@ -172,7 +172,7 @@ export const UnitDensityCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 22,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 29,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      color: T.soft, opacity: fadeIn(frame, 92), wordBreak: 'keep-all'}}>
           {caption}
         </div>

@@ -119,7 +119,7 @@ export const DataTable = ({
                 style={{
                   width: cellMode ? '40%' : '50%', display: 'flex', alignItems: 'center',
                   padding: cellMode ? '0 32px' : 0,
-                  fontSize: 34, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
+                  fontSize: 32, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
                 }}
               >
                 {row.label}
@@ -131,11 +131,11 @@ export const DataTable = ({
                   borderLeft: cellMode ? `1px solid ${borderSoft}` : 'none',
                 }}
               >
-                <span style={{fontSize: 38, color: valueColor, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.045em'}}>
+                <span style={{fontSize: 36, color: valueColor, fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.045em'}}>
                   {row.value}
                 </span>
                 {row.note ? (
-                  <span style={{fontSize: 26, color: noteColor, marginLeft: 14, fontFamily: 'A2Z Light, sans-serif'}}>
+                  <span style={{fontSize: 24, color: noteColor, marginLeft: 14, fontFamily: 'A2Z Light, sans-serif'}}>
                     {row.note}
                   </span>
                 ) : null}

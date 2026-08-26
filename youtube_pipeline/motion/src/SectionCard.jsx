@@ -104,9 +104,9 @@ export const SectionCard = ({
         <div key={k} style={{position: 'absolute', left: DIM_X - 28 - 420, top: y, width: 420,
                              transform: k === 'above' ? 'translateY(-50%)' : 'none', textAlign: 'right',
                              opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40, color: T.soft, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
-          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 94, color: T.ink, lineHeight: 1.08}}>
-            {o.floors}<span style={{fontSize: 56}}>층</span>
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 80, color: T.ink, lineHeight: 1.08}}>
+            {o.floors}<span style={{fontSize: 54}}>층</span>
           </div>
           {o.note ? (
             <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft, lineHeight: 1.2}}>{o.note}</div>
@@ -122,7 +122,7 @@ export const SectionCard = ({
           <div key={i} style={{position: 'absolute', left: x0 + W + 78, top: (yTop + yBot) / 2 - 30, width: 640,
                                opacity: fadeIn(frame, 50 + i * 8)}}>
             <div style={{fontFamily: bd.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                         fontSize: 45, color: T.ink, wordBreak: 'keep-all'}}>{bd.label}</div>
+                         fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>{bd.label}</div>
           </div>
         );
       })}

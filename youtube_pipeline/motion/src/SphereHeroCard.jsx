@@ -126,7 +126,7 @@ export const SphereHeroCard = ({
             const yLab = 300 + i * 170;
             return (
               <div key={i} style={{position: 'absolute', left: 1360, top: yLab - 26, opacity: fadeIn(frame, 34 + i * 10)}}>
-                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29, letterSpacing: '0.08em', color: a.hot ? WHITE : MUTE}}>
+                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.08em', color: a.hot ? WHITE : MUTE}}>
                   {a.label}
                 </div>
                 <div style={{marginTop: 2, fontFamily: 'A2Z Medium, sans-serif', fontSize: a.hot ? 84 : 56, letterSpacing: '0.01em', color: a.hot ? WHITE : GRAY, fontVariantNumeric: 'tabular-nums'}}>

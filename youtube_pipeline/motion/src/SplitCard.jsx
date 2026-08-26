@@ -10,7 +10,7 @@ const Col = ({d, x, w, frame, delay, T}) => {
   const o = fadeIn(frame, delay);
   return (
     <div style={{position: 'absolute', left: x, width: w, top: 320, opacity: o, textAlign: 'center'}}>
-      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 62,
+      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 54,
                    color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
         {d.hot ? <span style={{background: 'rgba(250,255,46,0.8)', padding: '2px 14px'}}>{d.label}</span> : d.label}
       </div>
@@ -22,7 +22,7 @@ const Col = ({d, x, w, frame, delay, T}) => {
       <div style={{marginTop: 46}}>
         {(d.lines || []).map((ln, i) => (
           <div key={i} style={{marginTop: i ? 22 : 0, fontFamily: 'A2Z Regular, sans-serif',
-                               fontSize: 40, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all',
+                               fontSize: 36, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all',
                                opacity: fadeIn(frame, delay + 12 + i * 8)}}>
             {ln}
           </div>
@@ -53,7 +53,7 @@ export const SplitCard = ({title = '', sub = '', left = {}, right = {}, verdict 
       {verdict ? (
         <div style={{position: 'absolute', left: 160, width: 1600, top: 746, textAlign: 'center',
                      opacity: fadeIn(frame, 52)}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 48,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                         color: INK, background: YELLOW, padding: '6px 22px', wordBreak: 'keep-all'}}>
             {verdict}
           </span>

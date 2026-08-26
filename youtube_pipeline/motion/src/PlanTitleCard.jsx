@@ -24,7 +24,7 @@ export const PlanTitleCard = ({
                     reveal={fadeIn(frame, 6, 26)}
                     fill={T.ink} color={T.bg} kickerColor={T.ink} />
         {sub ? (
-          <div style={{marginTop: 34, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+          <div style={{marginTop: 34, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                        color: T.soft, opacity: fadeIn(frame, 34), wordBreak: 'keep-all'}}>
             {sub}
           </div>

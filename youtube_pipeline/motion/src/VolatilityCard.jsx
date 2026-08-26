@@ -132,7 +132,7 @@ export const VolatilityCard = ({
                             fontSize: on ? 32 : 28, color: on ? T.ink : T.soft,
                             wordBreak: 'keep-all'}}>{s.name}</span>
               {s.note ? (
-                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 25, color: T.soft}}>
+                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
                   {s.note}
                 </span>
               ) : null}
@@ -174,7 +174,7 @@ export const VolatilityCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: xOf(i) - 90, width: 180,
                                top: yBot + SP.NEAR, textAlign: 'center',
-                               fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft,
+                               fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft,
                                opacity: fadeIn(frame, 14)}}>{t}</div>
         );
       }) : null}
@@ -182,13 +182,13 @@ export const VolatilityCard = ({
       {/* 지수화했다는 사실 — 이걸 빼면 단위가 다른 두 값을 겹쳐 그린 그래프가 된다 */}
       {indexNote ? (
         <div style={{position: 'absolute', left: LX, top: bandTop + 14,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft,
                      opacity: fadeIn(frame, 6)}}>{indexNote}</div>
       ) : null}
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 29,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      color: T.soft, opacity: fadeIn(frame, 96), wordBreak: 'keep-all'}}>
           {caption}
         </div>

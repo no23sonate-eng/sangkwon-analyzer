@@ -38,11 +38,11 @@ export const NewsQuoteCard = ({
       <div style={{position: 'absolute', left: 130, top: 300, width: 1180}}>
         {/* 매체명 + 날짜 */}
         <div style={{display: 'flex', alignItems: 'center', gap: 20, opacity: oOutlet, marginBottom: 30}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 38, color: '#FFFFFF', letterSpacing: '0.02em'}}>
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 36, color: '#FFFFFF', letterSpacing: '0.02em'}}>
             {outlet}
           </span>
           <span style={{width: 1, height: 30, background: 'rgba(255,255,255,0.35)'}} />
-          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: '#B9BFC9', letterSpacing: '0.04em'}}>
+          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: '#B9BFC9', letterSpacing: '0.04em'}}>
             {date}
           </span>
         </div>
@@ -51,7 +51,7 @@ export const NewsQuoteCard = ({
           const r = spring({frame: frame - 16 - i * 7, fps, config: {damping: 200}, durationInFrames: 28});
           return (
             <div key={i} style={{opacity: r, transform: `translateY(${(1 - r) * 22}px)`,
-                                 fontFamily: 'A2Z Medium, sans-serif', fontSize: 66,
+                                 fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                                  lineHeight: 1.42, letterSpacing: '-0.01em', wordBreak: 'keep-all'}}>
               {line.map((seg, j) => (
                 <span key={j} style={{color: seg.hot ? YELLOW : '#FFFFFF',

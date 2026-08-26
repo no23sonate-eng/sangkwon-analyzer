@@ -108,23 +108,23 @@ export const UnitPriceCard = ({
                       color: T.ink, fontVariantNumeric: 'tabular-nums'}}>{total}</span>
         {totalLabel ? (
           <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                        fontSize: 30, color: T.soft}}>{totalLabel}</span>
+                        fontSize: 28, color: T.soft}}>{totalLabel}</span>
         ) : null}
       </div>
 
       {/* 나눈 개수 — 격자 아래 */}
       <div style={{position: 'absolute', left: GX, width: GW, top: GY + GH + SP.GAP,
                    opacity: fadeIn(frame, 34)}}>
-        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft}}>
+        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
           ÷
         </span>
         <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Medium, sans-serif',
-                      fontSize: 40, color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
+                      fontSize: 36, color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
           {count.toLocaleString()}
         </span>
         {countLabel ? (
           <span style={{marginLeft: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                        fontSize: 30, color: T.soft}}>{countLabel}</span>
+                        fontSize: 28, color: T.soft}}>{countLabel}</span>
         ) : null}
       </div>
 
@@ -156,7 +156,7 @@ export const UnitPriceCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 34,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 29,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      color: T.soft, opacity: fadeIn(frame, 96), wordBreak: 'keep-all'}}>
           {caption}
         </div>

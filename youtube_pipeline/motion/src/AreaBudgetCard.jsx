@@ -99,7 +99,7 @@ export const AreaBudgetCard = ({
         </span>
         {totalLabel ? (
           <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                        fontSize: 30, color: T.soft}}>{totalLabel}</span>
+                        fontSize: 28, color: T.soft}}>{totalLabel}</span>
         ) : null}
       </div>
 
@@ -122,7 +122,7 @@ export const AreaBudgetCard = ({
               </div>
               {b.note ? (
                 <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 26, color: T.soft, wordBreak: 'keep-all'}}>
+                             fontSize: 24, color: T.soft, wordBreak: 'keep-all'}}>
                   {b.note}
                 </div>
               ) : null}
@@ -154,7 +154,7 @@ export const AreaBudgetCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: X, width: W, top: Y + H + SP.GAP,
-                     textAlign: 'left', fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
+                     textAlign: 'left', fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
                      color: T.soft, opacity: fadeIn(frame, 20 + items.length * step),
                      wordBreak: 'keep-all'}}>
           {caption}

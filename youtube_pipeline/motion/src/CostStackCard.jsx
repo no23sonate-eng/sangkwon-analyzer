@@ -107,15 +107,15 @@ export const CostStackCard = ({
         <div key={i} style={{position: 'absolute', right: 1920 - (BAR_X - 200),
                              top: labY[i] - 40, width: 560, textAlign: 'right',
                              opacity: fadeIn(frame, 26 + i * STEP)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, lineHeight: 1.2,
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, lineHeight: 1.2,
                        color: T.soft, wordBreak: 'keep-all'}}>{r.label}</div>
           <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 46, lineHeight: 1, color: T.ink,
                        fontVariantNumeric: 'tabular-nums'}}>
-            {r.prefix ? <span style={{fontSize: 30, color: T.soft, marginRight: 7,
+            {r.prefix ? <span style={{fontSize: 28, color: T.soft, marginRight: 7,
                                       fontFamily: 'A2Z Light, sans-serif'}}>{r.prefix}</span> : null}
             {r.display ?? r.value}
-            <span style={{fontSize: 27, color: T.soft, marginLeft: 6}}>{unit}</span>
+            <span style={{fontSize: 24, color: T.soft, marginLeft: 6}}>{unit}</span>
           </div>
         </div>
       ))}
@@ -123,11 +123,11 @@ export const CostStackCard = ({
       {/* 합계 — 총액 선 오른쪽. 막대 위에 숫자를 올리지 않는다는 규칙 그대로 */}
       <div style={{position: 'absolute', left: BAR_X + BAR_W + SP.BLOCK,
                    top: colTop - 52, width: 560, textAlign: 'left', opacity: totalIn}}>
-        <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 30, lineHeight: 1,
+        <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, lineHeight: 1,
                      letterSpacing: '0.14em', color: T.soft}}>{totalLabel}</div>
         {/* 총액 선이 지나는 높이를 비워 둔다 — 옐로 박스가 선을 물면 둘 다 지저분해진다 */}
         <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Medium, sans-serif',
-                     fontSize: 92, lineHeight: 1.05, color: '#1B1E24',
+                     fontSize: 80, lineHeight: 1.05, color: '#1B1E24',
                      fontVariantNumeric: 'tabular-nums'}}>
           <span style={{background: YELLOW, padding: '0 14px'}}>
             {totalDisplay ?? Math.round(total * 10) / 10}

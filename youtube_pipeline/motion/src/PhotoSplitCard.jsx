@@ -27,7 +27,7 @@ const Side = ({s, x, w, frame, i}) => {
 
       <div style={{position: 'absolute', left: x + 70, width: w - 140, top: 300,
                    textAlign: 'center', opacity: o, transform: `translateY(${rise}px)`}}>
-        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 54,
                      color: '#FFFFFF', lineHeight: 1.2, textShadow: SHADOW, wordBreak: 'keep-all'}}>
           {/* 한쪽만 노란 박스로 감싸면 두 이름이 **다른 종류의 것**처럼 보인다.
               실제로 #152 는 왼쪽이 흰 글자, 오른쪽이 검정-노랑 박스라 실수처럼
@@ -39,14 +39,14 @@ const Side = ({s, x, w, frame, i}) => {
           <div style={{margin: '10px auto 0', width: 92, height: 5, background: YELLOW}} />
         ) : null}
         {s.sub ? (
-          <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
+          <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>
         ) : null}
         {s.stat ? (
           <div style={{marginTop: 30, fontFamily: 'A2Z Medium, sans-serif', fontSize: 110,
                        color: s.hot ? YELLOW : '#FFFFFF', lineHeight: 1,
                        fontVariantNumeric: 'tabular-nums', textShadow: SHADOW}}>
-            {s.stat}<span style={{fontSize: 52, marginLeft: 6}}>{s.statUnit}</span>
+            {s.stat}<span style={{fontSize: 46, marginLeft: 6}}>{s.statUnit}</span>
           </div>
         ) : null}
         <div style={{marginTop: 34}}>
@@ -77,7 +77,7 @@ export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '', 
                    background: 'rgba(255,255,255,0.32)'}} />
 
       <div style={{position: 'absolute', top: 96, left: 0, width: 1920, textAlign: 'center', opacity: fadeIn(frame, 0)}}>
-        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 68,
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                      letterSpacing: '-0.01em', color: '#FFFFFF', textShadow: SHADOW}}>{title}</div>
         {sub ? (
           <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 36,
@@ -88,7 +88,7 @@ export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '', 
       {verdict ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: 812, textAlign: 'center',
                      opacity: fadeIn(frame, 62)}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 48,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                         color: '#12151a', background: YELLOW, padding: '8px 24px'}}>{verdict}</span>
         </div>
       ) : null}

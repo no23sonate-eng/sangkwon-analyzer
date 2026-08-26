@@ -153,7 +153,7 @@ export const MassingCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 900, top: 748, textAlign: 'left',
                      opacity: fadeIn(frame, 84),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

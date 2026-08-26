@@ -91,7 +91,7 @@ export const StrikeSwapCard = ({
         <div style={{position: 'absolute', left: 0, right: 0, top: top - 42,
                      textAlign: center ? 'center' : 'left',
                      paddingLeft: center ? 0 : 150, opacity: fadeIn(frame, 6),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                      whiteSpace: 'nowrap'}}>
           {fromLabel}
         </div>
@@ -129,7 +129,7 @@ export const StrikeSwapCard = ({
         {toLabel ? (
           <div style={{marginTop: 16,
                        fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 48, color: T.ink, whiteSpace: 'nowrap',
+                       fontSize: 46, color: T.ink, whiteSpace: 'nowrap',
                        letterSpacing: '-0.01em'}}>
             {toLabel}
           </div>

@@ -81,7 +81,7 @@ export const CompareCard = ({
       <div
         style={{
           position: 'absolute', top: 80, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 50, opacity: titleOpacity, color: T.ink, fontFamily: 'A2Z Medium, sans-serif',
+          fontSize: 46, opacity: titleOpacity, color: T.ink, fontFamily: 'A2Z Medium, sans-serif',
         }}
       >
         {title}
@@ -97,7 +97,7 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: LEFT_X, width: COL_W, opacity: leftOpacity}}>
         {hasImage ? <div style={textPanel} /> : null}
-        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{leftTitle}</div>
+        <div style={{position: 'relative', fontSize: 28, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{leftTitle}</div>
         {leftValue ? (
           <div style={{position: 'relative', fontSize: 80, color: hasImage ? '#EDEFF3' : T.ink, fontFamily: 'A2Z Regular, sans-serif'}}>{leftValue}</div>
         ) : null}
@@ -105,7 +105,7 @@ export const CompareCard = ({
           <div
             key={i}
             style={{
-              position: 'relative', fontSize: 34, color: hasImage ? '#FFFFFF' : T.ink, fontFamily: 'A2Z Regular, sans-serif',
+              position: 'relative', fontSize: 32, color: hasImage ? '#FFFFFF' : T.ink, fontFamily: 'A2Z Regular, sans-serif',
               lineHeight: 1.6, marginBottom: 10,
             }}
           >
@@ -116,14 +116,14 @@ export const CompareCard = ({
 
       <div style={{position: 'absolute', top: COL_TOP, left: RIGHT_X, width: COL_W, opacity: rightOpacity}}>
         {hasImage ? <div style={textPanel} /> : null}
-        <div style={{position: 'relative', fontSize: 30, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{rightTitle}</div>
+        <div style={{position: 'relative', fontSize: 28, marginBottom: 24, color: T.soft, fontFamily: 'A2Z Light, sans-serif', color: T.soft}}>{rightTitle}</div>
         {rightValue ? (
           <div style={{position: 'relative', fontSize: 80, color: T.ink, fontFamily: 'A2Z Regular, sans-serif'}}>{rightValue}</div>
         ) : null}
         {rightEmpty ? (
           <div style={{position: 'relative'}}>
-            <div style={{fontSize: 56, color: hasImage ? '#B8BDC5' : '#4A4F57', fontFamily: 'A2Z Light, sans-serif'}}>—</div>
-            <div style={{fontSize: 34, color: hasImage ? '#FFFFFF' : '#5C636D', fontFamily: 'A2Z Regular, sans-serif', marginTop: 14}}>
+            <div style={{fontSize: 54, color: hasImage ? '#B8BDC5' : '#4A4F57', fontFamily: 'A2Z Light, sans-serif'}}>—</div>
+            <div style={{fontSize: 32, color: hasImage ? '#FFFFFF' : '#5C636D', fontFamily: 'A2Z Regular, sans-serif', marginTop: 14}}>
               {emptyLabel}
             </div>
           </div>
@@ -132,7 +132,7 @@ export const CompareCard = ({
             <div
               key={i}
               style={{
-                position: 'relative', fontSize: 34, color: hasImage ? '#FFFFFF' : T.ink, fontFamily: 'A2Z Regular, sans-serif',
+                position: 'relative', fontSize: 32, color: hasImage ? '#FFFFFF' : T.ink, fontFamily: 'A2Z Regular, sans-serif',
                 lineHeight: 1.6, marginBottom: 10,
               }}
             >

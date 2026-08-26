@@ -190,9 +190,9 @@ export const ScaleCompareCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: y - 76,
                          textAlign: 'center', opacity: o}}>
-              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 52,
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                             color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
-                {Math.round(shown).toLocaleString('ko-KR')}<span style={{fontSize: 34}}>{unit}</span>
+                {Math.round(shown).toLocaleString('ko-KR')}<span style={{fontSize: 32}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: baseY + 18,
@@ -203,7 +203,7 @@ export const ScaleCompareCard = ({
                 {it.label}
               </div>
               {it.note ? (
-                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: T.soft}}>
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
                   {it.note}
                 </div>
               ) : null}

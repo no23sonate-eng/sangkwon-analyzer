@@ -235,7 +235,7 @@ export const MapCard = ({
 
       {source ? (
         <div style={{position: 'absolute', right: 30, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 21,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 20,
                      color: dark ? '#C6CCD4' : '#4A5058',
                      background: dark ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.62)',
                      padding: '3px 10px'}}>

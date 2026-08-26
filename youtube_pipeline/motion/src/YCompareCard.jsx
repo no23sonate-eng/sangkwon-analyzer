@@ -24,7 +24,7 @@ const Side = ({side, x, w, delay, frame, fps}) => {
       <div
         style={{
           marginTop: 44, textAlign: 'center',
-          fontFamily: 'A2Z Regular, sans-serif', fontSize: 37,
+          fontFamily: 'A2Z Regular, sans-serif', fontSize: 36,
           letterSpacing: '0.08em', color: hot ? WHITE : GRAY,
         }}
       >
@@ -35,7 +35,7 @@ const Side = ({side, x, w, delay, frame, fps}) => {
         <div
           style={{
             position: 'absolute', top: '52%', left: 0, width: '100%', textAlign: 'center',
-            fontFamily: 'A2Z Light, sans-serif', fontSize: 40,
+            fontFamily: 'A2Z Light, sans-serif', fontSize: 36,
             letterSpacing: '0.1em', color: MUTE,
           }}
         >
@@ -65,7 +65,7 @@ const Side = ({side, x, w, delay, frame, fps}) => {
                   style={{
                     display: 'flex', alignItems: 'baseline', gap: 18,
                     marginBottom: 20,
-                    fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
+                    fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                     letterSpacing: '0.03em', lineHeight: 1.4,
                     color: hot ? WHITE : GRAY,
                   }}
@@ -109,7 +109,7 @@ export const YCompareCard = ({
         <div
           style={{
             position: 'absolute', top: 462, left: 0, width: 1920, textAlign: 'center',
-            fontFamily: 'A2Z Medium, sans-serif', fontSize: 34,
+            fontFamily: 'A2Z Medium, sans-serif', fontSize: 32,
             letterSpacing: '0.2em', color: MUTE,
             opacity: fadeIn(frame, 28),
           }}

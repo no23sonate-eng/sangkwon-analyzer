@@ -48,7 +48,7 @@ export const TimelineBarsCard = ({
       <div style={{position: 'absolute', right: 120, top: bandTop - 62, display: 'flex',
                    alignItems: 'center', gap: 14, opacity: fadeIn(frame, 24)}}>
         <div style={{width: 16, height: 22, border: `2px solid ${T.ink}`, opacity: 0.6}} />
-        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
+        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
                       letterSpacing: '0.04em', color: T.soft}}>= 1개월</span>
       </div>
 
@@ -64,7 +64,7 @@ export const TimelineBarsCard = ({
                          opacity: fadeIn(frame, 12 + bi * 10)}}>
               <span style={{fontFamily: hot ? 'A2Z Medium, sans-serif'
                                             : 'A2Z Light, sans-serif',
-                            fontSize: 33, color: hot ? T.ink : T.soft,
+                            fontSize: 32, color: hot ? T.ink : T.soft,
                             wordBreak: 'keep-all'}}>{b.label}</span>
             </div>
             <svg width={1920} height={cellH + 10} style={{position: 'absolute', top: y, left: 0}}>
@@ -81,7 +81,7 @@ export const TimelineBarsCard = ({
                          top: y + cellH / 2 - 30, whiteSpace: 'nowrap',
                          opacity: fadeIn(frame, 46 + bi * 10)}}>
               <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                            fontSize: 52, color: hot ? T.ink : T.soft,
+                            fontSize: 46, color: hot ? T.ink : T.soft,
                             fontVariantNumeric: 'tabular-nums'}}>
                 {months}개월
               </span>

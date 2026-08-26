@@ -75,7 +75,7 @@ export const SitePlotCard = ({
                         letterSpacing: '-0.02em',
                         textShadow: '0 2px 18px rgba(250,255,46,0.55)'}}>
             {area}
-            <span style={{fontSize: 60, marginLeft: 6}}>{areaUnit}</span>
+            <span style={{fontSize: 54, marginLeft: 6}}>{areaUnit}</span>
           </span>
         </div>
       ) : null}

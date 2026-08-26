@@ -67,7 +67,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
           <Img src={/^https?:/.test(parentLogo) ? parentLogo : staticFile(parentLogo)}
                style={{width: '78%', height: '68%', objectFit: 'contain'}} />
         ) : (
-          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: '#9AA0A8'}}>
+          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: '#9AA0A8'}}>
             로고 자리
           </span>
         )}
@@ -76,7 +76,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
         <div
           style={{
             position: 'absolute', top: PARENT_TOP + PARENT_H + 14, left: CX - PARENT_W / 2, width: PARENT_W,
-            textAlign: 'center', fontSize: 26, opacity: parentOpacity, color: T.ink,
+            textAlign: 'center', fontSize: 24, opacity: parentOpacity, color: T.ink,
             fontFamily: 'A2Z Medium, sans-serif',
           }}
         >
@@ -101,7 +101,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
                 <Img src={/^https?:/.test(child.logo) ? child.logo : staticFile(child.logo)}
                      style={{width: '76%', height: '64%', objectFit: 'contain'}} />
               ) : (
-                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 22, color: '#9AA0A8'}}>
+                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 20, color: '#9AA0A8'}}>
                   로고 자리
                 </span>
               )}
@@ -134,7 +134,7 @@ export const LogoOrgCard = ({title = '', subtitle = '', parentLogo = '', parentL
       <div
         style={{
           position: 'absolute', top: 150, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 44, opacity: titleOpacity, color: themeOf(theme).ink,
+          fontSize: 42, opacity: titleOpacity, color: themeOf(theme).ink,
           fontFamily: 'A2Z Medium, sans-serif',
         }}
       >
@@ -144,7 +144,7 @@ export const LogoOrgCard = ({title = '', subtitle = '', parentLogo = '', parentL
         <div
           style={{
             position: 'absolute', top: 212, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 30, opacity: titleOpacity, color: themeOf(theme).soft,
+            fontSize: 28, opacity: titleOpacity, color: themeOf(theme).soft,
             fontFamily: 'A2Z Light, sans-serif',
           }}
         >

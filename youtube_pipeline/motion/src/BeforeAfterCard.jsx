@@ -86,7 +86,7 @@ export const BeforeAfterCard = ({
       {headline ? (
         <div style={{position: 'absolute', left: 160, width: 1600, top: 660, textAlign: 'center',
                      opacity: fadeIn(frame, 70)}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 60,
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 54,
                         color: '#12151a', background: YELLOW, padding: '8px 22px',
                         boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone',
                         wordBreak: 'keep-all'}}>

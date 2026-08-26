@@ -97,7 +97,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => (
       ) : node.wordmark ? (
         <div style={{width: 236, height: 152, border: `4px solid ${T.ink}`, display: 'flex',
                      alignItems: 'center', justifyContent: 'center',
-                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 84,
+                     fontFamily: 'A2Z Medium, sans-serif', fontSize: 80,
                      letterSpacing: '0.04em', color: T.ink}}>
           {node.wordmark}
         </div>
@@ -108,9 +108,9 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => (
       )}
     </div>
     <div style={{position: 'absolute', left: cx - 220, width: 440, top: cy + 14, textAlign: 'center', opacity: o}}>
-      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 50, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
+      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, color: T.ink, lineHeight: 1.3, wordBreak: 'keep-all'}}>{node.label}</div>
       {node.sub ? (
-        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: T.soft}}>{node.sub}</div>
+        <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, lineHeight: 1.35, color: T.soft}}>{node.sub}</div>
       ) : null}
     </div>
   </>
@@ -182,7 +182,7 @@ export const PaperFlowCard = ({
                   {nd.label}
                 </span>
                 {nd.sub ? (
-                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft}}>
+                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
                     {nd.sub}
                   </div>
                 ) : null}
@@ -236,7 +236,7 @@ export const PaperFlowCard = ({
                   {nd.label}
                 </span>
                 {nd.sub ? (
-                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft}}>
+                  <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
                     {nd.sub}
                   </div>
                 ) : null}
@@ -320,7 +320,7 @@ export const PaperFlowCard = ({
                 {nd.label}
               </span>
               {nd.sub ? (
-                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 34, lineHeight: 1.35, color: T.soft, letterSpacing: '0.02em'}}>
+                <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, lineHeight: 1.35, color: T.soft, letterSpacing: '0.02em'}}>
                   {nd.sub}
                 </div>
               ) : null}
@@ -331,7 +331,7 @@ export const PaperFlowCard = ({
                 <polygon points={`${x + BOX + gap + 16},${cy - 64} ${x + BOX + gap + 1},${cy - 71} ${x + BOX + gap + 1},${cy - 57}`} fill={T.ink} />
                 {arrows[i] ? (
                   <text x={x + BOX + gap / 2} y={cy - 82} textAnchor="middle"
-                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, fill: T.soft, letterSpacing: '0.06em'}}>
+                        style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, fill: T.soft, letterSpacing: '0.06em'}}>
                     {arrows[i]}
                   </text>
                 ) : null}

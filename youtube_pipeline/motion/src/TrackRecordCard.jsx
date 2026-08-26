@@ -109,7 +109,7 @@ export const TrackRecordCard = ({
             {/* 순번이 먼저 찍히고 */}
             <div style={{position: 'absolute', left: NUM_X, top: y + 4, width: 56,
                          textAlign: 'left', opacity: e,
-                         fontFamily: 'A2Z Light, sans-serif', fontSize: 26, color: T.soft}}>
+                         fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
               {String(i + 1).padStart(2, '0')}
             </div>
             {/* 이름이 기준선에서 밀려 나온다 (페이드가 아니라 마스크) */}
@@ -125,7 +125,7 @@ export const TrackRecordCard = ({
             {it.note ? (
               <div style={{position: 'absolute', left: X + estWidth(it.label || '', size) + 34,
                            top: y + size * 0.42, opacity: fadeIn(frame, 38 + i * 11),
-                           fontFamily: 'A2Z Light, sans-serif', fontSize: 30, color: T.soft,
+                           fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                            whiteSpace: 'nowrap'}}>
                 {it.note}
               </div>

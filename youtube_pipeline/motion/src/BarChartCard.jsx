@@ -52,10 +52,10 @@ export const BarChartCard = ({
         <div style={{position: 'absolute', left: 200, width: 1520, top: 150, textAlign: 'center',
                      opacity: fadeIn(frame, 0)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
+                       fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 30, color: T.soft}}>{sub}</div>
+                         fontSize: 28, color: T.soft}}>{sub}</div>
           ) : null}
         </div>
       ) : null}
@@ -95,7 +95,7 @@ export const BarChartCard = ({
             </div>
             {b.subValue ? (
               <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif',
-                           fontSize: 25, color: T.soft}}>{b.subValue}</div>
+                           fontSize: 24, color: T.soft}}>{b.subValue}</div>
             ) : null}
           </div>
         );
@@ -105,7 +105,7 @@ export const BarChartCard = ({
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 78,
                      textAlign: 'center', opacity: fadeIn(frame, 60)}}>
           <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                        fontSize: 44, color: T.ink, background: YELLOW,
+                        fontSize: 42, color: T.ink, background: YELLOW,
                         padding: '6px 18px'}}>{closingLine}</span>
         </div>
       ) : null}

@@ -93,7 +93,7 @@ export const SeatDotsCard = ({
                 {a.label}
               </span>
               {a.subLabel ? (
-                <span style={{marginLeft: 20, fontFamily: 'A2Z Light, sans-serif', fontSize: 30, letterSpacing: '0.04em', color: T.soft}}>
+                <span style={{marginLeft: 20, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.04em', color: T.soft}}>
                   {a.subLabel}
                 </span>
               ) : null}
@@ -105,7 +105,7 @@ export const SeatDotsCard = ({
       {/* 범례 — 도트 하나의 의미 */}
       <div style={{position: 'absolute', right: 120, top: 100, display: 'flex', alignItems: 'center', gap: 14, opacity: fadeIn(frame, 24)}}>
         <div style={{width: 14, height: 14, borderRadius: '50%', background: YELLOW, border: `2px solid ${T.ink}`}} />
-        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.06em', color: T.soft}}>
+        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.06em', color: T.soft}}>
           = {perDot.toLocaleString()}석
         </span>
       </div>

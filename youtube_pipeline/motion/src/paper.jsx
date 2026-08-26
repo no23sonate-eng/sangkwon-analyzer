@@ -379,7 +379,7 @@ export const PaperSource = ({source = '', dark = false, theme, onPhoto = false})
   return (
     <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right',
                  maxWidth: 760,
-                 fontFamily: 'A2Z Light, sans-serif', fontSize: 23,
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: 20,
                  letterSpacing: '0.04em', lineHeight: 1.3,
                  // 사진을 꽉 채우는 카드는 무대 색이 없다. 사진이 밝을지
                  // 어두울지 모르니 흰 글자 + 그림자로 고정한다
@@ -483,7 +483,7 @@ export const PaperKicker = ({title = '', sub = '', theme, dark = false, opacity 
       <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
         <div style={{width: 46, height: 5, background: YELLOW}} />
         <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                      fontSize: 34, letterSpacing: '0.06em', color: T.ink,
+                      fontSize: 32, letterSpacing: '0.06em', color: T.ink,
                       wordBreak: 'keep-all'}}>{title}</span>
       </div>
       {sub ? (
@@ -503,7 +503,7 @@ export const PaperCaption = ({children, theme, dark = false, opacity = 1, top = 
   return (
     <div style={{position: 'absolute', left: 200, width: 1520,
                  top: top == null ? CONTENT_BOTTOM - 26 : top, textAlign: 'center',
-                 fontFamily: 'A2Z Light, sans-serif', fontSize: 29, color: T.soft,
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                  opacity, wordBreak: 'keep-all'}}>
       {children}
     </div>

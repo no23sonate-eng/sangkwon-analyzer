@@ -57,7 +57,7 @@ export const TripleCompareCard = ({title = '', items = [], source = '', accent =
       <div
         style={{
           position: 'absolute', top: 130, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 34, opacity: titleOpacity, ...TEXT.title,
+          fontSize: 32, opacity: titleOpacity, ...TEXT.title,
         }}
       >
         {title}
@@ -90,7 +90,7 @@ export const TripleCompareCard = ({title = '', items = [], source = '', accent =
               {item.value}
             </div>
             {item.note ? (
-              <div style={{position: 'relative', fontSize: 26, textAlign: 'center', marginTop: 16, color: noteColor, fontFamily: 'A2Z Light, sans-serif'}}>
+              <div style={{position: 'relative', fontSize: 24, textAlign: 'center', marginTop: 16, color: noteColor, fontFamily: 'A2Z Light, sans-serif'}}>
                 {item.note}
               </div>
             ) : null}

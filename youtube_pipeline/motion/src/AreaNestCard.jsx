@@ -93,12 +93,12 @@ export const AreaNestCard = ({
             </svg>
             <div style={{position: 'absolute', left: CX + BOX / 2 + 100, width: 700, top: ly,
                          transform: 'translateY(-50%)', opacity: o}}>
-              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 62, color: T.ink,
+              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 54, color: T.ink,
                            lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
-                {it.display ?? it.value}<span style={{fontSize: 38, marginLeft: 6}}>{unit}</span>
+                {it.display ?? it.value}<span style={{fontSize: 36, marginLeft: 6}}>{unit}</span>
               </div>
               <div style={{marginTop: 6, fontFamily: it.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
-                           fontSize: 40, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
+                           fontSize: 36, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
               {it.sub ? (
