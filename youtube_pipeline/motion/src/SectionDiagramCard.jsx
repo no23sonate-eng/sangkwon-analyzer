@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -114,20 +114,20 @@ export const SectionDiagramCard = ({
         {cutPoly ? (
           <g opacity={eC}>
             <path d={cutPoly} fill={CUT_FILL} opacity={0.9} />
-            <path d={path(cut)} fill="none" stroke={CUT_FILL} strokeWidth={4} />
+            <path d={path(cut)} fill="none" stroke={CUT_FILL} strokeWidth={LW.BODY} />
           </g>
         ) : null}
 
         {/* ① 지표선 */}
         {ground.length > 1 ? (
-          <path d={path(ground)} fill="none" stroke={T.ink} strokeWidth={5}
+          <path d={path(ground)} fill="none" stroke={T.ink} strokeWidth={LW.BOLD}
                 strokeLinejoin="round" strokeLinecap="round"
                 strokeDasharray={`${gLen} ${gLen}`} strokeDashoffset={gLen * (1 - gT)} />
         ) : null}
 
         {/* ③ 점선 = 원래 계획. 실선(실제)과 **선 종류로** 구분한다 — 색을 또 쓰면 셋이 된다 */}
         {plan.length > 1 ? (
-          <path d={path(plan)} fill="none" stroke={T.ink} strokeWidth={3}
+          <path d={path(plan)} fill="none" stroke={T.ink} strokeWidth={LW.BODY}
                 strokeDasharray="16 12" opacity={0.75 * pT} />
         ) : null}
 

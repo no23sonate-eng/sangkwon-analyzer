@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -94,11 +94,11 @@ export const ShapeCompareCard = ({
                 <rect key={k} x={x} y={y + (h / n) * k} width={w} height={h / n}
                       fill={o.hot ? (k % 2 ? '#E8ED4A' : YELLOW)
                                   : (k % 2 ? FILL2 : FILL)}
-                      stroke={T.ink} strokeWidth={3} />
+                      stroke={T.ink} strokeWidth={LW.BODY} />
               ))}
               {/* 바닥선 — 둘이 같은 지면에 서 있다는 걸 보여야 높이 비교가 된다 */}
               <line x1={x - 46} y1={baseY} x2={x + w + 46} y2={baseY}
-                    stroke={T.ink} strokeWidth={4} opacity={0.35} />
+                    stroke={T.ink} strokeWidth={LW.BODY} opacity={0.35} />
 
               {/* 지분 분할 — 한 필지가 여러 명 것이라는 걸 칸으로 보여 준다.
                   ShareSplitCard 와 같은 말을 하되 그림이 겹치지 않게 (검수 지적 #71) */}
@@ -107,7 +107,7 @@ export const ShapeCompareCard = ({
                   {Array.from({length: divide - 1}, (_, k) => (
                     <line key={k} x1={x + (w * (k + 1)) / divide} y1={y}
                           x2={x + (w * (k + 1)) / divide} y2={baseY}
-                          stroke={T.ink} strokeWidth={2} strokeDasharray="6 5" />
+                          stroke={T.ink} strokeWidth={LW.THIN} strokeDasharray="6 5" />
                   ))}
                 </g>
               ) : null}

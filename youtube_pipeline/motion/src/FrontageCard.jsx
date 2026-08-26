@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -108,33 +108,33 @@ export const FrontageCard = ({
               {cells}
               {/* 평면 외곽 */}
               <rect x={px} y={py} width={pw - 3} height={pd - 3} fill="none"
-                    stroke={T.ink} strokeWidth={3} opacity={0.55 * gridIn} />
+                    stroke={T.ink} strokeWidth={LW.BODY} opacity={0.55 * gridIn} />
 
               {/* 도로 — 접도 변 아래에 굵은 선 하나. "여기가 길이다" */}
               <line x1={px - 60} y1={planBot + 20} x2={px + pw + 40} y2={planBot + 20}
-                    stroke={T.ink} strokeWidth={5} opacity={0.3 * gridIn} />
+                    stroke={T.ink} strokeWidth={LW.BOLD} opacity={0.3 * gridIn} />
 
               {/* 접도 변 = 옐로. 한 화면에 강조는 이것뿐 */}
               <line x1={px} y1={planBot - 2} x2={px + pw - 3} y2={planBot - 2}
-                    stroke={YELLOW} strokeWidth={12}
+                    stroke={YELLOW} strokeWidth={LW.BOLD}
                     strokeDasharray={`${pw} ${pw}`} strokeDashoffset={pw * (1 - edgeIn)} />
 
               {/* 그 변이 아래로 **내려와** 정면의 폭이 된다 */}
               {eD > 0.01 ? (
                 <>
                   <line x1={px} y1={planBot + 6} x2={ex} y2={elevTop - 6}
-                        stroke={YELLOW} strokeWidth={2.5} strokeDasharray="9 9" opacity={0.7 * eD} />
+                        stroke={YELLOW} strokeWidth={LW.THIN} strokeDasharray="9 9" opacity={0.7 * eD} />
                   <line x1={px + pw - 3} y1={planBot + 6} x2={ex + ew - 3} y2={elevTop - 6}
-                        stroke={YELLOW} strokeWidth={2.5} strokeDasharray="9 9" opacity={0.7 * eD} />
+                        stroke={YELLOW} strokeWidth={LW.THIN} strokeDasharray="9 9" opacity={0.7 * eD} />
                   <rect x={ex} y={elevTop} width={(ew - 3) * eD} height={ELEV_H}
                         fill={YELLOW} opacity={0.9} />
                   <rect x={ex} y={elevTop} width={(ew - 3) * eD} height={ELEV_H}
-                        fill="none" stroke={T.ink} strokeWidth={3} />
+                        fill="none" stroke={T.ink} strokeWidth={LW.BODY} />
                   {/* 층 구분선 — 정면이 건물이라는 걸 알려 주는 최소한의 표시 */}
                   {Array.from({length: Math.max(0, floors - 1)}, (_, i) => (
                     <line key={i} x1={ex} y1={elevTop + ELEV_H * (i + 1) / floors}
                           x2={ex + (ew - 3) * eD} y2={elevTop + ELEV_H * (i + 1) / floors}
-                          stroke={T.ink} strokeWidth={2} opacity={0.35} />
+                          stroke={T.ink} strokeWidth={LW.THIN} opacity={0.35} />
                   ))}
                 </>
               ) : null}

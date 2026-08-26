@@ -81,7 +81,8 @@ export const SitePlotCard = ({
       ) : null}
 
       {second ? (
-        <div style={{position: 'absolute', left: 0, right: 0, top: CONTENT_BOTTOM - 84,
+        <div style={{position: 'absolute', left: 0, right: 0,
+                     top: CONTENT_BOTTOM - 84 - (secondLabel ? 44 : 0) - (note ? 62 : 0),
                      textAlign: 'center', opacity: fadeIn(frame, 48)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: fit(second, 62, 1200), color: T.ink, letterSpacing: '-0.01em'}}>

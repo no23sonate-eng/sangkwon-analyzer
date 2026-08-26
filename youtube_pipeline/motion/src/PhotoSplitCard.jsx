@@ -29,8 +29,15 @@ const Side = ({s, x, w, frame, i}) => {
                    textAlign: 'center', opacity: o, transform: `translateY(${rise}px)`}}>
         <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56,
                      color: '#FFFFFF', lineHeight: 1.2, textShadow: SHADOW, wordBreak: 'keep-all'}}>
-          {s.hot ? <span style={{background: YELLOW, color: '#12151a', padding: '2px 16px', textShadow: 'none'}}>{s.name}</span> : s.name}
+          {/* 한쪽만 노란 박스로 감싸면 두 이름이 **다른 종류의 것**처럼 보인다.
+              실제로 #152 는 왼쪽이 흰 글자, 오른쪽이 검정-노랑 박스라 실수처럼
+              읽혔다. 이름은 같은 꼴로 두고 강조는 **밑줄**로 표시한다 —
+              같은 층위에서 하나를 가리키는 게 강조다 */}
+          {s.name}
         </div>
+        {s.hot ? (
+          <div style={{margin: '10px auto 0', width: 92, height: 5, background: YELLOW}} />
+        ) : null}
         {s.sub ? (
           <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 34,
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>

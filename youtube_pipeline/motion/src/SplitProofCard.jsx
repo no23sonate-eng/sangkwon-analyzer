@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, fadeIn, LW} from './paper';
 import {HandArrow} from './annotate';
 import {fit} from './layout';
 
@@ -95,7 +95,7 @@ export const SplitProofCard = ({
             <circle cx={shaftX} cy={shaftY} r={shaftW * 0.62} fill={tipColor || '#4B7BD6'} />
           ) : null}
           <line x1={shaftX} y1={bands[0]?.y0 ?? TOP} x2={shaftX} y2={shaftY}
-                stroke={T.bg} strokeWidth={2} opacity={0.35} />
+                stroke={T.bg} strokeWidth={LW.THIN} opacity={0.35} />
         </g>
       </svg>
 

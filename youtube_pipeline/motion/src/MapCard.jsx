@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, YELLOW, INK, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, YELLOW, INK, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {StampLabel} from './annotate';
 import {fit, estWidth} from './layout';
 
@@ -102,7 +102,7 @@ export const MapCard = ({
         {areaPts ? (
           <g>
             <polygon points={areaPts} fill={YELLOW} opacity={0.26 * areaT} />
-            <polygon points={areaPts} fill="none" stroke={YELLOW} strokeWidth={5}
+            <polygon points={areaPts} fill="none" stroke={YELLOW} strokeWidth={LW.BOLD}
                      opacity={areaT} strokeLinejoin="round" />
           </g>
         ) : null}
@@ -110,7 +110,7 @@ export const MapCard = ({
         {/* ③ 경로 — 왼쪽부터 그어진다 */}
         {routePts && routePts.length > 1 ? (
           <polyline points={routePts.map((p) => p.join(',')).join(' ')}
-                    fill="none" stroke={route.hot ? YELLOW : inkOnMap} strokeWidth={7}
+                    fill="none" stroke={route.hot ? YELLOW : inkOnMap} strokeWidth={LW.BOLD}
                     strokeLinecap="round" strokeLinejoin="round"
                     strokeDasharray={route.dashed ? '18 14' : `${routeLen} ${routeLen}`}
                     strokeDashoffset={route.dashed ? 0 : routeLen * (1 - routeT)}
@@ -132,7 +132,7 @@ export const MapCard = ({
             <g key={i} opacity={s}>
               <ellipse cx={X} cy={Y} rx={12 * s} ry={4 * s} fill={inkOnMap} opacity={0.28} />
               <path d={`M ${X} ${Y - drop} l -13 -22 a 15 15 0 1 1 26 0 Z`}
-                    fill={col} stroke={p.hot ? INK : 'none'} strokeWidth={2} />
+                    fill={col} stroke={p.hot ? INK : 'none'} strokeWidth={LW.THIN} />
               <circle cx={X} cy={Y - drop - 30} r={6} fill={p.hot ? INK : T.bg} />
             </g>
           );

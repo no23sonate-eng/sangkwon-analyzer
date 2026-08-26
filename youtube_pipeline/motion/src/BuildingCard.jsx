@@ -7,6 +7,7 @@ import {
   interpolate,
 } from 'remotion';
 import {useA2ZFonts} from './Fonts';
+import {LW} from './paper';   // 선 굵기 네 단계 — paper.jsx 가 기준이다
 
 // ⚠️ 고정 규칙(2026-07-29 사용자 지시, 항상 지킬 것): 자막은 사용자가
 // 직접 나중에 얹는다. 그래픽 콘텐츠(제목/도형/값)를 화면 하단까지 채우지
@@ -32,7 +33,7 @@ const GridBg = () => {
       width={1920} height={1080}
       style={{position: 'absolute', top: 0, left: 0}}
     >
-      <g stroke="rgba(255,255,255,0.05)" strokeWidth={1}>{lines}</g>
+      <g stroke="rgba(255,255,255,0.05)" strokeWidth={LW.HAIR}>{lines}</g>
     </svg>
   );
 };
@@ -53,7 +54,7 @@ const Building = ({scale, opacity, floors}) => {
         x2={320}
         y2={y2}
         stroke="rgba(0,0,0,0.28)"
-        strokeWidth={1.4}
+        strokeWidth={LW.HAIR}
       />
     );
   }

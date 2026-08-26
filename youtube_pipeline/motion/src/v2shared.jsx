@@ -1,5 +1,6 @@
 import React from 'react';
 import {interpolate} from 'remotion';
+import {LW} from './paper';   // 선 굵기 네 단계 — paper.jsx 가 기준이다
 
 // ── v2 디자인 시스템 (2026-07-31 사용자 확정) ──────────────────────────
 // 순블랙 캔버스 + 채널 실측 레몬 옐로 단일 강조(발광). Cleo Abram 의
@@ -85,7 +86,7 @@ export const PerspectiveFloor = ({opacity = 1}) => {
   }
   return (
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity}}>
-      <g stroke="rgba(250,255,46,0.10)" strokeWidth={1}>
+      <g stroke="rgba(250,255,46,0.10)" strokeWidth={LW.HAIR}>
         {rays}
         {rows}
       </g>

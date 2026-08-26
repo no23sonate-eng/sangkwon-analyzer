@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
 
 // 연도 레일 카드 — 가로 연도축 위에 기간 막대와 사건 마커.
 // "좌→우로 아이콘 3개"류와 달리 **실제 시간 축**이 있어서, 기간의 길이 차이나
@@ -53,14 +53,14 @@ export const TimelineRailCard = ({
         {/* 연도 눈금 — 세로 가이드가 먼저 깔린다 */}
         {ticks.map((y, i) => (
           <line key={`t${i}`} x1={px(y)} y1={366} x2={px(y)} y2={AXIS_Y}
-                stroke={T.ink} strokeWidth={1} opacity={0.14 * fadeIn(frame, 4)} />
+                stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.14 * fadeIn(frame, 4)} />
         ))}
         {/* 축 */}
         <line x1={X0 - 40} y1={AXIS_Y} x2={X1 + 40} y2={AXIS_Y}
-              stroke={T.ink} strokeWidth={3} opacity={fadeIn(frame, 2)} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={fadeIn(frame, 2)} />
         {ticks.map((y, i) => (
           <line key={`m${i}`} x1={px(y)} y1={AXIS_Y} x2={px(y)} y2={AXIS_Y + 12}
-                stroke={T.ink} strokeWidth={2} opacity={fadeIn(frame, 2)} />
+                stroke={T.ink} strokeWidth={LW.THIN} opacity={fadeIn(frame, 2)} />
         ))}
 
         {rails.map((r, i) => {
@@ -75,11 +75,11 @@ export const TimelineRailCard = ({
                 <>
                   <rect x={x0} y={y - 34} width={Math.max(4, (x1 - x0) * grow)} height={68} rx={4} fill={fill} />
                   <rect x={x0} y={y - 34} width={Math.max(4, (x1 - x0) * grow)} height={68} rx={4}
-                        fill="none" stroke={T.ink} strokeWidth={2.5} />
+                        fill="none" stroke={T.ink} strokeWidth={LW.THIN} />
                 </>
               ) : (
                 <line x1={x0} y1={y} x2={x0 + (x1 - x0) * grow} y2={y}
-                      stroke={T.ink} strokeWidth={4} strokeLinecap="round" />
+                      stroke={T.ink} strokeWidth={LW.BODY} strokeLinecap="round" />
               )}
               {(r.events || []).map((e, j) => {
                 const ex = px(e.at);
@@ -87,9 +87,9 @@ export const TimelineRailCard = ({
                 const o = fadeIn(frame, 40 + i * 12 + j * 8);
                 return (
                   <g key={j} opacity={o}>
-                    <line x1={ex} y1={y - 34} x2={ex} y2={y - LIFT(j) + 16} stroke={T.ink} strokeWidth={2} opacity={0.5} />
+                    <line x1={ex} y1={y - 34} x2={ex} y2={y - LIFT(j) + 16} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
                     <circle cx={ex} cy={y} r={e.hot ? 17 : 12}
-                            fill={e.hot ? YELLOW : '#FFF'} stroke={T.ink} strokeWidth={3.5} />
+                            fill={e.hot ? YELLOW : '#FFF'} stroke={T.ink} strokeWidth={LW.BODY} />
                   </g>
                 );
               })}

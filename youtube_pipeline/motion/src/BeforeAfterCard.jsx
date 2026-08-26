@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn, PaperSource} from './paper';
+import {YELLOW, fadeIn, PaperSource, LW} from './paper';
 import {estWidth} from './layout';
 
 // ── 전후 와이프 ──────────────────────────────────────────────────────────
@@ -56,8 +56,8 @@ export const BeforeAfterCard = ({
 
       {/* 손잡이 — 선 + 가운데 그립 */}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <line x1={X} y1={0} x2={X} y2={1080} stroke="#FFFFFF" strokeWidth={4} opacity={0.95} />
-        <circle cx={X} cy={540} r={30} fill={YELLOW} stroke="#12151a" strokeWidth={3} />
+        <line x1={X} y1={0} x2={X} y2={1080} stroke="#FFFFFF" strokeWidth={LW.BODY} opacity={0.95} />
+        <circle cx={X} cy={540} r={30} fill={YELLOW} stroke="#12151a" strokeWidth={LW.BODY} />
         <polygon points={`${X - 10},${540} ${X - 2},${534} ${X - 2},${546}`} fill="#12151a" />
         <polygon points={`${X + 10},${540} ${X + 2},${534} ${X + 2},${546}`} fill="#12151a" />
       </svg>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, fadeIn, LW} from './paper';
 
 // 좌우 대비 카드 — 두 항목을 한 화면에서 갈라 놓고 비교한다.
 // 아이콘 3개를 좌→우로 세우는 것과 달리, "둘 사이의 간극"이 주어다.
@@ -45,7 +45,7 @@ export const SplitCard = ({title = '', sub = '', left = {}, right = {}, verdict 
       <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <line x1={HALF} y1={302} x2={HALF} y2={716} stroke={T.ink} strokeWidth={2.5}
+        <line x1={HALF} y1={302} x2={HALF} y2={716} stroke={T.ink} strokeWidth={LW.THIN}
               strokeDasharray="10 8" opacity={0.4 * fadeIn(frame, 4)} />
       </svg>
       <Col d={left} x={PAD} w={HALF - PAD * 1.5} frame={frame} delay={8} T={T} />

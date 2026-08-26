@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
+import {LW} from './paper';   // 선 굵기 네 단계 — paper.jsx 가 기준이다
 
 // Cleo Abram(@CleoAbram) 스타일 테스트 카드 — design_reference.md §11 스펙.
 // 순블랙 풀블리드 + 네온 라임 단일 강조(발광) + 화이트/뮤트그레이 2보조.
@@ -35,7 +36,7 @@ const PerspectiveFloor = ({opacity}) => {
   }
   return (
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity}}>
-      <g stroke="rgba(250,255,46,0.10)" strokeWidth={1}>
+      <g stroke="rgba(250,255,46,0.10)" strokeWidth={LW.HAIR}>
         {rays}
         {rows}
       </g>
@@ -154,7 +155,7 @@ export const CleoStatCard = ({
         <svg width={700} height={470}>
           {[0, 1, 2, 3, 4].map((i) => {
             const y = 40 + (i * 390) / 4;
-            return <line key={i} x1={0} y1={y} x2={700} y2={y} stroke={GRID} strokeWidth={1} />;
+            return <line key={i} x1={0} y1={y} x2={700} y2={y} stroke={GRID} strokeWidth={LW.HAIR} />;
           })}
           {bars.map((b, i) => {
             const barW = 118; // §11-2 폭:간격 ≈ 1:0.9

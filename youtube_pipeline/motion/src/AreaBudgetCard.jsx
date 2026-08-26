@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {fit} from './layout';
 
 // ── 면적 예산 ─────────────────────────────────────────────────────────────
@@ -62,7 +62,7 @@ export const AreaBudgetCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 대지 — 점선 테두리. 확정된 경계가 아니라 "이만큼이 전부" 라는 틀이다 */}
         <rect x={X} y={Y} width={W} height={H} fill="none"
-              stroke={T.ink} strokeWidth={3} strokeDasharray="12 9"
+              stroke={T.ink} strokeWidth={LW.BODY} strokeDasharray="12 9"
               opacity={0.75 * fadeIn(frame, 4)} />
 
         {bands.map((b) => (
@@ -71,7 +71,7 @@ export const AreaBudgetCard = ({
                   fill={b.hot ? YELLOW : T.tones[b.i % T.tones.length]}
                   opacity={b.hot ? 1 : 0.9} />
             <line x1={X} y1={b.y0} x2={X + W} y2={b.y0}
-                  stroke={T.bg} strokeWidth={2} opacity={0.6} />
+                  stroke={T.bg} strokeWidth={LW.THIN} opacity={0.6} />
           </g>
         ))}
 
@@ -86,7 +86,7 @@ export const AreaBudgetCard = ({
           <g opacity={fadeIn(frame, 18 + items.length * step)}>
             <line x1={X + 18} y1={Y + (used / total) * H + 16}
                   x2={X + W - 18} y2={Y + H - 16}
-                  stroke={T.soft} strokeWidth={2} opacity={0.4} />
+                  stroke={T.soft} strokeWidth={LW.THIN} opacity={0.4} />
           </g>
         ) : null}
       </svg>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, TONES, DARK_TONES, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, TONES, DARK_TONES, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // ── 쌓여서 총액이 되는 그래프 (워터폴) ────────────────────────────────
 // "낙찰가 541.5억에 취득세와 기타 비용을 더하면 570억" 같은 말은
@@ -73,7 +73,7 @@ export const CostStackCard = ({
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         <line x1={BAR_X - 40} y1={baseY} x2={BAR_X + BAR_W + 520} y2={baseY}
-              stroke={T.ink} strokeWidth={2} opacity={0.35 * fadeIn(frame, 6)} />
+              stroke={T.ink} strokeWidth={LW.THIN} opacity={0.35 * fadeIn(frame, 6)} />
 
         {rows.map((r, i) => {
           const h = (r.y0 - r.y1) * r.g;
@@ -81,7 +81,7 @@ export const CostStackCard = ({
             <rect key={i} x={BAR_X} y={r.y0 - h} width={BAR_W} height={Math.max(0, h)}
                   fill={r.hot ? YELLOW : tones[i % tones.length]}
                   fillOpacity={r.hot ? 0.95 : 0.75}
-                  stroke={T.ink} strokeWidth={3} />
+                  stroke={T.ink} strokeWidth={LW.BODY} />
           );
         })}
 
@@ -91,7 +91,7 @@ export const CostStackCard = ({
           const o = fadeIn(frame, 26 + i * STEP);
           const elbow = BAR_X - 52;
           return (
-            <polyline key={i} fill="none" stroke={T.ink} strokeWidth={2} opacity={0.45 * o}
+            <polyline key={i} fill="none" stroke={T.ink} strokeWidth={LW.THIN} opacity={0.45 * o}
                       points={`${BAR_X - 190},${labY[i]} ${elbow},${labY[i]} ${BAR_X - 6},${mid}`} />
           );
         })}
@@ -99,7 +99,7 @@ export const CostStackCard = ({
         {/* 총액 선 — 다 쌓인 뒤에 오른쪽으로 뻗는다 */}
         <line x1={BAR_X} y1={colTop}
               x2={BAR_X + BAR_W + interpolate(totalIn, [0, 1], [0, 420])} y2={colTop}
-              stroke={T.ink} strokeWidth={3} strokeDasharray="10 8" opacity={0.85 * totalIn} />
+              stroke={T.ink} strokeWidth={LW.BODY} strokeDasharray="10 8" opacity={0.85 * totalIn} />
       </svg>
 
       {/* 이름 + 값 — 기둥 왼쪽, 오른쪽 정렬 (지시선 시작점에 맞는다) */}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, stageTop, titleH, LW} from './paper';
 
 // 면적 중첩 카드 — 넓이를 나란히 놓지 않고 **같은 모서리에 겹쳐** 그린다.
 // 막대 3개를 좌→우로 세우는 문법과 달리, "몇 배"가 포개진 크기로 즉시 읽힌다.
@@ -37,7 +37,7 @@ export const AreaNestCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 기준 모서리 — 두 변이 만나는 자리를 명시 */}
         <line x1={CX - BOX / 2 - 40} y1={BASE_Y} x2={CX + BOX / 2 + 40} y2={BASE_Y}
-              stroke={T.ink} strokeWidth={3} opacity={fadeIn(frame, 2)} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={fadeIn(frame, 2)} />
         {sorted.map((it, i) => {
           const g = interpolate(frame, [12 + i * 12, 58 + i * 12], [0, 1],
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
@@ -88,7 +88,7 @@ export const AreaNestCard = ({
           <React.Fragment key={i}>
             <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: o}}>
               <line x1={xRight} y1={yTop} x2={CX + BOX / 2 + 84} y2={ly}
-                    stroke={T.ink} strokeWidth={2} opacity={0.45} strokeDasharray="5 5" />
+                    stroke={T.ink} strokeWidth={LW.THIN} opacity={0.45} strokeDasharray="5 5" />
               <circle cx={xRight} cy={yTop} r={5} fill={T.ink} opacity={0.6} />
             </svg>
             <div style={{position: 'absolute', left: CX + BOX / 2 + 100, width: 700, top: ly,
@@ -113,9 +113,14 @@ export const AreaNestCard = ({
       })()}
 
       {multipleNote ? (
-        <div style={{position: 'absolute', left: 40, width: CX - BOX / 2 - 100, top: stageTop(430, {top: 200}) + 6,
-                     textAlign: 'right', opacity: fadeIn(frame, 70)}}>
-          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, color: T.ink,
+        <div style={{position: 'absolute', left: 0, width: 1920,
+                     top: stageTop(430, {top: 200}) + 470,
+                     textAlign: 'center', opacity: fadeIn(frame, 70)}}>
+          {/* 도형 **아래** 한 줄. 예전엔 왼쪽 좁은 칸에 넣어서 긴 말이
+              세 줄로 꺾이고 도형을 덮었다 (#144). 길면 크기를 줄여 한 줄로 */}
+          <span style={{fontFamily: 'A2Z Medium, sans-serif',
+                        fontSize: Math.min(56, Math.max(34, Math.floor(1500 / Math.max(6, String(multipleNote).length)))),
+                        color: T.ink, whiteSpace: 'nowrap',
                         background: 'rgba(250,255,46,0.8)', padding: '6px 20px'}}>
             {multipleNote}
           </span>

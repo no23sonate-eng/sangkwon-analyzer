@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
 
 // 엘리베이터 카드 — "집에서 엘리베이터를 타고 내려가면 …" 을 그대로 그린다.
 // 하나의 코어 안에서 케이지가 층을 따라 **내려가고**, 멈추는 층의 라벨이 켜진다.
@@ -52,20 +52,20 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
                     fill={on && s.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]}
                     opacity={(on ? (s.hot ? 0.92 : 0.34) : 0.12) * o} />
               <line x1={250} y1={y + ROW / 2 - 8} x2={1670} y2={y + ROW / 2 - 8}
-                    stroke={T.ink} strokeWidth={2} opacity={0.35 * o} />
+                    stroke={T.ink} strokeWidth={LW.THIN} opacity={0.35 * o} />
             </g>
           );
         })}
         {/* 승강로 */}
         <rect x={SHAFT_X} y={TOP} width={SHAFT_W} height={BOT - TOP}
-              fill="#FFF" opacity={0.55} stroke={T.ink} strokeWidth={3} />
+              fill="#FFF" opacity={0.55} stroke={T.ink} strokeWidth={LW.BODY} />
         {/* 케이지 */}
         <g opacity={fadeIn(frame, T0 - 8)}>
           <rect x={SHAFT_X + 12} y={cageY - CAGE_H / 2} width={SHAFT_W - 24} height={CAGE_H}
                 fill={T.ink} rx={4} />
           <line x1={SHAFT_X + SHAFT_W / 2} y1={cageY - CAGE_H / 2 + 10}
                 x2={SHAFT_X + SHAFT_W / 2} y2={cageY + CAGE_H / 2 - 10}
-                stroke="#FFF" strokeWidth={2} opacity={0.5} />
+                stroke="#FFF" strokeWidth={LW.THIN} opacity={0.5} />
           {/* 아래로 가는 화살표 */}
           <polygon points={`${SHAFT_X + SHAFT_W / 2},${cageY + CAGE_H / 2 + 26}
                             ${SHAFT_X + SHAFT_W / 2 - 13},${cageY + CAGE_H / 2 + 6}
@@ -73,7 +73,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
                    fill={T.ink} opacity={k < n - 1 ? 0.55 : 0} />
         </g>
         {/* 코어 상단 라벨 배경 */}
-        <line x1={SHAFT_X} y1={TOP} x2={SHAFT_X + SHAFT_W} y2={TOP} stroke={T.ink} strokeWidth={4} />
+        <line x1={SHAFT_X} y1={TOP} x2={SHAFT_X + SHAFT_W} y2={TOP} stroke={T.ink} strokeWidth={LW.BODY} />
       </svg>
 
       {stops.map((s, i) => {

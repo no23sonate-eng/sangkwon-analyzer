@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // v2 좌석 도트 카드 — 좌석 수를 "실제 도트 수"로 보여준다 (● = perDot 석).
 // 아레나 반원 배열: 무대(하단) 주위로 도트가 켜지며 차오른다.
@@ -69,7 +69,7 @@ export const SeatDotsCard = ({
                 x={a.cx - 90 * scale} y={a.cy - 20 * scale}
                 width={180 * scale} height={40 * scale}
                 rx={6}
-                fill="none" stroke={T.soft} strokeWidth={1.5}
+                fill="none" stroke={T.soft} strokeWidth={LW.HAIR}
                 opacity={enter}
               />
               {a.dots.map(([x, y], i) => (

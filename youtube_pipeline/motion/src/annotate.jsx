@@ -1,5 +1,5 @@
 import React from 'react';
-import {YELLOW, INK} from './paper';
+import {YELLOW, INK, LW} from './paper';
 
 // ── 주석 프리미티브 (B1M 썸네일 48장 분석에서) ────────────────────────────
 // B1M 이 사진 위에 뭔가를 가리킬 때 쓰는 도구는 사실 네 개뿐이다.
@@ -250,7 +250,7 @@ export const DashBox = ({x, y, w, h, progress = 1, color = '#FFFFFF',
       {seg(R, B - ch, R, B)}{seg(R - cw, B, R, B)}
       {/* 모서리 사이는 점선으로 아주 옅게 이어 준다 — 안 이으면 네 조각으로 흩어진다 */}
       <rect x={L} y={T} width={R - L} height={B - T} fill="none"
-            stroke={color} strokeWidth={2} strokeDasharray="10 12"
+            stroke={color} strokeWidth={LW.THIN} strokeDasharray="10 12"
             opacity={0.45} strokeDashoffset={-frame * 0.4} />
     </g>
   );

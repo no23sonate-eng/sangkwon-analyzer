@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, INK, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
+import {YELLOW, INK, PaperSource, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {estWidth, fit} from './layout';
 import {HandArrow, DashCircle, DashBox, StampLabel} from './annotate';
 
@@ -191,12 +191,12 @@ export const AnnotatedShotCard = ({
           const ex = X + dir[0] * L * lineT, ey = Y + dir[1] * L * lineT;
           return (
             <g key={i} opacity={o}>
-              <circle cx={X} cy={Y} r={r} fill="none" stroke={col} strokeWidth={3}
+              <circle cx={X} cy={Y} r={r} fill="none" stroke={col} strokeWidth={LW.BODY}
                       opacity={0.35 + 0.65 * grow} />
               <circle cx={X} cy={Y} r={7} fill={col} />
               {lineT > 0.01 ? (
                 <line x1={X + dir[0] * 34} y1={Y + dir[1] * 34} x2={ex} y2={ey}
-                      stroke={col} strokeWidth={3} />
+                      stroke={col} strokeWidth={LW.BODY} />
               ) : null}
             </g>
           );

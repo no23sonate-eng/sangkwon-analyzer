@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {flow, fit, estWidth} from './layout';
 
 // ── 이력 카드 ────────────────────────────────────────────────────────────
@@ -94,7 +94,7 @@ export const TrackRecordCard = ({
               y2={L.list.top + DY + 10 + (n * 96 - 40) * interpolate(
                 frame, [26, 26 + Math.max(1, n * 8)], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}
-              stroke={T.ink} strokeWidth={3} opacity={0.35} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={0.35} />
         ) : null}
       </svg>
 

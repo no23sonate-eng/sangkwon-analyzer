@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
 
 // 분해 적층 카드 — 건물 하나를 용도 구간별로 아이소메트릭 판으로 쪼개 위로 띄운다.
 // SectionCard(정면 단면)와 같은 "한 건물"을 다루지만 시점·구성이 달라 화면이 반복되지 않는다.
@@ -25,10 +25,10 @@ const Slab = ({cx, cy, w, d, h, fill, o, T = THEMES.paper}) => {
       <polygon points={top} fill={fill} />
       <polygon points={top} fill="#FFF" opacity={0.18} />
       {/* 외곽선 */}
-      <polygon points={top} fill="none" stroke={T.ink} strokeWidth={2.5} />
+      <polygon points={top} fill="none" stroke={T.ink} strokeWidth={LW.THIN} />
       <polyline points={`${cx - w / 2},${cy} ${cx - w / 2},${cy + h} ${cx},${cy + d / 2 + h} ${cx + w / 2},${cy + h} ${cx + w / 2},${cy}`}
-                fill="none" stroke={T.ink} strokeWidth={2.5} />
-      <line x1={cx} y1={cy + d / 2} x2={cx} y2={cy + d / 2 + h} stroke={T.ink} strokeWidth={2} opacity={0.5} />
+                fill="none" stroke={T.ink} strokeWidth={LW.THIN} />
+      <line x1={cx} y1={cy + d / 2} x2={cx} y2={cy + d / 2 + h} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
     </g>
   );
 };
@@ -72,7 +72,7 @@ export const ExplodedStackCard = ({
               {/* 판 사이 연결선 — 원래 한 덩어리였음을 보여준다 */}
               {i > 0 ? (
                 <line x1={CX} y1={cy - GAP - D / 2 + 4} x2={CX} y2={cy - D / 2 - 4}
-                      stroke={T.ink} strokeWidth={1.5} strokeDasharray="4 6" opacity={0.35 * rise} />
+                      stroke={T.ink} strokeWidth={LW.HAIR} strokeDasharray="4 6" opacity={0.35 * rise} />
               ) : null}
               <Slab T={T} cx={CX} cy={cy} w={W} d={D} h={H}
                     fill={L.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]} o={rise} />
@@ -83,7 +83,7 @@ export const ExplodedStackCard = ({
         {groundAfter >= 0 && groundAfter < n - 1 ? (
           <line x1={CX - W / 2 - 150} y1={cyOf(groundAfter) + D / 2 + H + GAP / 2}
                 x2={CX + W / 2 + 620} y2={cyOf(groundAfter) + D / 2 + H + GAP / 2}
-                stroke={T.ink} strokeWidth={3} opacity={0.7 * fadeIn(frame, 40)} />
+                stroke={T.ink} strokeWidth={LW.BODY} opacity={0.7 * fadeIn(frame, 40)} />
         ) : null}
       </svg>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
 
 // 주고받기 — **순서대로 움직이는** 교환 카드.
 // 정지된 화살표 두 개를 한꺼번에 보여주는 대신,
@@ -130,7 +130,7 @@ export const ExchangeMotionCard = ({
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {tLine > 0.001 ? (
             <>
-              <line x1={from} y1={y} x2={tip} y2={y} stroke={T.ink} strokeWidth={3} />
+              <line x1={from} y1={y} x2={tip} y2={y} stroke={T.ink} strokeWidth={LW.BODY} />
               <polygon points={`${tip},${y} ${tip - dir * 22},${y - 11} ${tip - dir * 22},${y + 11}`} fill={T.ink} />
             </>
           ) : null}

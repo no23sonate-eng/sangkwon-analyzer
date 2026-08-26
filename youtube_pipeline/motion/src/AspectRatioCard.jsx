@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // ── 같은 면적, 다른 비율 ───────────────────────────────────────────────
 // "4×4 정사각형보다 8×2 직사각형이 사람 눈에 더 길게 들어온다" 는 말은
@@ -65,27 +65,27 @@ export const AspectRatioCard = ({
               <rect x={x} y={baseY - h * gi} width={w} height={h * gi}
                     fill={it.hot ? 'rgba(250,255,46,0.16)' : T.mute}
                     fillOpacity={it.hot ? 1 : 0.3}
-                    stroke={T.ink} strokeWidth={3} />
+                    stroke={T.ink} strokeWidth={LW.BODY} />
               {/* 격자 — 같은 면적이라는 걸 칸 수로 확인시킨다 */}
               {gi > 0.98 && it.grid !== false ? (
                 <g opacity={0.28 * fadeIn(frame, 34 + i * 10)}>
                   {Array.from({length: Math.max(0, Math.round(it.w) - 1)}, (_, k) => (
                     <line key={'v' + k} x1={x + ((k + 1) / it.w) * w} y1={y}
                           x2={x + ((k + 1) / it.w) * w} y2={baseY}
-                          stroke={T.ink} strokeWidth={1} />
+                          stroke={T.ink} strokeWidth={LW.HAIR} />
                   ))}
                   {Array.from({length: Math.max(0, Math.round(it.h) - 1)}, (_, k) => (
                     <line key={'h' + k} x1={x} y1={y + ((k + 1) / it.h) * h}
                           x2={x + w} y2={y + ((k + 1) / it.h) * h}
-                          stroke={T.ink} strokeWidth={1} />
+                          stroke={T.ink} strokeWidth={LW.HAIR} />
                   ))}
                 </g>
               ) : null}
               {/* 전면 폭 — 아래 변만 옐로로 덧그어 "눈에 들어오는 길이"를 뽑는다 */}
               <line x1={x} y1={baseY + 3} x2={x + w * front} y2={baseY + 3}
-                    stroke={YELLOW} strokeWidth={12} strokeLinecap="butt" />
+                    stroke={YELLOW} strokeWidth={LW.BOLD} strokeLinecap="butt" />
               <line x1={x} y1={baseY + 3} x2={x + w * front} y2={baseY + 3}
-                    stroke={T.ink} strokeWidth={2} />
+                    stroke={T.ink} strokeWidth={LW.THIN} />
             </g>
           );
         })}

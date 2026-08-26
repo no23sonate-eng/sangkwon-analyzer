@@ -1,5 +1,5 @@
 import React from 'react';
-import {CONTENT_BOTTOM} from './paper';
+import {CONTENT_BOTTOM, LW} from './paper';
 
 // ── 레이아웃 엔진 ────────────────────────────────────────────────────────
 // 이 세션에서 낸 수정의 대부분이 "top: 900 → 302", "AXIS_Y −40 → −66" 같은
@@ -87,9 +87,9 @@ export const LayoutGuide = ({show = false, marks = []}) => {
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, pointerEvents: 'none'}}>
       <rect x={0} y={CONTENT_BOTTOM} width={1920} height={1080 - CONTENT_BOTTOM}
             fill="#FF0044" opacity={0.12} />
-      <line x1={0} y1={CONTENT_BOTTOM} x2={1920} y2={CONTENT_BOTTOM} stroke="#FF0044" strokeWidth={2} />
+      <line x1={0} y1={CONTENT_BOTTOM} x2={1920} y2={CONTENT_BOTTOM} stroke="#FF0044" strokeWidth={LW.THIN} />
       {marks.map((y, i) => (
-        <line key={i} x1={0} y1={y} x2={1920} y2={y} stroke="#00A0FF" strokeWidth={1} opacity={0.6} />
+        <line key={i} x1={0} y1={y} x2={1920} y2={y} stroke="#00A0FF" strokeWidth={LW.HAIR} opacity={0.6} />
       ))}
     </svg>
   );

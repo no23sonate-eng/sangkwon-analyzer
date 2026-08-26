@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {BLACK, YELLOW, WHITE, MUTE, GRAY, LINE, glow, fadeIn, Kicker, Footer} from './v2shared';
+import {LW} from './paper';   // 선 굵기 네 단계 — paper.jsx 가 기준이다
 
 // v2 유닛 블록 카드 — 금액/개수를 "실제 블록 개수"로 보여준다 (■ = unitLabel).
 // groups: [{label, units, note, hot}] — 블록이 아래에서부터 차오른다.
@@ -114,7 +115,7 @@ export const UnitBlocksCard = ({
                 );
               })}
               {/* 바닥선 */}
-              <line x1={x0 - 20} y1={baseY + 6} x2={x0 + cols * (B + G) + 12} y2={baseY + 6} stroke={LINE} strokeWidth={1.5} />
+              <line x1={x0 - 20} y1={baseY + 6} x2={x0 + cols * (B + G) + 12} y2={baseY + 6} stroke={LINE} strokeWidth={LW.HAIR} />
             </svg>
             <div style={{position: 'absolute', left: x0 - 65, top: baseY + 28, width: groupW, textAlign: 'center', opacity: fadeIn(frame, 34 + gi * 8)}}>
               <div style={{fontFamily: hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif', fontSize: 40, letterSpacing: '0.02em', color: WHITE, fontVariantNumeric: 'tabular-nums'}}>

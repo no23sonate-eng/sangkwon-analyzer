@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {fit} from './layout';
 
 // ── 두 갈래를 좌우 판으로 ──────────────────────────────────────────────
@@ -40,7 +40,7 @@ export const TwoPanelCard = ({
         {/* 가운데 선 — 위아래로 자란다. 이 한 줄이 '갈라진다' 를 말한다 */}
         <line x1={960} y1={midY - 150 * fadeIn(frame, 8, 18)} x2={960}
               y2={midY + 150 * fadeIn(frame, 8, 18)}
-              stroke={T.ink} strokeWidth={3} opacity={0.4} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={0.4} />
         {ps.map((p, i) => {
           if (!p.hot) return null;
           const e = spring({frame: frame - (34 + i * 8), fps, config: {damping: 200}});

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate, Img, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP} from './paper';
+import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP, LW} from './paper';
 
 // 로고 조직도 — "A는 B와 C를 거느린 그룹입니다" 류 문장을 그림으로.
 // 부모 로고가 위 중앙, 자회사 로고가 그 아래 좌우로. 실제 로고는 배경색이
@@ -53,7 +53,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
             가로로 갈라진 뒤 그 아래로 내려가야 자연스럽다. */}
         <path
           d={`M ${CX} ${PARENT_TOP + PARENT_H} V ${BRANCH_Y} M ${CX - CHILD_GAP} ${BRANCH_Y} H ${CX + CHILD_GAP} M ${CX - CHILD_GAP} ${BRANCH_Y} V ${CHILD_TOP} M ${CX + CHILD_GAP} ${BRANCH_Y} V ${CHILD_TOP}`}
-          stroke={T.ink} strokeWidth={2} opacity={0.45} fill="none"
+          stroke={T.ink} strokeWidth={LW.THIN} opacity={0.45} fill="none"
         />
       </svg>
 

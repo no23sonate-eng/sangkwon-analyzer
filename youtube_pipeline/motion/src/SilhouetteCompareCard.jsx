@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {fit, estWidth} from './layout';
 
 // ── 실루엣 비교 ───────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ export const SilhouetteCompareCard = ({
         {/* 바닥선 하나로 정렬 — 이게 없으면 실루엣이 공중에 뜬다 */}
         {baseline ? (
           <line x1={x0 - 30} y1={BOT} x2={x0 + slot * n + 30} y2={BOT}
-                stroke={T.ink} strokeWidth={3} opacity={0.85 * fadeIn(frame, 6)} />
+                stroke={T.ink} strokeWidth={LW.BODY} opacity={0.85 * fadeIn(frame, 6)} />
         ) : null}
         {items.map((it, i) => {
           const e = spring({frame: frame - (12 + i * 7), fps,

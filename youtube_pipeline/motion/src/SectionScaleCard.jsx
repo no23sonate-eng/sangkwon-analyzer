@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {fit} from './layout';
 
 // ── 단면 · 사람 스케일 ────────────────────────────────────────────────────
@@ -112,7 +112,7 @@ export const SectionScaleCard = ({
                 return (
                   <rect key={i} x={L} y={y - 8} width={CW} height={8}
                         fill={opened ? 'none' : T.ink}
-                        stroke={opened ? T.ink : 'none'} strokeWidth={2}
+                        stroke={opened ? T.ink : 'none'} strokeWidth={LW.THIN}
                         strokeDasharray={opened ? '10 8' : undefined}
                         opacity={opened ? 0.45 : 1} />
                 );
@@ -161,7 +161,7 @@ export const SectionScaleCard = ({
                           width={hpx * 0.26} height={drawH}
                           fill={col} opacity={over ? 0.7 : 1} />
                     {over && probeIn > 0.7 ? (
-                      <g stroke={T.ink} strokeWidth={4} opacity={0.9}>
+                      <g stroke={T.ink} strokeWidth={LW.BODY} opacity={0.9}>
                         <line x1={px0 - hpx * 0.24} y1={base - clearPx + 14}
                               x2={px0 + hpx * 0.24} y2={base - clearPx - 14} />
                         <line x1={px0 - hpx * 0.24} y1={base - clearPx - 14}
@@ -175,7 +175,7 @@ export const SectionScaleCard = ({
 
               {/* 유효 높이 치수 — 도면 문법: 가는 선 + 양끝 짧은 수직 마크 */}
               {grow > 0.9 ? (
-                <g stroke={T.ink} strokeWidth={2} opacity={0.85 * fadeIn(frame, 26)}>
+                <g stroke={T.ink} strokeWidth={LW.THIN} opacity={0.85 * fadeIn(frame, 26)}>
                   <line x1={R + 34} y1={base} x2={R + 34} y2={base - clearPx} />
                   <line x1={R + 24} y1={base} x2={R + 44} y2={base} />
                   <line x1={R + 24} y1={base - clearPx} x2={R + 44} y2={base - clearPx} />

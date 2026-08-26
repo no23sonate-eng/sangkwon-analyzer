@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 
 // 조망 라인 카드 — "어디서 무엇이 보여야 하는가"를 옆에서 본 단면으로.
 // 산 실루엣 + 관측점 + 시선(점선) + 규제 높이. 경관 심의·고도제한 설명용.
@@ -42,24 +42,24 @@ export const SightlineCard = ({
               fill={T.tones[2]} opacity={fadeIn(frame, 6)} />
         {/* 7부능선 표시 */}
         <line x1={mx - mtW * 0.30} y1={ridgeY} x2={mx + mtW * 0.34} y2={ridgeY}
-              stroke={T.ink} strokeWidth={2} strokeDasharray="6 6" opacity={0.55 * fadeIn(frame, 18)} />
+              stroke={T.ink} strokeWidth={LW.THIN} strokeDasharray="6 6" opacity={0.55 * fadeIn(frame, 18)} />
 
         {/* 건물 — 규제 높이에 맞춰 낮게 */}
         <g opacity={fadeIn(frame, 12)}>
           <rect x={building.x - building.w / 2} y={groundY - building.h}
                 width={building.w} height={building.h} fill={YELLOW} />
           <rect x={building.x - building.w / 2} y={groundY - building.h}
-                width={building.w} height={building.h} fill="none" stroke={T.ink} strokeWidth={3} />
+                width={building.w} height={building.h} fill="none" stroke={T.ink} strokeWidth={LW.BODY} />
           {Array.from({length: Math.floor(building.h / 22)}, (_, i) => (
             <line key={i} x1={building.x - building.w / 2 + 8} y1={groundY - building.h + (i + 1) * 22}
                   x2={building.x + building.w / 2 - 8} y2={groundY - building.h + (i + 1) * 22}
-                  stroke={T.ink} strokeWidth={1} opacity={0.22} />
+                  stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.22} />
           ))}
         </g>
 
         {/* 시선 — 건물 위를 스쳐 능선에 닿는다 */}
         <line x1={viewer.x} y1={eyeY} x2={lineX} y2={lineY}
-              stroke={T.ink} strokeWidth={2.6} strokeDasharray="9 7" />
+              stroke={T.ink} strokeWidth={LW.THIN} strokeDasharray="9 7" />
         {drawT > 0.98 ? (
           <circle cx={mx} cy={ridgeY} r={7} fill={T.ink} opacity={fadeIn(frame, 76)} />
         ) : null}
@@ -72,7 +72,7 @@ export const SightlineCard = ({
         </g>
 
         {/* 지반 */}
-        <line x1={90} y1={groundY} x2={1830} y2={groundY} stroke={T.ink} strokeWidth={4} />
+        <line x1={90} y1={groundY} x2={1830} y2={groundY} stroke={T.ink} strokeWidth={LW.BODY} />
       </svg>
 
       {/* 라벨 */}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
 import {fit} from './layout';
 
 // ── 값이 갈아치워지는 카드 ────────────────────────────────────────────────
@@ -103,7 +103,7 @@ export const StrikeSwapCard = ({
         <g opacity={s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0}>
           <line x1={center ? 960 : 190} y1={top + fromSize * 1.35 + 12}
                 x2={center ? 960 : 190} y2={top + fromSize * 1.35 + ARROW_H - 40}
-                stroke={T.ink} strokeWidth={6} opacity={0.75} />
+                stroke={T.ink} strokeWidth={LW.BOLD} opacity={0.75} />
           <path d={`M ${(center ? 960 : 190) - 20} ${top + fromSize * 1.35 + ARROW_H - 50}
                     L ${center ? 960 : 190} ${top + fromSize * 1.35 + ARROW_H - 20}
                     L ${(center ? 960 : 190) + 20} ${top + fromSize * 1.35 + ARROW_H - 50} Z`}

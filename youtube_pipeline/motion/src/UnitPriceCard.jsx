@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 import {fit} from './layout';
 
 // ── 총액 ÷ 개수 = 단가 ────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ export const UnitPriceCard = ({
             <rect key={i} x={x} y={y} width={Math.max(0, cw - gap)} height={Math.max(0, ch - gap)}
                   fill={on && pick > 0.1 ? YELLOW : T.tones[1]}
                   opacity={solid * o}
-                  stroke={on && pick > 0.4 ? T.ink : 'none'} strokeWidth={2} />
+                  stroke={on && pick > 0.4 ? T.ink : 'none'} strokeWidth={LW.THIN} />
           );
         })}
         {/* 고른 한 칸에 조준 테두리. 576칸이면 한 칸이 25px 라 색만 바꿔선 안 보인다 —
@@ -97,7 +97,7 @@ export const UnitPriceCard = ({
           return (
             <rect x={GX + (pi % cols) * cw - pad} y={GY + Math.floor(pi / cols) * ch - pad}
                   width={cw + pad * 2} height={ch + pad * 2}
-                  fill="none" stroke={T.ink} strokeWidth={3} opacity={pick} />
+                  fill="none" stroke={T.ink} strokeWidth={LW.BODY} opacity={pick} />
           );
         })() : null}
       </svg>
@@ -140,7 +140,7 @@ export const UnitPriceCard = ({
               x2={GX + (pi % cols) * cw + cw + 18
                   + (1080 - (GX + (pi % cols) * cw + cw + 18)) * Math.min(1, pick * 1.4)}
               y2={GY + Math.floor(pi / cols) * ch + ch / 2}
-              stroke={T.ink} strokeWidth={3} opacity={0.7} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={0.7} />
           </svg>
           <div style={{position: 'absolute', left: 1120, width: 660,
                        top: GY + Math.floor(pi / cols) * ch + ch / 2 - 96,

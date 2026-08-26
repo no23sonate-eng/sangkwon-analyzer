@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // ── 추세 카드 ─────────────────────────────────────────────────────────────
 // 두 증감률을 **기울기 차이 그 자체**로 보여준다. 막대 두 개면 "얼마"가 남고,
@@ -51,7 +51,7 @@ export const TrendCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 기준선 — 여기서 출발한다는 것만 보이면 된다 */}
         <line x1={x0} y1={y0} x2={x0 + len} y2={y0}
-              stroke={T.ink} strokeWidth={2} opacity={0.45 * enter} />
+              stroke={T.ink} strokeWidth={LW.THIN} opacity={0.45 * enter} />
         {list.map((s, i) => {
           const rise = riseOf(s);
           const x1 = x0 + len * draw, y1 = y0 - rise * draw;
@@ -70,7 +70,7 @@ export const TrendCard = ({
         {/* 라벨을 밀어 놓았으면 끝점과 라벨을 실선으로 잇는다 */}
         {ends.map((e) => (Math.abs(e.ly - e.y) < 6 ? null : (
           <line key={e.i} x1={x0 + len} y1={e.y} x2={x0 + len + 34} y2={e.ly}
-                stroke={T.soft} strokeWidth={1.5} opacity={fadeIn(frame, 52)} />
+                stroke={T.soft} strokeWidth={LW.HAIR} opacity={fadeIn(frame, 52)} />
         )))}
       </svg>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -76,7 +76,7 @@ export const DotMatrixCard = ({
             return (
               <circle key={k} cx={cx0 + c * PITCH} cy={TOP + r * PITCH} r={R}
                       fill={gone ? T.tones[0] : (b.g.hot ? YELLOW : T.tones[3])}
-                      stroke={gone ? 'none' : T.ink} strokeWidth={1.6}
+                      stroke={gone ? 'none' : T.ink} strokeWidth={LW.HAIR}
                       opacity={o * (gone ? 0.34 : 1)} />
             );
           });
@@ -93,7 +93,7 @@ export const DotMatrixCard = ({
                 const r = Math.floor(k / nCol), c = k % nCol;
                 return (
                   <circle key={k} cx={cx0 + c * PITCH} cy={TOP + r * PITCH} r={R}
-                          fill={g.hot ? YELLOW : T.tones[3]} stroke={T.ink} strokeWidth={1.6}
+                          fill={g.hot ? YELLOW : T.tones[3]} stroke={T.ink} strokeWidth={LW.HAIR}
                           opacity={o} />
                 );
               })}

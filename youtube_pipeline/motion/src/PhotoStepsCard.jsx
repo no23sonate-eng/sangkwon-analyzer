@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
 
 // Vox 식 단계 카드 — 각 단계를 **사진 타일**로 세우고 화살표로 잇는다.
 // 타일이 하나씩 서고, 그 사이를 진행 표시(점)가 따라 이동한다.
@@ -85,13 +85,13 @@ export const PhotoStepsCard = ({
           const o = fadeIn(frame, T0 + STEP * i + 12);
           return (
             <g key={i} opacity={o}>
-              <line x1={a} y1={cy} x2={b - 16} y2={cy} stroke={T.ink} strokeWidth={3} />
+              <line x1={a} y1={cy} x2={b - 16} y2={cy} stroke={T.ink} strokeWidth={LW.BODY} />
               <polygon points={`${b},${cy} ${b - 18},${cy - 9} ${b - 18},${cy + 9}`} fill={T.ink} />
             </g>
           );
         })}
         {/* 진행 점 */}
-        <circle cx={dotX} cy={cy} r={11} fill={YELLOW} stroke={T.ink} strokeWidth={3}
+        <circle cx={dotX} cy={cy} r={11} fill={YELLOW} stroke={T.ink} strokeWidth={LW.BODY}
                 opacity={fadeIn(frame, T0 + 10)} />
       </svg>
 

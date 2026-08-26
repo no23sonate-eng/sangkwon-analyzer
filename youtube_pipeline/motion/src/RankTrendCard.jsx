@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 
 // 순위 추이 카드 — "몇 위 → 몇 위 → 1위" 처럼 낮을수록 좋은 값을 다룬다.
 // 일반 라인차트와 달리 y축을 뒤집어(1위가 맨 위) 상승으로 읽히게 한다.
@@ -53,16 +53,16 @@ export const RankTrendCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 1위 기준선 — 목표선 */}
         <line x1={X0 - 130} y1={py(best)} x2={X1 + 130} y2={py(best)}
-              stroke={T.ink} strokeWidth={2} strokeDasharray="7 6" opacity={0.4} />
+              stroke={T.ink} strokeWidth={LW.THIN} strokeDasharray="7 6" opacity={0.4} />
         {/* 세로 가이드 */}
         {points.map((p, i) => (
           <line key={`g${i}`} x1={px(i)} y1={py(best) - 20} x2={px(i)} y2={Y1 + 38}
-                stroke={T.ink} strokeWidth={1} opacity={0.13} />
+                stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.13} />
         ))}
         {/* 추이선 */}
         {pts.length > 1 ? (
           <polyline points={pts.map(([x, y]) => `${x},${y}`).join(' ')}
-                    fill="none" stroke={T.ink} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+                    fill="none" stroke={T.ink} strokeWidth={LW.BOLD} strokeLinecap="round" strokeLinejoin="round" />
         ) : null}
         {/* 정점 마커 */}
         {points.map((p, i) => {
@@ -73,7 +73,7 @@ export const RankTrendCard = ({
           return (
             <g key={i} opacity={o}>
               {hot ? <circle cx={px(i)} cy={py(p.rank)} r={r + 16} fill={YELLOW} opacity={0.55} /> : null}
-              <circle cx={px(i)} cy={py(p.rank)} r={r} fill={hot ? YELLOW : T.tones[3]} stroke={T.ink} strokeWidth={3.5} />
+              <circle cx={px(i)} cy={py(p.rank)} r={r} fill={hot ? YELLOW : T.tones[3]} stroke={T.ink} strokeWidth={LW.BODY} />
             </g>
           );
         })}

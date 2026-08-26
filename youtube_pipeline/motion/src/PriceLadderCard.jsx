@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // ── 비어 있던 칸에 들어앉는다 ─────────────────────────────────────────────
 // "롯데호텔 서울 위, 시그니엘 아래. 그 사이가 비어 있었고 더그랜드롯데가
@@ -61,7 +61,7 @@ export const PriceLadderCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 사다리 기둥 — 위에서 아래로 그어진다 */}
         <line x1={LX} y1={yTop} x2={LX} y2={yTop + (yBot - yTop) * draw}
-              stroke={T.ink} strokeWidth={3} opacity={0.5} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={0.5} />
 
         {list.map((r, i) => {
           const y = yOf(Number(r.price) || 0);
@@ -73,7 +73,7 @@ export const PriceLadderCard = ({
             return (
               <g key={i}>
                 <line x1={LX} y1={y} x2={LX + (RX - LX) * hole} y2={y}
-                      stroke={T.ink} strokeWidth={4} strokeDasharray="16 14" opacity={0.55 * hole} />
+                      stroke={T.ink} strokeWidth={LW.BODY} strokeDasharray="16 14" opacity={0.55 * hole} />
               </g>
             );
           }
@@ -82,7 +82,7 @@ export const PriceLadderCard = ({
               {isNew ? (
                 // 앉는 순간을 보이게 — 칸이 살짝 위에서 내려온다
                 <line x1={LX} y1={y - (1 - a) * 26} x2={LX + (RX - LX) * a} y2={y - (1 - a) * 26}
-                      stroke={YELLOW} strokeWidth={12} opacity={a} />
+                      stroke={YELLOW} strokeWidth={LW.BOLD} opacity={a} />
               ) : null}
               <line x1={LX} y1={isNew ? y - (1 - a) * 26 : y}
                     x2={LX + (RX - LX) * a} y2={isNew ? y - (1 - a) * 26 : y}

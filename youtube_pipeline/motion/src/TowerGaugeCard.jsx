@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 
 // 공연장 게이지 — 돔 아레나 "단면"이 %만큼 아래에서부터 점등된다.
 // 공연장 프로젝트의 공정률·진행 상태 전용 (빌딩 아님!).
@@ -64,8 +64,8 @@ export const TowerGaugeCard = ({title = '', sub = '', items = [], source = '',
               })}
               {/* 돔 윤곽 */}
               <path d={`M ${cx - DOME_W / 2} ${baseY} A ${DOME_W / 2} ${DOME_H} 0 0 1 ${cx + DOME_W / 2} ${baseY}`}
-                    fill="none" stroke={T.ink} strokeWidth={3.5} />
-              <line x1={cx - DOME_W / 2} y1={baseY} x2={cx + DOME_W / 2} y2={baseY} stroke={T.ink} strokeWidth={3.5} />
+                    fill="none" stroke={T.ink} strokeWidth={LW.BODY} />
+              <line x1={cx - DOME_W / 2} y1={baseY} x2={cx + DOME_W / 2} y2={baseY} stroke={T.ink} strokeWidth={LW.BODY} />
               {/* 무대 슬릿 */}
               <rect x={cx - 44} y={baseY - 14} width={88} height={14} fill={T.ink} opacity={0.75} />
             </svg>

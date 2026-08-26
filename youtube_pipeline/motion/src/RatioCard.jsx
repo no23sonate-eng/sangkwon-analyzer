@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
@@ -103,9 +103,9 @@ export const RatioCard = ({
               {/* 비중 = 파이 조각 */}
               <path d={wedge(cx, cy, v)} fill={it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]}
                     opacity={it.hot ? 1 : 0.85} />
-              <path d={wedge(cx, cy, v)} fill="none" stroke={T.ink} strokeWidth={2.5} opacity={0.9} />
+              <path d={wedge(cx, cy, v)} fill="none" stroke={T.ink} strokeWidth={LW.THIN} opacity={0.9} />
               {/* 외곽 링 */}
-              <circle cx={cx} cy={cy} r={R} fill="none" stroke={T.ink} strokeWidth={3} opacity={0.35} />
+              <circle cx={cx} cy={cy} r={R} fill="none" stroke={T.ink} strokeWidth={LW.BODY} opacity={0.35} />
             </g>
           );
         })}

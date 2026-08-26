@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -53,7 +53,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         {items.slice(1).map((_, i) => (
           <line key={i} x1={startX + slot * (i + 1)} y1={TOPY - 12}
                 x2={startX + slot * (i + 1)} y2={TOPY + blockH + 4}
-                stroke={T.ink} strokeWidth={2} opacity={0.22 * fadeIn(frame, 10)} />
+                stroke={T.ink} strokeWidth={LW.THIN} opacity={0.22 * fadeIn(frame, 10)} />
         ))}
       </svg>
       {items.map((it, i) => {

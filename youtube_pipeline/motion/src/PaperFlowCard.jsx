@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 
 // 종이 위 아이콘 플로우 (레퍼런스 Stocks→Cash 다이어그램 문법).
 // nodes: [{icon, label, sub, hot}] — 좌→우 화살표 연결, hot 노드는 옐로 박스.
@@ -156,11 +156,11 @@ export const PaperFlowCard = ({
                 <rect x={x} y={y} width={SW} height={baseY - y}
                       fill={nd.hot ? YELLOW : T.tones[(i + 1) % T.tones.length]} opacity={nd.hot ? 0.95 : 0.4} />
                 <polyline points={`${x},${baseY} ${x},${y} ${x + SW},${y}`}
-                          fill="none" stroke={T.ink} strokeWidth={3} />
+                          fill="none" stroke={T.ink} strokeWidth={LW.BODY} />
               </g>
             );
           })}
-          <line x1={x0 - 60} y1={baseY} x2={x0 + SW * n + 60} y2={baseY} stroke={T.ink} strokeWidth={4} />
+          <line x1={x0 - 60} y1={baseY} x2={x0 + SW * n + 60} y2={baseY} stroke={T.ink} strokeWidth={LW.BODY} />
         </svg>
         {nodes.map((nd, i) => {
           const o = fadeIn(frame, 14 + i * 12);
@@ -264,12 +264,12 @@ export const PaperFlowCard = ({
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {/* 위 화살표: 좌 → 우 (주는 것) */}
           <g opacity={oGive}>
-            <line x1={AX0} y1={cy - 96} x2={AX1 - 14} y2={cy - 96} stroke={T.ink} strokeWidth={2.6} />
+            <line x1={AX0} y1={cy - 96} x2={AX1 - 14} y2={cy - 96} stroke={T.ink} strokeWidth={LW.THIN} />
             <polygon points={`${AX1},${cy - 96} ${AX1 - 17},${cy - 104} ${AX1 - 17},${cy - 88}`} fill={T.ink} />
           </g>
           {/* 아래 화살표: 우 → 좌 (받는 것) */}
           <g opacity={oGet}>
-            <line x1={AX1} y1={cy - 22} x2={AX0 + 14} y2={cy - 22} stroke={T.ink} strokeWidth={2.6} />
+            <line x1={AX1} y1={cy - 22} x2={AX0 + 14} y2={cy - 22} stroke={T.ink} strokeWidth={LW.THIN} />
             <polygon points={`${AX0},${cy - 22} ${AX0 + 17},${cy - 30} ${AX0 + 17},${cy - 14}`} fill={T.ink} />
           </g>
         </svg>

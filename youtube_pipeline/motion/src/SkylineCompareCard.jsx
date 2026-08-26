@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 
 // 빌딩 실루엣 비교 카드 v2 — B1M Billionaires' Row 높이차트 정밀 재현.
 // 실제 건물처럼 "인지 가능한 프로파일" 프리셋 + 건물마다 다른 톤 패밀리.
@@ -14,7 +14,7 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
   const win = (x, y, w2, hgt) =>
     Array.from({length: Math.max(0, Math.floor(hgt / 30))}, (_, i) => (
       <line key={`w${i}`} x1={x + w2 * 0.18} y1={y + 22 + i * 30} x2={x + w2 * 0.82} y2={y + 22 + i * 30}
-            stroke="#FFFFFF" strokeWidth={1.6} opacity={0.22} />
+            stroke="#FFFFFF" strokeWidth={LW.HAIR} opacity={0.22} />
     ));
   switch (shape) {
     // ── 실제 건물을 알아볼 수 있게 만든 프로파일 (2026-08-06) ──
@@ -36,7 +36,7 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
                 <rect key={m} x={x + w * f - w * 0.045} y={baseY - hh - hh * 0.06}
                       width={w * 0.09} height={hh * 0.06 + hh} fill={fill} />
               ))}
-              <line x1={x + w * 0.5} y1={baseY - hh} x2={x + w * 0.5} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.3} />
+              <line x1={x + w * 0.5} y1={baseY - hh} x2={x + w * 0.5} y2={baseY} stroke="#FFF" strokeWidth={LW.THIN} opacity={0.3} />
               {win(x, baseY - hh, w, hh)}
             </g>
           ))}
@@ -60,8 +60,8 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
           {/* 비스듬히 잘린 왕관 */}
           <polygon points={`${xt0},${top} ${xt1},${top} ${xt1},${top - h * 0.07} ${xt0},${top - h * 0.03}`} fill={fill} />
           <line x1={cx + wt * 0.28} y1={top - h * 0.06} x2={cx + wt * 0.28} y2={top - h * 0.15}
-                stroke={fill} strokeWidth={4} />
-          <line x1={cx} y1={top} x2={cx} y2={baseY} stroke="#FFF" strokeWidth={2} opacity={0.26} />
+                stroke={fill} strokeWidth={LW.BODY} />
+          <line x1={cx} y1={top} x2={cx} y2={baseY} stroke="#FFF" strokeWidth={LW.THIN} opacity={0.26} />
           {win(cx - wt * 0.9, top + h * 0.06, wt * 1.8, h * 0.88)}
         </g>
       );
@@ -103,14 +103,14 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
       return (
         <g>
           <rect x={x} y={y} width={w} height={hh} fill={fill} />
-          <rect x={x} y={y} width={w} height={hh} fill="none" stroke={T.ink} strokeWidth={3.5} />
+          <rect x={x} y={y} width={w} height={hh} fill="none" stroke={T.ink} strokeWidth={LW.BODY} />
           {rooms.map(([rx, ry, rw, rh], k) => (
             <rect key={k} x={x + rx * w} y={y + ry * hh} width={rw * w} height={rh * hh}
-                  fill="none" stroke={T.ink} strokeWidth={1.8} opacity={0.55} />
+                  fill="none" stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.55} />
           ))}
           {/* 현관 표시 */}
           <line x1={x + w * 0.10} y1={y + hh} x2={x + w * 0.26} y2={y + hh}
-                stroke="#FFF" strokeWidth={5} />
+                stroke="#FFF" strokeWidth={LW.BOLD} />
         </g>
       );
     }
@@ -131,7 +131,7 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
       return (
         <g>
           <path d={`M ${cx - rw / 2} ${baseY} A ${rw / 2} ${rh} 0 0 1 ${cx + rw / 2} ${baseY} Z`} fill={fill} />
-          <line x1={cx - rw / 2 + 8} y1={baseY - rh * 0.32} x2={cx + rw / 2 - 8} y2={baseY - rh * 0.32} stroke="#FFF" strokeWidth={1.6} opacity={0.25} />
+          <line x1={cx - rw / 2 + 8} y1={baseY - rh * 0.32} x2={cx + rw / 2 - 8} y2={baseY - rh * 0.32} stroke="#FFF" strokeWidth={LW.HAIR} opacity={0.25} />
         </g>
       );
     }
@@ -142,7 +142,7 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
           <rect x={cx - w / 2} y={top} width={w} height={h} fill={fill} />
           <rect x={cx - w * 0.36} y={top - h * 0.05} width={w * 0.72} height={h * 0.05} fill={fill} />
           <rect x={cx - w * 0.2} y={top - h * 0.09} width={w * 0.4} height={h * 0.04} fill={fill} />
-          <line x1={cx} y1={top - h * 0.09} x2={cx} y2={top - h * 0.2} stroke={fill} strokeWidth={3} />
+          <line x1={cx} y1={top - h * 0.09} x2={cx} y2={top - h * 0.2} stroke={fill} strokeWidth={LW.BODY} />
           {win(cx - w / 2, top, w, h)}
         </g>
       );
@@ -155,7 +155,7 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
           <rect x={cx - w1 / 2} y={baseY - h1} width={w1} height={h1} fill={fill} />
           <rect x={cx - w2 / 2} y={baseY - h1 - h2} width={w2} height={h2} fill={fill} />
           <rect x={cx - w3 / 2} y={baseY - h1 - h2 - h3} width={w3} height={h3} fill={fill} />
-          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.16} stroke={fill} strokeWidth={3.5} />
+          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.16} stroke={fill} strokeWidth={LW.BODY} />
           {win(cx - w1 / 2, baseY - h1, w1, h1)}
           {win(cx - w2 / 2, baseY - h1 - h2, w2, h2)}
         </g>
@@ -166,7 +166,7 @@ const Silhouette = ({cx, baseY, W, H, shape, fill, grow, T = THEMES.paper}) => {
       return (
         <g>
           <polygon points={`${cx - wb / 2},${baseY} ${cx + wb / 2},${baseY} ${cx + wt / 2},${top} ${cx - wt / 2},${top}`} fill={fill} />
-          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.18} stroke={fill} strokeWidth={3} />
+          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.18} stroke={fill} strokeWidth={LW.BODY} />
           {win(cx - wb / 2, top + h * 0.1, wb, h * 0.85)}
         </g>
       );
@@ -233,7 +233,7 @@ export const SkylineCompareCard = ({
             </g>
           );
         })}
-        <line x1={startX - slot / 2 - 20} y1={baseY} x2={startX + slot * (n - 1) + slot / 2 + 20} y2={baseY} stroke={T.ink} strokeWidth={2.5} />
+        <line x1={startX - slot / 2 - 20} y1={baseY} x2={startX + slot * (n - 1) + slot / 2 + 20} y2={baseY} stroke={T.ink} strokeWidth={LW.THIN} />
       </svg>
       {buildings.map((b, i) => {
         const cx = startX + i * slot;

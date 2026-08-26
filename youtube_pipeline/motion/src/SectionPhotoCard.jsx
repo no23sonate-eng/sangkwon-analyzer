@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn, PaperSource} from './paper';
+import {YELLOW, fadeIn, PaperSource, LW} from './paper';
 
 // 실측 단면 도면 위에 치수·강조를 얹는 카드.
 // 도식으로 그린 SectionCard 와 달리 **실제 단면 렌더**를 쓰므로, 지상 타워와
@@ -46,7 +46,7 @@ export const SectionPhotoCard = ({
   const BOT_Y = Math.round(yOf(botRatio));
 
   const Dim = ({y0, y1, o}) => (
-    <g stroke="#FFFFFF" strokeWidth={2.5} opacity={0.85 * o}>
+    <g stroke="#FFFFFF" strokeWidth={LW.THIN} opacity={0.85 * o}>
       <line x1={DIM_X} y1={y0} x2={DIM_X} y2={y1} />
       <line x1={DIM_X - 14} y1={y0} x2={DIM_X + 14} y2={y0} />
       <line x1={DIM_X - 14} y1={y1} x2={DIM_X + 14} y2={y1} />
@@ -75,7 +75,7 @@ export const SectionPhotoCard = ({
         })}
         {/* 지반선 — 좌에서 우로 그어진다 */}
         <line x1={0} y1={groundY} x2={1920 * draw} y2={groundY}
-              stroke={YELLOW} strokeWidth={4} />
+              stroke={YELLOW} strokeWidth={LW.BODY} />
         <Dim y0={TOP_Y} y1={groundY} o={fadeIn(frame, 22)} />
         <Dim y0={groundY} y1={BOT_Y} o={fadeIn(frame, 34)} />
       </svg>

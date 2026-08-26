@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, OPTICAL_CENTER, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, OPTICAL_CENTER, fadeIn, SP, LW} from './paper';
 
 // ── 갈림길 ────────────────────────────────────────────────────────────
 // "이미 다른 브랜드들이 보여준 방식을 따라갈지 / 올리브영만의 공간 콘텐츠를
@@ -47,8 +47,8 @@ export const ForkPathCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 줄기 */}
         <line x1={X0} y1={midY} x2={X0 + (XF - X0) * trunk} y2={midY}
-              stroke={T.ink} strokeWidth={5} strokeLinecap="round" />
-        <circle cx={XF} cy={midY} r={11} fill={T.paper} stroke={T.ink} strokeWidth={5}
+              stroke={T.ink} strokeWidth={LW.BOLD} strokeLinecap="round" />
+        <circle cx={XF} cy={midY} r={11} fill={T.paper} stroke={T.ink} strokeWidth={LW.BOLD}
                 opacity={trunk > 0.98 ? 1 : 0} />
 
         {/* 두 갈래 */}
@@ -62,14 +62,14 @@ export const ForkPathCard = ({
                     strokeWidth={decided === i ? 9 : 5} strokeLinecap="round"
                     strokeDasharray={620} strokeDashoffset={620 * (1 - split)} />
               {decided === i ? (
-                <path d={path(dy)} fill="none" stroke={T.ink} strokeWidth={2}
+                <path d={path(dy)} fill="none" stroke={T.ink} strokeWidth={LW.THIN}
                       strokeDasharray={620} strokeDashoffset={620 * (1 - split)} />
               ) : null}
               {/* 가지 끝 화살촉 */}
               {split > 0.9 ? (
                 <path d={`M ${X1 - 2} ${midY + dy - 13} L ${X1 + 24} ${midY + dy} L ${X1 - 2} ${midY + dy + 13} Z`}
                       fill={decided === i ? YELLOW : T.ink}
-                      stroke={T.ink} strokeWidth={2}
+                      stroke={T.ink} strokeWidth={LW.THIN}
                       opacity={fadeIn(frame, 62)} />
               ) : null}
             </g>

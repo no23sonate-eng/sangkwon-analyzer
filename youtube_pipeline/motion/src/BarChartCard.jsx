@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperCaption, YELLOW,
-        CONTENT_BOTTOM, fadeIn, SP} from './paper';
+        CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // ── 막대 비교 ─────────────────────────────────────────────────────────────
 // "1,015실이 868실이 됐다" 처럼 **같은 것의 두 시점**을 견줄 때.
@@ -62,7 +62,7 @@ export const BarChartCard = ({
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         <line x1={startX - 40} y1={BASELINE} x2={startX + totalW + 40} y2={BASELINE}
-              stroke={T.ink} strokeWidth={2} opacity={0.5 * fadeIn(frame, 6)} />
+              stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5 * fadeIn(frame, 6)} />
         {list.map((b, i) => {
           const grow = spring({frame: frame - 14 - i * 8, fps,
                                config: {damping: 200, mass: 0.8}, durationInFrames: 26});

@@ -1,5 +1,6 @@
 import React from 'react';
 import {OffthreadVideo, Img, staticFile, useVideoConfig} from 'remotion';
+import {LW} from './paper';   // 선 굵기 네 단계 — paper.jsx 가 기준이다
 
 // 공유 디자인 시스템 — B1M 실측 레퍼런스(2026-07-29) 기반. 모든 카드가
 // 이 톤/규칙을 공유한다: 짙은 차콜 배경 + 옅은 청사진 격자, 채도 낮은
@@ -25,7 +26,7 @@ export const GridBg = ({color = 'rgba(255,255,255,0.05)'}) => {
   }
   return (
     <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-      <g stroke={color} strokeWidth={1}>{lines}</g>
+      <g stroke={color} strokeWidth={LW.HAIR}>{lines}</g>
     </svg>
   );
 };

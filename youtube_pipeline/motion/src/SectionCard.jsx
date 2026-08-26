@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 
 // 건물 단면 카드 — 지상/지하를 지반선 기준으로 나눠 보여준다.
 // 지하가 깊은 프로젝트(용산 파크사이드: 지하7·지상20)의 핵심 설명용.
@@ -49,7 +49,7 @@ export const SectionCard = ({
           <rect x={x0} y={groundY - H_ABOVE * growA} width={W} height={H_ABOVE * growA} fill={T.tones[2]} opacity={0.9} />
           {Array.from({length: A}, (_, i) => (
             <line key={`a${i}`} x1={x0} y1={yAbove(i + 1)} x2={x0 + W} y2={yAbove(i + 1)}
-                  stroke="#FFF" strokeWidth={1} opacity={0.35 * growA} />
+                  stroke="#FFF" strokeWidth={LW.HAIR} opacity={0.35 * growA} />
           ))}
         </g>
         <defs>
@@ -66,7 +66,7 @@ export const SectionCard = ({
           <rect x={x0} y={groundY} width={W} height={H_BELOW * growB} fill={T.tones[3]} opacity={0.92} />
           {Array.from({length: B}, (_, i) => (
             <line key={`b${i}`} x1={x0} y1={yBelow(i + 1)} x2={x0 + W} y2={yBelow(i + 1)}
-                  stroke="#FFF" strokeWidth={1} opacity={0.22 * growB} />
+                  stroke="#FFF" strokeWidth={LW.HAIR} opacity={0.22 * growB} />
           ))}
         </g>
 
@@ -82,13 +82,13 @@ export const SectionCard = ({
         })}
 
         {/* 외곽선 + 지반선 */}
-        <rect x={x0} y={groundY - H_ABOVE} width={W} height={H_ABOVE} fill="none" stroke={T.ink} strokeWidth={3} opacity={growA} />
-        <rect x={x0} y={groundY} width={W} height={H_BELOW} fill="none" stroke={T.ink} strokeWidth={3} strokeDasharray="7 5" opacity={growB} />
-        <line x1={x0 - 190} y1={groundY} x2={x0 + W + 190} y2={groundY} stroke={T.ink} strokeWidth={4} />
+        <rect x={x0} y={groundY - H_ABOVE} width={W} height={H_ABOVE} fill="none" stroke={T.ink} strokeWidth={LW.BODY} opacity={growA} />
+        <rect x={x0} y={groundY} width={W} height={H_BELOW} fill="none" stroke={T.ink} strokeWidth={LW.BODY} strokeDasharray="7 5" opacity={growB} />
+        <line x1={x0 - 190} y1={groundY} x2={x0 + W + 190} y2={groundY} stroke={T.ink} strokeWidth={LW.BODY} />
 
         {/* 치수선 — 숫자가 어느 구간을 가리키는지 눈으로 잇는다 (끝에 짧은 틱) */}
         {[[groundY - H_ABOVE, groundY, growA, 20], [groundY, groundY + H_BELOW, growB, 34]].map(([yA, yB, g, t], i) => (
-          <g key={i} stroke={T.ink} strokeWidth={2} opacity={0.55 * fadeIn(frame, t)}>
+          <g key={i} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.55 * fadeIn(frame, t)}>
             <line x1={DIM_X} y1={yA} x2={DIM_X} y2={yB} />
             <line x1={DIM_X - 12} y1={yA} x2={DIM_X + 12} y2={yA} />
             <line x1={DIM_X - 12} y1={yB} x2={DIM_X + 12} y2={yB} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {fit} from './layout';
 
 // ── 절대 스케일 비교 ─────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ const Body = ({cx, baseY, w, h, shape, fill, T = THEMES.paper}) => {
   const floors = Math.max(0, Math.floor(h / 22));
   const lines = Array.from({length: floors}, (_, i) => (
     <line key={i} x1={cx - w / 2 + 4} y1={baseY - 22 * (i + 1)} x2={cx + w / 2 - 4} y2={baseY - 22 * (i + 1)}
-          stroke="#FFF" strokeWidth={1.4} opacity={0.20} />
+          stroke="#FFF" strokeWidth={LW.HAIR} opacity={0.20} />
   ));
   switch (shape) {
     case 'hill':   // 산 — 능선
@@ -53,7 +53,7 @@ const Body = ({cx, baseY, w, h, shape, fill, T = THEMES.paper}) => {
       return (
         <g>
           <rect x={cx - w * 0.34} y={top} width={w * 0.68} height={h} fill={fill} />
-          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.07} stroke={fill} strokeWidth={4} />
+          <line x1={cx} y1={top} x2={cx} y2={top - h * 0.07} stroke={fill} strokeWidth={LW.BODY} />
           {lines}
         </g>
       );
@@ -132,13 +132,13 @@ export const ScaleCompareCard = ({
           const o = fadeIn(frame, 2 + i * 2);
           return (
             <g key={m} opacity={o}>
-              <line x1={AX} y1={yOf(m)} x2={1860} y2={yOf(m)} stroke={T.ink} strokeWidth={1} opacity={0.13} />
-              <line x1={AX - 12} y1={yOf(m)} x2={AX} y2={yOf(m)} stroke={T.ink} strokeWidth={2} opacity={0.5} />
+              <line x1={AX} y1={yOf(m)} x2={1860} y2={yOf(m)} stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.13} />
+              <line x1={AX - 12} y1={yOf(m)} x2={AX} y2={yOf(m)} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
             </g>
           );
         })}
-        <line x1={AX} y1={topRoom} x2={AX} y2={baseY} stroke={T.ink} strokeWidth={2} opacity={0.4} />
-        <line x1={AX - 40} y1={baseY} x2={1880} y2={baseY} stroke={T.ink} strokeWidth={3} />
+        <line x1={AX} y1={topRoom} x2={AX} y2={baseY} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.4} />
+        <line x1={AX - 40} y1={baseY} x2={1880} y2={baseY} stroke={T.ink} strokeWidth={LW.BODY} />
 
         {items.map((it, i) => {
           const grow = spring({frame: frame - 14 - i * 7, fps, config: {damping: 200}, durationInFrames: 40});

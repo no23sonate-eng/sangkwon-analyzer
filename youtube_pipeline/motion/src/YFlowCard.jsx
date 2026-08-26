@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {YELLOW, glow} from './v2shared';
-import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // 흐름 도식 카드 — 사업 구조·돈의 흐름·계산 과정을 노드+화살표로.
 //
@@ -170,11 +170,11 @@ const ArrowBetween = ({x, y, w, grow, label, T}) => {
         height={60}
         style={{position: 'absolute', top: y - 30, left: x}}
       >
-        <line x1={pad} y1={30} x2={pad + lineW} y2={30} stroke={T.ink} strokeWidth={2.5} opacity={0.6} />
+        <line x1={pad} y1={30} x2={pad + lineW} y2={30} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.6} />
         {grow > 0.85 ? (
           <path
             d={`M ${pad + lineW - 12} 22 L ${pad + lineW} 30 L ${pad + lineW - 12} 38`}
-            fill="none" stroke={T.ink} strokeWidth={2.5} opacity={0.6}
+            fill="none" stroke={T.ink} strokeWidth={LW.THIN} opacity={0.6}
           />
         ) : null}
       </svg>

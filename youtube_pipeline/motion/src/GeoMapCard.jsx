@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, continueRender, delayRender, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperKicker, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // v2 지도 카드 — 순블랙 위 다크 랜드매스 + 발광 마커 (Cleo 지도 문법).
 // focus: [lonMin, latMin, lonMax, latMax] 로 영역을 잘라 보여준다.
@@ -90,7 +90,7 @@ export const GeoMapCard = ({
                       cx={x} cy={y}
                       r={30 + ((frame * 1.2 + k * 46) % 140)}
                       fill="none" stroke={YELLOW}
-                      strokeWidth={1.4}
+                      strokeWidth={LW.HAIR}
                       opacity={0.5 * (1 - (((frame * 1.2 + k * 46) % 140) / 140))}
                     />
                   ))
@@ -100,8 +100,8 @@ export const GeoMapCard = ({
               ) : null}
               {m.dead ? (
                 <>
-                  <line x1={x - 13} y1={y - 13} x2={x + 13} y2={y + 13} stroke={col} strokeWidth={4} />
-                  <line x1={x - 13} y1={y + 13} x2={x + 13} y2={y - 13} stroke={col} strokeWidth={4} />
+                  <line x1={x - 13} y1={y - 13} x2={x + 13} y2={y + 13} stroke={col} strokeWidth={LW.BODY} />
+                  <line x1={x - 13} y1={y + 13} x2={x + 13} y2={y - 13} stroke={col} strokeWidth={LW.BODY} />
                 </>
               ) : (
                 <circle

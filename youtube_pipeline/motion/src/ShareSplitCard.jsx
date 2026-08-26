@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {StampLabel} from './annotate';
 import {fit} from './layout';
 
@@ -86,7 +86,7 @@ export const ShareSplitCard = ({
 
         {/* 필지 외곽 */}
         <rect x={PX} y={PY} width={PW - 3} height={PH - 3} fill="none"
-              stroke={T.ink} strokeWidth={4} opacity={0.6 * fadeIn(frame, 4)} />
+              stroke={T.ink} strokeWidth={LW.BODY} opacity={0.6 * fadeIn(frame, 4)} />
 
         {/* ③ 통째로 팔린다 — 전체가 옐로. 지분 색은 위에서 이미 흐려진다 */}
         {eB > 0.01 ? (
@@ -97,7 +97,7 @@ export const ShareSplitCard = ({
         {/* 건물 — 필지 위에 실선. 자르는 선이 여기를 지나야 한다 */}
         <rect x={bx} y={by} width={bw} height={bh}
               fill={dark ? '#2B3240' : '#FFFFFF'} opacity={0.9 * fadeIn(frame, 16)}
-              stroke={T.ink} strokeWidth={3} />
+              stroke={T.ink} strokeWidth={LW.BODY} />
         <text x={bx + bw / 2} y={by + 40} textAnchor="middle" fill={T.soft}
               fontSize={30} opacity={fadeIn(frame, 20)}
               style={{fontFamily: 'A2Z Light, sans-serif'}}>건물</text>
@@ -106,11 +106,11 @@ export const ShareSplitCard = ({
         {cutT > 0.01 ? (
           <>
             <line x1={cutX} y1={PY - 26} x2={cutX} y2={PY - 26 + (PH + 52) * cutT}
-                  stroke="#D94A2B" strokeWidth={5} strokeDasharray="16 12" opacity={0.95} />
+                  stroke="#D94A2B" strokeWidth={LW.BOLD} strokeDasharray="16 12" opacity={0.95} />
             {cutT > 0.96 ? (
               <>
                 {/* 관통 지점에 X — "여기서 막힌다" */}
-                <g stroke="#D94A2B" strokeWidth={7} strokeLinecap="round"
+                <g stroke="#D94A2B" strokeWidth={LW.BOLD} strokeLinecap="round"
                    opacity={fadeIn(frame, cutAt + 24)}>
                   <line x1={cutX - 26} y1={by + bh / 2 - 26} x2={cutX + 26} y2={by + bh / 2 + 26} />
                   <line x1={cutX + 26} y1={by + bh / 2 - 26} x2={cutX - 26} y2={by + bh / 2 + 26} />

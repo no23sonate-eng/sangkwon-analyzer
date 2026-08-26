@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
 import {fit} from './layout';
 import {DimLine} from './annotate';
 
@@ -75,7 +75,7 @@ export const IsoDiagramCard = ({
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 바닥 격자가 먼저 깔린다 — "여기가 지면"이라는 약속 */}
-        <g stroke={T.ink} strokeWidth={1} opacity={0.16}>
+        <g stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.16}>
           {ground.map(([a, c], i) => (
             <line key={i} x1={a[0]} y1={a[1]} x2={c[0]} y2={c[1]}
                   opacity={fadeIn(frame, Math.floor(i / 6))} />

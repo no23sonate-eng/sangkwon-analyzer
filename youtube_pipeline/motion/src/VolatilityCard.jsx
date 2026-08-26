@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
 
 // ── 톱니 대 평지 ──────────────────────────────────────────────────────────
 // "객실 매출은 성수기·비수기를 탄다. 임대 수입은 계약 기간 내내 평탄하다."
@@ -66,8 +66,8 @@ export const VolatilityCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 100 기준선 — 이 선이 있어야 톱니가 "무엇을 중심으로" 흔들리는지 읽힌다 */}
         <line x1={LX} y1={yOf(100)} x2={RX} y2={yOf(100)}
-              stroke={T.ink} strokeWidth={1.5} strokeDasharray="6 8" opacity={0.35} />
-        <line x1={LX} y1={yBot} x2={RX} y2={yBot} stroke={T.ink} strokeWidth={2} opacity={0.5} />
+              stroke={T.ink} strokeWidth={LW.HAIR} strokeDasharray="6 8" opacity={0.35} />
+        <line x1={LX} y1={yBot} x2={RX} y2={yBot} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
 
         {list.map((s, si) => {
           const v = idx[si];
@@ -83,7 +83,7 @@ export const VolatilityCard = ({
               {/* 강조 계열만 꼭짓점을 찍는다. 둘 다 찍으면 톱니가 뭉갠다 */}
               {on ? v.slice(0, cut).map((x, i) => (
                 <circle key={i} cx={xOf(i)} cy={yOf(x)} r={5} fill={YELLOW}
-                        stroke={T.ink} strokeWidth={2} />
+                        stroke={T.ink} strokeWidth={LW.THIN} />
               )) : null}
             </g>
           );
@@ -126,7 +126,7 @@ export const VolatilityCard = ({
               <svg width={46} height={16}>
                 <line x1={2} y1={8} x2={44} y2={8}
                       stroke={T.ink} strokeWidth={on ? 6 : 3.5} opacity={on ? 1 : 0.42} />
-                {on ? <circle cx={23} cy={8} r={5} fill={YELLOW} stroke={T.ink} strokeWidth={2} /> : null}
+                {on ? <circle cx={23} cy={8} r={5} fill={YELLOW} stroke={T.ink} strokeWidth={LW.THIN} /> : null}
               </svg>
               <span style={{fontFamily: 'A2Z Medium, sans-serif',
                             fontSize: on ? 32 : 28, color: on ? T.ink : T.soft,
