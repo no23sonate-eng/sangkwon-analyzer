@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
 
 // 연도 레일 카드 — 가로 연도축 위에 기간 막대와 사건 마커.
 // "좌→우로 아이콘 3개"류와 달리 **실제 시간 축**이 있어서, 기간의 길이 차이나
@@ -32,8 +32,14 @@ export const TimelineRailCard = ({
   const px = (y) => X0 + ((y - axis.from) / (axis.to - axis.from)) * (X1 - X0);
   // 축 라벨(top = AXIS_Y + 22, 34px)까지 자막 안전영역(CONTENT_BOTTOM) 위에 들어와야 한다
   const AXIS_Y = CONTENT_BOTTOM - 66;
-  const ROW = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1));
-  const railY = (i) => (n === 1 ? AXIS_Y - 140 : 400 + i * ROW);
+  const headH = titleH(title, sub);
+  // 레일 시작을 400 에 못 박아 두니 레일이 하나뿐인 컷은 화면 아래에
+  // 홀로 떠 있고 위가 텅 비었다. 레일 묶음을 한 덩어리로 앉힌다
+  const RAIL_H = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1)) * (n - 1);
+  const railTop = stageTop(headH + (title ? 64 : 0) + RAIL_H + 120, {top: 150})
+    + headH + (title ? 64 : 0) + 60;
+  const ROW = n === 1 ? 0 : RAIL_H / (n - 1);
+  const railY = (i) => railTop + i * ROW;
 
   const ticks = [];
   for (let y = axis.from; y <= axis.to; y += axis.step) ticks.push(y);
@@ -41,7 +47,8 @@ export const TimelineRailCard = ({
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} {...bg} />
-      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align}
+                  top={stageTop(headH + (title ? 64 : 0) + RAIL_H + 120, {top: 150})} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 연도 눈금 — 세로 가이드가 먼저 깔린다 */}
         {ticks.map((y, i) => (

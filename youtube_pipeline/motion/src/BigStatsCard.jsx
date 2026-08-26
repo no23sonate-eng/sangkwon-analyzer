@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -28,15 +28,18 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   // 벌려 놓으면 제목은 위에 떠 있고 숫자는 아래에 떨어져 두 화면처럼 읽힌다.
   // 여럿일 때는 칸을 나눠 견주는 그림이라 띠 한가운데가 맞다.
   const one = n === 1 && Boolean(title);
-  const TOPY = one
-    ? bandTop + 24
-    : Math.round(bandTop + Math.max(0, (CONTENT_BOTTOM - bandTop - blockH) / 2));
+  // 제목 + 사이 + 수치를 **한 덩어리**로 보고 통째로 화면 가운데에 앉힌다.
+  // 제목만 위에 못 박아 두면 눈에는 전체가 위로 쏠린 것으로 보인다
+  const headH = one ? (title ? 122 : 0) : titleH(title, sub);
+  const GAP_HEAD = title ? SP.BLOCK : 0;
+  const stackY = stageTop(headH + GAP_HEAD + blockH, {top: 120});
+  const TOPY = stackY + headH + GAP_HEAD;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} {...bg} />
       {one ? (
-        <div style={{position: 'absolute', top: 150, left: 0, width: 1920,
+        <div style={{position: 'absolute', top: stackY, left: 0, width: 1920,
                      textAlign: 'center', opacity: fadeIn(frame, 0),
                      fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: 92, letterSpacing: '-0.01em', color: T.ink,
@@ -44,7 +47,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
           {title}
         </div>
       ) : (
-        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} top={stackY} />
       )}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {items.slice(1).map((_, i) => (

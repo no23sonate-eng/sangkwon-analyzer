@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
 import {fit} from './layout';
 
 // ── 값이 갈아치워지는 카드 ────────────────────────────────────────────────
@@ -43,10 +43,16 @@ export const StrikeSwapCard = ({
   const fromSize = fit(from, 82, 1200);
   // 새 값이 너무 커서 화면을 다 먹었다 (검수 지적) — 한 단 줄인다
   const toSize = fit(to, 104, 1240);
-  const top = title ? (sub ? 330 : 280) : 250;
+  const ARROW_H = 118;
+  const headH = titleH(title, sub);
+  const bodyH = fromSize * 1.35 + ARROW_H + toSize * 1.05
+    + (toLabel ? 16 + 48 : 0) + (note ? 72 + 44 : 0);
+  // 제목·교체·주석을 한 덩어리로 보고 화면 가운데. 예전엔 제목을 위에
+  // 못 박고 본문을 그 밑에 붙여서 아래가 통째로 비었다
+  const stackY = stageTop(headH + (title ? 56 : 0) + bodyH, {top: 140});
+  const top = stackY + headH + (title ? 56 : 0);
   // 아래 한 줄(note)은 블록 바닥을 따라간다 — 자막 안전영역 안에서만
   // 옛 값 → 화살표 → 새 값. 화살표가 들어갈 자리를 사이에 확보한다
-  const ARROW_H = 118;
   const toTop = top + fromSize * 1.35 + ARROW_H;
   const blockBot = toTop + toSize * 1.05 + (toLabel ? 16 + 48 : 0);
   // 아래 한 줄(금액)은 블록에서 더 떼어 놓는다 — 붙어 있으면 새 값의 일부로 읽힌다
@@ -61,7 +67,7 @@ export const StrikeSwapCard = ({
                style={{width: '100%', height: '100%', objectFit: 'cover'}} />
         </div>
       ) : null}
-      <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+      <PaperTitle title={title} sub={sub} theme={theme} align={align} top={stackY} />
 
       {/* ① 옛 값 + ② 취소선.
           선을 SVG 로 따로 그었더니 estWidth 추정이 한글에서 25% 넘게 커서

@@ -29,8 +29,38 @@ export const PAPER_LINE = 'rgba(35,38,43,0.10)'; // 그리드선
 //   BAND   96  단과 단 (평면 ↔ 정면)
 export const SP = {TIGHT: 8, NEAR: 20, GAP: 36, BLOCK: 64, BAND: 96};
 
-export const SUBTITLE_SAFE_BOTTOM = 260;
-export const CONTENT_BOTTOM = 1080 - SUBTITLE_SAFE_BOTTOM; // 820
+// ── 세로 구도 ─────────────────────────────────────────────────────────────
+// 자막은 **얹히는 것**이지 화면을 잘라내는 게 아니다. 1080 에 구운 한글
+// 자막은 대략 y 900~1030 을 쓴다. 그런데 여기서 260 을 비워 두고(=820),
+// 카드마다 다시 자기 여백을 더하니 내용이 화면 위쪽 70% 에 몰렸다.
+// 182컷을 재 보니 **98컷이 위로 60px 넘게 솟아** 있었고, 아래는 텅 비었다.
+// 176 이면 자막 자리는 그대로 지키면서 구도에 80px 을 돌려준다.
+export const SUBTITLE_SAFE_BOTTOM = 176;
+export const CONTENT_BOTTOM = 1080 - SUBTITLE_SAFE_BOTTOM; // 904
+
+// 사람 눈은 기하학적 중심(540)보다 조금 위를 가운데로 본다. 포스터·표지에서
+// 제목을 정확히 반으로 놓으면 처져 보이는 것과 같은 이유다.
+export const OPTICAL_CENTER = 512;
+
+// 높이를 아는 덩어리를 **화면 한가운데**에 놓는다.
+//
+// 지금까지 카드들은 저마다 `bandTop + (CONTENT_BOTTOM - bandTop - h) / 2` 로
+// 계산했다. 그건 화면이 아니라 **띠 안에서의 가운데**라, 제목이 있는 카드는
+// 띠가 300 부터 시작해 덩어리가 아래로 밀리고, 제목이 없으면 위로 붙었다.
+// 같은 영상 안에서 컷마다 기준이 달랐다는 뜻이다.
+//
+//   h       덩어리 높이
+//   top     이보다 위로는 안 올라간다 (제목 아래 등)
+//   bottom  이보다 아래로는 안 내려간다 (기본 = 자막 안전선)
+// PaperTitle 이 실제로 차지하는 높이. 스택 높이를 셀 때 쓴다
+export const titleH = (title, sub) => (title ? (sub ? 116 : 76) : 0);
+
+export const stageTop = (h, {top = 120, bottom = CONTENT_BOTTOM} = {}) => {
+  let y = Math.round(OPTICAL_CENTER - h / 2);
+  if (y + h > bottom) y = bottom - h;      // 아래로 넘치면 끌어올린다
+  if (y < top) y = top;                    // 그래도 위를 침범하면 위에 맞춘다
+  return y;
+};
 
 // 실루엣 톤 패밀리 (B1M의 5단계 블루 패밀리를 잉크 계열로 번역)
 // — 건물/막대마다 다른 톤을 순환시켜 단조로움을 없앤다. 옐로는 강조 전용.
@@ -267,13 +297,19 @@ export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 
 // 타이틀 — 가운데 정렬이 기본이지만 **왼쪽 정렬**도 쓴다.
 // 가운데만 쓰면 카드가 달라도 첫인상이 같다. 왼쪽 정렬에는 짧은 옐로 룰을 얹어
 // "다른 장"이라는 신호를 준다 (B1M 이 챕터를 가를 때 쓰는 방식).
-export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'center'}) => {
+// top 을 주면 그 자리에 선다. 안 주면 예전처럼 화면 위에 고정된다.
+//
+// **왜 필요한가.** 제목도 화면에 찍히는 잉크다. 그런데 제목은 y=138 에 못
+// 박아 두고 본문만 가운데로 옮기면, 보는 사람 눈에는 [제목+본문] 한 덩어리가
+// 위로 쏠린 것으로 보인다. 182컷을 재 보니 98컷이 그랬다.
+// 제목과 본문을 **한 스택으로 묶어** 통째로 앉혀야 가운데 정렬이 된다.
+export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'center', top}) => {
   const frame = useCurrentFrame();
   const T = themeOf(theme, dark);
   const left = align === 'left';
   const grow = Math.max(0, Math.min(1, (frame - 2) / 14));
   return (
-    <div style={{position: 'absolute', top: left ? 118 : 138, left: left ? 150 : 0,
+    <div style={{position: 'absolute', top: top ?? (left ? 118 : 138), left: left ? 150 : 0,
                  width: left ? 1560 : 1920, textAlign: left ? 'left' : 'center',
                  opacity: fadeIn(frame, 0)}}>
       {left ? (

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP} from './paper';
+import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP, stageTop} from './paper';
 
 // ── 문장 하나로 닫는 카드 ─────────────────────────────────────────────────
 // 장을 넘기거나 결론을 박을 때. 두 줄까지, 도형 없음.
@@ -32,7 +32,7 @@ export const HeadlineCard = ({
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} backdrop={bgImage} veil={0.88} {...bg} />
       <div style={{position: 'absolute', left: 200, width: 1520,
-                   top: (CONTENT_BOTTOM - (line2 ? 200 : 100)) / 2,
+                   top: stageTop(line2 ? 200 : 100, {top: 150}),
                    textAlign: 'center', opacity: o, transform: `translateY(${y}px)`}}>
         <div style={{fontSize: size(line1), color: T.ink, lineHeight: 1.4,
                      fontFamily: 'A2Z Medium, sans-serif',

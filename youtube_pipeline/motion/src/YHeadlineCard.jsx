@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop} from './paper';
 
 // ── 대형 타이포 헤드라인 ──────────────────────────────────────────────────
 // 문장 일부만 강조해서 한 줄로 못을 박는 카드.
@@ -37,14 +37,18 @@ export const YHeadlineCard = ({
   const capH = caption ? 78 : 0;
   // 제목 덩어리를 본문 영역 한가운데에. 예전엔 470 고정이라 자막 안전선을
   // 모르고 있었고, 캡션이 붙으면 아래가 눌렸다
-  const top = Math.max(kicker ? 250 : 190, (CONTENT_BOTTOM - totalH - capH) / 2);
+  // 키커(윗줄) + 제목 + 캡션이 한 덩어리다. 키커만 y=150 에 못 박고 제목을
+  // 가운데로 옮기면 둘이 갈라져 보인다
+  const kickH = kicker ? (sub ? 116 : 74) : 0;
+  const stackY = stageTop(kickH + (kicker ? SP.BLOCK : 0) + totalH + capH, {top: 130});
+  const top = stackY + kickH + (kicker ? SP.BLOCK : 0);
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Medium, sans-serif'}}>
       <PaperBg theme={theme} backdrop={bgImage} veil={0.9} {...bg} />
 
       {kicker ? (
-        <div style={{position: 'absolute', left: 120, top: 150, opacity: enter}}>
+        <div style={{position: 'absolute', left: 120, top: stackY, opacity: enter}}>
           <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
             <div style={{width: 46, height: 5, background: YELLOW}} />
             <span style={{fontFamily: 'A2Z Medium, sans-serif',

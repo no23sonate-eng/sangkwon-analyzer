@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, interpolate, spring, staticFile,
         useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop} from './paper';
 import {fit} from './layout';
 
 // ── 판 위에 얹은 소재 ─────────────────────────────────────────────────────
@@ -52,7 +52,8 @@ export const MediaPlateCard = ({
   let w = h * aspect;
   if (w > maxW) { w = maxW; h = w / aspect; }
   const x = Math.round((1920 - w) / 2);
-  const y = Math.round(bandTop + Math.max(0, (avail - (h + extra)) / 2));
+  // 판과 그 아래 라벨은 **한 덩어리**다. 띠 안이 아니라 화면 가운데에 앉힌다
+  const y = stageTop(h + extra, {top: bandTop});
 
   const s = spring({frame, fps, config: {damping: 200, mass: 0.7}});
   const R = 26;                       // 모서리. 이보다 작으면 그냥 사각형으로 읽힌다

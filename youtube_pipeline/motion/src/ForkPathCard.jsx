@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, OPTICAL_CENTER, fadeIn, SP} from './paper';
 
 // ── 갈림길 ────────────────────────────────────────────────────────────
 // "이미 다른 브랜드들이 보여준 방식을 따라갈지 / 올리브영만의 공간 콘텐츠를
@@ -25,7 +25,8 @@ export const ForkPathCard = ({
   if (bs.length < 2) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const bandTop = title ? (sub ? 300 : 250) : 190;
-  const midY = Math.round((bandTop + CONTENT_BOTTOM) / 2);
+  // 갈라지는 지점이 곧 이 그림의 가운데다. 띠 중간이 아니라 화면 가운데
+  const midY = Math.max(bandTop + 120, OPTICAL_CENTER);
   const SPREAD = 190;                // 갈래 간 세로 벌어짐
   const X0 = 210, XF = 760, X1 = 1180;   // 줄기 시작 · 분기점 · 가지 끝
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame, interpolate} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, CONTENT_BOTTOM, fadeIn, stageTop} from './paper';
 
 // 종이 위 이미지 프레임 카드 — B1M의 "자료 이미지를 흰 매트 액자로 종이에
 // 얹는" 문법. 이미지 위 오버라인 브래킷 + 볼드 타이틀, 아래 캡션.
@@ -28,12 +28,15 @@ export const PaperImageCard = ({
   // 타이틀·서브·이미지타이틀이 있으면 그만큼 프레임을 내리고 높이를 깎는다
   // (2026-08-06 폰트 확대 이후 상단 블록이 커져 고정값으로는 겹침).
   const titleBottom = title ? (sub ? 285 : 224) : 122;
-  const top = titleBottom + 28 + (imageTitle ? 58 : 0);
+  const headBottom = titleBottom + 28 + (imageTitle ? 58 : 0);
   const maxW = wide ? 1360 : 1000;
-  const maxH = Math.min(wide ? 620 : 600, 758 - top);
+  const maxH = Math.min(wide ? 700 : 660, CONTENT_BOTTOM - headBottom - (caption ? 84 : 0));
   // ratio 를 주면 (maxW × maxH) 안에 그 비율로 액자를 맞춘다 → 잘림/여백 없음
   const H = ratio ? Math.min(maxH, maxW / ratio) : maxH;
   const W = ratio ? Math.min(maxW, H * ratio) : maxW;
+  // 액자를 제목 바로 밑에 붙이면 아래가 통째로 빈다. 액자와 캡션을 한
+  // 덩어리로 보고 화면 가운데에 앉힌다
+  const top = stageTop(H + (caption ? 84 : 0), {top: headBottom});
   const left = (1920 - W) / 2;
   const MAT = 16; // 흰 매트 두께
   const zoom = kenBurns ? interpolate(frame, [0, 280], [1, 1.06], {extrapolateRight: 'clamp'}) : 1;
