@@ -2165,7 +2165,7 @@
    "StageCard",
    "사 — 매일 상영. 시간만",
    {
-    "media": "더그랜드롯데/shinsegae_night.jpg",
+    "media": "더그랜드롯데/facade_lit_night.jpg",
     "lines": [
      [
       {
@@ -2179,8 +2179,8 @@
     ],
     "kicker": "",
     "note": "",
-    "scrim": 0.5,
-    "source": "신세계백화점 본점"
+    "scrim": 0.44,
+    "source": "Pexels"
    }
   ],
   "120": [
@@ -2256,7 +2256,7 @@
    "StageCard",
    "사 — 규모",
    {
-    "media": "더그랜드롯데/tourists_terminal.mp4",
+    "media": "더그랜드롯데/store_interior.mp4",
     "lines": [
      [
       {
@@ -2278,7 +2278,7 @@
    "StageCard",
    "사 — 일정",
    {
-    "media": "더그랜드롯데/crystal_ballroom_led.jpg",
+    "media": "더그랜드롯데/facade_cityhall_night.jpg",
     "lines": [
      [
       {
@@ -2289,7 +2289,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "롯데호텔 서울"
+    "source": "Pexels"
    }
   ],
   "126": [
@@ -2306,7 +2306,7 @@
    "StageCard",
    "사 — 1988년 신관 개점 이후",
    {
-    "media": "더그랜드롯데/old_seoul_station.jpg",
+    "media": "더그랜드롯데/shinsegae_night.jpg",
     "lines": [
      [
       {
@@ -2321,7 +2321,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "옛 서울역"
+    "source": "신세계백화점 본점"
    }
   ],
   "128": [
@@ -2369,7 +2369,7 @@
    "StageCard",
    "사 — 명동 일대",
    {
-    "media": "더그랜드롯데/map_myeongdong.png",
+    "media": "더그랜드롯데/seoul_downtown_aerial.mp4",
     "lines": [
      [
       {
@@ -2380,7 +2380,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "© OpenStreetMap contributors © CARTO"
+    "source": "Pexels"
    }
   ],
   "131": [
@@ -2442,7 +2442,7 @@
    "StageCard",
    "사 — 더 플라자 객실 개편",
    {
-    "media": "더그랜드롯데/hotel_lobby_walk.mp4",
+    "media": "더그랜드롯데/hotel_rooms_modern.mp4",
     "lines": [
      [
       {
@@ -2467,7 +2467,7 @@
    "StageCard",
    "사 — 라운지 등급",
    {
-    "media": "더그랜드롯데/seoul_downtown_aerial.mp4",
+    "media": "더그랜드롯데/hotel_corridor_elegant.mp4",
     "lines": [
      [
       {
@@ -2485,7 +2485,7 @@
    "StageCard",
    "사 — 개관과 두 번의 리모델링",
    {
-    "media": "더그랜드롯데/office_empty.mp4",
+    "media": "더그랜드롯데/hotel_lobby_walk.mp4",
     "lines": [
      [
       {
@@ -2532,6 +2532,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
+    "size": 104,
     "source": "Pexels"
    }
   ],
@@ -2545,7 +2546,7 @@
     ],
     "kicker": "",
     "note": "",
-    "scrim": 0.5,
+    "scrim": 0.32,
     "source": "이오타 서울"
    }
   ],
@@ -2634,7 +2635,7 @@
    "StageCard",
    "사 — 복합개발 부지",
    {
-    "media": "더그랜드롯데/iota_seoulstation_2032.jpg",
+    "media": "더그랜드롯데/iota_plaza.jpg",
     "lines": [
      [
       {
@@ -2683,12 +2684,7 @@
     "lines": [
      [
       {
-       "t": "지하 6층 · 지상 39층"
-      }
-     ],
-     [
-      {
-       "t": "5개 동"
+       "t": "지하 6층 · 지상 39층 · 5개 동"
       }
      ]
     ],
@@ -2784,6 +2780,11 @@
     "lines": [
      [
       {
+       "t": "128실"
+      }
+     ],
+     [
+      {
        "t": "더그랜드롯데의 "
       },
       {
@@ -2793,31 +2794,36 @@
      ]
     ],
     "kicker": "",
-    "note": "128실 · 더그랜드롯데 590실",
+    "note": "",
     "scrim": 0.5,
     "source": "이오타 서울"
    }
   ],
   "151": [
-   "PhotoStepsCard",
-   "사 — 어메니티 셋. 시설명만",
+   "BrandWallCard",
+   "사 — 어메니티 셋. 이미지 위에 시설명",
    {
-    "steps": [
+    "items": [
      {
-      "photo": "더그랜드롯데/spa_lounge.jpg",
-      "label": "스파 · 웰니스"
+      "media": "더그랜드롯데/spa_lounge.jpg",
+      "name": "스파 · 웰니스"
      },
      {
-      "photo": "더그랜드롯데/golf_academy.jpg",
-      "label": "골프 아카데미"
+      "media": "더그랜드롯데/golf_academy.jpg",
+      "name": "골프 아카데미"
+     },
+     {
+      "media": "더그랜드롯데/spa_pool.mp4",
+      "name": "풀"
      }
     ],
-    "source": "만다린 오리엔탈 · 이미지 Pexels"
+    "scrim": 0.44,
+    "source": "만다린 오리엔탈 · 배경 이미지 Pexels"
    }
   ],
   "152": [
    "PhotoSplitCard",
-   "사 — 골프 아카데미 | 다이닝",
+   "사 — 다이닝 | 클럽 라운지",
    {
     "sides": [
      {
@@ -2829,7 +2835,7 @@
       "photo": "더그랜드롯데/club_lounge.jpg"
      }
     ],
-    "source": "만다린 오리엔탈 · 이미지 Pexels"
+    "source": "만다린 오리엔탈 · 배경 이미지 Pexels"
    }
   ],
   "153": [
@@ -2877,8 +2883,9 @@
      ]
     ],
     "kicker": "",
-    "note": "2025년 5월 철거 착수",
+    "note": "",
     "scrim": 0.5,
+    "size": 110,
     "source": "Pexels"
    }
   ],
@@ -2935,20 +2942,15 @@
     "logo": "더그랜드롯데/logo_ritz_carlton.png",
     "name": "리츠칼튼",
     "line": "2031년 이오타 서울 개장 예정",
-    "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0",
-    "tags": [
-     "15년 만의 재진출",
-     "서울역",
-     "2031"
-    ],
-    "logoScale": 1.7
+    "logoScale": 2.6,
+    "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0"
    }
   ],
   "160": [
    "StageCard",
    "사 — 일정",
    {
-    "media": "더그랜드롯데/map_downtown.png",
+    "media": "더그랜드롯데/iota_atrium.jpg",
     "lines": [
      [
       {
@@ -2963,31 +2965,29 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "© OpenStreetMap contributors © CARTO"
+    "source": "이오타 서울"
    }
   ],
   "161": [
-   "TrackRecordCard",
-   "그 — 1995 진출 → 2016 철수 → 재진출",
+   "StageCard",
+   "사 — 15년 만의 재진출",
    {
-    "name": "리츠칼튼",
-    "role": "15년 만의 재진출",
-    "items": [
-     {
-      "label": "1995 — 강남 진출",
-      "note": "한국 첫 호텔"
-     },
-     {
-      "label": "2016 — 계약 종료",
-      "note": "철수"
-     },
-     {
-      "label": "2031 — 이오타 서울",
-      "note": "재진출",
-      "hot": true
-     }
+    "media": "더그랜드롯데/iota_lobby.jpg",
+    "lines": [
+     [
+      {
+       "t": "15년 만의 "
+      },
+      {
+       "t": "재진출",
+       "hot": true
+      }
+     ]
     ],
-    "source": "스트레이트뉴스 2025.4.21"
+    "kicker": "",
+    "note": "",
+    "scrim": 0.5,
+    "source": "이오타 서울"
    }
   ],
   "162": [
@@ -3019,18 +3019,12 @@
      {
       "name": "포스터앤파트너스",
       "sub": "애플 사옥",
-      "photo": "더그랜드롯데/apple_park.jpg",
-      "lines": [
-       "Apple Park"
-      ]
+      "photo": "더그랜드롯데/apple_park.jpg"
      },
      {
       "name": "SOM",
       "sub": "롯데월드타워",
-      "photo": "더그랜드롯데/lotte_world_tower.jpg",
-      "lines": [
-       "555m · 서울"
-      ]
+      "photo": "더그랜드롯데/lotte_world_tower.jpg"
      }
     ],
     "source": "스트레이트뉴스 2025.4.21 · 애플 파크 · 롯데월드타워"
@@ -3063,7 +3057,7 @@
     ],
     "kicker": "",
     "note": "",
-    "scrim": 0.5,
+    "scrim": 0.46,
     "source": "이오타 서울"
    }
   ],
@@ -3090,30 +3084,29 @@
    }
   ],
   "167": [
-   "StageCard",
-   "사 — 4장 결론. 서울 도심 = 격전지",
+   "BrandWallCard",
+   "사 — 서울에 들어오는 글로벌 브랜드 넷",
    {
-    "media": "더그랜드롯데/seoul_namsan_sunrise.mp4",
-    "lines": [
-     [
-      {
-       "t": "서울 도심"
-      }
-     ],
-     [
-      {
-       "t": "글로벌 호텔",
-       "hot": true
-      },
-      {
-       "t": "의 격전지"
-      }
-     ]
+    "items": [
+     {
+      "media": "더그랜드롯데/brand_bg_1.jpg",
+      "name": "만다린 오리엔탈"
+     },
+     {
+      "media": "더그랜드롯데/brand_bg_2.jpg",
+      "name": "리츠칼튼"
+     },
+     {
+      "media": "더그랜드롯데/brand_bg_3.jpg",
+      "name": "로즈우드"
+     },
+     {
+      "media": "더그랜드롯데/brand_bg_4.jpg",
+      "name": "아만"
+     }
     ],
-    "kicker": "",
-    "note": "",
-    "scrim": 0.52,
-    "source": "Pexels"
+    "scrim": 0.5,
+    "source": "배경 이미지 Pexels"
    }
   ],
   "168": [
@@ -3149,7 +3142,7 @@
     "value2": "1,894만 명",
     "subtitle2": "2025년 방한 외국인 · 역대 최고",
     "bgImage": "더그랜드롯데/tourists_walk.mp4",
-    "veil": 0.44,
+    "veil": 0.3,
     "source": "한국경제 2026.8.6 · 한국관광공사"
    }
   ],
@@ -3157,9 +3150,9 @@
    "StrikeSwapCard",
    "그 — 호텔→오피스가 뒤집혔다",
    {
-    "from": "호텔을 사서 오피스·주거로 바꾼다",
+    "from": "오피스·주거로",
     "fromLabel": "예전",
-    "to": "사고 나서도 호텔로 둔다",
+    "to": "호텔 그대로",
     "toLabel": "지금",
     "source": "한국경제 2026.8.6 · 쿠시먼앤웨이크필드 2026 서울 호텔 마켓 리포트"
    }
@@ -3170,15 +3163,11 @@
    {
     "media": "더그랜드롯데/seoul_sunset.mp4",
     "lines": [
-     [
-      {
-       "t": "모두가 호텔에"
-      }
-     ]
+     []
     ],
     "kicker": "",
     "note": "",
-    "scrim": 0.5,
+    "scrim": 0.3,
     "source": "Pexels"
    }
   ],
@@ -3237,8 +3226,9 @@
      ]
     ],
     "kicker": "",
-    "note": "통상 개발 기간 5년 기준",
+    "note": "",
     "scrim": 0.5,
+    "size": 120,
     "source": "Pexels"
    }
   ],
@@ -3246,7 +3236,7 @@
    "StageCard",
    "사 — 2020~2022 컨버전",
    {
-    "media": "더그랜드롯데/office_modern.mp4",
+    "media": "더그랜드롯데/office_conversion.mp4",
     "lines": [
      [
       {
@@ -3264,14 +3254,14 @@
    "StageCard",
    "사 — 방향은 뒤집힌 적이 있다",
    {
-    "media": "더그랜드롯데/namsan_tower_aerial.mp4",
+    "media": "더그랜드롯데/office_modern.mp4",
     "lines": [
      [
       {
-       "t": "보장은 "
+       "t": "방향은 "
       },
       {
-       "t": "없다",
+       "t": "뒤집힌다",
        "hot": true
       }
      ]
@@ -3319,7 +3309,7 @@
     ],
     "kicker": "",
     "note": "",
-    "scrim": 0.5,
+    "scrim": 0.22,
     "source": "Pexels"
    }
   ],

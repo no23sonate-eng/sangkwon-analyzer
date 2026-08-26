@@ -25,8 +25,11 @@ const Side = ({s, x, w, frame, i}) => {
                      background: 'linear-gradient(180deg, rgba(11,14,18,0.66) 0%, rgba(11,14,18,0.08) 34%, rgba(11,14,18,0.78) 100%)'}} />
       </div>
 
-      <div style={{position: 'absolute', left: x + 70, width: w - 140, top: 300,
-                   textAlign: 'center', opacity: o, transform: `translateY(${rise}px)`}}>
+      {/* 이름 덩어리는 칸의 **한가운데**. 300 으로 못 박아 두면 위로 솟고,
+          아래 절반이 통째로 빈다 (#152·#163) */}
+      <div style={{position: 'absolute', left: x + 70, width: w - 140, top: '50%',
+                   textAlign: 'center', opacity: o,
+                   transform: `translateY(-50%) translateY(${rise}px)`}}>
         <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 54,
                      color: '#FFFFFF', lineHeight: 1.2, textShadow: SHADOW, wordBreak: 'keep-all'}}>
           {/* 한쪽만 노란 박스로 감싸면 두 이름이 **다른 종류의 것**처럼 보인다.
@@ -35,9 +38,10 @@ const Side = ({s, x, w, frame, i}) => {
               같은 층위에서 하나를 가리키는 게 강조다 */}
           {s.name}
         </div>
-        {s.hot ? (
-          <div style={{margin: '10px auto 0', width: 92, height: 5, background: YELLOW}} />
-        ) : null}
+        {/* 줄은 **모든 칸에 그린다.** 한쪽에만 있으면 실수처럼 읽힌다
+            (#152 지적). 강조는 색으로만 구분한다 */}
+        <div style={{margin: '16px auto 0', width: 92, height: 4,
+                     background: s.hot ? YELLOW : 'rgba(255,255,255,0.42)'}} />
         {s.sub ? (
           <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>

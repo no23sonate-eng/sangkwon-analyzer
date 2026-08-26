@@ -26,14 +26,14 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
 
   // 상자를 키웠다 (2026-08-26). 300×150 은 1920 화면에서 작아 보이고,
   // 로고가 상자 안에서 다시 78% 로 줄어드니 실제 로고는 234px 밖에 안 됐다.
-  const PARENT_W = 420;
-  const PARENT_H = 200;
-  const CHILD_W = 340;
-  const CHILD_H = 172;
+  const PARENT_W = 500;
+  const PARENT_H = 232;
+  const CHILD_W = 430;
+  const CHILD_H = 216;
   const CX = 1920 / 2;
   const PARENT_TOP = top;
-  const CHILD_TOP = PARENT_TOP + 328;
-  const CHILD_GAP = 300;
+  const CHILD_TOP = PARENT_TOP + 380;
+  const CHILD_GAP = 340;
   const BRANCH_Y = PARENT_TOP + PARENT_H + 55; // 부모-자식 사이 분기점
 
   // 로고는 배경색이 제각각이라 흰 칩 위에 얹어야 항상 또렷하다.
@@ -79,7 +79,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
         <div
           style={{
             position: 'absolute', top: PARENT_TOP + PARENT_H + 14, left: CX - PARENT_W / 2, width: PARENT_W,
-            textAlign: 'center', fontSize: 24, opacity: parentOpacity, color: T.ink,
+            textAlign: 'center', fontSize: 30, opacity: parentOpacity, color: T.ink,
             fontFamily: 'A2Z Medium, sans-serif',
           }}
         >
@@ -112,7 +112,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
             <div
               style={{
                 position: 'absolute', top: CHILD_TOP + CHILD_H + 14, left: x - CHILD_W / 2, width: CHILD_W,
-                textAlign: 'center', fontSize: 24, opacity: childOpacity, color: T.soft,
+                textAlign: 'center', fontSize: 30, opacity: childOpacity, color: T.soft,
                 fontFamily: 'A2Z Light, sans-serif',
               }}
             >
@@ -136,7 +136,7 @@ export const LogoOrgCard = ({title = '', subtitle = '', parentLogo = '', parentL
   // 부모 상자가 232 로 못 박혀 있어 상자가 부제를 덮었다 (#129)
   const headH = (title ? 60 : 0) + (subtitle ? 46 : 0);
   const headTop = 150;
-  const BLOCK = 540;      // 부모(200) + 내림(128) + 자식(172) + 이름(40)
+  const BLOCK = 640;      // 부모(232) + 내림(148) + 자식(216) + 이름(44)
   const dTop = stageTop(BLOCK, {top: headTop + headH + (headH ? SP.BLOCK : 0)});
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>

@@ -70,6 +70,7 @@ import {VolatilityCard} from './VolatilityCard';
 import {ArchiveCard} from './ArchiveCard';
 import {FormulaCard} from './FormulaCard';
 import {StageCard} from './StageCard';
+import {BrandWallCard} from './BrandWallCard';
 import {IsoDiagramCard} from './IsoDiagramCard';
 import {MapCard} from './MapCard';
 import {SectionDiagramCard} from './SectionDiagramCard';
@@ -429,6 +430,7 @@ export const RemotionRoot = () => {
         ['ArchiveCard', ArchiveCard, {"media": "", "era": "film"}],
         ['FormulaCard', FormulaCard, {"top": {}, "bottom": {}, "result": {}}],
         ['StageCard', StageCard, {}],
+        ['BrandWallCard', BrandWallCard, {}],
         ['IsoDiagramCard', IsoDiagramCard, {blocks: []}],
         ['MapCard', MapCard, {pins: []}],
         ['SectionDiagramCard', SectionDiagramCard, {ground: [], cut: []}],

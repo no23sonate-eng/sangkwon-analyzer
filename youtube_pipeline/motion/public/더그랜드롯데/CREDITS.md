@@ -117,3 +117,12 @@
 | `club_lounge.jpg` | Pexels photo 9959711 | Pexels License | (표기 의무 없음) |
 | `seoul_namsan_sunrise.mp4` | Pexels video 7855642 | Pexels License | (표기 의무 없음) |
 | `map_seoulstation.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `facade_lit_night.jpg` | Pexels photo 19500679 | Pexels License | (표기 의무 없음) |
+| `facade_cityhall_night.jpg` | Pexels photo 7867406 | Pexels License | (표기 의무 없음) |
+| `hotel_corridor_elegant.mp4` | Pexels video 31751335 | Pexels License | (표기 의무 없음) |
+| `hotel_rooms_modern.mp4` | Pexels video 19403230 | Pexels License | (표기 의무 없음) |
+| `office_conversion.mp4` | Pexels video 8347237 | Pexels License | (표기 의무 없음) |
+| `brand_bg_1.jpg` | Pexels photo 29649745 | Pexels License | (표기 의무 없음) |
+| `brand_bg_2.jpg` | Pexels photo 695193 | Pexels License | (표기 의무 없음) |
+| `brand_bg_3.jpg` | Pexels photo 31080809 | Pexels License | (표기 의무 없음) |
+| `brand_bg_4.jpg` | Pexels photo 15994062 | Pexels License | (표기 의무 없음) |
