@@ -99,7 +99,14 @@ def _value(raw, blank):
     if re.fullmatch(r'-?\d+(\.\d+)?', v):
         return float(v) if '.' in v else int(v)
     if re.fullmatch(r'''['"`].*['"`]''', v, re.S):
-        return '' if blank else v[1:-1]
+        # 예전엔 blank 면 문자열을 전부 ''로 비웠다. 그런데 **비어 있지 않은
+        # 문자열 기본값은 내용이 아니라 설정이다** — align='center',
+        # RatioCard.mode='circle', CostStackCard.unit='억원' 같은 것들.
+        # 그걸 비우면 카드가 다른 카드처럼 그려진다. 실제로 align 이 20종에서
+        # ''로 덮여 **가운데 정렬이 전부 왼쪽으로 밀려 있었다.**
+        # 내용 인자는 원래부터 '' 라 비울 게 없다. 그래서 blank 는 무해한 게
+        # 아니라 해로운 쪽만 골라 때렸다. 이제 기본값을 그대로 쓴다
+        return v[1:-1]
     if v.startswith('['):
         return []
     if v.startswith('{'):
