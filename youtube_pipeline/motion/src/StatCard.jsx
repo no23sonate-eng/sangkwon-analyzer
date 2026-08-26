@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperCaption, NumberIn,
-        CONTENT_BOTTOM, fadeIn, SP} from './paper';
+        CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH} from './paper';
 
 // ── 숫자 하나가 주인공 ────────────────────────────────────────────────────
 // 금액·개소·연도처럼 **한 문장에 결론이 하나**일 때. 두 개면 BigStatsCard.
@@ -49,6 +49,13 @@ export const StatCard = ({
   // 숫자가 길면 줄인다. 96 고정이라 '2조 6,560억원' 같은 값이 화면을 넘었다
   const size = (v) => Math.min(150, Math.max(76, Math.floor(1560 / Math.max(4, String(v).length))));
 
+  // 제목과 수치를 한 덩어리로 보고 화면 가운데. 예전엔 214·388 로 못 박혀
+  // 있어서 긴 숫자가 들어오면 덩어리가 아래로 처졌다
+  const headH = title ? 76 : 0;
+  const bodyH = size(String(count != null ? count : value)) * 1.1
+    + (subtitle ? SP.GAP + 52 : 0);
+  const stackY = stageTop(headH + (title ? SP.BLOCK : 0) + bodyH, {top: 140});
+  const valueY = stackY + headH + (title ? SP.BLOCK : 0);
   const onPhoto = Boolean(bgImage);
   const ink = onPhoto ? '#FFFFFF' : T.ink;
   const soft = onPhoto ? 'rgba(255,255,255,0.82)' : T.soft;
@@ -56,7 +63,7 @@ export const StatCard = ({
 
   // 2단계로 넘어간 뒤에도 굴러 올라간 숫자가 남으면 안 된다 — count 는 1단계만
   const stage = (v, s, o, scale, roll = false) => (
-    <div style={{position: 'absolute', left: 0, width: 1920, top: 388, textAlign: 'center',
+    <div style={{position: 'absolute', left: 0, width: 1920, top: valueY, textAlign: 'center',
                  opacity: o, transform: `scale(${scale})`}}>
       {roll && count != null ? (
         <div style={{fontSize: 0, ...sh}}>
@@ -85,7 +92,7 @@ export const StatCard = ({
                veil={veil == null ? (bgImage ? 0.42 : 0.88) : veil} {...bg} />
 
       {title ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: 214, textAlign: 'center',
+        <div style={{position: 'absolute', left: 200, width: 1520, top: stackY, textAlign: 'center',
                      fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: 44, color: ink, opacity: fadeIn(frame, 0), ...sh,
                      wordBreak: 'keep-all'}}>

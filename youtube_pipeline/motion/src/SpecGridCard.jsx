@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH} from './paper';
 
 // ── 스펙시트 ──────────────────────────────────────────────────────────────
 // "지하 3층 지상 38층, 138m, 1,020실" 처럼 **성격이 다른 수치가 나란히**
@@ -35,7 +35,7 @@ export const SpecGridCard = ({
       <PaperBg theme={theme} backdrop={bgImage} veil={0.9} {...bg} />
 
       {title ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: 150, textAlign: 'center',
+        <div style={{position: 'absolute', left: 200, width: 1520, top: stageTop(titleH(title, sub) + 64 + 300, {top: 150}), textAlign: 'center',
                      opacity: fadeIn(frame, 0)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
                        fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -28,7 +28,7 @@ export const DotMatrixCard = ({
   // 격자가 화면 밖으로 나가는데 **렌더는 성공한다** — 시트에서야 안다.
   // 폭과 높이 양쪽에 맞을 때까지 점 간격을 줄인다. 점 개수는 안 건드린다:
   // 개수가 곧 뜻이라 임의로 줄이면 그림이 거짓말이 된다
-  const TOP = 330;
+  const TOP = 330;   // (아래에서 격자 높이를 안 뒤 stageTop 으로 다시 잡는다)
   const slot = Math.min(760, 1560 / n);
   const AVAIL_H = CONTENT_BOTTOM - TOP - 96;          // 아래 수치·라벨 자리
   const maxDots = Math.max(...groups.map((g) => Math.max(1, Math.round(g.value / perDot))));

@@ -76,6 +76,9 @@ def guarded_slots():
         g = set(re.findall(r'\{\s*(\w+)\s*\?', txt))
         g |= set(re.findall(r'\b(\w+)\s*&&\s*[<(]', txt))
         g |= set(re.findall(r'Boolean\((\w+)\)', txt))
+        # `if (shot) { … }` 로 갈라지는 카드도 있다 — ArticleCard 가 그렇다.
+        # JSX 안의 `{이름 ?` 만 보면 이걸 놓쳐서 회색 판이 끼어든다
+        g |= set(re.findall(r'if\s*\(\s*!?(\w+)\s*\)', txt))
         # PaperBg backdrop 으로 흘러가는 인자도 <Img> 를 안 탄다
         g |= set(re.findall(r'backdrop=\{(\w+)\}', txt))
         out[f.stem] = g
@@ -173,15 +176,17 @@ def main():
         sk.update(given)
         if e.get('source') and not sk.get('source'):
             sk['source'] = e['source']          # 대본 `→` 줄에서 딸려 온 출처
-        if a.placeholder and e['card'] in PHOTO | PLATE:
-            for k in (IMG_KEYS - OPTIONAL_IMG) & set(sk):
-                if sk[k] == '':
-                    sk[k] = PLACEHOLDER
         if a.placeholder:
+            # 카드가 조건으로 감싼 자리는 비워 둬도 렌더가 죽지 않는다.
+            # 거기에 회색 판을 끼우면 **비워 두는 게 설계인 컷**이 회색으로 덮인다
+            safe = guards.get(e['card'], set()) | OPTIONAL_IMG
+            for k in IMG_KEYS - safe:
+                if sk.get(k) == '':
+                    sk[k] = PLACEHOLDER
             for arr in ('steps', 'sides', 'items'):     # 배열 안에도 사진이 산다
                 for it in sk.get(arr) or []:
                     if isinstance(it, dict):
-                        for k in IMG_KEYS & set(it):
+                        for k in (IMG_KEYS - safe) & set(it):
                             if it[k] == '':
                                 it[k] = PLACEHOLDER
         if given:

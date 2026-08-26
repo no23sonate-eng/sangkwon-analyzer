@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, stageTop, titleH} from './paper';
 
 // 면적 중첩 카드 — 넓이를 나란히 놓지 않고 **같은 모서리에 겹쳐** 그린다.
 // 막대 3개를 좌→우로 세우는 문법과 달리, "몇 배"가 포개진 크기로 즉시 읽힌다.
@@ -113,7 +113,7 @@ export const AreaNestCard = ({
       })()}
 
       {multipleNote ? (
-        <div style={{position: 'absolute', left: 40, width: CX - BOX / 2 - 100, top: 452,
+        <div style={{position: 'absolute', left: 40, width: CX - BOX / 2 - 100, top: stageTop(430, {top: 200}) + 6,
                      textAlign: 'right', opacity: fadeIn(frame, 70)}}>
           <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, color: T.ink,
                         background: 'rgba(250,255,46,0.8)', padding: '6px 20px'}}>
