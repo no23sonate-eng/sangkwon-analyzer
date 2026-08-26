@@ -300,7 +300,11 @@ export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 
   <>
     <div style={{position: 'absolute', inset: 0, background: T.bg}} />
     <LiveBackdrop image={backdrop} veil={veil} blur={blur} dir={dir} theme={theme} dark={dark} />
-    <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+    {/* 격자는 **종이 위**에서만 뜻이 있다. 실사를 거의 안 가리고 깔았는데
+        (veil 0.3) 격자가 그대로 남으면 사진 위에 방안지를 덧댄 꼴이다 —
+        #170 이 그랬다. 베일이 얇을수록 격자를 걷는다 */}
+    <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0,
+           opacity: backdrop ? Math.max(0, Math.min(1, (veil - 0.35) / 0.35)) : 1}}>
       <g stroke={T.grid} strokeWidth={1}>
         {Array.from({length: nv}, (_, i) => (
           <line key={`v${i}`} x1={(i + 1) * T.step} y1={0} x2={(i + 1) * T.step} y2={1080} />

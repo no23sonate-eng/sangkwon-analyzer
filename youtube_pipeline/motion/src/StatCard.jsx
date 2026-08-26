@@ -107,7 +107,7 @@ export const StatCard = ({
       {has2 ? stage(value2, subtitle2, o2, interpolate(o2, [0, 1], [0.94, 1])) : null}
 
       <PaperCaption theme={theme} opacity={fadeIn(frame, 30) * o1}>{caption}</PaperCaption>
-      <PaperSource source={source} theme={theme} />
+      <PaperSource source={source} theme={theme} onPhoto={onPhoto} />
     </AbsoluteFill>
   );
 };

@@ -126,3 +126,7 @@
 | `brand_bg_2.jpg` | Pexels photo 695193 | Pexels License | (표기 의무 없음) |
 | `brand_bg_3.jpg` | Pexels photo 31080809 | Pexels License | (표기 의무 없음) |
 | `brand_bg_4.jpg` | Pexels photo 15994062 | Pexels License | (표기 의무 없음) |
+| `brand_aman.jpg` | Wikimedia Commons — D85 0192 Amanpuri Phuket Thailand Photographed by Trisorn Triboon.jpg | CC BY-SA | `Wikimedia Commons` |
+| `myeongdong_street.jpg` | Wikimedia Commons — 명동8길 거리 (2020.03).jpg | CC BY-SA | `Wikimedia Commons` |
+| `club_lounge2.jpg` | Pexels photo 18426842 | Pexels License | (표기 의무 없음) |
+| `_skip.jpg` | Pexels photo 31080809 | Pexels License | (표기 의무 없음) |

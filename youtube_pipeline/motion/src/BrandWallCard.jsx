@@ -56,6 +56,12 @@ export const BrandWallCard = ({
               ) : null}
             </div>
             <div style={{position: 'absolute', inset: 0, background: `rgba(11,14,18,${scrim})`}} />
+            {/* 이름이 앉는 띠만 한 번 더 누른다. 칸마다 사진 밝기가 다르면
+                같은 스크림으로는 어떤 칸은 읽히고 어떤 칸은 안 읽힌다 —
+                골프 시뮬레이터처럼 흰 화면이 들어오면 특히 그렇다 */}
+            <div style={{position: 'absolute', inset: 0, background:
+              'linear-gradient(180deg, rgba(11,14,18,0) 24%, rgba(11,14,18,0.58) 50%,'
+              + ' rgba(11,14,18,0) 76%)'}} />
             {/* 이름은 칸 한가운데. 위아래로도 가운데 */}
             <div style={{position: 'absolute', left: 0, right: 0, top: '50%',
                          transform: `translateY(-50%) translateY(${(1 - o) * 12}px)`,
