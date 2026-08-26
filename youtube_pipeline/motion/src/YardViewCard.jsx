@@ -26,7 +26,7 @@ export const YardViewCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const T = themeOf(theme);
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
 
   const GY = 640;                                  // 지면
   // 전체 폭(사람~건물 오른쪽)을 재서 화면 가운데에 놓는다.
@@ -50,7 +50,8 @@ export const YardViewCard = ({
   };
   const rTop = ray(bTop), rBot = ray(GY);
   const ink = T.ink;
-  const RED = '#D94A2B';
+  // 팔레트에 없던 빨강을 쓰고 있었다. 강조는 노랑 하나다
+  const RED = YELLOW;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>

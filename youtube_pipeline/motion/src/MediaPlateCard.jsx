@@ -36,7 +36,7 @@ export const MediaPlateCard = ({
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
 
   const bandTop = title ? (sub ? 296 : 244) : 132;
   // 판이 쓸 수 있는 자리. 좌우 여백은 확실히 남긴다 — **여백이 이 카드의 요점**이라

@@ -120,7 +120,7 @@ export const SplitProofCard = ({
       {arrowT > 0.01 ? (
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           <HandArrow from={[midX - 120, TOP + 40]} to={[midX + 150, TOP + 180]}
-                     progress={arrowT} bow={-60} color={T.bg === '#EFEAE3' ? '#23262B' : '#FFFFFF'}
+                     progress={arrowT} bow={-60} color={!T.dark ? '#23262B' : '#FFFFFF'}
                      width={16} head={42} />
         </svg>
       ) : null}

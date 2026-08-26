@@ -40,7 +40,7 @@ export const MapCard = ({
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const T = themeOf(theme);
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
 
   // 위경도 → 지도 이미지 안의 0~1 좌표. 세로는 메르카토르라 선형이 아니다.
   const toXY = (lat, lon) => {

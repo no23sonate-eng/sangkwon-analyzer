@@ -43,7 +43,7 @@ export const NodeArrayCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const T = themeOf(theme);
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
 
   const cx = (cols - 1) / 2, cz = (rows - 1) / 2;
   const H = (perString - 1) * spacingY;

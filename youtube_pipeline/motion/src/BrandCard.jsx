@@ -35,7 +35,7 @@ export const BrandCard = ({
   // 어두운 테마에서 검정 로고는 안 보인다. 하지만 **컬러 로고를 뒤집으면 색이 망가진다**
   // (빨간 로고가 청록이 된다). 그래서 자동은 "어두운 테마 + 단색 로고" 일 때만이고,
   // 컬러 로고는 어댑트할 때 fetch_sources 가 알려주는 대로 logoInvert:false 를 준다.
-  const inv = logoInvert === true || (logoInvert === 'auto' && T.bg !== '#EFEAE3');
+  const inv = logoInvert === true || (logoInvert === 'auto' && T.dark);
   const logoFilter = inv ? 'invert(1) brightness(1.6)' : 'none';
 
   const src = (p) => (p && /^https?:/.test(p) ? p : staticFile(p));

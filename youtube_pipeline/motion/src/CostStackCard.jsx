@@ -27,7 +27,7 @@ export const CostStackCard = ({
   const {fps} = useVideoConfig();
   if (!parts.length) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const dark = T.paper !== '#EFEAE3';
+  const dark = T.dark;
   const tones = dark ? DARK_TONES : TONES;
 
   const total = parts.reduce((a, p) => a + (p.value || 0), 0);

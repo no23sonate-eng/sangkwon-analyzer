@@ -45,7 +45,7 @@ export const MassingCard = ({
       .catch(() => continueRender(handle));
   }, [data, handle]);
 
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
   const blds = set?.buildings ?? [];
   // 지면 반경은 **실제로 그려지는 건물 범위**에서 뽑는다. 요청 반경(set.radius)을
   // 그대로 쓰면 keep 으로 잘린 만큼 바닥만 넓어져 매스가 접시 위 부스러기처럼 보인다

@@ -155,7 +155,20 @@ export const THEMES = {
               grid: 'rgba(150,190,255,0.16)', step: 40, fine: true,
               tones: ['#33507E', '#4E74AE', '#28405F', '#6A92CE', '#3E5F92']},
 };
-export const themeOf = (t, dark) => THEMES[t] || (dark ? THEMES.ink : THEMES.paper);
+// 각 테마가 **자기가 어두운지**를 들고 있게 한다.
+//
+// 그동안 카드들은 `T.bg !== '#EFEAE3'` 로 어두운지 판단했다. 열세 군데다.
+// 종이 색을 한 번 바꾸면 그 열세 군데가 전부 조용히 틀린 답을 낸다 —
+// 어두운 테마를 밝다고 보고 검은 글자를 검은 바탕에 쓴다.
+// 색값 비교로 성질을 알아내면 안 된다. 성질은 테마가 말한다.
+const withDark = (o, dark) => ({...o, dark});
+
+export const themeOf = (t, dark) => {
+  const base = THEMES[t] || (dark ? THEMES.ink : THEMES.paper);
+  return base.dark === undefined
+    ? withDark(base, base.bg !== THEMES.paper.bg)
+    : base;
+};
 
 // ── 살아 있는 배경 ───────────────────────────────────────────────────────
 // B1M 화면은 **정지하는 순간이 없다.** 도표 카드조차 뒤에 실사가 깔려 아주 느리게

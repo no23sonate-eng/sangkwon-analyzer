@@ -26,7 +26,7 @@ export const SitePlotCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const T = themeOf(theme);
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
 
   const W = 9.0, D = W / ratio;
   const a = (spin * Math.PI / 180) * interpolate(frame, [0, 150], [-0.5, 0.5],

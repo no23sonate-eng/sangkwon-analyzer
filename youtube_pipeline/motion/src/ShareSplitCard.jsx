@@ -32,7 +32,7 @@ export const ShareSplitCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const T = themeOf(theme);
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
 
   const TOP = title ? (sub ? 300 : 246) : 178;
   const BOT = CONTENT_BOTTOM - 96;
@@ -106,11 +106,11 @@ export const ShareSplitCard = ({
         {cutT > 0.01 ? (
           <>
             <line x1={cutX} y1={PY - 26} x2={cutX} y2={PY - 26 + (PH + 52) * cutT}
-                  stroke="#D94A2B" strokeWidth={LW.BOLD} strokeDasharray="16 12" opacity={0.95} />
+                  stroke={YELLOW} strokeWidth={LW.BOLD} strokeDasharray="16 12" opacity={0.95} />
             {cutT > 0.96 ? (
               <>
                 {/* 관통 지점에 X — "여기서 막힌다" */}
-                <g stroke="#D94A2B" strokeWidth={LW.BOLD} strokeLinecap="round"
+                <g stroke={YELLOW} strokeWidth={LW.BOLD} strokeLinecap="round"
                    opacity={fadeIn(frame, cutAt + 24)}>
                   <line x1={cutX - 26} y1={by + bh / 2 - 26} x2={cutX + 26} y2={by + bh / 2 + 26} />
                   <line x1={cutX + 26} y1={by + bh / 2 - 26} x2={cutX - 26} y2={by + bh / 2 + 26} />
@@ -133,7 +133,7 @@ export const ShareSplitCard = ({
         <div style={{position: 'absolute', left: PX + PW + 56, top: by + bh / 2 - 34, width: LABW,
                      opacity: fadeIn(frame, cutAt + 26),
                      fontFamily: 'A2Z Medium, sans-serif',
-                     fontSize: fit(cutLabel, 42, 620), color: '#D94A2B', whiteSpace: 'nowrap'}}>
+                     fontSize: fit(cutLabel, 42, 620), color: T.ink, whiteSpace: 'nowrap'}}>
           {cutLabel}
         </div>
       ) : null}

@@ -60,7 +60,7 @@ export const ShapeCompareCard = ({
   const y0 = TOP + Math.max(0, (BOT - TOP - blockH) / 2) + nudge;
   const baseY = y0 + LABEL_H + maxH * K;      // 바닥선 — 전부 여기 맞춰 세운다
 
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
   const FILL = dark ? '#4A5568' : '#C3C9D2';
   const FILL2 = dark ? '#3A4657' : '#AEB6C1';
 

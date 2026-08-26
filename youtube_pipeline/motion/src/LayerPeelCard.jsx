@@ -97,7 +97,7 @@ export const LayerPeelCard = ({
   const proj = projector({pos: camPos, target: [0, 0, 0], fov: 38});
   const shiftY = spread * 0.02;
 
-  const dark = T.bg !== '#EFEAE3';
+  const dark = T.dark;
   const edge = dark ? '#0B0E12' : '#23262B';
 
   return (

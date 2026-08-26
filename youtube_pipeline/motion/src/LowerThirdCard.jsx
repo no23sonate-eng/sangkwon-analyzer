@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {YELLOW, fadeIn, SP} from './paper';
+import {YELLOW, fadeIn, SP, PAPER} from './paper';
 import {fit, estWidth} from './layout';
 
 // ── 실사 위에 얹는 번호 + 문구 ──────────────────────────────────────────
@@ -44,7 +44,7 @@ export const LowerThirdCard = ({
   const left = align === 'left';
 
   return (
-    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: dark ? '#0B0E12' : '#EFEAE3'}}>
+    <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: dark ? '#0B0E12' : PAPER}}>
       {src ? (
         <AbsoluteFill style={{overflow: 'hidden'}}>
           {isVid(src) ? <OffthreadVideo src={src} muted style={box} />
