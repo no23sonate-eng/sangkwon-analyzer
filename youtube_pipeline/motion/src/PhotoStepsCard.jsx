@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW, OPTICAL_CENTER} from './paper';
 
 // Vox 식 단계 카드 — 각 단계를 **사진 타일**로 세우고 화살표로 잇는다.
 // 타일이 하나씩 서고, 그 사이를 진행 표시(점)가 따라 이동한다.
@@ -47,6 +47,10 @@ const Pict = ({name, size = 96, T = THEMES.paper, stroke = T.ink}) => {
 
 export const PhotoStepsCard = ({
   title = '', sub = '', steps = [], source = '', arrows = [],
+  // plain — **순서가 아닐 때.** 화살표·번호·진행점을 걷는다.
+  // 서울역·명동·소공동 처럼 대등한 것들에 화살표를 그리면 "서울역 다음에
+  // 명동" 으로 읽힌다. 대등한 것에 순서를 그리면 뜻이 틀어진다 (#166)
+  plain = false,
   scale = 1,        // 타일 크기 배율
   gapScale = 1,     // 타일 사이 간격 배율,
   theme, align = 'center',
@@ -59,14 +63,14 @@ export const PhotoStepsCard = ({
   const n = steps.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const TW = Math.round(Math.min(340, 1560 / n) * scale);   // 타일 폭
+  const TW = Math.round(Math.min(plain ? 470 : 340, 1560 / n) * scale);   // 타일 폭
   const TH = Math.round(TW * 0.78);
   // 간격을 **화면을 채우도록** 잡으면 (1720 - TW*n)/(n-1) 타일이 좌우로
   // 흩어져 슬라이드처럼 읽힌다 — 셋이면 350px 이 벌어졌다 (#166).
   // 타일 폭에 비례해 묶어 두고, 벌리고 싶을 때만 gapScale 로 벌린다
   const gap = Math.max(48, TW * 0.28) * gapScale;
   const x0 = (1920 - (TW * n + gap * (n - 1))) / 2;
-  const cy = 470;                            // 타일 세로 중심
+  const cy = OPTICAL_CENTER - 30;            // 타일 세로 중심
   const cx = (i) => x0 + i * (TW + gap) + TW / 2;
 
   const STEP = 26, T0 = 12;
@@ -83,7 +87,7 @@ export const PhotoStepsCard = ({
 
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 타일을 잇는 선 + 화살촉 */}
-        {steps.slice(0, -1).map((_, i) => {
+        {(plain ? [] : steps.slice(0, -1)).map((_, i) => {
           const a = cx(i) + TW / 2 + 14, b = cx(i + 1) - TW / 2 - 14;
           const o = fadeIn(frame, T0 + STEP * i + 12);
           return (
@@ -94,8 +98,10 @@ export const PhotoStepsCard = ({
           );
         })}
         {/* 진행 점 */}
-        <circle cx={dotX} cy={cy} r={11} fill={YELLOW} stroke={T.ink} strokeWidth={LW.BODY}
-                opacity={fadeIn(frame, T0 + 10)} />
+        {plain ? null : (
+          <circle cx={dotX} cy={cy} r={11} fill={YELLOW} stroke={T.ink} strokeWidth={LW.BODY}
+                  opacity={fadeIn(frame, T0 + 10)} />
+        )}
       </svg>
 
       {steps.map((st, i) => {
@@ -118,13 +124,15 @@ export const PhotoStepsCard = ({
                 </svg>
               )}
             </div>
-            {/* 단계 번호 */}
-            <div style={{position: 'absolute', left: x - 14, top: y - 14, width: 54, height: 54,
-                         borderRadius: 27, background: T.ink, color: '#FFF', opacity: pop,
-                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 28}}>
-              {i + 1}
-            </div>
+            {/* 단계 번호 — 순서가 있을 때만 */}
+            {plain ? null : (
+              <div style={{position: 'absolute', left: x - 14, top: y - 14, width: 54, height: 54,
+                           borderRadius: 27, background: T.ink, color: '#FFF', opacity: pop,
+                           display: 'flex', alignItems: 'center', justifyContent: 'center',
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 28}}>
+                {i + 1}
+              </div>
+            )}
             <div style={{position: 'absolute', left: x - 30, width: TW + 60, top: y + TH + 26,
                          textAlign: 'center', opacity: fadeIn(frame, T0 + STEP * i + 6), wordBreak: 'keep-all'}}>
               <span style={{fontFamily: st.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',

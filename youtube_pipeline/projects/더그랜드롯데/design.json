@@ -2467,7 +2467,7 @@
    "StageCard",
    "사 — 라운지 등급",
    {
-    "media": "더그랜드롯데/hotel_corridor_elegant.mp4",
+    "media": "더그랜드롯데/hotel_dining_interior.mp4",
     "lines": [
      [
       {
@@ -3080,7 +3080,9 @@
      }
     ],
     "source": "서울역 · 명동 · 소공동",
-    "align": "center"
+    "align": "center",
+    "plain": true,
+    "scale": 1.0
    }
   ],
   "167": [
@@ -3236,7 +3238,7 @@
    "StageCard",
    "사 — 2020~2022 컨버전",
    {
-    "media": "더그랜드롯데/office_conversion.mp4",
+    "media": "더그랜드롯데/office_empty.mp4",
     "lines": [
      [
       {
