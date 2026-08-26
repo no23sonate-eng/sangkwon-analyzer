@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, interpolate, spring, staticFile,
         useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleBottom} from './paper';
 import {fit} from './layout';
 
 // ── 판 위에 얹은 소재 ─────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ export const MediaPlateCard = ({
   const {fps} = useVideoConfig();
   const dark = T.dark;
 
-  const bandTop = title ? (sub ? 296 : 244) : 132;
+  const bandTop = title ? titleBottom(title, sub) + 20 : 132;
   // 판이 쓸 수 있는 자리. 좌우 여백은 확실히 남긴다 — **여백이 이 카드의 요점**이라
   // 여기서 인색하면 만든 이유가 없어진다.
   //

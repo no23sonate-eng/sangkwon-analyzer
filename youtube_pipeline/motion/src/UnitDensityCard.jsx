@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, titleBottom} from './paper';
 
 // ── 같은 돈을 더 넓은 바닥에 펴면 얇아진다 ────────────────────────────────
 // "디럭스는 슈페리어보다 49% 넓은데 요금은 10%만 비싸다. 그래서 ㎡당 단가는
@@ -36,7 +36,7 @@ export const UnitDensityCard = ({
   const list = items.slice(0, 3);
   if (list.length === 0) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 300 : 248) : 176;
+  const bandTop = title ? titleBottom(title, sub) + 24 : 176;
   const BOT = CONTENT_BOTTOM - (caption ? 62 : 0);
 
   const NAMEH = 96;                       // 방 이름 + 면적 + 요금

@@ -3,7 +3,7 @@ import {AbsoluteFill, delayRender, continueRender, interpolate, staticFile, useC
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, titleBottom} from './paper';
 import {StampLabel} from './annotate';
 import {projector} from './project3d';
 import {fit, estWidth} from './layout';
@@ -143,7 +143,7 @@ export const MassingCard = ({
         const w = estWidth(hot.label, size) + 44;
         return (
           <div style={{position: 'absolute', left: Math.min(1860 - w, Math.max(40, p[0] - w / 2)),
-                       top: Math.max(title ? (sub ? 330 : 276) : 190, p[1] - 128), width: w,
+                       top: Math.max(title ? titleBottom(title, sub) + 52 : 190, p[1] - 128), width: w,
                        opacity: fadeIn(frame, 76)}}>
             <StampLabel top={hot.label} sub={hot.note} size={size} hot align="left" />
           </div>

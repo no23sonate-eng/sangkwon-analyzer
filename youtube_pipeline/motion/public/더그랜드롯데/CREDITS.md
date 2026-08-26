@@ -77,7 +77,6 @@
 | `map_downtown.png` | 지도 타일 z14 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_mapo_busan.png` | 지도 타일 z7 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_myeongdong.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
-| `map_seoulstation.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_sogong.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_sogong_near.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `iota_full.jpg` | iotaseoul.site /img/iota_full.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
@@ -116,3 +115,5 @@
 | `store_interior.mp4` | pexels 32938061 (Spacious Clothing Store Interior) | Pexels, **Pexels License** | `Pexels` |
 | `spa_lounge.jpg` | Pexels photo 7031704 | Pexels License | (표기 의무 없음) |
 | `club_lounge.jpg` | Pexels photo 9959711 | Pexels License | (표기 의무 없음) |
+| `seoul_namsan_sunrise.mp4` | Pexels video 7855642 | Pexels License | (표기 의무 없음) |
+| `map_seoulstation.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |

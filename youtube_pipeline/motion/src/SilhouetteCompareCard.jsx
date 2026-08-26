@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {fit, estWidth} from './layout';
 
 // ── 실루엣 비교 ───────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ export const SilhouetteCompareCard = ({
   const n = items.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 300 : 250) : 170;
+  const bandTop = title ? titleBottom(title, sub) + 26 : 170;
   const hasVal = items.some((it) => it.value);
   // 아래에서부터 자리를 뺀다: 값 칩 → 이름 → 바닥선
   const VALH = hasVal ? 74 : 0;

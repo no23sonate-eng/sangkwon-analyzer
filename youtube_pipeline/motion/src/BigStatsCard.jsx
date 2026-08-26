@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW, titleBottom} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -21,7 +21,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   // 세로도 가운데로 맞춘다. 예전엔 top 을 464 로 박아 놔서 **아래가 텅 비었다** —
   // 가로만 가운데면 "가운데 정렬"이 아니라 "위쪽에 붙은 가운데"다.
   // 쓸 수 있는 띠는 [타이틀 아래 ~ 자막 안전영역 위] 이고, 그 한가운데에 블록을 놓는다.
-  const bandTop = title ? (sub ? 300 : 246) : 150;
+  const bandTop = title ? titleBottom(title, sub) + 22 : 150;
   const hasSub = items.some((it) => it.sub);
   const blockH = 148 + SP.GAP + 56 + (hasSub ? 44 : 0);      // 수치 + 라벨 (+ 보조줄)
   // 수치가 **하나뿐이면** 제목과 수치가 한 덩어리다. 둘 사이를 띠 절반만큼

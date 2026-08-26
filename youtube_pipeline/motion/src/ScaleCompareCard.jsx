@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
 import {fit} from './layout';
 
 // ── 절대 스케일 비교 ─────────────────────────────────────────────────────
@@ -98,7 +98,7 @@ export const ScaleCompareCard = ({
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const baseY = CONTENT_BOTTOM - 74;
-  const topRoom = (title ? (sub ? 300 : 240) : 150);
+  const topRoom = (title ? titleBottom(title, sub) + 16 : 150);
   const maxM = Math.max(...items.map((i) => i.meters || 0), axisStep);
   // 눈금 하나 여유를 두고 축을 잡는다 — 꼭대기 수치가 잘리지 않게
   const room = baseY - topRoom;

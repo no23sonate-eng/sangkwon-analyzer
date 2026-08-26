@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
 
 // 종이 위 아이콘 플로우 (레퍼런스 Stocks→Cash 다이어그램 문법).
 // nodes: [{icon, label, sub, hot}] — 좌→우 화살표 연결, hot 노드는 옐로 박스.
@@ -140,8 +140,8 @@ export const PaperFlowCard = ({
     const x0 = (1920 - SW * n) / 2;
     const baseY = CONTENT_BOTTOM - 40;
     // 가장 높은 칸의 라벨(아이콘 위 2줄)이 타이틀 아래에서 시작하도록 계단 높이를 정한다
-    const titleBottom = title ? (sub ? 285 : 224) : 130;
-    const SH = Math.max(48, Math.min(96, (baseY - titleBottom - 286) / n));
+    const titleBot = titleBottom(title, sub);
+    const SH = Math.max(48, Math.min(96, (baseY - titleBot - 286) / n));
     const topOf = (i) => baseY - (i + 1) * SH;
     return (
       <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -196,7 +196,7 @@ export const PaperFlowCard = ({
   }
 
   if (!exchange && layout === 'vertical' && n) {
-    const TOP = title ? (sub ? 316 : 274) : 190;
+    const TOP = title ? titleBottom(title, sub) + 50 : 190;
     const ROW = Math.min(160, (CONTENT_BOTTOM - 30 - TOP) / n);
     const IX = 560;                       // 아이콘 열 x
     return (

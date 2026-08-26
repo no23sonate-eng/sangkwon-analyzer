@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
 import {StampLabel} from './annotate';
 import {fit} from './layout';
 
@@ -34,7 +34,7 @@ export const ShareSplitCard = ({
   const T = themeOf(theme);
   const dark = T.dark;
 
-  const TOP = title ? (sub ? 300 : 246) : 178;
+  const TOP = title ? titleBottom(title, sub) + 22 : 178;
   const BOT = CONTENT_BOTTOM - 96;
   // 오른쪽에 문구가 앉을 자리를 남긴다 — 필지 안에 쓰면 지분 칸과 겹쳐 안 읽힌다
   const PW = 760, PH = Math.min(340, BOT - TOP - 120);

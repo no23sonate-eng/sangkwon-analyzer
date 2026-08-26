@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 
 // ── 비어 있던 칸에 들어앉는다 ─────────────────────────────────────────────
 // "롯데호텔 서울 위, 시그니엘 아래. 그 사이가 비어 있었고 더그랜드롯데가
@@ -31,7 +31,7 @@ export const PriceLadderCard = ({
   const list = rungs.slice(0, 5);
   if (list.length === 0) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 296 : 244) : 172;
+  const bandTop = title ? titleBottom(title, sub) + 20 : 172;
   const BOT = CONTENT_BOTTOM - (caption ? 58 : 0);
 
   const LX = 430, RX = 1500;

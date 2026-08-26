@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {fit} from './layout';
 
 // ── 단면 · 사람 스케일 ────────────────────────────────────────────────────
@@ -35,7 +35,7 @@ export const SectionScaleCard = ({
   const n = cases.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 300 : 250) : 180;
+  const bandTop = title ? titleBottom(title, sub) + 26 : 180;
   // 아래에 들어갈 것을 **먼저 빼고** 단면 높이를 정한다. 캡션 자리를 안 빼면
   // 안 이름과 캡션이 같은 줄에 겹친다 (실제로 겹쳤다) — 그렇다고 캡션을
   // 자막 안전영역 아래로 내리면 자막과 싸운다

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, TONES, DARK_TONES, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, TONES, DARK_TONES, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 
 // ── 쌓여서 총액이 되는 그래프 (워터폴) ────────────────────────────────
 // "낙찰가 541.5억에 취득세와 기타 비용을 더하면 570억" 같은 말은
@@ -31,7 +31,7 @@ export const CostStackCard = ({
   const tones = dark ? DARK_TONES : TONES;
 
   const total = parts.reduce((a, p) => a + (p.value || 0), 0);
-  const bandTop = title ? (sub ? 300 : 250) : 190;
+  const bandTop = title ? titleBottom(title, sub) + 26 : 190;
   const baseY = CONTENT_BOTTOM - 30;
   const colTop = bandTop + 70;                 // 총액 선이 놓일 높이
   const colH = baseY - colTop;

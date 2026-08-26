@@ -1,8 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, PaperCaption, YELLOW,
-        CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperSource, PaperCaption, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 
 // ── 막대 비교 ─────────────────────────────────────────────────────────────
 // "1,015실이 868실이 됐다" 처럼 **같은 것의 두 시점**을 견줄 때.
@@ -34,7 +33,7 @@ export const BarChartCard = ({
   const n = list.length || 1;
   const maxValue = Math.max(...list.map((b) => Math.abs(Number(b.value)) || 0), 1);
 
-  const bandTop = title ? (sub ? 300 : 250) : 190;
+  const bandTop = title ? titleBottom(title, sub) + 26 : 190;
   const FOOT = 168;                       // 라벨 + 값
   const BASELINE = Math.min(700, CONTENT_BOTTOM - (caption || closingLine ? 96 : 40) - FOOT);
   const MAX_BAR_H = Math.max(160, BASELINE - bandTop - 20);

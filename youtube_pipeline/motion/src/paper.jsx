@@ -82,6 +82,17 @@ export const OPTICAL_CENTER = 512;
 // PaperTitle 이 실제로 차지하는 높이. 스택 높이를 셀 때 쓴다
 export const titleH = (title, sub) => (title ? (sub ? 116 : 76) : 0);
 
+// 제목 덩어리가 **끝나는 y**. 카드가 본문을 이 아래에 놓으면 절대 안 겹친다.
+// 이걸 안 두면 카드마다 `title ? 224 : 122` 처럼 숫자를 손으로 적게 되고,
+// PaperTitle 의 기본 top 을 138→196 으로 내린 날 그 숫자들이 전부 낡았다 —
+// #164 에서 액자가 제목 위로 올라와 글자를 덮었다
+export const titleBottom = (title, sub, align = 'center') => {
+  if (!title) return 122;
+  const top = align === 'left' ? 176 : 196;
+  const line = align === 'left' ? 106 : 96;
+  return top + line + (sub ? 62 : 0);
+};
+
 export const stageTop = (h, {top = 120, bottom = CONTENT_BOTTOM} = {}) => {
   let y = Math.round(OPTICAL_CENTER - h / 2);
   if (y + h > bottom) y = bottom - h;      // 아래로 넘치면 끌어올린다

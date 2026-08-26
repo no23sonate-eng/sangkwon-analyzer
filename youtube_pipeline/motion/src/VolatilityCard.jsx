@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 
 // ── 톱니 대 평지 ──────────────────────────────────────────────────────────
 // "객실 매출은 성수기·비수기를 탄다. 임대 수입은 계약 기간 내내 평탄하다."
@@ -32,7 +32,7 @@ export const VolatilityCard = ({
   const list = series.slice(0, 3).filter((s) => Array.isArray(s.values) && s.values.length > 1);
   if (list.length === 0) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 300 : 248) : 176;
+  const bandTop = title ? titleBottom(title, sub) + 24 : 176;
   const BOT = CONTENT_BOTTOM - (caption ? 58 : 0);
 
   const LX = 220, RX = 1340;          // 오른쪽은 진폭 괄호 + 진폭 값 자리

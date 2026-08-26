@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {fit} from './layout';
 
 // ── 총액 ÷ 개수 = 단가 ────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ export const UnitPriceCard = ({
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
-  const bandTop = title ? (sub ? 292 : 240) : 168;
+  const bandTop = title ? titleBottom(title, sub) + 16 : 168;
   const BOT = CONTENT_BOTTOM - (caption ? 56 : 0);
 
   // 격자 — 가로세로를 √에 가깝게. 다만 **딱 나누어떨어지는 열 수를 먼저 찾는다.**

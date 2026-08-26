@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {fit} from './layout';
 
 // ── 면적 예산 ─────────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ export const AreaBudgetCard = ({
   const frame = useCurrentFrame();
   if (!items.length) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 296 : 244) : 168;
+  const bandTop = title ? titleBottom(title, sub) + 20 : 168;
   const BOT = CONTENT_BOTTOM - (caption ? 74 : 0);
   const H = Math.min(470, BOT - bandTop - SP.BLOCK);
   const W = Math.round(H * 1.36);                 // 대지는 대개 가로가 조금 길다

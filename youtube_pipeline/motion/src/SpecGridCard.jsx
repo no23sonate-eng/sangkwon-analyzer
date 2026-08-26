@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, titleBottom} from './paper';
 
 // ── 스펙시트 ──────────────────────────────────────────────────────────────
 // "지하 3층 지상 38층, 138m, 1,020실" 처럼 **성격이 다른 수치가 나란히**
@@ -28,7 +28,7 @@ export const SpecGridCard = ({
   const GRID_W = 1300, GRID_H = Math.min(520, 260 * ROWS);
   const cellW = GRID_W / COLS, cellH = GRID_H / ROWS;
   const left = (1920 - GRID_W) / 2;
-  const top = title ? (sub ? 300 : 258) : 200;
+  const top = title ? titleBottom(title, sub) + 34 : 200;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>

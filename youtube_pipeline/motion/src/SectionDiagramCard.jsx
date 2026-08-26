@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -46,7 +46,7 @@ export const SectionDiagramCard = ({
   const pad = (yHi - yLo) * 0.14 || 5;
 
   const L = 210, R = 1830;
-  const TOP = title ? (sub ? 300 : 246) : 170;
+  const TOP = title ? titleBottom(title, sub) + 22 : 170;
   const BOT = CONTENT_BOTTOM - 40;
   const SX = (x) => L + (x - x0) / ((x1 - x0) || 1) * (R - L);
   const SY = (y) => BOT - (y - (yLo - pad)) / ((yHi + pad - yLo + pad) || 1) * (BOT - TOP);

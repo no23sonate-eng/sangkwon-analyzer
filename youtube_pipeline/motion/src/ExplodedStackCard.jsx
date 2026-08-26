@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW, titleBottom} from './paper';
 
 // 분해 적층 카드 — 건물 하나를 용도 구간별로 아이소메트릭 판으로 쪼개 위로 띄운다.
 // SectionCard(정면 단면)와 같은 "한 건물"을 다루지만 시점·구성이 달라 화면이 반복되지 않는다.
@@ -48,7 +48,7 @@ export const ExplodedStackCard = ({
 
   const CX = 700, W = 400, D = 120;   // D = 아이소메트릭 깊이(윗면 마름모의 세로 지름)
   const H = 36;                       // 판 두께
-  const TOP = (title ? (sub ? 302 : 262) : 176);
+  const TOP = (title ? titleBottom(title, sub) + 38 : 176);
   const BOTTOM = 796;
   // 판 하나가 세로로 차지하는 높이는 H 가 아니라 (D + H) 다. 이걸 빼먹으면
   // 판끼리 겹쳐서 셰브론처럼 보인다. 간격은 남는 공간을 n-1 로 나눠 자동 산정.

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, INK, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
 import {flow, fit, estWidth} from './layout';
 
 // ── 이력 카드 ────────────────────────────────────────────────────────────
@@ -29,7 +29,7 @@ export const TrackRecordCard = ({
   const T = themeOf(theme);
   const n = items.length;
 
-  const TOP = title ? (sub ? 300 : 244) : 190;
+  const TOP = title ? titleBottom(title, sub) + 20 : 190;
   const BOT = CONTENT_BOTTOM - 20;
   const L = flow({
     blocks: [

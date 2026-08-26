@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, titleBottom} from './paper';
 import {flow, fit} from './layout';
 
 // ── 브랜드 카드 ──────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ export const BrandCard = ({
         <PaperBg theme={theme} {...bg} />
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <div style={{position: 'absolute', left: 0, right: 0,
-                     top: title ? (sub ? 380 : 330) : 300,
+                     top: title ? titleBottom(title, sub) + 106 : 300,
                      display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
           <div style={{height: 200, display: 'flex', alignItems: 'center',
                        opacity: s, transform: `translateY(${logoY}px)`}}>
@@ -96,7 +96,7 @@ export const BrandCard = ({
   // ── split: 왼쪽 정보 / 오른쪽 사진 ────────────────────────────────
   const PX = 1010;                                   // 사진 시작 x
   const PW = 1920 - PX;
-  const top = title ? (sub ? 320 : 268) : 240;
+  const top = title ? titleBottom(title, sub) + 44 : 240;
   const L = flow({
     blocks: [
       {key: 'logo', height: 132},

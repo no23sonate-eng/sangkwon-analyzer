@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, fadeIn, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, fadeIn, LW, titleBottom} from './paper';
 import {HandArrow} from './annotate';
 import {fit} from './layout';
 
@@ -35,7 +35,7 @@ export const SplitProofCard = ({
   const T = themeOf(theme);
   if (!photo || !layers.length) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const TOP = title ? (sub ? 300 : 246) : 170;
+  const TOP = title ? titleBottom(title, sub) + 22 : 170;
   const BOT = 900;
   const midX = 968;
 

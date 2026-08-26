@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {fit} from './layout';
 
 // ── 두 갈래를 좌우 판으로 ──────────────────────────────────────────────
@@ -26,7 +26,7 @@ export const TwoPanelCard = ({
   const ps = panels.slice(0, 2);
   if (ps.length < 2) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 300 : 250) : 200;
+  const bandTop = title ? titleBottom(title, sub) + 26 : 200;
   const midY = Math.round((bandTop + CONTENT_BOTTOM) / 2);
   const HALF = 400;                    // 판 하나의 반폭
   const GAP = 70;                      // 가운데 선에서 판까지

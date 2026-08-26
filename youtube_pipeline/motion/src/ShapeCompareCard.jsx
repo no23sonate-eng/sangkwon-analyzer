@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -30,7 +30,7 @@ export const ShapeCompareCard = ({
   const T = themeOf(theme);
   if (!items.length) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const TOP = title ? (sub ? 300 : 246) : 178;
+  const TOP = title ? titleBottom(title, sub) + 22 : 178;
   const BOT = CONTENT_BOTTOM - (note ? 112 : 56);
   // 아래 치수선 자리는 **쓸 때만** 뗀다. 늘 92px 를 떼 놨더니 dim='left' 만
   // 쓰는 카드에서 그 자리가 통째로 놀고 도형만 작아졌다 (#98 은 도형이

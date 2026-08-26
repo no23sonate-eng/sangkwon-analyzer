@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, fadeIn, LW, titleBottom} from './paper';
 
 // 엘리베이터 카드 — "집에서 엘리베이터를 타고 내려가면 …" 을 그대로 그린다.
 // 하나의 코어 안에서 케이지가 층을 따라 **내려가고**, 멈추는 층의 라벨이 켜진다.
@@ -19,7 +19,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
   const n = stops.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const TOP = title ? (sub ? 316 : 272) : 190;
+  const TOP = title ? titleBottom(title, sub) + 48 : 190;
   const BOT = 790;
   const ROW = (BOT - TOP) / n;
   const yOf = (i) => TOP + ROW * (i + 0.5);

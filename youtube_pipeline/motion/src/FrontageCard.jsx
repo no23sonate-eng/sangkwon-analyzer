@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 import {DimLine} from './annotate';
 import {fit} from './layout';
 
@@ -29,7 +29,7 @@ export const FrontageCard = ({
   const T = themeOf(theme);
   if (options.length < 2) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const TOP = title ? (sub ? 300 : 246) : 178;
+  const TOP = title ? titleBottom(title, sub) + 22 : 178;
   const BOT = CONTENT_BOTTOM - 74;         // 아래 한 줄(note)을 위해 비워 둔다
 
   // 블록을 **위에서부터 흘려** 쌓는다 (layout.jsx flow 와 같은 원칙).

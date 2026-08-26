@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, useVideoConfig, spring, interpolate, Img, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP, LW, stageTop} from './paper';
 
 // 로고 조직도 — "A는 B와 C를 거느린 그룹입니다" 류 문장을 그림으로.
 // 부모 로고가 위 중앙, 자회사 로고가 그 아래 좌우로. 실제 로고는 배경색이
@@ -9,7 +9,7 @@ import {themeOf, PaperBg, PaperSource, CONTENT_BOTTOM, SP, LW} from './paper';
 // opacity 를 밖에서 주면(DataTable intro 단계처럼) 전체를 크로스페이드로
 // 끼워넣을 수 있다.
 export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null,
-                           theme, frame: frameOverride, opacity = 1}) => {
+                           theme, frame: frameOverride, opacity = 1, top = 232}) => {
   const T = themeOf(theme);
   // 데이터를 `children` 으로 받던 카드다. React 예약 이름이라 props 껍데기를
   // 자동으로 읽을 때 통째로 빠진다 — `items` 를 정식 이름으로 두고
@@ -31,10 +31,10 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
   const CHILD_W = 340;
   const CHILD_H = 172;
   const CX = 1920 / 2;
-  const PARENT_TOP = 232;
-  const CHILD_TOP = 560;
+  const PARENT_TOP = top;
+  const CHILD_TOP = PARENT_TOP + 328;
   const CHILD_GAP = 300;
-  const BRANCH_Y = PARENT_TOP + PARENT_H + 55; // 부모-자식 사이 분기점(465)
+  const BRANCH_Y = PARENT_TOP + PARENT_H + 55; // 부모-자식 사이 분기점
 
   // 로고는 배경색이 제각각이라 흰 칩 위에 얹어야 항상 또렷하다.
   // 종이 무대에서도 마찬가지다 — 크림 위에 흰 칩이면 경계가 살짝 서고,
@@ -69,12 +69,13 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
           <Img src={/^https?:/.test(parentLogo) ? parentLogo : staticFile(parentLogo)}
                style={{width: '78%', height: '68%', objectFit: 'contain'}} />
         ) : (
-          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: '#9AA0A8'}}>
-            로고 자리
+          <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, color: '#242830',
+                        letterSpacing: '-0.01em'}}>
+            {parentLabel || '\u00A0'}
           </span>
         )}
       </div>
-      {parentLabel ? (
+      {parentLabel && parentLogo ? (
         <div
           style={{
             position: 'absolute', top: PARENT_TOP + PARENT_H + 14, left: CX - PARENT_W / 2, width: PARENT_W,
@@ -129,31 +130,32 @@ export const LogoOrgCard = ({title = '', subtitle = '', parentLogo = '', parentL
                              items = [], children = [], source = '', theme, bg = {}}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const T = themeOf(theme);
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], {extrapolateRight: 'clamp'});
+  // 제목·부제를 **높이로** 계산해 도식을 그만큼 내린다. 예전엔 부제가 212,
+  // 부모 상자가 232 로 못 박혀 있어 상자가 부제를 덮었다 (#129)
+  const headH = (title ? 60 : 0) + (subtitle ? 46 : 0);
+  const headTop = 150;
+  const BLOCK = 540;      // 부모(200) + 내림(128) + 자식(172) + 이름(40)
+  const dTop = stageTop(BLOCK, {top: headTop + headH + (headH ? SP.BLOCK : 0)});
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} {...bg} />
-      <div
-        style={{
-          position: 'absolute', top: 150, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 42, opacity: titleOpacity, color: themeOf(theme).ink,
-          fontFamily: 'A2Z Medium, sans-serif',
-        }}
-      >
-        {title}
-      </div>
+      {title ? (
+        <div style={{position: 'absolute', top: headTop, left: 0, width: '100%', textAlign: 'center',
+                     fontSize: 42, opacity: titleOpacity, color: T.ink,
+                     fontFamily: 'A2Z Medium, sans-serif'}}>
+          {title}
+        </div>
+      ) : null}
       {subtitle ? (
-        <div
-          style={{
-            position: 'absolute', top: 212, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 28, opacity: titleOpacity, color: themeOf(theme).soft,
-            fontFamily: 'A2Z Light, sans-serif',
-          }}
-        >
+        <div style={{position: 'absolute', top: headTop + (title ? 60 : 0), left: 0, width: '100%',
+                     textAlign: 'center', fontSize: 30, opacity: titleOpacity, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif'}}>
           {subtitle}
         </div>
       ) : null}
-      <OrgDiagram parentLogo={parentLogo} parentLabel={parentLabel}
+      <OrgDiagram parentLogo={parentLogo} parentLabel={parentLabel} top={dTop}
                   items={items} children={children} theme={theme} />
       <PaperSource source={source} theme={theme} />
     </AbsoluteFill>

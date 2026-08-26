@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
 
 // 빌딩 실루엣 비교 카드 v2 — B1M Billionaires' Row 높이차트 정밀 재현.
 // 실제 건물처럼 "인지 가능한 프로파일" 프리셋 + 건물마다 다른 톤 패밀리.
@@ -206,7 +206,7 @@ export const SkylineCompareCard = ({
   const startX = (1920 - slot * n) / 2 + slot / 2;
   // 첨탑형(slender/setback/taper)은 실루엣 위로 20% 더 솟는다 → 그만큼 최대 높이를 깎아
   // 꼭대기 수치(note)가 타이틀 블록과 겹치지 않게 한다.
-  const headroom = (title ? (sub ? 285 : 224) : 130) + (note ? 80 : 36);
+  const headroom = (titleBottom(title, sub)) + (note ? 80 : 36);
   const spire = buildings.some((b) => ['slender', 'setback', 'taper', 'lotte'].includes(b.shape)) ? 0.2 : 0;
   const MH = Math.min(maxH, (baseY - headroom - 54) / (1 + spire));
 
@@ -268,7 +268,7 @@ export const SkylineCompareCard = ({
       })}
       {/* 단서 조항 — 하단은 자막 자리라 **타이틀 바로 아래**에 둔다 */}
       {note ? (
-        <div style={{position: 'absolute', left: 260, width: 1400, top: title ? (sub ? 302 : 232) : 120,
+        <div style={{position: 'absolute', left: 260, width: 1400, top: title ? titleBottom(title, sub) + 17 : 120,
                      textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
                      letterSpacing: '0.03em', color: T.soft, opacity: fadeIn(frame, 64),
                      wordBreak: 'keep-all'}}>

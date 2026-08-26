@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, LW, titleBottom} from './paper';
 
 // ── 같은 면적, 다른 비율 ───────────────────────────────────────────────
 // "4×4 정사각형보다 8×2 직사각형이 사람 눈에 더 길게 들어온다" 는 말은
@@ -26,7 +26,7 @@ export const AspectRatioCard = ({
   const {fps} = useVideoConfig();
   if (items.length < 2) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const bandTop = title ? (sub ? 300 : 250) : 170;
+  const bandTop = title ? titleBottom(title, sub) + 26 : 170;
   const bandH = CONTENT_BOTTOM - bandTop;
 
   // 두 도형이 **한 스케일**을 공유해야 면적 비교가 성립한다.
