@@ -137,7 +137,7 @@ export const CostStackCard = ({
       </div>
 
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM + 22,
+        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
                      textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
                      color: T.soft, opacity: fadeIn(frame, 70), wordBreak: 'keep-all'}}>
           {caption}

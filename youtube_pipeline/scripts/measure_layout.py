@@ -15,7 +15,12 @@
   중심      잉크 덩어리의 세로 한가운데 (px). 1080 프레임의 광학 중심은 약 520
   위여백    화면 위 ~ 잉크 시작
   아래여백  잉크 끝 ~ 1080
-  쏠림      위여백 − 아래여백. **음수면 위로 솟은 것**이고, 클수록 아래로 처진 것
+  벗어남    중심 − 광학중심(512). 음수면 위로 솟은 것, 양수면 처진 것
+  쏠림      위여백 − 아래여백. 참고용 — **이걸 0에 맞추면 안 된다.**
+            광학 중심에 정확히 앉은 덩어리는 쏠림이 −56 으로 나온다
+            (mid=512 ⇒ y0+y1=1024 ⇒ skew = 1024−1080 = −56).
+            처음에 쏠림 −60 을 기준으로 잡았다가 멀쩡한 구도 50컷을
+            "솟았다" 고 잡을 뻔했다. 판단은 **벗어남**으로 한다
 """
 import argparse
 import pathlib
@@ -90,39 +95,35 @@ def main():
             'mid': (y0 + y1) // 2,
             'top': y0,
             'bot': 1080 - y1,
-            'skew': y0 - (1080 - y1),      # 음수 = 위로 솟음
+            'skew': y0 - (1080 - y1),      # 참고용
+            'off': (y0 + y1) // 2 - OPTICAL,   # 광학 중심에서 얼마나 벗어났나
             'fill': fill,
             'full': fill > 0.82,           # 화면을 거의 채운 컷 — 정렬을 논할 게 없다
         }))
 
     if a.csv:
-        print('컷,중심,위여백,아래여백,쏠림,채움')
+        print('컷,중심,위여백,아래여백,쏠림,벗어남,채움')
         for n, r in rows:
             if r:
-                print(f"{n},{r['mid']},{r['top']},{r['bot']},{r['skew']},{r['fill']:.2f}")
+                print(f"{n},{r['mid']},{r['top']},{r['bot']},{r['skew']},{r['off']},{r['fill']:.2f}")
         return
 
     graphic = [(n, r) for n, r in rows if r and not r['full']]
     if not graphic:
         raise SystemExit('잴 컷이 없다')
 
-    mids = sorted(r['mid'] for _, r in graphic)
-    skews = sorted(r['skew'] for _, r in graphic)
+    offs = sorted(abs(r['off']) for _, r in graphic)
     n = len(graphic)
-    print(f'{a.project} — 그래픽 컷 {n}개 (사진 꽉 찬 컷 {len(rows) - n}개는 제외)')
-    print(f'  중심 중앙값 {mids[n // 2]}px   (광학 중심 {OPTICAL})')
-    print(f'  쏠림 중앙값 {skews[n // 2]:+d}px  (음수 = 위로 솟음)')
-    high = [x for x in graphic if x[1]['skew'] < -60]
-    low = [x for x in graphic if x[1]['skew'] > 220]
-    print(f'  위로 솟은 컷 {len(high)}개 · 아래가 텅 빈 컷 {len(low)}개')
+    TOL = 60          # 이만큼 벗어나면 눈에 보인다
+    bad = [x for x in graphic if abs(x[1]['off']) > TOL]
+    print(f'{a.project} — 그래픽 컷 {n}개')
+    print(f'  광학 중심에서 벗어남: 중앙값 {offs[n // 2]}px · 최악 {offs[-1]}px')
+    print(f'  {TOL}px 넘게 벗어난 컷 {len(bad)}개 '
+          f'(위로 {sum(1 for x in bad if x[1]["off"] < 0)} · 아래로 {sum(1 for x in bad if x[1]["off"] > 0)})')
 
-    print(f'\n가장 많이 솟은 {a.top}컷 (쏠림 · 중심 · 위여백 · 아래여백)')
-    for nm, r in sorted(graphic, key=lambda x: x[1]['skew'])[:a.top]:
-        print(f"  {nm:22s} {r['skew']:+5d}  중심 {r['mid']:4d}  위 {r['top']:4d}  아래 {r['bot']:4d}")
-
-    print(f'\n아래가 가장 많이 빈 {a.top}컷')
-    for nm, r in sorted(graphic, key=lambda x: -x[1]['skew'])[:a.top]:
-        print(f"  {nm:22s} {r['skew']:+5d}  중심 {r['mid']:4d}  위 {r['top']:4d}  아래 {r['bot']:4d}")
+    print(f'\n가장 많이 벗어난 {a.top}컷 (벗어남 · 중심 · 위 · 아래)')
+    for nm, r in sorted(graphic, key=lambda x: -abs(x[1]['off']))[:a.top]:
+        print(f"  {nm:22s} {r['off']:+5d}  중심 {r['mid']:4d}  위 {r['top']:4d}  아래 {r['bot']:4d}")
 
 
 if __name__ == '__main__':

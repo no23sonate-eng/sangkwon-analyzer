@@ -95,7 +95,7 @@ export const SitePlotCard = ({
       ) : null}
 
       {note ? (
-        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM + 6,
+        <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 26,
                      textAlign: 'center', opacity: fadeIn(frame, 60),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
           {note}

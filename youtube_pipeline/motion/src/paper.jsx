@@ -299,6 +299,12 @@ export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 
 // "다른 장"이라는 신호를 준다 (B1M 이 챕터를 가를 때 쓰는 방식).
 // top 을 주면 그 자리에 선다. 안 주면 예전처럼 화면 위에 고정된다.
 //
+// 안 줬을 때의 기본 자리도 138 → 196 으로 내렸다. 제목이 화면 맨 위에 떠
+// 있고 본문은 가운데(512)에 있으니 그 사이가 190px 씩 비었고, 그래서
+// [제목+본문] 덩어리의 중심이 위로 끌려 올라갔다. 실측에서 −140px 쏠림이
+// 서로 무관한 카드 열두 종에 똑같이 찍힌 게 이 간격 때문이었다.
+// 제목은 자기가 가리키는 것 가까이 있어야 한다.
+//
 // **왜 필요한가.** 제목도 화면에 찍히는 잉크다. 그런데 제목은 y=138 에 못
 // 박아 두고 본문만 가운데로 옮기면, 보는 사람 눈에는 [제목+본문] 한 덩어리가
 // 위로 쏠린 것으로 보인다. 182컷을 재 보니 98컷이 그랬다.
@@ -309,7 +315,7 @@ export const PaperTitle = ({title, sub = '', dark = false, theme, align = 'cente
   const left = align === 'left';
   const grow = Math.max(0, Math.min(1, (frame - 2) / 14));
   return (
-    <div style={{position: 'absolute', top: top ?? (left ? 118 : 138), left: left ? 150 : 0,
+    <div style={{position: 'absolute', top: top ?? (left ? 176 : 196), left: left ? 150 : 0,
                  width: left ? 1560 : 1920, textAlign: left ? 'left' : 'center',
                  opacity: fadeIn(frame, 0)}}>
       {left ? (

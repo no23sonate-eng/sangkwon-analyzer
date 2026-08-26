@@ -217,6 +217,28 @@ def main():
             if isinstance(v, list) and len(v) > cap:
                 cut_off.append(f"#{e['id']} {e['card']}.{k} {len(v)}개 중 {cap}개만")
 
+    # 배열 안에서 **그림을 결정하는 값**이 비어 있지 않은가.
+    # SilhouetteCompareCard 는 items[].path 가 없으면 건물을 아예 안 그린다.
+    # #40 이 그렇게 바닥선과 이름만 남은 채 [ok] 로 끝났다. 이런 자리는
+    # 카드마다 다르므로 손으로 적는다 — 자동으로 알아낼 방법이 없다
+    REQUIRED_IN = {
+        'SilhouetteCompareCard': ('items', 'path'),
+        'PhotoStepsCard': ('steps', 'photo'),
+        'PhotoSplitCard': ('sides', 'photo'),
+    }
+    hollow = []
+    for e in scenes:
+        spec = REQUIRED_IN.get(e['card'])
+        if not spec:
+            continue
+        arr, key = spec
+        row = design.get(str(e['id']))
+        given = row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {}
+        items = given.get(arr) or []
+        miss = sum(1 for it in items if isinstance(it, dict) and not it.get(key))
+        if items and miss:
+            hollow.append(f"#{e['id']} {e['card']}.{arr}[].{key} {miss}/{len(items)}개 빔")
+
     # props 키가 그 카드에 실제로 있는가.
     # FullBleedCard 에 line1/line2 를 줘도 아무 일도 안 일어난다 — 카드는
     # 기본값으로 그려지고 렌더는 성공한다. 화면이 비었다는 걸 시트에서야
@@ -292,6 +314,10 @@ def main():
         ok = False
         print(f'  ✗ 사진 슬롯에 영상 {len(misvid)}건 — 렌더가 통째로 멈춘다: '
               + ', '.join(misvid[:6]))
+    if hollow:
+        ok = False
+        print(f'  ✗ 그림이 안 그려질 자리 {len(hollow)}건 — 도형만 조용히 사라진다: '
+              + ', '.join(hollow[:6]))
     if cut_off:
         ok = False
         print(f'  ✗ 카드가 말없이 자르는 배열 {len(cut_off)}건 — 화면에서만 사라진다: '

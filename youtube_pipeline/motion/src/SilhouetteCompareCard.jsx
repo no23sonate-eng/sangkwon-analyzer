@@ -76,7 +76,11 @@ export const SilhouetteCompareCard = ({
           const tone = it.hot ? T.ink : (it.tone || T.tones[i % T.tones.length]);
           return (
             <g key={i} transform={`translate(${cx - cw / 2}, ${BOT - hh}) scale(${cw / 100}, ${hh / 100})`}>
-              <path d={it.path} fill={tone} />
+              {/* path 를 안 주면 **아무것도 안 그려진다.** #40 이 그랬다 —
+                  바닥선과 이름만 남고 건물 두 채가 통째로 사라진 채
+                  렌더가 [ok] 로 끝났다. 형상을 모르면 납작한 덩어리로라도
+                  세운다. 높이 비교는 그것만으로도 성립한다 */}
+              <path d={it.path || 'M0 100 L0 6 L100 6 L100 100 Z'} fill={tone} />
             </g>
           );
         })}
@@ -106,7 +110,7 @@ export const SilhouetteCompareCard = ({
       })}
 
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM + 18,
+        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
                      textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
                      color: T.soft, opacity: fadeIn(frame, 60), wordBreak: 'keep-all'}}>
           {caption}

@@ -724,14 +724,16 @@
       "value": 4,
       "hm": 4,
       "note": "4층",
-      "tone": 0
+      "tone": 0,
+      "path": "M0 100 L0 30 L14 30 L14 18 L38 18 L38 8 L50 0 L62 8 L62 18 L86 18 L86 30 L100 30 L100 100 Z"
      },
      {
       "label": "반도호텔",
       "value": 8,
       "hm": 8,
       "note": "8층",
-      "hot": true
+      "hot": true,
+      "path": "M0 100 L0 12 L8 12 L8 4 L92 4 L92 12 L100 12 L100 100 Z"
      }
     ],
     "baseline": true,
@@ -1139,22 +1141,22 @@
    "SilhouetteCompareCard",
    "그 — 삼일빌딩 31층보다 높게",
    {
-    "title": "국내 최고층보다 높게",
-    "sub": "삼일빌딩 31층을 넘긴다",
     "items": [
      {
       "label": "삼일빌딩",
       "value": 31,
       "hm": 31,
       "note": "당시 국내 최고층",
-      "tone": 0
+      "tone": 0,
+      "path": "M0 100 L0 3 L100 3 L100 100 Z"
      },
      {
       "label": "롯데호텔 서울",
       "value": 38,
       "hm": 38,
       "note": "지상 38층",
-      "hot": true
+      "hot": true,
+      "path": "M0 100 L0 74 L12 74 L12 2 L88 2 L88 74 L100 74 L100 100 Z"
      }
     ],
     "caption": "층수 기준",

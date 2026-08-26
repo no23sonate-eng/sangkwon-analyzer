@@ -224,7 +224,7 @@ export const SectionScaleCard = ({
       })}
 
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM + 26,
+        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
                      textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
                      color: T.soft, opacity: fadeIn(frame, 64), wordBreak: 'keep-all'}}>
           {caption}
