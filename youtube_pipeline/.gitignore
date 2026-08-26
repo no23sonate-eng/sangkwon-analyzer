@@ -42,3 +42,7 @@ motion/public/*/*.mov
 # (768px crf30, 컷당 ~60KB)는 커밋한다 — 롤백이 나도 40분짜리 클립
 # 렌더를 다시 돌 이유가 없다
 projects/*/clips/
+
+# fetch_videos.py 가 받는 중에 쓰는 임시 파일. 다 받으면 지우지만, 중간에
+# 끊기면(컨테이너 재시작 등) 남는다 — 저장소에 들어갈 물건이 아니다
+motion/public/*/_dl.bin

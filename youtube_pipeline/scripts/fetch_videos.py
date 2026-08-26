@@ -47,6 +47,7 @@ def main():
         raise SystemExit(f'{tsv} 가 없다 — 영상 소재를 쓰는 편이면 이 파일이 있어야 한다')
 
     tmp = pdir / '_dl.bin'
+    tmp.unlink(missing_ok=True)      # 지난번에 끊겨 남은 게 있으면 먼저 치운다
     got = miss = skip = 0
     for line in tsv.read_text().splitlines():
         line = line.strip()
