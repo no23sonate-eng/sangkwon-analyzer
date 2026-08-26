@@ -80,3 +80,22 @@
 | `map_seoulstation.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_sogong.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `map_sogong_near.png` | 지도 타일 z17 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
+| `iota_full.jpg` | iotaseoul.site /img/iota_full.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_namsan.jpg` | iotaseoul.site /img/iota_full_3.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_tower.jpg` | iotaseoul.site /img/iota2.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_seoulstation_2032.jpg` | iotaseoul.site /img/2032_seoulstation.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_area_map.jpg` | iotaseoul.site /img/namsan_map2.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_terrace.jpg` | iotaseoul.site /img/foster_iota.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `logo_foster_partners.jpg` | iotaseoul.site /img/foster+partners.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_aerial.jpg` | iotaseoul.site /img/scale.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `seoul_namsan_panorama.jpg` | iotaseoul.site /img/namsan.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `iota_floorplate.jpg` | iotaseoul.site /img/largeplate.webp | **저작권물 · 출처 표기 사용** | `이오타 서울` |
+| `hotel_chandelier.mp4` | pexels 34555902 (Elegant Chandelier in Luxurious Hotel Lobby) | Pexels, **Pexels License** | `Pexels` |
+| `hotel_grand_interior.mp4` | pexels 34867898 (Elegant Interior of Parisi Udvar Hotel) | Pexels, **Pexels License** | `Pexels` |
+| `hotel_lobby_walk.mp4` | pexels 6474635 (Elegant Women Walking in Hotel Lobby) | Pexels, **Pexels License** | `Pexels` |
+| `seoul_aerial.mp4` | pexels 38734543 (Aerial View of Bustling Seoul Cityscape) | Pexels, **Pexels License** | `Pexels` |
+| `seoul_sunset.mp4` | pexels 38259256 (Aerial View of Seoul Cityscape at Sunset) | Pexels, **Pexels License** | `Pexels` |
+| `namsan_tower_aerial.mp4` | pexels 30975008 (Aerial View of Namsan Seoul Tower at Sunset) | Pexels, **Pexels License** | `Pexels` |
+| `seoul_intersection.mp4` | pexels 37971704 (Bustling Seoul City Intersection) | Pexels, **Pexels License** | `Pexels` |
+| `seoul_riverside.mp4` | pexels 38259254 (Aerial View of Seoul's Riverside at Sunset) | Pexels, **Pexels License** | `Pexels` |
+| `seoul_downtown_aerial.mp4` | pexels 29980567 (Aerial View of Downtown Seoul Cityscape) | Pexels, **Pexels License** | `Pexels` |
