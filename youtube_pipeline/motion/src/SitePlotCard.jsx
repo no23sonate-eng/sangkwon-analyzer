@@ -3,7 +3,7 @@ import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, SP, OPTICAL_CENTER} from './paper';
 import {fit} from './layout';
 
 // ── 대지 한 필지 (실제 3D) ──────────────────────────────────────────────
@@ -68,7 +68,7 @@ export const SitePlotCard = ({
       {/* 면적 — 판 한가운데. 3D 위에 얹되 화면 정중앙에 고정한다.
           투영으로 따라다니게 하면 판이 돌 때 글자가 흔들려 읽기 힘들다 */}
       {area ? (
-        <div style={{position: 'absolute', left: 0, right: 0, top: 470,
+        <div style={{position: 'absolute', left: 0, right: 0, top: OPTICAL_CENTER - 66,
                      textAlign: 'center', opacity: fadeIn(frame, 30)}}>
           <span style={{fontFamily: 'A2Z Medium, sans-serif',
                         fontSize: 132, lineHeight: 1, color: '#1B1E24',

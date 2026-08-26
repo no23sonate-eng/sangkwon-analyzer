@@ -61,7 +61,10 @@ export const PhotoStepsCard = ({
 
   const TW = Math.round(Math.min(340, 1560 / n) * scale);   // 타일 폭
   const TH = Math.round(TW * 0.78);
-  const gap = Math.max(60, ((1720 - TW * n) / Math.max(1, n - 1)) * gapScale);
+  // 간격을 **화면을 채우도록** 잡으면 (1720 - TW*n)/(n-1) 타일이 좌우로
+  // 흩어져 슬라이드처럼 읽힌다 — 셋이면 350px 이 벌어졌다 (#166).
+  // 타일 폭에 비례해 묶어 두고, 벌리고 싶을 때만 gapScale 로 벌린다
+  const gap = Math.max(48, TW * 0.28) * gapScale;
   const x0 = (1920 - (TW * n + gap * (n - 1))) / 2;
   const cy = 470;                            // 타일 세로 중심
   const cx = (i) => x0 + i * (TW + gap) + TW / 2;
