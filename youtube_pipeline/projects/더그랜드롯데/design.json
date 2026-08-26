@@ -8,13 +8,28 @@
  ],
  "cuts": {
   "0": [
-   "FullBleedCard",
-   "사 — 더그랜드롯데 정문 · 새 간판",
+   "StageCard",
+   "사 — 후킹. 실제 건물 위에 한 줄",
    {
-    "image": "더그랜드롯데/grand_lotte_entrance.jpg",
-    "headline": "47년 만에 간판이 바뀌었다",
-    "scrim": 0.42,
-    "source": "롯데호텔",
+    "media": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "lines": [
+     [
+      {
+       "t": "47년 만에"
+      }
+     ],
+     [
+      {
+       "t": "간판 교체",
+       "hot": true
+      }
+     ]
+    ],
+    "kicker": "",
+    "note": "",
+    "scrim": 0.46,
+    "size": 118,
+    "source": "롯데호텔 서울",
     "_motion": {
      "still": true
     }
@@ -46,8 +61,8 @@
     "count": 15,
     "countUnit": "개월",
     "value": "15개월",
-    "bgImage": "더그랜드롯데/construction.mp4",
-    "veil": 0.38,
+    "bgImage": "더그랜드롯데/interior_renovation.mp4",
+    "veil": 0.34,
     "source": "뉴스웨이 2026.7.28"
    }
   ],
@@ -109,7 +124,8 @@
      }
     ],
     "closingLine": "−147실",
-    "source": "뉴스웨이 2026.7.28"
+    "source": "뉴스웨이 2026.7.28",
+    "arrow": true
    }
   ],
   "6": [
@@ -140,7 +156,8 @@
     "fit": "contain",
     "ground": "#FFFFFF",
     "kenBurns": false,
-    "source": "롯데호텔"
+    "source": "롯데호텔",
+    "pad": 14
    }
   ],
   "8": [
@@ -309,7 +326,7 @@
    {
     "scrim": 0.5,
     "source": "뉴스1",
-    "image": "더그랜드롯데/grand_lotte_dusk.jpg"
+    "image": "더그랜드롯데/myeongdong_street.jpg"
    }
   ],
   "20": [
@@ -329,7 +346,8 @@
      ]
     ],
     "sub": "여기서 숫자를 하나 봐야 한다",
-    "theme": "ink"
+    "theme": "ink",
+    "align": "center"
    }
   ],
   "21": [
@@ -480,7 +498,7 @@
    {
     "value": "약 −11%",
     "subtitle": "객실을 20% 줄였을 때 전체 매출 영향",
-    "bgImage": "더그랜드롯데/grand_lotte_night.jpg",
+    "bgImage": "더그랜드롯데/grand_lotte_dusk.jpg",
     "veil": 0.72,
     "caption": "객실 비중 54% 를 적용한 개략값",
     "source": "DART 2026.8.14 · 롯데호텔"
@@ -643,9 +661,9 @@
    {
     "title": "단순한 호텔이 아니었다",
     "from": "호텔",
-    "fromLabel": "흔한 짐작",
     "to": "호텔 + 임대상가 + 사무실",
-    "toLabel": "실제",
+    "fromLabel": "",
+    "toLabel": "",
     "source": "경향신문 2024.1.11 · 여행신문 1998.1.23",
     "theme": "blueprint"
    }
@@ -771,11 +789,13 @@
    "PaperImageCard",
    "사 — 조선호텔 정문 · 작업복 차림",
    {
-    "title": "차림새가 어울리지 않는다는 이유로 쫓겨난다",
-    "sub": "조선호텔",
-    "source": "조선호텔 자료사진",
     "image": "더그랜드롯데/chosun_hotel_1930s.jpg",
-    "theme": "blueprint"
+    "title": "조선호텔",
+    "caption": "차림새가 어울리지 않는다는 이유로 쫓겨난다",
+    "source": "조선호텔 자료사진",
+    "theme": "blueprint",
+    "fit": "cover",
+    "kenBurns": true
    }
   ],
   "44": [
@@ -1123,7 +1143,7 @@
     "note": "외국 기업에 로열티를 주지 않는다",
     "caption": "참고 이미지 — 시기에 따라 실제 로고와 다를 수 있다",
     "source": "롯데호텔 (참고 이미지)",
-    "theme": "blueprint"
+    "theme": "paper"
    }
   ],
   "64": [
@@ -1225,9 +1245,9 @@
   ],
   "69": [
    "FullBleedCard",
-   "사 — 1979년 롯데호텔 전경",
+   "사 — 1979년 무렵 서울",
    {
-    "image": "더그랜드롯데/lotte_hotel_seoul_facade.jpg",
+    "image": "더그랜드롯데/old_seoul_station.jpg",
     "sub": "",
     "source": "롯데호텔 서울",
     "theme": "blueprint"
@@ -1255,21 +1275,14 @@
       "sub": "1979년 건설비",
       "photo": "더그랜드롯데/lotte_hotel_seoul_aerial.jpg",
       "stat": "1억 5,000만",
-      "statUnit": "달러",
-      "lines": [
-       "지상 38층 · 1,020실"
-      ]
+      "statUnit": "달러"
      },
      {
       "name": "경부고속도로",
       "sub": "총공사비",
       "photo": "더그랜드롯데/gyeongbu_aerial.jpg",
       "stat": "1억 9,000만",
-      "statUnit": "달러",
-      "lines": [
-       "서울–부산 428km"
-      ],
-      "hot": true
+      "statUnit": "달러"
      }
     ],
     "verdict": "환율 기준에 따라 달라지는 값 — 대본 수치를 그대로 옮겼다",
@@ -1353,7 +1366,8 @@
      ]
     ],
     "sub": "3장에서 뜯어본다",
-    "theme": "blueprint"
+    "theme": "blueprint",
+    "align": "center"
    }
   ],
   "76": [
@@ -1395,7 +1409,8 @@
      }
     ],
     "caption": "주말 1박 · 성인 2명 · 세금·봉사료 포함 · 메인타워 시티뷰",
-    "source": "롯데호텔 공식 예약 페이지 직접 조회"
+    "source": "롯데호텔 공식 예약 페이지 직접 조회",
+    "theme": "ink"
    }
   ],
   "78": [
@@ -1424,7 +1439,7 @@
      ]
     ],
     "sub": "면적과 요금이 같은 방향으로 안 간다",
-    "bgImage": "더그랜드롯데/grand_lotte_room2.jpg",
+    "bgImage": "더그랜드롯데/grand_lotte_entrance.jpg",
     "source": "롯데호텔"
    }
   ],
@@ -1453,7 +1468,9 @@
     "title": "그런데 요금은",
     "value": "+10%",
     "subtitle": "635,250원 → 698,775원",
-    "source": "롯데호텔 공식 예약 페이지 직접 조회"
+    "source": "롯데호텔 공식 예약 페이지 직접 조회",
+    "bgImage": "더그랜드롯데/grand_lotte_room2.jpg",
+    "veil": 0.36
    }
   ],
   "82": [
@@ -1482,7 +1499,11 @@
      }
     ],
     "caption": "635,250원 ÷ 27.8㎡ (면적 중간값)",
-    "source": "롯데호텔 공식 예약 페이지 직접 조회"
+    "source": "롯데호텔 공식 예약 페이지 직접 조회",
+    "bg": {
+     "backdrop": "더그랜드롯데/hotel_room_namsan_view.jpg",
+     "veil": 0.82
+    }
    }
   ],
   "84": [
@@ -2045,7 +2066,7 @@
    "StageCard",
    "사 — 새 웨딩 콘셉트. 이름만",
    {
-    "media": "더그랜드롯데/banquet_dinner.mp4",
+    "media": "더그랜드롯데/wedding_hall_setup.mp4",
     "lines": [
      [
       {
@@ -2720,7 +2741,7 @@
    "StageCard",
    "사 — 객실 수와 인테리어 디자이너",
    {
-    "media": "더그랜드롯데/hotel_room_namsan_view.jpg",
+    "media": "더그랜드롯데/crystal_ballroom_led.jpg",
     "lines": [
      [
       {

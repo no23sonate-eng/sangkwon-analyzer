@@ -131,3 +131,7 @@
 | `club_lounge2.jpg` | Pexels photo 18426842 | Pexels License | (표기 의무 없음) |
 | `_skip.jpg` | Pexels photo 31080809 | Pexels License | (표기 의무 없음) |
 | `hotel_dining_interior.mp4` | Pexels video 857151 | Pexels License | (표기 의무 없음) |
+| `interior_painting.jpg` | Pexels photo 36153946 | Pexels License | (표기 의무 없음) |
+| `room_renovation.jpg` | Pexels photo 3615725 | Pexels License | (표기 의무 없음) |
+| `wedding_hall_setup.mp4` | Pexels video 3122106 | Pexels License | (표기 의무 없음) |
+| `interior_renovation.mp4` | Pexels video 6474074 | Pexels License | (표기 의무 없음) |
