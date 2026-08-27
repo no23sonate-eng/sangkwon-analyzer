@@ -405,21 +405,21 @@
    {
     "unit": "억원",
     "totalLabel": "호텔사업부",
-    "totalDisplay": "7,657억원",
+    "totalDisplay": "7,657",
     "parts": [
      {
       "label": "객실",
       "value": 4135,
-      "display": "4,135억",
+      "display": "4,135",
       "hot": true
      },
      {
-      "label": "임대·식음료·기타",
+      "label": "식음료 · 기타",
       "value": 3522,
-      "display": "3,522억"
+      "display": "3,522"
      }
     ],
-    "source": "DART 2026.8.14"
+    "source": "DART 호텔롯데 반기보고서 2026.8.14"
    }
   ],
   "25": [
@@ -436,41 +436,36 @@
       "hot": true
      }
     ],
-    "source": "DART 2026.8.14"
+    "source": "DART 호텔롯데 반기보고서 2026.8.14"
    }
   ],
   "26": [
    "CostStackCard",
-   "그 — 임대·식음료·기타가 쌓인다",
+   "그 — 객실 외 수입이 쌓인다",
    {
     "unit": "억원",
     "totalLabel": "호텔사업부 매출",
-    "totalDisplay": "7,657억원",
+    "totalDisplay": "7,657",
     "parts": [
      {
       "label": "객실",
       "value": 4135,
-      "display": "4,135억"
-     },
-     {
-      "label": "임대",
-      "value": 1400,
-      "display": "약 1,400억",
-      "hot": true
+      "display": "4,135"
      },
      {
       "label": "식음료",
-      "value": 1500,
-      "display": "약 1,500억"
+      "value": 1755,
+      "display": "1,755",
+      "hot": true
      },
      {
       "label": "기타",
-      "value": 622,
-      "display": "약 622억"
+      "value": 1766,
+      "display": "1,766"
      }
     ],
-    "caption": "임대·식음료·기타 배분은 공시 총액에서 역산한 추정치다",
-    "source": "DART 2026.8.14"
+    "caption": "기타 = 기타수입 · 봉사료 · 헬스 · 사우나 · 임대",
+    "source": "DART 호텔롯데 반기보고서 2026.8.14"
    }
   ],
   "27": [
@@ -489,9 +484,8 @@
      "label": "나머지",
      "sub": "46%",
      "lines": [
-      "임대",
       "식음료",
-      "기타"
+      "기타 수입"
      ],
      "hot": true
     },
@@ -534,7 +528,7 @@
    "그 — 객실 절반, 나머지는 연회·식음료",
    {
     "title": "특급호텔 매출 구성",
-    "unit": "%",
+    "unit": "",
     "totalLabel": "호텔 매출",
     "totalDisplay": "100%",
     "parts": [
@@ -1253,13 +1247,13 @@
       "y": 0.5,
       "zoom": 1.18,
       "label": "지상 38층 · 138m",
-      "sub": "1,020실 · 1979.3.10",
+      "sub": "개관 당시 1,020실 · 1979.3.10",
       "side": "right",
       "hot": true,
       "hold": 44
      }
     ],
-    "source": "연합뉴스"
+    "source": "한국경제인협회 e뮤지엄 · 연합뉴스"
    }
   ],
   "69": [
@@ -1280,7 +1274,7 @@
     "subtitle": "1979년 롯데호텔 서울 건설비",
     "bgImage": "더그랜드롯데/gyeongbu_ceremony.jpg",
     "veil": 0.5,
-    "source": "한국경제인협회 e뮤지엄 · 환율 기준에 따라 달라지는 값",
+    "source": "한국경제인협회 e뮤지엄",
     "theme": "blueprint"
    }
   ],
@@ -1304,8 +1298,7 @@
       "statUnit": "달러"
      }
     ],
-    "verdict": "환율 기준에 따라 달라지는 값 — 대본 수치를 그대로 옮겼다",
-    "source": "롯데호텔 서울 · 뉴스뱅크이미지",
+    "source": "한국경제인협회 e뮤지엄 · 사진 뉴스뱅크이미지",
     "theme": "blueprint"
    }
   ],
@@ -1607,7 +1600,7 @@
   ],
   "88": [
    "BarChartCard",
-   "그 — 브랜드별 매출 비중 6개",
+   "그 — 브랜드별 매출 비중 7개",
    {
     "bars": [
      {
@@ -1617,6 +1610,11 @@
      },
      {
       "label": "시그니엘",
+      "value": 5,
+      "displayValue": "5%"
+     },
+     {
+      "label": "스카이힐CC",
       "value": 5,
       "displayValue": "5%"
      },
@@ -1642,8 +1640,8 @@
       "hot": true
      }
     ],
-    "source": "DART 2026.8.14",
-    "caption": "대본 수치 · 합이 100% 가 되지 않는다(95%)"
+    "source": "DART 호텔롯데 반기보고서 2026.8.14",
+    "caption": "2026.6.30 기준 브랜드별 비중"
    }
   ],
   "89": [
@@ -1809,32 +1807,41 @@
    "그 — 외국인 의료 이용금액 +98%",
    {
     "title": "외국인 의료 이용금액",
-    "sub": "BC카드 기준 · 2026년 상반기 · 전년 동기 대비",
+    "sub": "BC카드 기준 · 상반기 · 전년 동기 = 100",
     "bars": [
      {
-      "label": "전체 카드 이용액",
-      "value": 12,
-      "displayValue": "+12%"
+      "label": "2025 상반기",
+      "value": 100,
+      "displayValue": "100"
      },
      {
-      "label": "외국인 의료 이용금액",
-      "value": 98,
-      "displayValue": "+98%",
+      "label": "2026 상반기",
+      "value": 198,
+      "displayValue": "198",
+      "subValue": "+98%",
       "hot": true
      }
     ],
-    "caption": "비교군은 참고용 개략값",
-    "source": "BC카드 · 비즈워치 2026.8.14"
+    "arrow": true,
+    "caption": "전년 동기를 100으로 놓은 지수 — 증가율 98%를 그대로 옮긴 값",
+    "source": "BC카드 · 더퍼블릭 2026.8.3"
    }
   ],
   "99": [
-   "ArticleCard",
-   "자료 — 외국인 의료 이용금액 기사",
+   "RatioCard",
+   "그 — 의료 소비의 92.8%가 서울",
    {
-    "outlet": "비즈워치",
-    "date": "2026.8.14",
-    "body": "BC카드 기준 2026년 상반기 외국인 의료 이용금액은 전년 동기 대비 98% 늘었다. «그중 92.8%가 서울에서 발생했다.» 명동·강남 등 관광객이 몰리는 상권에 집중되는 흐름이다.",
-    "source": "비즈워치 2026.8.14"
+    "unit": "%",
+    "mode": "circle",
+    "items": [
+     {
+      "label": "서울에서 발생",
+      "pct": 92.8,
+      "sub": "외국인 의료 소비",
+      "hot": true
+     }
+    ],
+    "source": "BC카드 · 더퍼블릭 2026.8.3"
    }
   ],
   "100": [
@@ -1887,24 +1894,23 @@
    }
   ],
   "103": [
-   "TimelineBarsCard",
-   "그 — 체류 기간이 늘어난다",
+   "StageCard",
+   "사 — 호텔 안에서 받는 진료",
    {
-    "kicker": "체류 기간",
-    "sub": "일반 관광 vs 의료 관광",
-    "bars": [
-     {
-      "label": "일반 관광",
-      "months": 3
-     },
-     {
-      "label": "의료 관광",
-      "months": 7,
-      "hot": true
-     }
+    "media": "더그랜드롯데/clinic_derma.jpg",
+    "lines": [
+     [
+      {
+       "t": "숙박 "
+      },
+      {
+       "t": "+ 의료",
+       "hot": true
+      }
+     ]
     ],
-    "caption": "칸 하나가 1박 — 업계 통상 범위를 적용한 개략값",
-    "source": "비즈워치 2026.8.14"
+    "scrim": 0.52,
+    "source": "Pexels"
    }
   ],
   "104": [
@@ -2155,32 +2161,27 @@
    "그 — 연회·웨딩이 차지하는 자리",
    {
     "unit": "%",
-    "totalLabel": "호텔 매출",
-    "totalDisplay": "100%",
+    "totalLabel": "호텔사업부 매출",
+    "totalDisplay": "100",
     "parts": [
      {
       "label": "객실",
       "value": 54,
-      "display": "54%"
+      "display": "54"
      },
      {
-      "label": "식음료 · 연회",
-      "value": 20,
-      "display": "약 20%",
+      "label": "식음료",
+      "value": 23,
+      "display": "23",
       "hot": true
      },
      {
-      "label": "임대",
-      "value": 18,
-      "display": "약 18%"
-     },
-     {
       "label": "기타",
-      "value": 8,
-      "display": "약 8%"
+      "value": 23,
+      "display": "23"
      }
     ],
-    "caption": "연회·웨딩은 식음료에 포함된다 · 임대·기타 배분은 공시 총액에서 역산한 추정치",
+    "caption": "연회·웨딩은 식음료수입에 들어간다 · 기타는 임대·봉사료 등을 포함",
     "source": "DART 호텔롯데 반기보고서 2026.8.14"
    }
   ],
