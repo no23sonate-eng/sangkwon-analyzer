@@ -2945,7 +2945,7 @@
    "BrandCard",
    "그 — 리츠칼튼 선정",
    {
-    "logo": "더그랜드롯데/logo_ritz_carlton.png",
+    "logo": "더그랜드롯데/logo_ritz_carlton_corp.jpg",
     "name": "리츠칼튼",
     "line": "2031년 이오타 서울 개장 예정",
     "logoScale": 2.6,
@@ -3108,7 +3108,7 @@
       "media": "더그랜드롯데/club_lounge.jpg",
       "name": "리츠칼튼",
       "sub": "이오타 서울 · 2031",
-      "logo": "더그랜드롯데/logo_ritz_carlton.png"
+      "logo": "더그랜드롯데/logo_ritz_carlton_corp.jpg"
      },
      {
       "media": "더그랜드롯데/brand_bg_3.jpg",
