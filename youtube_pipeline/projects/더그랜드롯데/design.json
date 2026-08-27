@@ -545,7 +545,7 @@
       "hot": true
      },
      {
-      "label": "연회 · 식음료 등",
+      "label": "연회 · 식음료 · 임대 등",
       "value": 46,
       "display": "나머지"
      }
@@ -1189,7 +1189,7 @@
       "label": "삼일빌딩",
       "value": 31,
       "hm": 31,
-      "note": "당시 국내 최고층",
+      "note": "31층 · 110m",
       "tone": 0,
       "path": "M0 100 L0 3 L100 3 L100 100 Z"
      },
@@ -1280,7 +1280,7 @@
     "subtitle": "1979년 롯데호텔 서울 건설비",
     "bgImage": "더그랜드롯데/gyeongbu_ceremony.jpg",
     "veil": 0.5,
-    "source": "경부고속도로 개통식 자료사진",
+    "source": "한국경제인협회 e뮤지엄 · 환율 기준에 따라 달라지는 값",
     "theme": "blueprint"
    }
   ],
@@ -1642,7 +1642,8 @@
       "hot": true
      }
     ],
-    "source": "DART 2026.8.14"
+    "source": "DART 2026.8.14",
+    "caption": "대본 수치 · 합이 100% 가 되지 않는다(95%)"
    }
   ],
   "89": [
@@ -1668,7 +1669,7 @@
    "StatCard",
    "그 — 이미 앉아 있는 값",
    {
-    "value": "약 30만원",
+    "value": "약 50만원",
     "subtitle": "롯데호텔 서울 1박",
     "caption": "공시 요금 기준 · 대표값으로 단순화했다",
     "source": "뉴스웨이 2026.7.28"
@@ -2163,23 +2164,23 @@
       "display": "54%"
      },
      {
-      "label": "식음료",
+      "label": "식음료 · 연회",
       "value": 20,
-      "display": "약 20%"
-     },
-     {
-      "label": "연회·웨딩",
-      "value": 18,
-      "display": "약 18%",
+      "display": "약 20%",
       "hot": true
      },
      {
-      "label": "임대·기타",
+      "label": "임대",
+      "value": 18,
+      "display": "약 18%"
+     },
+     {
+      "label": "기타",
       "value": 8,
       "display": "약 8%"
      }
     ],
-    "caption": "업계 통상 범위를 적용한 개략값",
+    "caption": "연회·웨딩은 식음료에 포함된다 · 임대·기타 배분은 공시 총액에서 역산한 추정치",
     "source": "DART 호텔롯데 반기보고서 2026.8.14"
    }
   ],
@@ -2277,7 +2278,7 @@
       "hot": true
      }
     ],
-    "note": "약 1,600㎡",
+    "note": "1,614㎡",
     "source": "롯데 영플라자"
    }
   ],
@@ -2335,7 +2336,7 @@
    "StageCard",
    "사 — 1988년 신관 개점 이후",
    {
-    "media": "더그랜드롯데/shinsegae_night.jpg",
+    "media": "더그랜드롯데/young_plaza.jpg",
     "lines": [
      [
       {
@@ -2350,7 +2351,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "신세계백화점 본점"
+    "source": "롯데백화점 본점"
    }
   ],
   "128": [
