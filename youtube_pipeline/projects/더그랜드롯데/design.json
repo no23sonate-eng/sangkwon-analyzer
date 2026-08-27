@@ -322,12 +322,17 @@
    }
   ],
   "19": [
-   "FullBleedCard",
-   "사 — 명동 4성급 호텔 외관",
+   "StageCard",
+   "사 — 명동 4성급 호텔",
    {
-    "scrim": 0.5,
-    "source": "뉴스1",
-    "image": "더그랜드롯데/myeongdong_street.jpg"
+    "media": "더그랜드롯데/hotel_city_block.jpg",
+    "lines": [
+     []
+    ],
+    "kicker": "",
+    "note": "",
+    "scrim": 0.4,
+    "source": "Pexels"
    }
   ],
   "20": [
@@ -1676,8 +1681,8 @@
     "bars": [
      {
       "label": "롯데호텔 서울",
-      "value": 30,
-      "displayValue": "약 30만원"
+      "value": 50,
+      "displayValue": "약 50만원"
      },
      {
       "label": "비어 있는 칸",
@@ -1703,8 +1708,8 @@
     "bars": [
      {
       "label": "롯데호텔 서울",
-      "value": 30,
-      "displayValue": "약 30만원"
+      "value": 50,
+      "displayValue": "약 50만원"
      },
      {
       "label": "더그랜드롯데 서울",
@@ -1774,36 +1779,51 @@
    }
   ],
   "97": [
-   "FullBleedCard",
+   "StageCard",
    "사 — 의료시설",
    {
-    "image": "더그랜드롯데/clinic.jpg",
-    "headline": "갑자기 의료시설?",
-    "scrim": 0.45,
+    "media": "더그랜드롯데/clinic_modern.mp4",
+    "lines": [
+     [
+      {
+       "t": "갑자기 "
+      },
+      {
+       "t": "의료시설",
+       "hot": true
+      },
+      {
+       "t": "?"
+      }
+     ]
+    ],
+    "kicker": "",
+    "note": "",
+    "scrim": 0.5,
     "source": "Pexels"
    }
   ],
   "98": [
-   "TrendCard",
+   "BarChartCard",
    "그 — 외국인 의료 이용금액 +98%",
    {
-    "kicker": "외국인 의료 이용금액",
-    "sub": "BC카드 기준 · 2026년 상반기",
-    "series": [
-     {
-      "label": "외국인 의료 이용금액",
-      "pct": 98,
-      "display": "+98%",
-      "hot": true
-     },
+    "title": "외국인 의료 이용금액",
+    "sub": "BC카드 기준 · 2026년 상반기 · 전년 동기 대비",
+    "bars": [
      {
       "label": "전체 카드 이용액",
-      "pct": 12,
-      "display": "+12%"
+      "value": 12,
+      "displayValue": "+12%"
+     },
+     {
+      "label": "외국인 의료 이용금액",
+      "value": 98,
+      "displayValue": "+98%",
+      "hot": true
      }
     ],
-    "caption": "전년 동기 대비 · 비교군은 참고용 개략값",
-    "source": "비즈워치 2026.8.14"
+    "caption": "비교군은 참고용 개략값",
+    "source": "BC카드 · 비즈워치 2026.8.14"
    }
   ],
   "99": [
@@ -1825,30 +1845,13 @@
    }
   ],
   "101": [
-   "PhotoStepsCard",
-   "사 — 피부과·치과·성형외과 세 장",
+   "ArticleCard",
+   "자료 — 롯데시티호텔 마포 메디컬 클리닉",
    {
-    "title": "롯데는 이미 해봤다",
-    "sub": "진료실 이미지는 참고용",
-    "steps": [
-     {
-      "label": "피부과",
-      "sub": "",
-      "photo": "더그랜드롯데/clinic_derma.jpg"
-     },
-     {
-      "label": "치과",
-      "sub": "",
-      "photo": "더그랜드롯데/clinic_dental.jpg"
-     },
-     {
-      "label": "성형외과",
-      "sub": "",
-      "hot": true,
-      "photo": "더그랜드롯데/clinic_skin.jpg"
-     }
-    ],
-    "source": "비즈워치 2026.8.14 · 이미지 Pexels"
+    "outlet": "비즈워치",
+    "date": "2026.8.14",
+    "body": "롯데시티호텔 마포에는 «피부과 · 치과 · 성형외과»가 들어간 메디컬 클리닉이 운영 중이다. 호텔이 «의료를 붙여 본 사례»는 이미 있다.",
+    "source": "비즈워치 2026.8.14 · 롯데호텔"
    }
   ],
   "102": [
@@ -1908,8 +1911,10 @@
    "사 — 명동을 걷는 관광객",
    {
     "image": "더그랜드롯데/myeongdong_crowd.jpg",
-    "source": "이데일리",
-    "sub": "명동을 찾는 관광객"
+    "headline": "명동을 찾는 관광객",
+    "sub": "",
+    "scrim": 0.48,
+    "source": "이데일리"
    }
   ],
   "105": [
@@ -1919,10 +1924,7 @@
     "outlet": "뉴스퀘스트",
     "date": "2026.6.26",
     "body": "아정당 김민기 대표가 청담동 1번지 건물을 낙찰받았다. «5차례 유찰된 하이엔드 사교클럽 건물로, 헐지 않고 리모델링해 외국인 대상 뷰티·성형 복합시설로 전환할 계획인 것으로 알려졌다.»",
-    "portrait": "더그랜드롯데/ajeongdang_thumb.jpg",
-    "who": "청담동 1번지",
-    "role": "낙찰 대상 건물",
-    "source": "뉴스퀘스트 2026.6.26 · 본 채널"
+    "source": "뉴스퀘스트 2026.6.26"
    }
   ],
   "106": [
@@ -1970,7 +1972,7 @@
    {
     "title": "객실은 계절을 타고, 임대는 타지 않는다",
     "sub": "같은 건물 안의 서로 다른 두 수입",
-    "indexNote": "각 항목의 연평균 = 100 으로 맞춘 지수",
+    "indexNote": "실제 월별 통계가 아니라 두 수입의 성격 차이를 보이려고 그린 도해",
     "xLabels": [
      "1월",
      "2월",
@@ -1990,7 +1992,6 @@
       "name": "객실 매출",
       "note": "성수기·비수기",
       "hot": true,
-      "swingLabel": "연중 ±34%",
       "values": [
        68,
        64,
@@ -2009,7 +2010,6 @@
      {
       "name": "임대 수입",
       "note": "장기 계약",
-      "swingLabel": "연중 ±2%",
       "values": [
        99,
        99,
@@ -2026,7 +2026,7 @@
       ]
      }
     ],
-    "caption": "월별 배분은 국내 특급호텔 계절성 평균을 적용한 시뮬레이션 — 실제 실적이 아니다",
+    "caption": "가상의 지수 — 연평균 = 100",
     "source": "가정 · 시뮬레이션"
    }
   ],
@@ -2045,8 +2045,7 @@
      {
       "tag": "임대",
       "label": "계약 단위",
-      "note": "계약 기간 내내 들어온다",
-      "hot": true
+      "note": "계약 기간 내내 들어온다"
      }
     ],
     "divider": "vs"
@@ -2263,23 +2262,22 @@
    }
   ],
   "123": [
-   "StageCard",
-   "사 — 크기",
+   "ShapeCompareCard",
+   "그 — 영플라자 미디어파사드 크기",
    {
-    "media": "더그랜드롯데/young_plaza.jpg",
-    "lines": [
-     [
-      {
-       "t": "77m × 21m"
-      },
-      {
-       "t": " · 1,600㎡"
-      }
-     ]
+    "title": "롯데타운 라이트",
+    "sub": "영플라자 미디어파사드",
+    "unit": "m",
+    "items": [
+     {
+      "w": 77,
+      "h": 21,
+      "label": "77m × 21m",
+      "dim": "bottom",
+      "hot": true
+     }
     ],
-    "kicker": "",
-    "note": "",
-    "scrim": 0.5,
+    "note": "약 1,600㎡",
     "source": "롯데 영플라자"
    }
   ],
@@ -2287,7 +2285,7 @@
    "StageCard",
    "사 — 규모",
    {
-    "media": "더그랜드롯데/store_interior.mp4",
+    "media": "더그랜드롯데/myeongdong_street.jpg",
     "lines": [
      [
       {
@@ -2302,7 +2300,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "Pexels"
+    "source": "명동 · Wikimedia Commons"
    }
   ],
   "125": [
@@ -2582,34 +2580,12 @@
    }
   ],
   "140": [
-   "AnnotatedShotCard",
-   "사 — 롯데와 한화 두 호텔에 날짜 주석",
+   "FullBleedCard",
+   "사 — 롯데와 한화, 걸어서 5분",
    {
-    "title": "롯데와 한화, 같은 방향",
-    "titleSub": "소공동과 태평로 · 걸어서 5분",
     "image": "더그랜드롯데/plaza_hotel.jpg",
-    "beats": [
-     {
-      "x": 0.35,
-      "y": 0.5,
-      "zoom": 1.2,
-      "label": "더그랜드롯데",
-      "sub": "8.14 완료",
-      "side": "right",
-      "hold": 34
-     },
-     {
-      "x": 0.68,
-      "y": 0.5,
-      "zoom": 1.2,
-      "label": "더 플라자",
-      "sub": "8.19 발표",
-      "side": "left",
-      "hot": true,
-      "hold": 34
-     }
-    ],
-    "source": "더플라자 호텔 서울"
+    "scrim": 0.34,
+    "source": "더 플라자"
    }
   ],
   "141": [
@@ -2632,34 +2608,30 @@
    }
   ],
   "142": [
-   "MapCard",
-   "지도 — 서울역 만다린 오리엔탈",
+   "StageCard",
+   "사 — 서울역 북부역세권",
    {
-    "image": "더그랜드롯데/map_seoulstation.png",
-    "source": "© OpenStreetMap contributors © CARTO",
-    "title": "서울역 북부역세권",
-    "sub": "만다린 오리엔탈 서울",
-    "pins": [
-     {
-      "lat": 37.556,
-      "lon": 126.971,
-      "label": "만다린 오리엔탈 서울",
-      "sub": "2030 개관 목표 · 128실",
-      "hot": true
-     },
-     {
-      "lat": 37.5547,
-      "lon": 126.9707,
-      "label": "서울역",
-      "sub": ""
-     }
+    "media": "더그랜드롯데/iota_seoulstation_2032.jpg",
+    "lines": [
+     [
+      {
+       "t": "만다린 오리엔탈 서울"
+      }
+     ],
+     [
+      {
+       "t": "2030 개관 목표 · "
+      },
+      {
+       "t": "128실",
+       "hot": true
+      }
+     ]
     ],
-    "bounds": [
-     126.9609,
-     37.551007,
-     126.9815,
-     37.560193
-    ]
+    "kicker": "",
+    "note": "",
+    "scrim": 0.5,
+    "source": "이오타 서울"
    }
   ],
   "143": [
