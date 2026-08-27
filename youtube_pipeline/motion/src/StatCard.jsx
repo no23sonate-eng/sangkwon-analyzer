@@ -1,8 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, PaperCaption, NumberIn,
-        CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH} from './paper';
+import {themeOf, PaperBg, PaperSource, PaperCaption, NumberIn, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, YELLOW} from './paper';
 
 // ── 숫자 하나가 주인공 ────────────────────────────────────────────────────
 // 금액·개소·연도처럼 **한 문장에 결론이 하나**일 때. 두 개면 BigStatsCard.
@@ -24,6 +23,7 @@ export const StatCard = ({
   // 숫자가 제자리에서 나타나는 것보다 세어 올라가는 편이 문장에 맞는다.
   // 주면 value 대신 이 쪽이 그려진다
   count = null, countUnit = '', countDecimals = 0,
+  hotValue = false,   // 수치만 옐로로 (실사 위에서 강조가 산다)
   bgImage = '', veil = null,
   source = '', theme, bg = {},
 }) => {
@@ -77,7 +77,7 @@ export const StatCard = ({
         </div>
       ) : (
       <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                   fontSize: size(v), lineHeight: 1.1, color: ink,
+                   fontSize: size(v), lineHeight: 1.1, color: hotValue ? YELLOW : ink,
                    fontVariantNumeric: 'tabular-nums', wordBreak: 'keep-all', ...sh}}>
         {v}
       </div>

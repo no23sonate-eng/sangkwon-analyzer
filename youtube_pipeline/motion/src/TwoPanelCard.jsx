@@ -45,10 +45,7 @@ export const TwoPanelCard = ({
           if (!p.hot) return null;
           const e = spring({frame: frame - (34 + i * 8), fps, config: {damping: 200}});
           const cx = 960 + (i === 0 ? -1 : 1) * (GAP + HALF);
-          return (
-            <line key={i} x1={cx - 190 * e} y1={midY + 18} x2={cx + 190 * e} y2={midY + 18}
-                  stroke={YELLOW} strokeWidth={10} />
-          );
+          return null;
         })}
       </svg>
 
@@ -69,6 +66,12 @@ export const TwoPanelCard = ({
             ) : null}
             <div style={{marginTop: SP.NEAR,
                          fontFamily: 'A2Z Medium, sans-serif',
+                         ...(p.hot ? {
+                           // 고른 쪽은 **옐로 면으로 덮는다.** 밑줄은 무엇을
+                           // 가리키는지 흐리고, 옐로 글자는 밝은 면에서 안 읽힌다
+                           display: 'inline-block', background: YELLOW,
+                           color: '#23262B', padding: '4px 20px',
+                         } : {}),
                          fontSize: fit(p.label, 72, HALF * 2 - 40), lineHeight: 1.15,
                          color: T.ink, letterSpacing: '-0.02em', wordBreak: 'keep-all'}}>
               {p.label}

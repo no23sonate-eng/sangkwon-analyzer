@@ -81,14 +81,16 @@ export const TimelineRailCard = ({
                         fill="none" stroke={T.ink} strokeWidth={LW.THIN} />
                 </>
               ) : (
-                {/* 쓸고 지나가는 앞머리 — 시간이 '지금 여기까지 왔다' 를
-                    한 점으로 보여 준다. 선만 자라면 길이가 변할 뿐 흐르지 않는다 */}
-                {grow > 0.02 && grow < 0.995 ? (
-                  <circle cx={x0 + (x1 - x0) * grow} cy={y} r={9}
-                          fill={YELLOW} stroke={T.ink} strokeWidth={LW.THIN} />
-                ) : null}
-                <line x1={x0} y1={y} x2={x0 + (x1 - x0) * grow} y2={y}
-                      stroke={T.ink} strokeWidth={LW.BODY} strokeLinecap="round" />
+                <>
+                  <line x1={x0} y1={y} x2={x0 + (x1 - x0) * grow} y2={y}
+                        stroke={T.ink} strokeWidth={LW.BODY} strokeLinecap="round" />
+                  {/* 쓸고 지나가는 앞머리 — 시간이 '지금 여기까지 왔다' 를
+                      한 점으로 보여 준다. 선만 자라면 길이가 변할 뿐 흐르지 않는다 */}
+                  {grow > 0.02 && grow < 0.995 ? (
+                    <circle cx={x0 + (x1 - x0) * grow} cy={y} r={9}
+                            fill={YELLOW} stroke={T.ink} strokeWidth={LW.THIN} />
+                  ) : null}
+                </>
               )}
               {(r.events || []).map((e, j) => {
                 const ex = px(e.at);

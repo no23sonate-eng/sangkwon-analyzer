@@ -31,6 +31,7 @@ export const MediaPlateCard = ({
   title = '', sub = '',
   num = '', label = '', note = '',
   caption = '', source = '', theme, bg = {},
+  ground = '',   // 주면 무대 전체를 이 색으로 (#63 로고는 흰 바탕이라야 산다)
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -63,7 +64,9 @@ export const MediaPlateCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
-      <PaperBg theme={theme} {...bg} />
+      {ground
+        ? <div style={{position: 'absolute', inset: 0, background: ground}} />
+        : <PaperBg theme={theme} {...bg} />}
       <PaperTitle title={title} sub={sub} theme={theme} />
 
       <div style={{position: 'absolute', left: x, top: y, width: w, height: h,

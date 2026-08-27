@@ -1072,15 +1072,21 @@
    }
   ],
   "59": [
-   "ArticleCard",
-   "자료 — 보고서 원문 발췌",
+   "StageCard",
+   "사 — 보고서가 권고한 것",
    {
-    "outlet": "자문 보고서",
-    "date": "1970년대 초",
-    "body": "1970년대 한국 경제 상황과 외국인 관광객이 드문 현실을 고려하면, «객실은 300실 규모로 하고 직영이 아니라 외국계 호텔체인에 위탁운영을 맡기는 것이 타당하다.»",
-    "serif": true,
-    "source": "한국경제인협회 e뮤지엄",
-    "theme": "blueprint"
+    "media": "더그랜드롯데/room_renovation.jpg",
+    "lines": [
+     [
+      {
+       "t": "300실 · 위탁운영"
+      }
+     ]
+    ],
+    "kicker": "",
+    "note": "자문 보고서 권고",
+    "scrim": 0.52,
+    "source": "한국경제인협회 e뮤지엄"
    }
   ],
   "60": [
@@ -1123,7 +1129,7 @@
    "StrikeSwapCard",
    "그 — 권고 두 개를 다 지운다",
    {
-    "title": "둘 다 거부한다",
+    "title": "",
     "from": "300실 · 위탁운영",
     "fromLabel": "보고서 권고",
     "to": "1,000실 · 독자 브랜드",
@@ -1143,7 +1149,8 @@
     "note": "외국 기업에 로열티를 주지 않는다",
     "caption": "참고 이미지 — 시기에 따라 실제 로고와 다를 수 있다",
     "source": "롯데호텔 (참고 이미지)",
-    "theme": "paper"
+    "theme": "paper",
+    "ground": "#FFFFFF"
    }
   ],
   "64": [
@@ -1163,7 +1170,7 @@
       "hot": true
      }
     ],
-    "closingLine": "3.3배",
+    "closingLine": "",
     "source": "한국경제인협회 e뮤지엄",
     "theme": "blueprint"
    }
@@ -1196,15 +1203,21 @@
    }
   ],
   "66": [
-   "SitePlotCard",
-   "지도 — 호텔·백화점·오피스 = 소공동 복합",
+   "StageCard",
+   "사 — 소공동 복합개발",
    {
-    "sub": "소공동 복합개발",
-    "second": "호텔 · 백화점 · 오피스",
-    "secondLabel": "묶어서 개발",
+    "media": "더그랜드롯데/grand_lotte_night.jpg",
+    "lines": [
+     [
+      {
+       "t": "호텔 · 백화점 · 오피스"
+      }
+     ]
+    ],
+    "kicker": "",
     "note": "1970년대 · 소공동",
-    "source": "한국경제인협회 e뮤지엄",
-    "theme": "blueprint"
+    "scrim": 0.5,
+    "source": "롯데호텔"
    }
   ],
   "67": [
@@ -1220,7 +1233,8 @@
      -24
     ],
     "source": "연합뉴스",
-    "media": "더그랜드롯데/lotte_opening_ceremony_1979.jpg"
+    "media": "더그랜드롯데/lotte_opening_ceremony_1979.jpg",
+    "center": true
    }
   ],
   "68": [
@@ -1305,7 +1319,8 @@
     "headline": "",
     "source": "롯데",
     "media": "더그랜드롯데/lotte_town_myeongdong.jpg",
-    "sub": ""
+    "sub": "",
+    "center": true
    }
   ],
   "73": [
@@ -1447,14 +1462,13 @@
    "RatioCard",
    "그 — 면적 +49%",
    {
-    "title": "면적은 49% 넓어진다",
-    "sub": "슈페리어 → 디럭스",
+    "title": "면적 증가",
+    "sub": "",
     "unit": "%",
     "items": [
      {
-      "label": "면적 증가",
+      "label": "",
       "pct": 49,
-      "sub": "중간값 기준",
       "hot": true
      }
     ],
@@ -1470,7 +1484,8 @@
     "subtitle": "635,250원 → 698,775원",
     "source": "롯데호텔 공식 예약 페이지 직접 조회",
     "bgImage": "더그랜드롯데/grand_lotte_room2.jpg",
-    "veil": 0.36
+    "veil": 0.62,
+    "hotValue": true
    }
   ],
   "82": [
@@ -1524,7 +1539,8 @@
      "1박 698,775원"
     ],
     "caption": "면적은 중간값으로 환산했다",
-    "source": "롯데호텔 공식 예약 페이지 직접 조회"
+    "source": "롯데호텔 공식 예약 페이지 직접 조회",
+    "theme": "ink"
    }
   ],
   "85": [
