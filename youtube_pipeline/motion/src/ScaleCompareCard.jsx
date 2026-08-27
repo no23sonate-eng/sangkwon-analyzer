@@ -89,6 +89,10 @@ export const ScaleCompareCard = ({
   source = '',
   theme, align = 'center',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
+  // axis — 세로 눈금축. 층수처럼 **두 개를 견주기만** 할 때는
+  // 축이 오히려 시선을 왼쪽으로 끌어간다 (#46)
+  axis = true,
+  tight = 0,      // 0보다 크면 도형을 그만큼 가운데로 모은다 (0~1)
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -114,8 +118,10 @@ export const ScaleCompareCard = ({
 
   const AX = 176;                                 // 눈금 축 x
   const span = 1920 - AX - 150;
-  const slot = span / n;
-  const cxOf = (i) => AX + 70 + slot * i + slot / 2;
+  const slot = (span / n) * (1 - tight);
+  // tight 를 주면 폭이 줄어든 만큼 다시 가운데로 밀어 넣는다
+  const shift = ((span / n) * n - slot * n) / 2;
+  const cxOf = (i) => AX + 70 + shift + slot * i + slot / 2;
   const bodyW = Math.min(190, slot * 0.5);
 
   const ticks = [];
@@ -132,12 +138,14 @@ export const ScaleCompareCard = ({
           const o = fadeIn(frame, 2 + i * 2);
           return (
             <g key={m} opacity={o}>
-              <line x1={AX} y1={yOf(m)} x2={1860} y2={yOf(m)} stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.13} />
-              <line x1={AX - 12} y1={yOf(m)} x2={AX} y2={yOf(m)} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
+              <line x1={AX} y1={yOf(m)} x2={1860} y2={yOf(m)} stroke={T.ink} strokeWidth={LW.HAIR}
+                    opacity={axis ? 0.13 : 0} />
+              <line x1={AX - 12} y1={yOf(m)} x2={AX} y2={yOf(m)} stroke={T.ink} strokeWidth={LW.THIN}
+                    opacity={axis ? 0.5 : 0} />
             </g>
           );
         })}
-        <line x1={AX} y1={topRoom} x2={AX} y2={baseY} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.4} />
+        {axis ? <line x1={AX} y1={topRoom} x2={AX} y2={baseY} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.4} /> : null}
         <line x1={AX - 40} y1={baseY} x2={1880} y2={baseY} stroke={T.ink} strokeWidth={LW.BODY} />
 
         {items.map((it, i) => {

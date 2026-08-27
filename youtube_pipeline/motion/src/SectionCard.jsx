@@ -104,12 +104,12 @@ export const SectionCard = ({
         <div key={k} style={{position: 'absolute', left: DIM_X - 28 - 420, top: y, width: 420,
                              transform: k === 'above' ? 'translateY(-50%)' : 'none', textAlign: 'right',
                              opacity: fadeIn(frame, k === 'above' ? 20 : 34)}}>
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
-          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 80, color: T.ink, lineHeight: 1.08}}>
-            {o.floors}<span style={{fontSize: 54}}>층</span>
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft, letterSpacing: '0.05em', lineHeight: 1.1}}>{o.label}</div>
+          <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 56, color: T.ink, lineHeight: 1.08}}>
+            {o.floors}<span style={{fontSize: 38}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 36, color: T.soft, lineHeight: 1.2}}>{o.note}</div>
+            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft, lineHeight: 1.2}}>{o.note}</div>
           ) : null}
         </div>
       ))}

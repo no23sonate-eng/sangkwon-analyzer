@@ -25,6 +25,9 @@ export const StrikeSwapCard = ({
   note = '', image = '',
   theme, align = 'center', source = '',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
+  // arrowOnly — **지우지 않는다.** 제목 아래 화살표 하나, 그 아래 결론.
+  // 취소선은 '틀렸다' 는 말인데, 여기선 틀린 게 아니라 **모자란** 것이다
+  arrowOnly = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -40,7 +43,7 @@ export const StrikeSwapCard = ({
                            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const r2 = rise * rise * (3 - 2 * rise);
 
-  const fromSize = fit(from, 82, 1200);
+  const fromSize = arrowOnly ? 0 : fit(from, 82, 1200);
   // 새 값이 너무 커서 화면을 다 먹었다 (검수 지적) — 한 단 줄인다
   const toSize = fit(to, 104, 1240);
   const ARROW_H = 118;
@@ -73,6 +76,7 @@ export const StrikeSwapCard = ({
           선을 SVG 로 따로 그었더니 estWidth 추정이 한글에서 25% 넘게 커서
           글자 끝을 120px 지나 뻗었다. 선을 **글자 안에** inline-block 자식으로
           넣으면 실제 글자 폭을 그대로 따라간다 — 추정이 필요 없다. */}
+      {arrowOnly ? null : (
       <div style={{position: 'absolute', left: 0, right: 0, top,
                    textAlign: center ? 'center' : 'left',
                    paddingLeft: center ? 0 : 150,
@@ -87,7 +91,8 @@ export const StrikeSwapCard = ({
                        background: T.ink, opacity: 1}} />
         </div>
       </div>
-      {fromLabel ? (
+      )}
+      {fromLabel && !arrowOnly ? (
         <div style={{position: 'absolute', left: 0, right: 0, top: top - 42,
                      textAlign: center ? 'center' : 'left',
                      paddingLeft: center ? 0 : 150, opacity: fadeIn(frame, 6),
@@ -100,7 +105,7 @@ export const StrikeSwapCard = ({
       {/* ②-b 갈아치운다는 걸 화살표로 못 박는다. 취소선만으론 '지웠다' 까지고
           '이걸로 바뀌었다' 가 안 남는다 (검수 지적 #85) */}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <g opacity={s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0}>
+        <g opacity={arrowOnly ? fadeIn(frame, 8) : (s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0)}>
           <line x1={center ? 960 : 190} y1={top + fromSize * 1.35 + 12}
                 x2={center ? 960 : 190} y2={top + fromSize * 1.35 + ARROW_H - 40}
                 stroke={T.ink} strokeWidth={LW.BOLD} opacity={0.75} />

@@ -18,7 +18,7 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption, YELLOW,
 // bands: [{label, note, hot, span}]  아래에서 위로. span 은 층수 비중(기본 1)
 export const BuildingSplitCard = ({
   title = '', sub = '', bands = [], caption = '',
-  path = 'M0 100 L0 16 L18 16 L18 6 L82 6 L82 16 L100 16 L100 100 Z',
+  path = 'M0 100 L0 0 L100 0 L100 100 Z',   // 기본은 그냥 네모
   source = '', theme, align = 'center', bg = {},
 }) => {
   useA2ZFonts();

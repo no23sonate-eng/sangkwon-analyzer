@@ -478,8 +478,7 @@
      "lines": [
       "하루 단위로 팔린다",
       "성수기·비수기를 탄다"
-     ],
-     "hot": true
+     ]
     },
     "right": {
      "label": "나머지",
@@ -488,7 +487,8 @@
       "임대",
       "식음료",
       "기타"
-     ]
+     ],
+     "hot": true
     },
     "verdict": "절반은 객실이 아니다"
    }
@@ -525,36 +525,28 @@
    }
   ],
   "31": [
-   "YRankBarsCard",
-   "그 — 특급호텔 매출 구성 비교",
+   "CostStackCard",
+   "그 — 객실 절반, 나머지는 연회·식음료",
    {
-    "kicker": "특급호텔 매출 구성",
-    "sub": "객실 비중은 대체로 절반 안팎",
-    "rows": [
+    "title": "특급호텔 매출 구성",
+    "unit": "%",
+    "totalLabel": "호텔 매출",
+    "totalDisplay": "100%",
+    "parts": [
      {
-      "name": "객실",
+      "label": "객실",
       "value": 54,
-      "display": "54%",
+      "display": "약 절반",
       "hot": true
      },
      {
-      "name": "식음료",
-      "value": 20,
-      "display": "약 20%"
-     },
-     {
-      "name": "연회",
-      "value": 18,
-      "display": "약 18%"
-     },
-     {
-      "name": "임대·기타",
-      "value": 8,
-      "display": "약 8%"
+      "label": "연회 · 식음료 등",
+      "value": 46,
+      "display": "나머지"
      }
     ],
     "caption": "업계 통상 범위를 적용한 개략값 — 호텔마다 편차가 크다",
-    "tight": true
+    "source": "업계 통상 범위"
    }
   ],
   "32": [
@@ -661,10 +653,11 @@
    "그 — 단순한 호텔 아님",
    {
     "title": "단순한 호텔이 아니었다",
-    "from": "호텔",
+    "from": "",
     "to": "호텔 + 임대상가 + 사무실",
     "fromLabel": "",
     "toLabel": "",
+    "arrowOnly": true,
     "source": "경향신문 2024.1.11 · 여행신문 1998.1.23",
     "theme": "blueprint"
    }
@@ -675,19 +668,14 @@
    {
     "bands": [
      {
-      "label": "임대 상가",
-      "note": "저층부",
-      "span": 1
-     },
-     {
-      "label": "사무실",
+      "label": "사무실 · 임대 상가",
       "note": "1~5층",
-      "span": 2
+      "span": 5
      },
      {
       "label": "호텔 객실",
       "note": "6~8층",
-      "span": 2,
+      "span": 3,
       "hot": true
      }
     ],
@@ -776,7 +764,7 @@
    {
     "era": "film",
     "gate": 1.333,
-    "year": "1880–1930",
+    "year": "1914년 개관",
     "label": "조선호텔",
     "zoom": 0.11,
     "pan": [
@@ -784,7 +772,10 @@
      8
     ],
     "source": "michaelseangallagher / BY-SA 2.0",
-    "media": "더그랜드롯데/chosun_hotel_palmcourt.jpg"
+    "media": "더그랜드롯데/chosun_hotel_palmcourt.jpg",
+    "center": true,
+    "headline": "",
+    "sub": "팜코트"
    }
   ],
   "43": [
@@ -810,16 +801,25 @@
    }
   ],
   "45": [
-   "SitePlotCard",
-   "지도 — 조선호텔 옆 2,000평 매입",
+   "StageCard",
+   "사 — 조선호텔 옆 2,000평",
    {
-    "title": "조선호텔 바로 옆 2,000평",
-    "sub": "분개해서 사들인 땅",
-    "area": "2,000",
-    "areaUnit": "평",
-    "note": "1930년대 · 소공동",
-    "source": "경향신문 2024.1.11 · 여행신문 1998.1.23",
-    "theme": "blueprint"
+    "media": "더그랜드롯데/construction.mp4",
+    "lines": [
+     [
+      {
+       "t": "조선호텔 바로 옆 "
+      },
+      {
+       "t": "2,000평",
+       "hot": true
+      }
+     ]
+    ],
+    "kicker": "",
+    "note": "",
+    "scrim": 0.5,
+    "source": "Pexels"
    }
   ],
   "46": [
@@ -847,7 +847,9 @@
     "axisStep": 2,
     "showHuman": false,
     "source": "경향신문 2024.1.11 · 여행신문 1998.1.23",
-    "theme": "blueprint"
+    "theme": "blueprint",
+    "axis": false,
+    "tight": 0.34
    }
   ],
   "47": [
@@ -992,7 +994,8 @@
     "sub": "",
     "source": "옛 청와대 자료사진",
     "media": "더그랜드롯데/cheongwadae_old.jpg",
-    "gate": 1.333
+    "gate": 1.333,
+    "center": true
    }
   ],
   "54": [
@@ -1051,26 +1054,21 @@
    }
   ],
   "58": [
-   "YFlowCard",
-   "그 — 한 곳에서 여러 곳으로 갈라진다",
+   "StageCard",
+   "사 — 용역 자문 맡김",
    {
-    "branch": true,
-    "nodes": [
-     {
-      "label": "롯데"
-     },
-     {
-      "label": "자문 용역 · 여러 곳"
-     }
+    "media": "더그랜드롯데/blueprint_closeup.mp4",
+    "lines": [
+     [
+      {
+       "t": "용역 자문 맡김"
+      }
+     ]
     ],
-    "arrows": [
-     {
-      "label": ""
-     }
-    ],
-    "caption": "1970년대 초",
-    "source": "한국경제인협회 e뮤지엄",
-    "theme": "blueprint"
+    "kicker": "",
+    "note": "",
+    "scrim": 0.5,
+    "source": "Pexels"
    }
   ],
   "59": [

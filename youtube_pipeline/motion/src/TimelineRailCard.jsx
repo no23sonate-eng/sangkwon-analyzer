@@ -36,8 +36,11 @@ export const TimelineRailCard = ({
   // 레일 시작을 400 에 못 박아 두니 레일이 하나뿐인 컷은 화면 아래에
   // 홀로 떠 있고 위가 텅 비었다. 레일 묶음을 한 덩어리로 앉힌다
   const RAIL_H = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1)) * (n - 1);
-  const railTop = stageTop(headH + (title ? 64 : 0) + RAIL_H + 120, {top: 150})
-    + headH + (title ? 64 : 0) + 60;
+  // 레일 묶음을 화면 가운데에 앉히면 아래 연도축과 멀어져 **둘이 다른
+  // 그림처럼** 보인다. 연도축에서 한 뼘 위에 붙인다 (#48)
+  const RAIL_GAP = 150;
+  const railTop = Math.max(headH + (title ? 64 : 0) + 190,
+                           AXIS_Y - RAIL_GAP - RAIL_H);
   const ROW = n === 1 ? 0 : RAIL_H / (n - 1);
   const railY = (i) => railTop + i * ROW;
 
@@ -65,7 +68,7 @@ export const TimelineRailCard = ({
 
         {rails.map((r, i) => {
           const y = railY(i);
-          const grow = interpolate(frame, [16 + i * 12, 62 + i * 12], [0, 1],
+          const grow = interpolate(frame, [12 + i * 12, 96 + i * 12], [0, 1],
                                    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
           const fill = r.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
           const x0 = px(r.from ?? axis.from), x1 = px(r.to ?? axis.to);
@@ -78,6 +81,12 @@ export const TimelineRailCard = ({
                         fill="none" stroke={T.ink} strokeWidth={LW.THIN} />
                 </>
               ) : (
+                {/* 쓸고 지나가는 앞머리 — 시간이 '지금 여기까지 왔다' 를
+                    한 점으로 보여 준다. 선만 자라면 길이가 변할 뿐 흐르지 않는다 */}
+                {grow > 0.02 && grow < 0.995 ? (
+                  <circle cx={x0 + (x1 - x0) * grow} cy={y} r={9}
+                          fill={YELLOW} stroke={T.ink} strokeWidth={LW.THIN} />
+                ) : null}
                 <line x1={x0} y1={y} x2={x0 + (x1 - x0) * grow} y2={y}
                       stroke={T.ink} strokeWidth={LW.BODY} strokeLinecap="round" />
               )}
