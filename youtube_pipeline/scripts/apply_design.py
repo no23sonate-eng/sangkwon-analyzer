@@ -305,6 +305,12 @@ def main():
             for v in o:
                 walk(v, cid)
         elif isinstance(o, str) and re.search(r'\.(jpg|jpeg|png|webp|mp4|webm|mov)$', o, re.I):
+            # **로고는 빼고 센다.** 0중복 규칙이 막으려는 건 같은 사진이 여러
+            # 컷에 나와 화면이 반복돼 보이는 것이다. 브랜드 마크는 그 브랜드가
+            # 다시 나오면 다시 나오는 게 맞다 — 로고가 두 번 나온 걸 중복이라
+            # 세면, 두 번째 자리에 엉뚱한 그림을 넣게 된다
+            if '/logo_' in o or o.startswith('logo_'):
+                return
             if PLACEHOLDER not in o:
                 seen[o.split('/')[-1]].append(cid)
 

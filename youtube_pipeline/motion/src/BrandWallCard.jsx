@@ -66,6 +66,17 @@ export const BrandWallCard = ({
             <div style={{position: 'absolute', left: 0, right: 0, top: '50%',
                          transform: `translateY(-50%) translateY(${(1 - o) * 12}px)`,
                          textAlign: 'center', padding: '0 18px'}}>
+              {/* 로고가 있으면 이름 위에 올린다 — 마크가 먼저 눈에 들어오고
+                  이름이 그걸 읽어 준다. 로고는 배경색이 제각각이라 흰 칩에 얹는다 */}
+              {it.logo ? (
+                <div style={{margin: '0 auto 18px', width: Math.min(W * 0.62, 260), height: 92,
+                             background: '#FFFFFF', borderRadius: 4,
+                             display: 'flex', alignItems: 'center', justifyContent: 'center',
+                             padding: '10px 16px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)'}}>
+                  <Img src={/^https?:/.test(it.logo) ? it.logo : staticFile(it.logo)}
+                       style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />
+                </div>
+              ) : null}
               <div style={{fontSize: FS, lineHeight: 1.24, color: it.hot ? YELLOW : '#FFFFFF',
                            textShadow: '0 3px 24px rgba(0,0,0,0.9)', wordBreak: 'keep-all'}}>
                 {it.name}

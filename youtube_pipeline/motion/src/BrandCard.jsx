@@ -25,6 +25,7 @@ export const BrandCard = ({
   logo = '', name = '', line = '', tags = [], photo = '',
   layout = '', logoScale = 1, logoInvert = 'auto', source = '', theme, align = 'center',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
+  tracking = false,   // 한글 이름은 -1 로 조이면 글자가 붙는다 (#159)
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -63,7 +64,8 @@ export const BrandCard = ({
                                            filter: logoFilter}} />
             ) : (
               <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                           fontSize: fit(name, 92, 1400), color: T.ink, letterSpacing: -1}}>
+                           fontSize: fit(name, 92, 1400), color: T.ink,
+                           letterSpacing: tracking ? '0.02em' : -1}}>
                 {name}
               </div>
             )}
@@ -135,7 +137,8 @@ export const BrandCard = ({
                                        filter: logoFilter}} />
         ) : (
           <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: fit(name, 72, 780), color: T.ink, letterSpacing: -1,
+                       fontSize: fit(name, 72, 780), color: T.ink,
+                       letterSpacing: tracking ? '0.02em' : -1,
                        wordBreak: 'keep-all'}}>
             {name}
           </div>

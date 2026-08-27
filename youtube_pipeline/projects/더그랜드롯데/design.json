@@ -2611,7 +2611,7 @@
    "StageCard",
    "사 — 서울역 북부역세권",
    {
-    "media": "더그랜드롯데/iota_seoulstation_2032.jpg",
+    "media": "더그랜드롯데/seoulstation_north_cgi.jpg",
     "lines": [
      [
       {
@@ -2631,14 +2631,14 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "이오타 서울"
+    "source": "㈜한화 건설부문"
    }
   ],
   "143": [
    "StageCard",
    "사 — 복합개발 부지",
    {
-    "media": "더그랜드롯데/iota_plaza.jpg",
+    "media": "더그랜드롯데/seoulstation_north_aerial.jpg",
     "lines": [
      [
       {
@@ -2649,59 +2649,61 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "이오타 서울"
+    "source": "㈜한화 건설부문"
    }
   ],
   "144": [
-   "StageCard",
-   "사 — 면적",
+   "BigStatsCard",
+   "그 — 부지 3만㎡ · 연면적 34만㎡",
    {
-    "media": "더그랜드롯데/iota_aerial.jpg",
-    "lines": [
-     [
-      {
-       "t": "부지 3만㎡"
-      }
-     ],
-     [
-      {
-       "t": "연면적 "
-      },
-      {
-       "t": "34만㎡",
-       "hot": true
-      }
-     ]
+    "title": "서울역 북부역세권",
+    "items": [
+     {
+      "display": "3만",
+      "unit": "㎡",
+      "label": "부지"
+     },
+     {
+      "display": "34만",
+      "unit": "㎡",
+      "label": "연면적",
+      "hot": true
+     }
     ],
-    "kicker": "",
-    "note": "",
-    "scrim": 0.5,
-    "source": "이오타 서울"
+    "source": "㈜한화 건설부문 2025.9.4"
    }
   ],
   "145": [
-   "StageCard",
-   "사 — 규모",
+   "SpecGridCard",
+   "그 — 지하 6층 · 지상 39층 · 5개 동",
    {
-    "media": "더그랜드롯데/iota_tower.jpg",
-    "lines": [
-     [
-      {
-       "t": "지하 6층 · 지상 39층 · 5개 동"
-      }
-     ]
+    "title": "규모",
+    "items": [
+     {
+      "label": "지하",
+      "value": "6층"
+     },
+     {
+      "label": "지상",
+      "value": "39층"
+     },
+     {
+      "label": "동수",
+      "value": "5개 동"
+     },
+     {
+      "label": "착공",
+      "value": "2024.12"
+     }
     ],
-    "kicker": "",
-    "note": "",
-    "scrim": 0.5,
-    "source": "이오타 서울"
+    "source": "㈜한화 건설부문 2025.9.4"
    }
   ],
   "146": [
    "StageCard",
    "사 — 일정",
    {
-    "media": "더그랜드롯데/iota_full.jpg",
+    "media": "더그랜드롯데/seoulstation_north_hk.jpg",
     "lines": [
      [
       {
@@ -2716,14 +2718,14 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "이오타 서울"
+    "source": "한화 건설부문 · 한국일보"
    }
   ],
   "147": [
    "StageCard",
    "사 — 객실 수와 인테리어 디자이너",
    {
-    "media": "더그랜드롯데/crystal_ballroom_led.jpg",
+    "media": "더그랜드롯데/mo_tokyo_lobby.jpg",
     "lines": [
      [
       {
@@ -2739,17 +2741,18 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "만다린 오리엔탈"
+    "source": "만다린 오리엔탈 도쿄 · 한국일보"
    }
   ],
   "148": [
    "BrandCard",
-   "그 — 만다린 오리엔탈 규모",
+   "그 — 만다린 오리엔탈",
    {
     "logo": "더그랜드롯데/logo_mandarin.png",
     "name": "Mandarin Oriental",
     "line": "44개 호텔 · 12개 레지던스",
     "sub": "전 세계",
+    "logoScale": 2.2,
     "source": "만다린 오리엔탈"
    }
   ],
@@ -2757,7 +2760,7 @@
    "StageCard",
    "사 — 서울 복합개발 조감도",
    {
-    "media": "더그랜드롯데/mandarin_seoul_cgi.jpg",
+    "media": "더그랜드롯데/mo_ny_lounge.jpg",
     "lines": [
      [
       {
@@ -2772,14 +2775,14 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "만다린 오리엔탈 서울"
+    "source": "만다린 오리엔탈 뉴욕 · ㈜한화 건설부문"
    }
   ],
   "150": [
    "StageCard",
    "사 — 객실 수 비교",
    {
-    "media": "더그랜드롯데/iota_floorplate.jpg",
+    "media": "더그랜드롯데/hotel_suite_view.jpg",
     "lines": [
      [
       {
@@ -2799,7 +2802,7 @@
     "kicker": "",
     "note": "",
     "scrim": 0.5,
-    "source": "이오타 서울"
+    "source": "Pexels"
    }
   ],
   "151": [
@@ -2946,7 +2949,8 @@
     "name": "리츠칼튼",
     "line": "2031년 이오타 서울 개장 예정",
     "logoScale": 2.6,
-    "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0"
+    "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0",
+    "tracking": true
    }
   ],
   "160": [
@@ -3034,16 +3038,17 @@
    }
   ],
   "164": [
-   "PaperImageCard",
-   "자료 — 이오타 권역도 (서울역~남산 보행 축)",
+   "StageCard",
+   "사 — 서울역 — 이오타 — 남산",
    {
-    "image": "더그랜드롯데/iota_area_map.jpg",
-    "title": "서울역 — 이오타 — 남산",
-    "caption": "보행 축 위에 이오타가 앉는다",
-    "source": "이오타 서울",
-    "fit": "contain",
-    "wide": true,
-    "kenBurns": false
+    "media": "더그랜드롯데/iota_area_map.jpg",
+    "lines": [
+     []
+    ],
+    "kicker": "",
+    "note": "",
+    "scrim": 0.18,
+    "source": "이오타 서울"
    }
   ],
   "165": [
@@ -3095,23 +3100,29 @@
     "items": [
      {
       "media": "더그랜드롯데/brand_bg_1.jpg",
-      "name": "만다린 오리엔탈"
+      "name": "만다린 오리엔탈",
+      "sub": "서울역 · 2030",
+      "logo": "더그랜드롯데/logo_mandarin.png"
      },
      {
       "media": "더그랜드롯데/club_lounge.jpg",
-      "name": "리츠칼튼"
+      "name": "리츠칼튼",
+      "sub": "이오타 서울 · 2031",
+      "logo": "더그랜드롯데/logo_ritz_carlton.png"
      },
      {
       "media": "더그랜드롯데/brand_bg_3.jpg",
-      "name": "로즈우드"
+      "name": "로즈우드",
+      "sub": "용산 · 2027"
      },
      {
       "media": "더그랜드롯데/brand_bg_4.jpg",
-      "name": "아만"
+      "name": "아만",
+      "sub": "청담동"
      }
     ],
     "scrim": 0.5,
-    "source": "배경 이미지 Pexels"
+    "source": "시사저널 2025.8.28 · 뉴스웨이 2026.3.11 · 배경 이미지 Pexels"
    }
   ],
   "168": [
@@ -3194,26 +3205,27 @@
    "그 — 모두 호텔에 몰린다 → 5년 뒤",
    {
     "kicker": "모두 호텔에 몰리면",
-    "sub": "통상 개발 기간 5년",
+    "sub": "",
     "nodes": [
      {
-      "label": "지금 — 동시 개발",
-      "sub": "롯데·한화·이지스",
-      "tag": "2026"
+      "label": "2026 — 동시 착공·개발",
+      "sub": "롯데 · 한화 · 이지스",
+      "tag": "지금"
      },
      {
-      "label": "5년 뒤 — 동시 개장",
-      "sub": "공급이 한꺼번에",
-      "tag": "2031"
+      "label": "2027 – 2031 — 개장이 몰린다",
+      "sub": "로즈우드 27 · 만다린 30 · 리츠칼튼 31",
+      "tag": "5년"
      },
      {
-      "label": "포화 가능성",
+      "label": "공급이 겹칠 가능성",
       "sub": "",
       "tag": "?",
       "hot": true
      }
     ],
-    "caption": "가정에 따른 시나리오다 — 예측이 아니다",
+    "caption": "개장 시점은 각 사 발표 기준 · 겹침 여부는 가정에 따른 시나리오다",
+    "source": "시사저널 2025.8.28 · 뉴스웨이 2026.3.11",
     "theme": "ink"
    }
   ],

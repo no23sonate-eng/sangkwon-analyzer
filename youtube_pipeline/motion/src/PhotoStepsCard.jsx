@@ -73,7 +73,7 @@ export const PhotoStepsCard = ({
   const cy = OPTICAL_CENTER - 30;            // 타일 세로 중심
   const cx = (i) => x0 + i * (TW + gap) + TW / 2;
 
-  const STEP = 26, T0 = 12;
+  const STEP = plain ? 10 : 26, T0 = 12;
   // 진행 점 — 타일이 선 뒤 다음 타일로 이동한다 (Vox 의 "따라가는" 리듬)
   const prog = interpolate(frame, [T0 + 14, T0 + STEP * (n - 1) + 14], [0, n - 1],
                            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
