@@ -61,7 +61,7 @@
     "count": 15,
     "countUnit": "개월",
     "value": "15개월",
-    "bgImage": "더그랜드롯데/interior_renovation.mp4",
+    "bgImage": "더그랜드롯데/interior_luxe_build.mp4",
     "veil": 0.34,
     "source": "뉴스웨이 2026.7.28"
    }
@@ -87,7 +87,8 @@
       "gone": true
      }
     ],
-    "source": "뉴스웨이 2026.7.28"
+    "source": "뉴스웨이 2026.7.28",
+    "over": true
    }
   ],
   "4": [
@@ -292,7 +293,7 @@
     "beats": [
      {
       "x": 0.5,
-      "y": 0.5,
+      "y": 0.34,
       "zoom": 1.2,
       "label": "3,686억원",
       "sub": "576실 · 2026년 거래",
@@ -333,7 +334,6 @@
    "YHeadlineCard",
    "그 — 왜 이런 결정을?",
    {
-    "kicker": "그런데",
     "lines": [
      [
       {
@@ -345,9 +345,10 @@
       }
      ]
     ],
-    "sub": "여기서 숫자를 하나 봐야 한다",
     "theme": "ink",
-    "align": "center"
+    "align": "center",
+    "kicker": "",
+    "sub": ""
    }
   ],
   "21": [

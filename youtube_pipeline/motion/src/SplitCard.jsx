@@ -49,7 +49,7 @@ export const SplitCard = ({title = '', sub = '', left = {}, right = {}, verdict 
       <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <line x1={HALF} y1={302} x2={HALF} y2={716} stroke={T.ink} strokeWidth={LW.THIN}
+        <line x1={HALF} y1={396} x2={HALF} y2={622} stroke={T.ink} strokeWidth={LW.THIN}
               strokeDasharray="10 8" opacity={0.4 * fadeIn(frame, 4)} />
       </svg>
       <Col colTop={colTop} d={left} x={PAD} w={HALF - PAD * 1.5} frame={frame} delay={8} T={T} />

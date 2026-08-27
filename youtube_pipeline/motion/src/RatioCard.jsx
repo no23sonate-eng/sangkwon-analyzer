@@ -153,7 +153,7 @@ export const RatioCard = ({
       {one ? items.map((it, i) => {
         const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-        const rowH = 176;
+        const rowH = 212;
         const y = CY - (n * rowH) / 2 + i * rowH;
         const c = it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
         return (

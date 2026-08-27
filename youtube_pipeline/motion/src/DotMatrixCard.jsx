@@ -17,6 +17,9 @@ export const DotMatrixCard = ({
   unit = '', source = '', caption = '',
   theme, align = 'center',
   bg = {},   // PaperBg 로 그대로 넘어간다: {backdrop, veil, blur, dir}
+  // over — 이름·숫자를 점판 **위 한가운데**에 얹는다. 점 아래에 두면
+  // 눈이 판을 다 훑고 내려가서야 무엇을 센 건지 알게 된다 (#3)
+  over = false,
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -48,6 +51,7 @@ export const DotMatrixCard = ({
     ? Math.ceil(dotsAll / nCol)
     : Math.max(...groups.map((g) => Math.ceil(Math.max(1, Math.round(g.value / perDot)) / nCol)));
   const LABEL_Y = TOP + (maxRows - 1) * PITCH + R + 38;
+  const FIELD_MID = TOP + ((maxRows - 1) * PITCH) / 2;
   // 점이 순서대로 찍히는 속도 (그룹마다 살짝 시차)
   const dotsOf = (v) => Math.max(1, Math.round(v / perDot));
 
@@ -108,8 +112,13 @@ export const DotMatrixCard = ({
         const Wd = merge ? nCol * PITCH / groups.length : slot;
         return (
           <div key={gi} style={{position: 'absolute', left: L, width: Wd,
-                                top: LABEL_Y, textAlign: 'center',
-                                opacity: fadeIn(frame, 26 + gi * 14)}}>
+                                top: over ? FIELD_MID - 84 : LABEL_Y, textAlign: 'center',
+                                opacity: fadeIn(frame, 26 + gi * 14),
+                                // 점 위에 그냥 얹으면 글자가 점에 파묻힌다.
+                                // 상자를 그리면 판에 딱지를 붙인 꼴이라,
+                                // 글자 뒤만 바탕색으로 부드럽게 눌러 준다
+                                ...(over ? {padding: '18px 8px', background:
+                                  `linear-gradient(180deg, ${T.bg}00 0%, ${T.bg}f2 16%, ${T.bg}f2 84%, ${T.bg}00 100%)`} : {})}}>
             {/* **이름이 먼저, 숫자가 다음.** 숫자를 위에 두면 무엇을 세는
                 숫자인지 모르는 채로 읽게 된다 — #3 "남은 객실을 위로 올리고
                 그 아래 590실" */}
