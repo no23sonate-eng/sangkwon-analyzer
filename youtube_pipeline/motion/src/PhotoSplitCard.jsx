@@ -10,7 +10,7 @@ import {YELLOW, fadeIn, PaperSource} from './paper';
 // sides: [{photo, name, sub, stat, statUnit, lines:[...], hot}]
 const SHADOW = '0 2px 20px rgba(0,0,0,0.78), 0 1px 4px rgba(0,0,0,0.6)';
 
-const Side = ({s, x, w, frame, i}) => {
+const Side = ({s, x, w, frame, i, statSize = 110}) => {
   const o = fadeIn(frame, 6 + i * 10);
   const zoom = interpolate(frame, [0, 340], [1.05, 1.13], {extrapolateRight: 'clamp'});
   const rise = interpolate(frame, [10 + i * 10, 40 + i * 10], [22, 0],
@@ -47,10 +47,10 @@ const Side = ({s, x, w, frame, i}) => {
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>
         ) : null}
         {s.stat ? (
-          <div style={{marginTop: 30, fontFamily: 'A2Z Medium, sans-serif', fontSize: 110,
+          <div style={{marginTop: 30, fontFamily: 'A2Z Medium, sans-serif', fontSize: statSize,
                        color: s.hot ? YELLOW : '#FFFFFF', lineHeight: 1,
                        fontVariantNumeric: 'tabular-nums', textShadow: SHADOW}}>
-            {s.stat}<span style={{fontSize: 46, marginLeft: 6}}>{s.statUnit}</span>
+            {s.stat}<span style={{fontSize: Math.round(statSize * 0.42), marginLeft: 6}}>{s.statUnit}</span>
           </div>
         ) : null}
         <div style={{marginTop: 34}}>
@@ -68,15 +68,16 @@ const Side = ({s, x, w, frame, i}) => {
   );
 };
 
-export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '', source = '', theme}) => {
+export const PhotoSplitCard = ({title = '', sub = '', sides = [], verdict = '',
+                                statSize = 110, source = '', theme}) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
   if (sides.length < 2) return <AbsoluteFill style={{background: '#12151a'}} />;
   const HALF = 960;
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif', background: '#0b0e12'}}>
-      <Side s={sides[0]} x={0} w={HALF} frame={frame} i={0} />
-      <Side s={sides[1]} x={HALF} w={HALF} frame={frame} i={1} />
+      <Side s={sides[0]} x={0} w={HALF} frame={frame} i={0} statSize={statSize} />
+      <Side s={sides[1]} x={HALF} w={HALF} frame={frame} i={1} statSize={statSize} />
       <div style={{position: 'absolute', left: HALF - 1, top: 0, width: 2, height: 1080,
                    background: 'rgba(255,255,255,0.32)'}} />
 

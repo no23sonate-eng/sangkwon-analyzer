@@ -70,10 +70,16 @@ export const TwoPanelCard = ({
                            // 고른 쪽은 **옐로 면으로 덮는다.** 밑줄은 무엇을
                            // 가리키는지 흐리고, 옐로 글자는 밝은 면에서 안 읽힌다
                            display: 'inline-block', background: YELLOW,
-                           color: '#23262B', padding: '4px 20px',
+                           padding: '4px 20px',
                          } : {}),
                          fontSize: fit(p.label, 72, HALF * 2 - 40), lineHeight: 1.15,
-                         color: T.ink, letterSpacing: '-0.02em', wordBreak: 'keep-all'}}>
+                         // **색은 스프레드 뒤에 와야 한다.** 예전엔 스프레드 안에
+                         // '#23262B' 를 넣어 놓고 그 아래에서 T.ink 로 덮어썼다.
+                         // 먹 테마에서 T.ink 는 거의 흰색이라 **노란 바탕에 흰
+                         // 글자**가 됐다 — #61 직영, #73 객실 −20% 가 그래서
+                         // 안 읽혔다
+                         color: p.hot ? '#23262B' : T.ink,
+                         letterSpacing: '-0.02em', wordBreak: 'keep-all'}}>
               {p.label}
             </div>
             {p.note ? (

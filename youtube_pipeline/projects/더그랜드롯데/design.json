@@ -1148,7 +1148,9 @@
     "caption": "참고 이미지 — 시기에 따라 실제 로고와 다를 수 있다",
     "source": "롯데호텔 (참고 이미지)",
     "theme": "paper",
-    "ground": "#FFFFFF"
+    "ground": "#FFFFFF",
+    "bare": true,
+    "plateScale": 0.66
    }
   ],
   "64": [
@@ -1298,7 +1300,8 @@
      }
     ],
     "source": "한국경제인협회 e뮤지엄 · 사진 뉴스뱅크이미지",
-    "theme": "blueprint"
+    "theme": "blueprint",
+    "statSize": 96
    }
   ],
   "72": [
@@ -1313,11 +1316,12 @@
      -30,
      0
     ],
-    "headline": "",
+    "headline": "롯데백화점 본점 개점",
     "source": "롯데",
     "media": "더그랜드롯데/lotte_town_myeongdong.jpg",
-    "sub": "",
-    "center": true
+    "sub": "1979.12",
+    "center": true,
+    "dim": 0.5
    }
   ],
   "73": [
@@ -1480,8 +1484,9 @@
     "subtitle": "635,250원 → 698,775원",
     "source": "롯데호텔 공식 예약 페이지 직접 조회",
     "bgImage": "더그랜드롯데/grand_lotte_room2.jpg",
-    "veil": 0.62,
-    "hotValue": true
+    "veil": 0.58,
+    "hotValue": true,
+    "theme": "ink"
    }
   ],
   "82": [
@@ -1575,9 +1580,9 @@
    "StrikeSwapCard",
    "그 — '요금 더 받으려고' 를 지운다",
    {
-    "title": "그럼 왜 넓혔나",
+    "title": "",
     "from": "요금을 더 받으려고 넓혔다",
-    "fromLabel": "성립하지 않는 설명",
+    "fromLabel": "",
     "to": "넓히면 ㎡당 수익은 오히려 떨어진다",
     "toLabel": "실제",
     "note": "이유는 요금이 아니라 다른 데 있다",
@@ -1598,48 +1603,49 @@
   ],
   "88": [
    "BarChartCard",
-   "그 — 브랜드별 매출 비중 7개",
+   "그 — 브랜드별 운영 시설 수",
    {
+    "title": "브랜드별 운영 시설 수",
+    "sub": "2026.6.30 기준 · 국내외 41곳",
     "bars": [
      {
       "label": "브리브",
-      "value": 2,
-      "displayValue": "2%"
+      "value": 1,
+      "displayValue": "1"
      },
      {
       "label": "시그니엘",
-      "value": 5,
-      "displayValue": "5%"
+      "value": 2,
+      "displayValue": "2"
      },
      {
       "label": "스카이힐CC",
-      "value": 5,
-      "displayValue": "5%"
+      "value": 2,
+      "displayValue": "2"
      },
      {
       "label": "리조트",
-      "value": 10,
-      "displayValue": "10%"
+      "value": 4,
+      "displayValue": "4"
      },
      {
       "label": "L7",
-      "value": 19.5,
-      "displayValue": "19.5%"
+      "value": 8,
+      "displayValue": "8"
      },
      {
       "label": "롯데시티",
-      "value": 19.5,
-      "displayValue": "19.5%"
+      "value": 8,
+      "displayValue": "8"
      },
      {
       "label": "롯데호텔",
-      "value": 39,
-      "displayValue": "39%",
-      "hot": true
+      "value": 16,
+      "displayValue": "16"
      }
     ],
-    "source": "DART 호텔롯데 반기보고서 2026.8.14",
-    "caption": "2026.6.30 기준 브랜드별 비중"
+    "caption": "공시의 브랜드별 비중(39% · 19.5% · …)은 이 개수의 비율이다",
+    "source": "DART 호텔롯데 반기보고서 2026.8.14"
    }
   ],
   "89": [
@@ -1959,7 +1965,7 @@
    {
     "title": "객실은 계절을 타고, 임대는 타지 않는다",
     "sub": "같은 건물 안의 서로 다른 두 수입",
-    "indexNote": "실제 월별 통계가 아니라 두 수입의 성격 차이를 보이려고 그린 도해",
+    "indexNote": "객실 매출과 임대 수입의 차이를 보이기 위한 가정",
     "xLabels": [
      "1월",
      "2월",
@@ -2013,8 +2019,7 @@
       ]
      }
     ],
-    "caption": "가상의 지수 — 연평균 = 100",
-    "source": "가정 · 시뮬레이션"
+    "source": "가정 — 실제 월별 통계 아님"
    }
   ],
   "110": [

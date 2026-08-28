@@ -32,6 +32,10 @@ export const MediaPlateCard = ({
   num = '', label = '', note = '',
   caption = '', source = '', theme, bg = {},
   ground = '',   // 주면 무대 전체를 이 색으로 (#63 로고는 흰 바탕이라야 산다)
+  // bare — 액자(점선·판 배경·그림자)를 걷어내고 소재만 바탕에 얹는다.
+  // 이미 흰 바탕인 로고 시트를 또 흰 판에 넣으면 액자가 주인공이 된다
+  bare = false,
+  plateScale = 1,   // 판 크기를 줄인다. 로고는 작을수록 브랜드 마크처럼 읽힌다
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -46,10 +50,10 @@ export const MediaPlateCard = ({
   // 세로 계산은 **판과 아래 라벨을 한 덩어리로** 잡아 띠 한가운데 앉힌다.
   // 처음엔 라벨 자리를 먼저 빼고 남은 높이에 판을 맞췄는데, 그러면 라벨이 없는
   // 컷에서도 그만큼이 비고 판만 작아졌다. 덩어리로 재야 자리를 다 쓴다.
-  const maxW = 1240;
+  const maxW = 1240 * plateScale;
   const avail = CONTENT_BOTTOM - bandTop;
   const extra = label ? SP.BLOCK + (note ? 132 : 92) : 0;
-  let h = Math.max(220, Math.min(avail - extra, maxW / aspect));
+  let h = Math.max(220, Math.min((avail - extra) * plateScale, maxW / aspect));
   let w = h * aspect;
   if (w > maxW) { w = maxW; h = w / aspect; }
   const x = Math.round((1920 - w) / 2);
@@ -73,14 +77,20 @@ export const MediaPlateCard = ({
                    opacity: s,
                    transform: `translateY(${(1 - s) * 18}px) scale(${0.985 + s * 0.015})`}}>
         {/* 점선 테두리 — 판 **바깥**에 그린다. 안쪽에 그리면 소재를 갉아먹는다.
-            "잘라 붙인 조각"이라는 표시라 실선이면 뜻이 달라진다 (§40-2) */}
-        <div style={{position: 'absolute', inset: -9, borderRadius: R + 9,
-                     border: `2px dashed ${dark ? 'rgba(242,240,236,0.55)' : 'rgba(35,38,43,0.42)'}`}} />
-        <div style={{position: 'absolute', inset: 0, borderRadius: R, overflow: 'hidden',
-                     background: dark ? '#0D1014' : '#DBD6CE',
-                     boxShadow: dark ? '0 24px 70px rgba(0,0,0,0.5)'
-                                     : '0 20px 56px rgba(35,38,43,0.22)'}}>
-          {isVid ? <OffthreadVideo src={src} muted style={box} /> : <Img src={src} style={box} />}
+            "잘라 붙인 조각"이라는 표시라 실선이면 뜻이 달라진다 (§40-2)
+            bare 면 안 그린다. 이미 흰 바탕에 놓인 로고 시트를 또 액자에
+            넣으면 액자가 주인공이 된다 (#63) */}
+        {bare ? null : (
+          <div style={{position: 'absolute', inset: -9, borderRadius: R + 9,
+                       border: `2px dashed ${dark ? 'rgba(242,240,236,0.55)' : 'rgba(35,38,43,0.42)'}`}} />
+        )}
+        <div style={{position: 'absolute', inset: 0, borderRadius: bare ? 0 : R, overflow: 'hidden',
+                     background: bare ? 'transparent' : (dark ? '#0D1014' : '#DBD6CE'),
+                     boxShadow: bare ? 'none'
+                       : (dark ? '0 24px 70px rgba(0,0,0,0.5)'
+                               : '0 20px 56px rgba(35,38,43,0.22)')}}>
+          {isVid ? <OffthreadVideo src={src} muted style={box} />
+                 : <Img src={src} style={bare ? {...box, objectFit: 'contain'} : box} />}
           {/* 아카이브 — 필름 게이트처럼 가장자리가 어두워지고 흐려진다.
               옛 자료라는 걸 자막으로 설명하지 않고 화면으로 말한다 */}
           {archive ? (

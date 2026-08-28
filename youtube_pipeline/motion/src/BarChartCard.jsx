@@ -107,7 +107,10 @@ export const BarChartCard = ({
         return (
           <div key={i} style={{position: 'absolute', left: startX + i * (side + gap) - gap / 2,
                                width: side + gap, top: BASELINE + SP.NEAR, textAlign: 'center',
-                               opacity: fadeIn(frame, 30 + i * 8)}}>
+                               // 막대가 많으면 간격을 좁힌다. 8프레임씩 밀면
+                               // 일곱 번째 라벨이 78프레임(2.6초)에야 뜨는데,
+                               // **마지막 막대가 대개 결론**이다 (#88 롯데호텔)
+                               opacity: fadeIn(frame, 30 + i * (n > 5 ? 5 : 8))}}>
             <div style={{fontFamily: 'A2Z Light, sans-serif',
                          fontSize: n > 5 ? 25 : 30, color: T.soft,
                          wordBreak: 'keep-all'}}>{b.label}</div>
@@ -128,8 +131,10 @@ export const BarChartCard = ({
       {closingLine ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 78,
                      textAlign: 'center', opacity: fadeIn(frame, 60)}}>
+          {/* 형광펜 위 글자는 **항상 먹**이다. T.ink 를 쓰면 먹 테마에서
+              흰 글자가 노란 바탕에 얹힌다 */}
           <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                        fontSize: 42, color: T.ink, background: YELLOW,
+                        fontSize: 42, color: '#23262B', background: YELLOW,
                         padding: '6px 18px'}}>{closingLine}</span>
         </div>
       ) : null}
