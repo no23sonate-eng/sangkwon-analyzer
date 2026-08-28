@@ -80,7 +80,7 @@ def main():
 
     outdir = os.path.join(PUBLIC, a.project)
     os.makedirs(outdir, exist_ok=True)
-    lines, ok, fail = [], 0, 0
+    lines, vrows, ok, fail = [], [], 0, 0
 
     for pid, name in a.photo:
         out = os.path.join(outdir, name)
@@ -111,12 +111,34 @@ def main():
             n = normalize(out)
             print(f'ok  {name:28s} {n // 1024:5d}KB  video/{vid}')
             lines.append(f'| `{name}` | Pexels video {vid} | Pexels License | (표기 의무 없음) |')
+            vrows.append((name, vid))
             ok += 1
         except Exception as e:
             print(f'FAIL {name:27s} video/{vid} — {e}')
             if os.path.exists(out):
                 os.remove(out)
             fail += 1
+
+    # mp4 는 .gitignore 라 저장소에 안 들어간다. 그래서 **받아오는 방법**을
+    # VIDEOS.tsv 에 적어 두고 fetch_videos.py 가 그걸로 되살린다.
+    # 여기서 줄을 안 쓰면, 스냅샷이 되돌아간 순간 그 클립은 영영 사라진다 —
+    # 실제로 blueprint_closeup · clinic_modern · interior_luxe_build 세 개를
+    # 그렇게 잃었다. 받은 자리에서 바로 적는다
+    if vrows:
+        tsv = os.path.join(outdir, 'VIDEOS.tsv')
+        head = ('# 영상 소재는 저장소에 안 들어간다 (.gitignore: motion/public/*/*.mp4).\n'
+                '# 대신 **받아오는 방법**을 여기 적어 둔다 — scripts/fetch_videos.py 가 읽는다.\n'
+                '# 파일명\t출처\tID\t자를 길이(초)\n')
+        if not os.path.exists(tsv):
+            open(tsv, 'w', encoding='utf-8').write(head)
+        have = {ln.split('\t')[0] for ln in open(tsv, encoding='utf-8').read().splitlines()
+                if ln and not ln.startswith('#')}
+        fresh = [f'{n}\tpexels\t{v}\t10' for n, v in vrows if n not in have]
+        if fresh:
+            body = open(tsv, encoding='utf-8').read()
+            with open(tsv, 'a', encoding='utf-8') as f:
+                f.write(('' if body.endswith('\n') else '\n') + '\n'.join(fresh) + '\n')
+            print(f'VIDEOS.tsv 에 {len(fresh)}줄 추가')
 
     if lines:
         cred = os.path.join(outdir, 'CREDITS.md')

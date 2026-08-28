@@ -11,3 +11,5 @@
 | `mo_tokyo_lobby.jpg` | 한국일보 2025.9.5 (한화 건설부문 제공) | **저작권물 · 출처 표기 사용** | `한화 건설부문 · 한국일보` |
 | `seoulstation_north_hk.jpg` | 한국일보 2025.9.5 (한화 건설부문 제공) | **저작권물 · 출처 표기 사용** | `한화 건설부문 · 한국일보` |
 | `hotel_suite_view.jpg` | Pexels photo 271624 | Pexels License | (표기 의무 없음) |
+| `interior_luxe_build.mp4` | Pexels video 31617692 | Pexels License | (표기 의무 없음) |
+| `blueprint_closeup.mp4` | Pexels video 8471104 | Pexels License | (표기 의무 없음) |
