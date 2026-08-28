@@ -13,3 +13,5 @@
 | `hotel_suite_view.jpg` | Pexels photo 271624 | Pexels License | (표기 의무 없음) |
 | `interior_luxe_build.mp4` | Pexels video 31617692 | Pexels License | (표기 의무 없음) |
 | `blueprint_closeup.mp4` | Pexels video 8471104 | Pexels License | (표기 의무 없음) |
+| `logo_rosewood.svg` | Rosewood Hotels & Resorts 공식 워드마크 | **상표 · 출처 표기 사용** | `로즈우드` |
+| `logo_aman.svg` | Aman 공식 워드마크 | **상표 · 출처 표기 사용** | `아만` |
