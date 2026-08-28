@@ -2990,7 +2990,8 @@
      },
      {
       "logo": "더그랜드롯데/logo_som.png",
-      "label": "SOM — 롯데월드타워"
+      "label": "SOM — 롯데월드타워",
+      "logoScale": 0.44
      }
     ],
     "source": "스트레이트뉴스 2025.4.21 · 각 사 브랜드 마크"
@@ -3025,8 +3026,9 @@
     ],
     "kicker": "",
     "note": "",
-    "scrim": 0.18,
-    "source": "이오타 서울"
+    "scrim": 0,
+    "source": "이오타 서울",
+    "fit": "contain"
    }
   ],
   "165": [

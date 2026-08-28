@@ -26,6 +26,7 @@ export const StageCard = ({
   lines = [],
   kicker = '',             // 위에 작게 한 줄 (연도·분류)
   note = '',               // 아래 작게 한 줄 (근거·가정)
+  fit = 'cover',           // 'contain' 이면 자르지 않고 다 보여 준다 (지도·조감도)
   scrim = 0.5,             // 실사를 누르는 정도. 밝은 화면일수록 올린다
   size = 0,                // 글자 크기를 직접 정할 때
   align = 'center',
@@ -60,11 +61,16 @@ export const StageCard = ({
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Light, sans-serif', background: '#0B0E12'}}>
-      <AbsoluteFill style={{transform: `scale(${zoom})`}}>
+      {/* fit='contain' — **자르지 않는다.** 지도나 조감도처럼 가장자리에
+          정보가 있는 자료는 꽉 채우면 그 정보가 잘려 나간다 (#164 은
+          'Transportation Hub' 와 '서울역' 이 왼쪽으로 잘려 있었다).
+          남는 자리는 무대 바탕(검정) 그대로 두고, 자를 이유가 없으니
+          느린 확대도 끈다 */}
+      <AbsoluteFill style={{transform: fit === 'contain' ? 'none' : `scale(${zoom})`}}>
         {isVid
           ? <OffthreadVideo src={src} muted
-                            style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-          : <Img src={src} style={{width: '100%', height: '100%', objectFit: 'cover'}} />}
+                            style={{width: '100%', height: '100%', objectFit: fit}} />
+          : <Img src={src} style={{width: '100%', height: '100%', objectFit: fit}} />}
       </AbsoluteFill>
       {/* 위아래로 살짝 더 눌러 준다 — 가운데 글자가 앉을 자리 */}
       <AbsoluteFill style={{background: `rgba(11,14,18,${scrim})`}} />

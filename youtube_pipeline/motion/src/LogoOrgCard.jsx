@@ -101,8 +101,11 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
               }}
             >
               {child.logo ? (
+                // logoScale — 마크마다 여백 설계가 다르다. SOM 처럼 글자 세 자로
+                // 꽉 찬 워드마크는 같은 비율로 넣으면 옆 로고보다 훨씬 커 보인다
                 <Img src={/^https?:/.test(child.logo) ? child.logo : staticFile(child.logo)}
-                     style={{width: '76%', height: '64%', objectFit: 'contain'}} />
+                     style={{width: `${76 * (child.logoScale || 1)}%`,
+                             height: `${64 * (child.logoScale || 1)}%`, objectFit: 'contain'}} />
               ) : (
                 <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 20, color: '#9AA0A8'}}>
                   로고 자리
