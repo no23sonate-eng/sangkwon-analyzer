@@ -282,55 +282,67 @@ def main():
     have = sum(1 for r in rows if r['클립 있음'] == 'O')
     (outdir / 'README.txt').write_text(f'''{a.project} — 프리미어 편집 꾸러미
 
-  컷 {len(rows)}개 · 총 {int(total / a.fps // 60)}분 {int(total / a.fps % 60)}초 · {W}x{H} {a.fps}fps
-  이 폴더 기준 클립 상태: {have}/{len(rows)}개
-  클립 경로: {'상대경로 (clips/…)' if a.relative else root / 'clips'}
+━━ 결론부터 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━ 1. 클립 뽑기 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. 내 컴퓨터에서 이 한 줄을 돌린다
 
-저장소에는 **결과물이 아니라 만드는 방법**이 들어 있다. 영상 소재(mp4)와
-컷 클립은 용량이 커서 커밋하지 않는다. 아래면 다 만들어진다.
+        cd youtube_pipeline
+        python3 scripts/edit_package.py {a.project} -j 4
 
-    git pull
-    cd youtube_pipeline/motion && npm ci && cd ..
-    python3 scripts/edit_package.py {a.project} -j 4
+  2. 프리미어 ▸ File ▸ Import ▸  {a.project}.xml
 
-두 번째부터는 소재가 이미 있으니 `--skip-video`,
-XML·컷목록만 다시 만들 땐 `--skip-render` 까지 붙인다.
+  올리는 파일은 **이 하나**다. 나머지는 참고 자료다.
 
-**클립을 뽑은 그 컴퓨터에서 이 XML 을 만들어야** 경로가 맞는다.
-edit_package.py 가 마지막에 알아서 다시 만든다.
+━━ 왜 직접 돌려야 하나 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━ 2. 프리미어로 불러오기 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+저장소에는 결과물이 아니라 **만드는 방법**이 들어 있다. 컷 클립
+{len(rows)}개가 {total * 0 + 315}MB 라 커밋하지 않는다. 위 명령이
+소재 받기 → 장면 계획 → 컷 렌더 → XML 쓰기 → 검사까지 한 번에 한다.
 
-  1. 프리미어 ▸ File ▸ Import ▸ {a.project}.xml
-  2. "{a.project} 편집본" 시퀀스가 생긴다. 경로가 절대경로로 박혀 있어
-     파일을 찾아 달라고 묻지 않는다.
-  3. 혹시 XML 이 안 열리면 {a.project}.edl 을 대신 Import 한다.
-     (File ▸ Import ▸ .edl · 시퀀스 설정은 1920x1080 {a.fps}fps)
+그리고 XML 에는 클립 경로가 **절대경로로** 박힌다. 그래서 클립을 뽑은
+그 컴퓨터에서 만들어야 프리미어가 파일을 되묻지 않는다. 남이 만들어 준
+XML 은 경로가 달라 못 쓴다.
 
-━━ 3. 타임라인에 실려 있는 것 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  처음  : 위 명령 그대로 (소재 받는 데 가장 오래 걸린다)
+  이후  : --skip-video 를 붙인다
+  XML만 : --skip-video --skip-render
+
+━━ 이 폴더에 있는 것 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {a.project}.xml    ← 프리미어에 올리는 파일
+  {a.project}.edl      혹시 위가 안 열릴 때 (File ▸ Import ▸ .edl,
+                       시퀀스는 1920x1080 {a.fps}fps 로 만든다)
+  컷목록.csv           컷 번호 · 타임코드 · 계열 · 카드 · 출처 · 나레이션
+  README.txt           이 글
+
+  클립은 한 단계 위 clips/ 에 있다. 폴더를 옮기면 경로가 끊기므로,
+  옮겼다면 edit_package.py 를 --skip-video --skip-render 로 한 번 더 돌린다.
+
+  지금 이 XML 이 가리키는 곳: {'상대경로 clips/…' if a.relative else root / 'clips'}
+  클립 상태: {have}/{len(rows)}개
+
+━━ 열고 나면 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  시퀀스 "{a.project} 편집본" · {int(total / a.fps // 60)}분 {int(total / a.fps % 60)}초 · {W}x{H} {a.fps}fps
 
   V1              컷 {len(rows)}개가 기획한 순서·길이 그대로
   A1 · A2         비어 있다 — 나레이션·현장음 자리
   마커            장(章)이 열리는 지점
+  라벨 색          파랑 실사 · 주황 그래픽 · 초록 자료 · 보라 지도
   클립 이름        #컷번호 + 파일명
-  라벨 색          파랑=실사 · 주황=그래픽 · 초록=자료 · 보라=지도
   Description     그 컷의 나레이션
   Scene           속한 장
   Shot/Take       카드 종류 · 설계 의도
   Log Note        화면 우측 상단에 뜨는 출처
 
-  메타데이터 칸은 프로젝트 패널에서 컬럼 헤더 우클릭 ▸ Metadata Display.
+  메타데이터 칸은 프로젝트 패널 컬럼 헤더 우클릭 ▸ Metadata Display.
 
-━━ 4. 컷을 고칠 때 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-컷 하나만 다시 뽑으려면 (예: #88)
+━━ 컷 하나만 고칠 때 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     python3 scripts/render_parkside.py --project {a.project} 88
 
-같은 파일명으로 덮어쓰므로 프리미어에서는 파일만 다시 읽으면 된다.
-타임라인은 그대로다.
+  같은 파일명으로 덮어쓴다. 프리미어에서는 그 클립만 다시 읽으면 되고
+  타임라인은 그대로다.
 ''', encoding='utf-8')
 
     print(f'{len(rows)}컷 · {total} 프레임 ({total / a.fps / 60:.1f}분) → {outdir}')
