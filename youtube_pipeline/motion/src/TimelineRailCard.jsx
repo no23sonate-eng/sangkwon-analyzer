@@ -10,6 +10,13 @@ import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeI
 // axis: {from, to, step}          — 연도 범위와 눈금 간격
 // rails: [{label, from, to, note, hot, events:[{at, label, sub, hot}]}]
 //   from/to 를 주면 기간 막대, events 만 주면 점만 찍힌다.
+// 재생 머리가 x 에 닿는 프레임. 점·이음선·이름이 **같은 시각**에 떠야
+// 그 셋이 한 사건으로 읽힌다
+const reachAt = (x, x0, x1, t0, t1) => {
+  const f = x1 === x0 ? 0 : Math.max(0, Math.min(1, (x - x0) / (x1 - x0)));
+  return t0 + f * (t1 - t0);
+};
+
 export const TimelineRailCard = ({
   title = '', sub = '',
   axis = {from: 2000, to: 2030, step: 5},
@@ -68,7 +75,8 @@ export const TimelineRailCard = ({
 
         {rails.map((r, i) => {
           const y = railY(i);
-          const grow = interpolate(frame, [12 + i * 12, 96 + i * 12], [0, 1],
+          const SWEEP0 = 10 + i * 10, SWEEP1 = 74 + i * 10;
+          const grow = interpolate(frame, [SWEEP0, SWEEP1], [0, 1],
                                    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
           const fill = r.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
           const x0 = px(r.from ?? axis.from), x1 = px(r.to ?? axis.to);
@@ -95,7 +103,11 @@ export const TimelineRailCard = ({
               {(r.events || []).map((e, j) => {
                 const ex = px(e.at);
                 if (ex > x0 + (x1 - x0) * grow + 2) return null;
-                const o = fadeIn(frame, 40 + i * 12 + j * 8);
+                // **점이 뜨는 시각은 재생 머리가 그 해에 닿는 시각이다.**
+                // 예전엔 40+i*12+j*8 이라는 별도 일정으로 떴다 (아래 글자도
+                // 마찬가지였는데, 글자 쪽에는 재생 머리 조건이 아예 없어서
+                // 점도 이음선도 없이 라벨만 허공에 떠 있었다 — #48 '국영')
+                const o = fadeIn(frame, reachAt(ex, x0, x1, SWEEP0, SWEEP1), 8);
                 return (
                   <g key={j} opacity={o}>
                     <line x1={ex} y1={y - 34} x2={ex} y2={y - LIFT(j) + 16} stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
@@ -143,7 +155,11 @@ export const TimelineRailCard = ({
             {(r.events || []).map((e, j) => (
               <div key={j} style={{position: 'absolute', left: px(e.at) - 200, width: 400, top: y - LIFT(j),
                                    transform: 'translateY(-100%)', textAlign: 'center',
-                                   opacity: fadeIn(frame, 44 + i * 12 + j * 8)}}>
+                                   // 이름은 **점과 같이** 뜬다. 이음선 없이 글자만
+                                   // 먼저 뜨면 어느 해를 가리키는지 알 수 없다
+                                   opacity: fadeIn(frame,
+                                     reachAt(px(e.at), px(r.from ?? axis.from), px(r.to ?? axis.to),
+                                             10 + i * 10, 74 + i * 10) + 2, 8)}}>
                 <div style={{fontFamily: e.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              fontSize: 36, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                   {/* 형광펜 위 글자는 늘 먹이다. 청사진 테마에서 T.ink 는
