@@ -190,35 +190,63 @@ def main():
     (outdir / 'README.txt').write_text(
         f'''{a.project} — 프리미어 편집 꾸러미
 
-  컷 {len(rows)}개 · 총 {total / a.fps / 60:.0f}분 {total / a.fps % 60:.0f}초 · {W}x{H} {a.fps}fps
+  컷 {len(rows)}개 · 총 {int(total / a.fps // 60)}분 {int(total / a.fps % 60)}초 · {W}x{H} {a.fps}fps
+  지금 이 폴더 기준 클립 상태: {have}/{len(rows)}개
 
-폴더 구조 (이대로 두어야 링크가 붙는다)
-  {a.project}/
-    clips/            컷 클립 {len(rows)}개
-    프리미어/
-      {a.project}.xml
-      컷목록.csv
+━━ 1. 클립 뽑기 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-불러오기
+저장소에는 **결과물이 아니라 만드는 방법**이 들어 있다. 영상 소재(mp4)와
+컷 클립은 용량이 커서 커밋하지 않는다. 아래 한 줄이면 다 만들어진다.
+
+    git pull
+    cd youtube_pipeline/motion && npm ci && cd ..
+    python3 scripts/edit_package.py {a.project} -j 4
+
+  · 소재 영상 34개를 Pexels 에서 다시 받고
+  · 대본에서 장면 계획을 세우고 설계를 반영하고
+  · 컷 {len(rows)}개를 렌더하고
+  · 이 XML 과 컷목록을 다시 쓴다
+
+두 번째부터는 소재가 이미 있으니 `--skip-video` 를 붙이면 빠르다.
+XML·컷목록만 다시 만들 땐 `--skip-render` 까지.
+
+━━ 2. 프리미어로 불러오기 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+폴더 구조는 이대로 두어야 링크가 붙는다.
+
+    projects/{a.project}/
+      clips/                컷 클립 {len(rows)}개
+      프리미어/
+        {a.project}.xml
+        컷목록.csv
+
   1. 프리미어 ▸ File ▸ Import ▸ {a.project}.xml
-  2. 클립을 못 찾는다고 물으면 clips 폴더의 아무 파일이나 하나 짚어 준다.
-     나머지는 알아서 이어진다.
-  3. "{a.project} — 편집본" 시퀀스가 생긴다. 컷이 기획한 순서·길이대로
-     V1 에 깔려 있고, A1·A2 는 나레이션·자막용으로 비어 있다.
+  2. 클립을 못 찾는다고 물으면 clips 폴더의 **아무 파일이나 하나** 짚어
+     준다. 나머지 {len(rows) - 1}개는 알아서 이어진다.
+  3. "{a.project} — 편집본" 시퀀스가 생긴다.
 
-타임라인에서 보이는 것
-  · 클립 이름       #컷번호 + 파일명
-  · Description     그 컷의 나레이션 (Comment 칸을 켜면 보인다)
-  · Comment         설계 의도
-  · Log Note        화면에 뜨는 출처
-  · 마커            장(章) 시작 지점
+━━ 3. 타임라인에 실려 있는 것 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-클립을 다시 뽑으려면
-  cd youtube_pipeline
-  python3 scripts/render_parkside.py --project {a.project} -j 4
-  → projects/{a.project}/clips/
+  V1              컷 {len(rows)}개가 기획한 순서·길이 그대로
+  A1 · A2         비어 있다 — 나레이션·현장음 자리
+  마커            장(章)이 열리는 지점
+  클립 이름        #컷번호 + 파일명
+  Description     그 컷의 나레이션
+  Comment         설계 의도
+  Log Note        화면 우측 상단에 뜨는 출처
 
-지금 이 꾸러미의 클립 상태: {have}/{len(rows)}개 준비됨
+  Description·Comment 는 프로젝트 패널에서 컬럼 헤더 우클릭 ▸ Metadata
+  Display 로 켠다. 편집하면서 대본과 의도를 보려고 파일을 따로 열지
+  않아도 된다.
+
+━━ 4. 컷을 고칠 때 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+컷 하나만 다시 뽑으려면 (예: #88)
+
+    python3 scripts/render_parkside.py --project {a.project} 88
+
+같은 파일명으로 덮어쓰므로 프리미어에서는 파일만 다시 읽으면 된다.
+타임라인은 그대로다.
 ''', encoding='utf-8')
 
     print(f'{len(rows)}컷 · {total} 프레임 ({total / a.fps / 60:.1f}분) → {outdir}')
