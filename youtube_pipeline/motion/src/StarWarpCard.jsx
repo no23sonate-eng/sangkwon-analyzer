@@ -14,11 +14,11 @@ import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remoti
 //   B. 워프 스트림 — 중심에서 계속 태어나 흘러나가는 선. A 가 비는 만큼
 //                  차오른다. 3초 내내 끊이지 않게 하는 층이다.
 export const StarWarpCard = ({
-  fieldCount = 1800, // A 정지 별밭
-  warpCount = 900, // B 워프 스트림
+  fieldCount = 1560, // A 정지 별밭
+  warpCount = 660, // B 워프 스트림
   seed = 7,
   speed = 1.0,
-  trail = 0.85,
+  trail = 0.68,
   holdSec = 0.28, // 처음 이만큼은 사진처럼 멈춰 있다
 }) => {
   const frame = useCurrentFrame();
@@ -94,12 +94,12 @@ export const StarWarpCard = ({
           const gone = interpolate(r, [maxR * 0.95, maxR * 1.25], [1, 0], {
             extrapolateLeft: 'clamp', extrapolateRight: 'clamp',
           });
-          const o = (0.34 + st.mag * 0.66) * gone;
+          const o = (0.42 + st.mag * 0.58) * gone;
           if (o < 0.02) return null;
           return (
             <Streak key={`f${i}`}
               x1={cx + co * (r - len)} y1={cy + si * (r - len)} x2={x2} y2={y2}
-              w={0.9 + st.mag * 1.8} o={o} />
+              w={0.72 + st.mag * 0.85} o={o} />
           );
         })}
 
@@ -123,7 +123,7 @@ export const StarWarpCard = ({
             <Streak key={`w${i}`}
               x1={cx + co * (r - len)} y1={cy + si * (r - len)}
               x2={cx + co * r} y2={cy + si * r}
-              w={0.9 + st.mag * 1.7} o={o} />
+              w={0.55 + st.mag * 0.8} o={o} />
           );
         }) : null}
       </svg>
