@@ -15,6 +15,8 @@ FCP7 XML 은 **틀려도 조용히 열린다.** 요소 순서가 어긋나면 �
   7. 그 파일의 영상 프레임 수가 XML 이 요구하는 길이 이상인가
   8. 해상도·프레임레이트가 시퀀스와 맞는가
   9. 라벨 색이 프리미어가 아는 이름인가
+ 10. **독립 판독기(OpenTimelineIO)** 가 읽어도 컷 수·틈·길이가 같은가
+     — 내가 쓴 걸 내가 검사하면 같은 오해를 두 번 한다
 
     python3 scripts/check_premiere.py 더그랜드롯데
     python3 scripts/check_premiere.py 더그랜드롯데 --deep   # 모든 클립 실측
@@ -158,7 +160,34 @@ def main():
         errs.append(f'파일이 없다 ({len(gone)}개): ' + ', '.join(gone[:6])
                     + (' …' if len(gone) > 6 else ''))
 
-    # 9 ─ EDL 도 같이 본다
+    # 9 ─ **남이 읽어 봐야 진짜다.** 내가 쓴 걸 내가 검사하면 같은 오해를
+    #     두 번 하게 된다. 독립 구현(OpenTimelineIO 의 fcp_xml)에 읽혀 보고
+    #     컷 수·틈·길이가 그대로 나오는지 대조한다
+    try:
+        import opentimelineio as otio
+        tl = otio.adapters.read_from_file(str(xmlp), 'fcp_xml')
+        oclips = [c for c in tl.tracks[0] if isinstance(c, otio.schema.Clip)]
+        ogaps = [c for c in tl.tracks[0] if isinstance(c, otio.schema.Gap)]
+        if len(oclips) != len(clips):
+            errs.append(f'남이 읽으면 컷이 {len(oclips)}개다 (내가 쓴 건 {len(clips)}개) '
+                        f'— 프리미어도 그만큼만 가져간다')
+        if ogaps:
+            errs.append(f'남이 읽으면 빈칸이 {len(ogaps)}군데 생긴다')
+        od = tl.duration().value
+        if abs(od - seq_dur) > 0.5:
+            errs.append(f'남이 읽은 길이 {od:.0f} ≠ {seq_dur}')
+        nmk = len(tl.tracks.markers or [])
+        if nmk != len(seq.findall('marker')):
+            warns.append(f'마커가 {nmk}개로 읽힌다 (쓴 건 {len(seq.findall("marker"))}개)')
+        print(f'  독립 판독(OTIO): 트랙 {len(tl.tracks)} · 클립 {len(oclips)} · '
+              f'빈칸 {len(ogaps)} · {od:.0f}프레임')
+    except ImportError:
+        warns.append('OpenTimelineIO 가 없어 교차 검증을 건너뛴다 '
+                     '(pip install opentimelineio otio-fcp-adapter)')
+    except Exception as e:
+        errs.append(f'독립 판독기가 못 읽는다: {type(e).__name__} {e}')
+
+    # 10 ─ EDL 도 같이 본다
     edlp = pdir / '프리미어' / f'{a.project}.edl'
     if edlp.exists():
         n = len(re.findall(r'^\d{3}\s+AX', edlp.read_text(encoding='utf-8'), re.M))
