@@ -15,3 +15,5 @@
 | `blueprint_closeup.mp4` | Pexels video 8471104 | Pexels License | (표기 의무 없음) |
 | `logo_rosewood.svg` | Rosewood Hotels & Resorts 공식 워드마크 | **상표 · 출처 표기 사용** | `로즈우드` |
 | `logo_aman.svg` | Aman 공식 워드마크 | **상표 · 출처 표기 사용** | `아만` |
+| `logo_foster.svg` | Foster + Partners 공식 워드마크 | **상표 · 출처 표기 사용** | `포스터앤파트너스` |
+| `logo_som.png` | SOM 공식 로고 | **상표 · 출처 표기 사용** | `SOM` |
