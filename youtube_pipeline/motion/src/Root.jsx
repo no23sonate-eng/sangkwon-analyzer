@@ -85,6 +85,7 @@ import {SitePlotCard} from './SitePlotCard';
 import {ShapeCompareCard} from './ShapeCompareCard';
 import {LowerThirdCard} from './LowerThirdCard';
 
+import {StarWarpCard} from './StarWarpCard';
 import {setMotionMode} from './anim';
 
 const FPS = 30;
@@ -494,6 +495,15 @@ export const RemotionRoot = () => {
           calculateMetadata={async ({props}) => durationFromProps({props})}
         />
       ))}
+      <Composition
+        id="StarWarp"
+        component={StarWarpCard}
+        fps={30}
+        width={1920}
+        height={1080}
+        durationInFrames={90}
+        defaultProps={{}}
+      />
       <Composition
         id="MotionWrap"
         component={MotionWrap}
