@@ -48,8 +48,14 @@ export const MotionShell = ({
   // 이어 붙인 영상에서 그 띠가 컷마다 번쩍여서 오히려 전환이 더 눈에 띈다
   // (샘플 v2 에서 확인 — 검은 띠가 컷 경계마다 보였다).
   // 밀린 만큼 키워서 화면을 계속 덮게 한다. 그러면 띠 자체가 안 생긴다.
+  //
+  // **안 밀면 안 키운다.** 예전엔 1.012 를 바닥값으로 깔아 두어, 전환이
+  // 없는 컷까지 화면이 1.2% 확대된 채 나갔다. 자막 안전선을 재서 짠 여백이
+  // 그만큼 잘려 나간다
   const dx = Math.abs(ex + ox), dy = Math.abs(ey + oy);
-  const cover = 1.012 + Math.max(dx * 2 / 1920, dy * 2 / 1080);   // 1.2% 는 반올림 여유
+  const cover = (dx || dy)
+    ? 1.012 + Math.max(dx * 2 / 1920, dy * 2 / 1080)   // 1.2% 는 반올림 여유
+    : 1;
   const scale = Math.max(slow + hit * punch, cover);
 
   return (
