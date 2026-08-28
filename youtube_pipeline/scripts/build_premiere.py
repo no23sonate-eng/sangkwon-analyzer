@@ -79,6 +79,11 @@ def main():
         sid = sc['id']
         name = f"sec{sid:02d}_{sc['key']}"
         mp4 = clipdir / f'{name}.mp4'
+        # 렌더도 같은 식(Math.round(durationSec * FPS))으로 프레임 수를 잡으므로
+        # 이 값이 곧 그 클립의 영상 프레임 수다.
+        # 파일을 ffprobe 로 재면 2프레임쯤 길게 나오는데 그건 무음 AAC 트랙의
+        # 프라이밍 패딩이지 영상이 아니다 — 그걸 따라가면 컷마다 2프레임씩
+        # 밀려 15분 뒤엔 12초가 어긋난다
         dur = max(1, int(round(sc['dur'] * a.fps)))
         card, why = (design.get(str(sid)) or ['?', ''])[:2]
         props = (design.get(str(sid)) or [None, None, {}])[2]
