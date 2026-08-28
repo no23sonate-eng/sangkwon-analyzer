@@ -17,3 +17,6 @@
 | `logo_aman.svg` | Aman 공식 워드마크 | **상표 · 출처 표기 사용** | `아만` |
 | `logo_foster.svg` | Foster + Partners 공식 워드마크 | **상표 · 출처 표기 사용** | `포스터앤파트너스` |
 | `logo_som.png` | SOM 공식 로고 | **상표 · 출처 표기 사용** | `SOM` |
+| `logo_mandarin_w.svg` / `_g.svg` | Mandarin Oriental 공식 부채 마크 (mandarinoriental.com) | **상표 · 출처 표기 사용** | `만다린 오리엔탈` |
+| `logo_ritz_carlton_w.png` / `_k.png` | Ritz-Carlton 로고 누끼 (백색 / 먹) | **상표 · 출처 표기 사용** | `리츠칼튼` |
+| `logo_rosewood_w.svg` · `logo_aman_w.svg` · `logo_foster_w.svg` | 각 사 공식 워드마크 백색 반전 | **상표 · 출처 표기 사용** | 각 사명 |

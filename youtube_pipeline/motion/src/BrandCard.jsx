@@ -56,11 +56,14 @@ export const BrandCard = ({
         <div style={{position: 'absolute', left: 0, right: 0,
                      top: title ? titleBottom(title, sub) + 106 : 300,
                      display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-          <div style={{height: 200, display: 'flex', alignItems: 'center',
+          <div style={{height: Math.max(200, 200 * logoScale), display: 'flex', alignItems: 'center',
                        opacity: s, transform: `translateY(${logoY}px)`}}>
+            {/* **높이로 세운다.** maxHeight 로만 두면 고유 크기가 상한이 되어,
+                viewBox 만 있는 SVG(누끼 마크)는 0으로 접히고 래스터는
+                logoScale 을 올려도 커지지 않는다 (#148 만다린 부채) */}
             {logo ? (
-              <Img src={src(logo)} style={{maxHeight: 200 * logoScale, maxWidth: 1100 * logoScale,
-                                           objectFit: 'contain',
+              <Img src={src(logo)} style={{height: 200 * logoScale, width: 'auto',
+                                           maxWidth: 1100, objectFit: 'contain',
                                            filter: logoFilter}} />
             ) : (
               <div style={{fontFamily: 'A2Z Medium, sans-serif',

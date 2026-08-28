@@ -2726,11 +2726,11 @@
    "BrandCard",
    "그 — 만다린 오리엔탈",
    {
-    "logo": "더그랜드롯데/logo_mandarin.png",
+    "logo": "더그랜드롯데/logo_mandarin_g.svg",
     "name": "Mandarin Oriental",
     "line": "44개 호텔 · 12개 레지던스",
     "sub": "전 세계",
-    "logoScale": 2.2,
+    "logoScale": 0.95,
     "source": "만다린 오리엔탈"
    }
   ],
@@ -2923,10 +2923,10 @@
    "BrandCard",
    "그 — 리츠칼튼 선정",
    {
-    "logo": "더그랜드롯데/logo_ritz_carlton_corp.jpg",
+    "logo": "더그랜드롯데/logo_ritz_carlton_k.png",
     "name": "리츠칼튼",
     "line": "2031년 이오타 서울 개장 예정",
-    "logoScale": 2.6,
+    "logoScale": 1.0,
     "source": "Ritz-Carlton Hotel Company LLC / CC BY-SA 4.0",
     "tracking": true
    }
@@ -3080,25 +3080,29 @@
       "media": "더그랜드롯데/brand_bg_1.jpg",
       "name": "만다린 오리엔탈",
       "sub": "서울역 · 2030",
-      "logo": "더그랜드롯데/logo_mandarin.png"
+      "logo": "더그랜드롯데/logo_mandarin_w.svg",
+      "logoScale": 1.0
      },
      {
       "media": "더그랜드롯데/club_lounge.jpg",
       "name": "리츠칼튼",
       "sub": "이오타 서울 · 2031",
-      "logo": "더그랜드롯데/logo_ritz_carlton_corp.jpg"
+      "logo": "더그랜드롯데/logo_ritz_carlton_w.png",
+      "logoScale": 1.0
      },
      {
       "media": "더그랜드롯데/brand_bg_3.jpg",
       "name": "로즈우드",
       "sub": "용산 · 2027",
-      "logo": "더그랜드롯데/logo_rosewood.svg"
+      "logo": "더그랜드롯데/logo_rosewood_w.svg",
+      "logoScale": 0.26
      },
      {
       "media": "더그랜드롯데/brand_bg_4.jpg",
       "name": "아만",
       "sub": "청담동 · 프리마호텔 부지",
-      "logo": "더그랜드롯데/logo_aman.svg"
+      "logo": "더그랜드롯데/logo_aman_w.svg",
+      "logoScale": 0.5
      }
     ],
     "scrim": 0.5,

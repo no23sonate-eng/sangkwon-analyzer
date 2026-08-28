@@ -33,6 +33,9 @@ export const BrandWallCard = ({
   // 이름이 칸을 넘지 않게. 한글은 글자수 × 크기 에 가깝다
   const longest = Math.max(2, ...items.map((it) => String(it.name || '').length));
   const FS = size || Math.min(62, Math.max(30, Math.floor((W * 0.86) / longest)));
+  // 마크 높이. 부채(만다린)처럼 세로로 선 마크와 워드마크(로즈우드·아만)를
+  // 같은 높이로 두면 워드마크가 지나치게 커진다 — 항목마다 logoScale 로 조절
+  const logoH = 104;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Light, sans-serif', background: '#0B0E12'}}>
@@ -67,14 +70,26 @@ export const BrandWallCard = ({
                          transform: `translateY(-50%) translateY(${(1 - o) * 12}px)`,
                          textAlign: 'center', padding: '0 18px'}}>
               {/* 로고가 있으면 이름 위에 올린다 — 마크가 먼저 눈에 들어오고
-                  이름이 그걸 읽어 준다. 로고는 배경색이 제각각이라 흰 칩에 얹는다 */}
+                  이름이 그걸 읽어 준다.
+                  예전엔 흰 칩에 얹었다. 로고 배경색이 제각각이라 그랬는데,
+                  **칩이 사진 위에 붙인 스티커처럼 보였다.** 흰 네모 넷이
+                  줄지어 서면 그게 먼저 눈에 들어온다. 지금은 누끼 딴 백색
+                  마크를 사진 위에 바로 얹는다 — 브랜드가 실제로 쓰는
+                  reverse 로고와 같은 꼴이다. 사진이 밝은 칸에서도 읽히도록
+                  그림자를 글자와 같은 세기로 준다 */}
+              {/* 상자 높이는 **항상 같다.** 마크마다 상자를 줄이면 그만큼
+                  아래 이름 줄이 위아래로 흔들려 네 칸이 안 맞는다.
+                  줄이는 건 상자가 아니라 그 안의 마크다 */}
               {it.logo ? (
-                <div style={{margin: '0 auto 18px', width: Math.min(W * 0.62, 260), height: 92,
-                             background: '#FFFFFF', borderRadius: 4,
-                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                             padding: '10px 16px', boxShadow: '0 10px 30px rgba(0,0,0,0.35)'}}>
+                <div style={{margin: '0 auto 22px', height: logoH,
+                             display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  {/* 높이로 세운다. maxHeight 로만 두면 SVG 의 고유 크기가
+                      상한이 되어 16×16 짜리 부채 마크가 16픽셀 점으로 나온다 */}
                   <Img src={/^https?:/.test(it.logo) ? it.logo : staticFile(it.logo)}
-                       style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />
+                       style={{height: `${Math.round((it.logoScale || 1) * 100)}%`, width: 'auto',
+                               maxWidth: Math.min(W * 0.7, 320), objectFit: 'contain',
+                               filter: 'drop-shadow(0 3px 20px rgba(0,0,0,0.85))'
+                                     + ' drop-shadow(0 1px 4px rgba(0,0,0,0.6))'}} />
                 </div>
               ) : null}
               <div style={{fontSize: FS, lineHeight: 1.24, color: it.hot ? YELLOW : '#FFFFFF',
