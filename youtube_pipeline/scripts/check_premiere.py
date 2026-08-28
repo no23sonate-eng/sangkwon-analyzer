@@ -160,6 +160,22 @@ def main():
         errs.append(f'파일이 없다 ({len(gone)}개): ' + ', '.join(gone[:6])
                     + (' …' if len(gone) > 6 else ''))
 
+    # 경로에 한글이 들어 있으면 맥에서 조합/분해(NFC·NFD)가 어긋날 수 있다.
+    # 파이썬은 디스크에 있는 그대로 읽으니 여기선 통과하는데, 프리미어가
+    # 다른 쪽으로 정규화해 찾으면 전부 오프라인으로 뜬다. 두 형태 다
+    # 열리는지 본다 — 안 되면 --relative 로 피할 수 있다
+    first = clips[0].findtext('file/pathurl') or ''
+    if first.startswith('file://') and not first.isascii():
+        import unicodedata
+        raw = urllib.parse.unquote(first.split('file://localhost', 1)[-1]
+                                   .split('file://', 1)[-1])
+        forms = {f: pathlib.Path(unicodedata.normalize(f, raw)).exists()
+                 for f in ('NFC', 'NFD')}
+        if not all(forms.values()):
+            warns.append(f'경로에 한글이 있고 정규화 형태에 따라 갈린다 {forms} — '
+                         f'프리미어가 파일을 못 찾으면 '
+                         f'build_premiere.py --relative 로 다시 만든다')
+
     # 9 ─ **남이 읽어 봐야 진짜다.** 내가 쓴 걸 내가 검사하면 같은 오해를
     #     두 번 하게 된다. 독립 구현(OpenTimelineIO 의 fcp_xml)에 읽혀 보고
     #     컷 수·틈·길이가 그대로 나오는지 대조한다
