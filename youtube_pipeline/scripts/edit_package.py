@@ -52,7 +52,7 @@ def main():
     if not (pdir / 'design.json').exists():
         sys.exit(f'{pdir}/design.json 이 없다 — 프로젝트 이름을 확인해 달라')
 
-    total = 4 - int(a.skip_video) - int(a.skip_render)
+    total = 5 - int(a.skip_video) - int(a.skip_render)
     n = 0
 
     if not a.skip_video:
@@ -76,6 +76,12 @@ def main():
     step(n, total, '프리미어 시퀀스 XML · 컷목록')
     run(['scripts/build_premiere.py', a.project]
         + (['--base', a.base] if a.base else []), '프리미어 꾸러미')
+
+    n += 1
+    step(n, total, '프리미어에 올라가는지 검사')
+    # 열어 보고 나서 아는 건 늦다. 컷이 빠졌는지, 경로가 맞는지, 길이가
+    # 맞는지 여기서 센다
+    run(['scripts/check_premiere.py', a.project, '--deep'], '검사')
 
     clips = sorted((pdir / 'clips').glob('*.mp4'))
     mb = sum(f.stat().st_size for f in clips) / 1024 / 1024
