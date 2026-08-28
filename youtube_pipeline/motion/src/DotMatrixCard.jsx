@@ -20,6 +20,10 @@ export const DotMatrixCard = ({
   // over — 이름·숫자를 점판 **위 한가운데**에 얹는다. 점 아래에 두면
   // 눈이 판을 다 훑고 내려가서야 무엇을 센 건지 알게 된다 (#3)
   over = false,
+  // legend='right' — 점판은 **왼쪽**, 이름·숫자는 **오른쪽에 세로로** 쌓는다.
+  // over 로 판 위에 얹었더니 글자가 점을 가려 정작 센 것이 안 보였다 (#3).
+  // 판과 범례가 자리를 나눠 가지면 둘 다 온전히 보인다
+  legend = '',
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
@@ -31,25 +35,38 @@ export const DotMatrixCard = ({
   // 격자가 화면 밖으로 나가는데 **렌더는 성공한다** — 시트에서야 안다.
   // 폭과 높이 양쪽에 맞을 때까지 점 간격을 줄인다. 점 개수는 안 건드린다:
   // 개수가 곧 뜻이라 임의로 줄이면 그림이 거짓말이 된다
-  const TOP = 330;   // (아래에서 격자 높이를 안 뒤 stageTop 으로 다시 잡는다)
-  const slot = Math.min(760, 1560 / n);
-  const AVAIL_H = CONTENT_BOTTOM - TOP - 96;          // 아래 수치·라벨 자리
+  const side = legend === 'right';
+  // 옆에 범례를 세우면 판이 쓸 수 있는 폭이 절반으로 준다. 대신 아래
+  // 라벨 자리는 필요 없어져 높이를 다 쓴다
+  const FIELD_L = 190, FIELD_W = 840;                 // 왼쪽 점판이 쓰는 자리
+  const LEG_L = 1120, LEG_W = 620;                    // 오른쪽 범례
+  const bandTop = title ? 330 : 210;
+  const slot = side ? FIELD_W : Math.min(760, 1560 / n);
+  const AVAIL_H = CONTENT_BOTTOM - bandTop - (side ? 20 : 96);   // 아래 수치·라벨 자리
+  const dotsAll = groups.reduce((s, g) => s + Math.max(1, Math.round(g.value / perDot)), 0);
   const maxDots = Math.max(...groups.map((g) => Math.max(1, Math.round(g.value / perDot))));
+  // **merge 면 이어 붙인 전체 개수로 재야 한다.** 예전엔 가장 큰 그룹(590)
+  // 기준으로 자리를 맞춰 놓고 737개를 그렸다 — 아래 두 줄이 자막 영역까지
+  // 흘러내렸는데 렌더는 그대로 성공했다 (#3)
+  const fitDots = merge ? dotsAll : maxDots;
   let PITCH = 30, nCol = 4;
   for (let pitch = 30; pitch >= 7; pitch -= 1) {
     const c = Math.max(4, Math.min(cols, Math.floor((slot - 24) / pitch)));
-    if (Math.ceil(maxDots / c) * pitch <= AVAIL_H) { PITCH = pitch; nCol = c; break; }
+    if (Math.ceil(fitDots / c) * pitch <= AVAIL_H) { PITCH = pitch; nCol = c; break; }
     PITCH = pitch; nCol = c;                          // 끝까지 못 맞으면 최소 간격
   }
   const R = Math.max(2.5, PITCH / 3);
   const blockW = nCol * PITCH;
-  const startX = (1920 - slot * n) / 2 + slot / 2;
+  const startX = side ? FIELD_L + FIELD_W / 2 : (1920 - slot * n) / 2 + slot / 2;
   // 그룹마다 행 수가 달라도 수치·라벨은 **가장 큰 격자 아래 한 줄**에 맞춘다.
   // 제각각 높이에 두면 격자 크기 차이가 아니라 배치 실수처럼 보인다.
-  const dotsAll = groups.reduce((s, g) => s + Math.max(1, Math.round(g.value / perDot)), 0);
   const maxRows = merge
     ? Math.ceil(dotsAll / nCol)
     : Math.max(...groups.map((g) => Math.ceil(Math.max(1, Math.round(g.value / perDot)) / nCol)));
+  // 격자 높이를 안 뒤에야 자리를 정할 수 있다. 판(과 아래 라벨)을 한
+  // 덩어리로 보고 띠 가운데에 앉힌다
+  const fieldH = (maxRows - 1) * PITCH + R * 2;
+  const TOP = stageTop(fieldH + (side ? 0 : 96), {top: bandTop}) + R;
   const LABEL_Y = TOP + (maxRows - 1) * PITCH + R + 38;
   const FIELD_MID = TOP + ((maxRows - 1) * PITCH) / 2;
   // 점이 순서대로 찍히는 속도 (그룹마다 살짝 시차)
@@ -63,7 +80,8 @@ export const DotMatrixCard = ({
         {merge ? (() => {
           // 한 격자에 이어 붙인다. 앞 그룹부터 채우고, 각 점의 색은
           // 그 점이 어느 그룹 몫인지로 정한다
-          const cx0 = (1920 - nCol * PITCH) / 2 + PITCH / 2;
+          const cx0 = (side ? FIELD_L + (FIELD_W - nCol * PITCH) / 2
+                            : (1920 - nCol * PITCH) / 2) + PITCH / 2;
           const per = 52 / Math.max(1, dotsAll);
           let acc = 0;
           const bands = groups.map((g) => {
@@ -106,7 +124,39 @@ export const DotMatrixCard = ({
         })}
       </svg>
 
-      {groups.map((g, gi) => {
+      {/* 범례를 오른쪽에 세로로 — 위에서 아래로 groups 순서 그대로.
+          점 색을 그대로 앞에 찍어 어느 색이 무엇인지 글자 없이 잇는다 */}
+      {side ? (
+        <div style={{position: 'absolute', left: LEG_L, width: LEG_W,
+                     top: FIELD_MID, transform: 'translateY(-50%)'}}>
+          {groups.map((g, gi) => (
+            <div key={gi} style={{marginTop: gi ? SP.BAND : 0,
+                                  opacity: fadeIn(frame, 26 + gi * 16)}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                <svg width={26} height={26} style={{flex: 'none'}}>
+                  <circle cx={13} cy={13} r={11}
+                          fill={g.gone ? T.tones[0] : (g.hot ? YELLOW : T.tones[3])}
+                          stroke={g.gone ? 'none' : T.ink} strokeWidth={LW.THIN}
+                          opacity={g.gone ? 0.34 : 1} />
+                </svg>
+                <div style={{fontFamily: g.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
+                             fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{g.label}</div>
+              </div>
+              <div style={{marginTop: SP.TIGHT, marginLeft: 42,
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 96, color: T.ink,
+                           lineHeight: 1.02, letterSpacing: '-0.02em',
+                           fontVariantNumeric: 'tabular-nums'}}>
+                {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
+                <span style={{fontSize: 52, marginLeft: 4}}>{unit}</span>
+              </div>
+              {g.sub ? (
+                <div style={{marginTop: 6, marginLeft: 42, fontFamily: 'A2Z Light, sans-serif',
+                             fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>{g.sub}</div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : groups.map((g, gi) => {
         const L = merge ? (1920 - nCol * PITCH) / 2 + gi * (nCol * PITCH / groups.length)
                         : startX + gi * slot - slot / 2;
         const Wd = merge ? nCol * PITCH / groups.length : slot;
