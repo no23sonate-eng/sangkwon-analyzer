@@ -76,6 +76,8 @@ def main():
     ap.add_argument('project')
     ap.add_argument('--base', default='', help='클립 폴더의 부모 경로를 직접 지정')
     ap.add_argument('--relative', action='store_true', help='상대경로로 쓴다')
+    ap.add_argument('--relmap', default='', help='클립 이름 → 하위 폴더 이름 (JSON). '
+                                                 '클립을 여러 폴더에 나눠 담을 때 쓴다')
     ap.add_argument('--fps', type=int, default=FPS)
     a = ap.parse_args()
 
@@ -90,6 +92,7 @@ def main():
     # 절대경로가 기본이다. 이 스크립트는 클립을 뽑은 그 컴퓨터에서 돌아가므로
     # 여기서 본 경로가 곧 프리미어가 열 경로다
     root = pathlib.Path(a.base) if a.base else pdir.resolve()
+    relmap = json.load(open(a.relmap, encoding='utf-8')) if a.relmap else None
 
     def chapter_of(sid):
         v = design.get(str(sid))
@@ -120,7 +123,12 @@ def main():
         chapter = chapter_of(sid) or (chapter if i else '후크')
         kind = kind_of(card, props, a.project)
 
-        if a.relative:
+        if relmap:
+            # 클립이 clips1 · clips2 … 로 흩어져 있다. 파일 하나가 너무 커서
+            # 나눠 보낼 때, **XML 이 나뉜 자리를 그대로 가리키면** 받는 쪽은
+            # 압축만 풀면 된다 — 폴더를 합치는 수고가 사라진다
+            url = f'{relmap[name]}/{name}.mp4'
+        elif a.relative:
             url = f'clips/{name}.mp4'
         else:
             p = (root / 'clips' / f'{name}.mp4').as_posix()
@@ -318,7 +326,7 @@ XML 은 경로가 달라 못 쓴다.
   클립은 한 단계 위 clips/ 에 있다. 폴더를 옮기면 경로가 끊기므로,
   옮겼다면 edit_package.py 를 --skip-video --skip-render 로 한 번 더 돌린다.
 
-  지금 이 XML 이 가리키는 곳: {'상대경로 clips/…' if a.relative else root / 'clips'}
+  지금 이 XML 이 가리키는 곳: {'상대경로 ' + '·'.join(sorted(set(relmap.values()))) + '/…' if relmap else '상대경로 clips/…' if a.relative else root / 'clips'}
   클립 상태: {have}/{len(rows)}개
 
 ━━ 열고 나면 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -347,7 +355,7 @@ XML 은 경로가 달라 못 쓴다.
 
     print(f'{len(rows)}컷 · {total} 프레임 ({total / a.fps / 60:.1f}분) → {outdir}')
     print(f'  클립 {have}/{len(rows)}개 존재 · 경로 '
-          f'{"상대" if a.relative else root / "clips"}')
+          f'{"상대(나눔)" if relmap else "상대" if a.relative else root / "clips"}')
 
 
 if __name__ == '__main__':
