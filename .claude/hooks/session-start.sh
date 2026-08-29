@@ -44,12 +44,35 @@ fi
 
 # ── 2. 의존성 ────────────────────────────────────────────────────────────
 # 스냅샷에 들어 있으면 그대로 살아 있다. 없을 때만 깐다.
-if [ -f "$YP/requirements.txt" ]; then
-  if ! python3 -c 'import yaml, requests' 2>/dev/null; then
-    say 'python 의존성 설치'
-    pip install -q -r "$YP/requirements.txt" 2>&1 | tail -3
-  fi
-fi
+# **대표 모듈 하나를 찍어 보는 식은 못 믿는다.** 처음엔 `import yaml, requests`
+# 로 판정했는데, 그게 통과하는 컨테이너에 opentimelineio 가 없어서 프리미어
+# XML 교차 검증이 조용히 건너뛰어졌다. 목록이 바뀌었는지를 보고 판단한다
+#
+# 그리고 `pip install -r` 를 통째로 돌리면 안 된다. 이 컨테이너에서 실제로
+# 두 번 막혔다 — 데비안이 깔아 둔 PyJWT 는 지울 수 없다고 멈추고,
+# kiwipiepy_model 은 휠 빌드가 실패한다. **한 줄이라도 실패하면 나머지가
+# 통째로 안 깔린다.** 그래서 opentimelineio 가 빠졌고, 프리미어 XML
+# 교차 검증이 조용히 건너뛰어졌다.
+# 한 줄씩 깐다. 이미 있으면 즉시 넘어가고, 깨지는 줄은 그 줄만 버린다
+STAMP=.git/.deps-stamp
+for req in requirements.txt "$YP/requirements.txt"; do
+  [ -f "$req" ] || continue
+  key="$req:$(md5sum "$req" | cut -d' ' -f1)"
+  grep -qxF "$key" "$STAMP" 2>/dev/null && continue
+  say "python 의존성 확인 ($req)"
+  bad=''
+  while read -r line; do
+    line="${line%%#*}"; line="$(echo "$line" | xargs)"
+    [ -n "$line" ] || continue
+    # 데비안이 깔아 둔 패키지(blinker · PyJWT …)는 pip 가 지우지 못해
+    # 그걸 딸린 의존으로 쓰는 줄까지 통째로 죽는다. 못 지우면 덮어쓴다
+    pip install -q "$line" >/dev/null 2>&1 \
+      || pip install -q --ignore-installed "$line" >/dev/null 2>&1 \
+      || bad="$bad $line"
+  done < "$req"
+  [ -n "$bad" ] && say "  못 깐 것:$bad"
+  echo "$key" >> "$STAMP"
+done
 if [ -f "$YP/motion/package.json" ] && [ ! -d "$YP/motion/node_modules/remotion" ]; then
   say 'remotion 설치 (motion/)'
   (cd "$YP/motion" && npm install --no-audit --no-fund 2>&1 | tail -3)
