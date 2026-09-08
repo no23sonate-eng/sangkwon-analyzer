@@ -28,6 +28,10 @@ export const StrikeSwapCard = ({
   // arrowOnly — **지우지 않는다.** 제목 아래 화살표 하나, 그 아래 결론.
   // 취소선은 '틀렸다' 는 말인데, 여기선 틀린 게 아니라 **모자란** 것이다
   arrowOnly = false,
+  // noStrike — **옛 값을 지우지 않는다.** arrowOnly 는 옛 값을 통째로 감춰서
+  // 두 단계짜리 문장('싸게 내걸고 → 돌봄비로 번다')에서는 앞 단계가 화면에서
+  // 사라진다 (#245). 이건 취소선만 빼고 두 줄을 다 세운다
+  noStrike = false,
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
@@ -89,10 +93,12 @@ export const StrikeSwapCard = ({
           {/* 한글은 라틴보다 시각 중심이 아래에 있다. 52% 에 7px 을 그으면
               글자 몸통을 굵게 관통해 무엇이 지워졌는지조차 안 읽힌다.
               56% 로 내리고 글자 크기에 비례해 얇게 긋는다 */}
+          {noStrike ? null : (
           <div style={{position: 'absolute', left: -10, top: '56%',
                        width: `calc((100% + 20px) * ${s2})`,
                        height: Math.max(4, Math.round(fromSize * 0.052)),
                        background: T.ink, opacity: 0.92}} />
+          )}
         </div>
       </div>
       )}
@@ -109,7 +115,9 @@ export const StrikeSwapCard = ({
       {/* ②-b 갈아치운다는 걸 화살표로 못 박는다. 취소선만으론 '지웠다' 까지고
           '이걸로 바뀌었다' 가 안 남는다 (검수 지적 #85) */}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <g opacity={arrowOnly ? fadeIn(frame, 8) : (s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0)}>
+        <g opacity={arrowOnly ? fadeIn(frame, 8)
+                    : noStrike ? fadeIn(frame, READ + 2)
+                    : (s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0)}>
           <line x1={center ? 960 : 190} y1={top + fromSize * 1.35 + 12}
                 x2={center ? 960 : 190} y2={top + fromSize * 1.35 + ARROW_H - 40}
                 stroke={T.ink} strokeWidth={LW.BOLD} opacity={0.75} />

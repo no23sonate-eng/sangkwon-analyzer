@@ -4165,7 +4165,7 @@
     "theme": "ink",
     "source": "후생노동성 とりまとめ",
     "note": "일본 시장 전체에서 나타난 구조",
-    "arrowOnly": true
+    "noStrike": true
    }
   ],
   "246": [
