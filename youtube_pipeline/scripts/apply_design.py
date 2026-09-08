@@ -150,7 +150,8 @@ def main():
 
     pdir = ROOT / 'projects' / a.project
     plan = json.loads((pdir / 'scene_plan.json').read_text())
-    design = json.loads((pdir / 'design.json').read_text())['cuts']
+    design_all = json.loads((pdir / 'design.json').read_text())
+    design = design_all['cuts']
     known = registered()
     guards = guarded_slots()
 
@@ -392,6 +393,15 @@ def main():
 
     print(f'  내용 채운 컷 {filled}/{len(scenes)}')
     if not a.check:
+        # ── 챕터 제목은 design.json 이 갖고 있다 ───────────────────────
+        # plan_from_script 는 이름을 비워 둔다(자동으로 지으면 다 똑같아진다).
+        # 그런데 손으로 채워 넣어도 apply_design 이 돌 때마다 날아갔다 —
+        # 유튜브 설명문 목차에 "(제목 미정)" 이 그대로 나가는 길이다.
+        # design.json 의 chapters 에 적어 두면 여기서 순서대로 얹는다
+        names = design_all.get('chapters') or []
+        for ch, nm in zip(plan.get('chapters') or [], names):
+            if nm:
+                ch['name'] = nm
         (pdir / 'scene_plan.json').write_text(
             json.dumps(plan, ensure_ascii=False, indent=1))
         (pdir / 'scene_props.json').write_text(

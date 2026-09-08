@@ -86,9 +86,13 @@ export const StrikeSwapCard = ({
                      fontSize: fromSize, color: T.ink, opacity: 0.66, lineHeight: 1.1,
                      whiteSpace: 'nowrap', letterSpacing: '-0.02em'}}>
           {from}
-          <div style={{position: 'absolute', left: -10, top: '52%',
-                       width: `calc((100% + 20px) * ${s2})`, height: 7,
-                       background: T.ink, opacity: 1}} />
+          {/* 한글은 라틴보다 시각 중심이 아래에 있다. 52% 에 7px 을 그으면
+              글자 몸통을 굵게 관통해 무엇이 지워졌는지조차 안 읽힌다.
+              56% 로 내리고 글자 크기에 비례해 얇게 긋는다 */}
+          <div style={{position: 'absolute', left: -10, top: '56%',
+                       width: `calc((100% + 20px) * ${s2})`,
+                       height: Math.max(4, Math.round(fromSize * 0.052)),
+                       background: T.ink, opacity: 0.92}} />
         </div>
       </div>
       )}
@@ -96,8 +100,8 @@ export const StrikeSwapCard = ({
         <div style={{position: 'absolute', left: 0, right: 0, top: top - 42,
                      textAlign: center ? 'center' : 'left',
                      paddingLeft: center ? 0 : 150, opacity: fadeIn(frame, 6),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
-                     whiteSpace: 'nowrap'}}>
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft,
+                     letterSpacing: '0.02em', whiteSpace: 'nowrap'}}>
           {fromLabel}
         </div>
       ) : null}
@@ -128,7 +132,8 @@ export const StrikeSwapCard = ({
         <div style={{fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: toSize, color: T.ink, lineHeight: 1.05,
                      letterSpacing: '-0.03em', whiteSpace: 'nowrap'}}>
-          <span style={{background: YELLOW, color: '#23262B', padding: '0 12px 4px',
+          <span style={{background: YELLOW, color: '#23262B', padding: '0 14px 6px',
+                        boxShadow: `inset 0 -3px 0 rgba(35,38,43,0.55)`,
                         boxDecorationBreak: 'clone'}}>{to}</span>
         </div>
         {toLabel ? (

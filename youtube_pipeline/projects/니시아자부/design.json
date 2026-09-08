@@ -8,6 +8,19 @@
     "소재 0중복. 같은 사진·영상을 두 번 쓰지 않는다",
     "출처.md 의 🔴 금지 항목이 이 파일보다 우선한다"
   ],
+  "chapters": [
+    "고령화 — 우리가 더 빠르다",
+    "미쓰이부동산이 만들었다",
+    "36층 · 125m · 층이 곧 기능",
+    "식사는 제국호텔이 한다",
+    "1층 클리닉 — 다른 회사다",
+    "돌봄은 보험사가 맡았다",
+    "오바야시구미가 지었다",
+    "누가 들어갈 수 있나",
+    "입주일시금 50억 · 월 500만 원",
+    "입주율 47% — 개업 10개월",
+    "일본의 규제, 그리고 한국"
+  ],
   "cuts": {
     "0": [
       "BigStatsCard",
@@ -257,9 +270,9 @@
     ],
     "7": [
       "StageCard",
-      "후 — 데이터가 여섯 컷 이어졌다. 결론을 내는 자리에서 한 번 사람 사는 화면으로 내려온다",
+      "후 — 데이터 여섯 컷 뒤 사람 사는 화면. 나라를 특정하지 않는 걸음",
       {
-        "media": "니시아자부/elderly_group_park.mp4",
+        "media": "니시아자부/elderly_couple_street.mp4",
         "lines": [
           [
             {
@@ -1036,9 +1049,9 @@
     ],
     "51": [
       "StageCard",
-      "장 — 질문을 사람 쪽에서 받는다",
+      "장 — 125m 탑 얘기 뒤에 땅에 붙은 거리 하나. 대비가 컷의 뜻이다",
       {
-        "media": "니시아자부/elderly_couple_street.mp4",
+        "media": "니시아자부/japan_street_elder.mp4",
         "lines": [],
         "scrim": 0.3,
         "source": "SHVETS production / Pexels"
@@ -1169,7 +1182,7 @@
       "StageCard",
       "장 — 옮겨 간 그 층이 어떤 곳인지 한 장",
       {
-        "media": "니시아자부/care_space_img09.jpg",
+        "media": "니시아자부/care_space_img06.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1191,31 +1204,20 @@
       }
     ],
     "59": [
-      "PhotoSplitCard",
-      "장 — 스테이션과 식당. 두 장을 나란히",
+      "StageCard",
+      "장 — 돌봄층 식당. 층마다 있다는 걸 그림이 진다",
       {
-        "sides": [
-          {
-            "photo": "니시아자부/care_space_img10.jpg",
-            "name": "",
-            "sub": "",
-            "lines": []
-          },
-          {
-            "photo": "니시아자부/care_space_img11.jpg",
-            "name": "",
-            "sub": "",
-            "lines": []
-          }
-        ],
+        "media": "니시아자부/care_service_img10.jpg",
+        "lines": [],
+        "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
       }
     ],
     "60": [
       "StageCard",
-      "장 — 돌봄 욕실 한 장",
+      "장 — 돌봄을 위한 욕실. 설비가 보여야 \"돌봄용\"이 읽힌다",
       {
-        "media": "니시아자부/care_service_img02.jpg",
+        "media": "니시아자부/care_space_img05.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1364,14 +1366,17 @@
       }
     ],
     "70": [
-      "StageCard",
-      "장 — 외국 손님을 맞던 자리",
+      "SpecGridCard",
+      "설 — 왜 세웠나. 이 대목에 맞는 사진이 없어 글자로 둔다",
       {
-        "media": "니시아자부/service_institution.jpg",
-        "fit": "contain",
-        "lines": [],
-        "scrim": 0.1,
-        "source": "파크웰스테이트 니시아자부 공식"
+        "items": [
+          {
+            "label": "설립 목적",
+            "value": "외국 손님을 맞을 호텔",
+            "note": ""
+          }
+        ],
+        "source": "제국호텔 공식"
       }
     ],
     "71": [
@@ -1493,9 +1498,9 @@
     ],
     "81": [
       "StageCard",
-      "장 — 연륜이 만드는 안정감",
+      "장 — 응대하는 사람과 응대받는 사람",
       {
-        "media": "니시아자부/service_supportImg01.jpg",
+        "media": "니시아자부/service_supportImg02.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1503,9 +1508,9 @@
     ],
     "82": [
       "StageCard",
-      "장 — 그 결이 시니어 레지던스와 겹친다",
+      "장 — 그 결이 놓이는 공간",
       {
-        "media": "니시아자부/service_supportImg02.jpg",
+        "media": "니시아자부/service_relaxation01.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1584,9 +1589,9 @@
     ],
     "89": [
       "StageCard",
-      "장 — 돌봄이 필요해진 뒤의 식사",
+      "장 — 돌봄이 필요해진 뒤에도 같은 식사가 나온다",
       {
-        "media": "니시아자부/care_service_img06.jpg",
+        "media": "니시아자부/care_service_img02.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1609,11 +1614,7 @@
             "note": ""
           }
         ],
-        "source": "파크웰스테이트 니시아자부 공식",
-        "bg": {
-          "backdrop": "니시아자부/top_concept.jpg",
-          "veil": 0.91
-        }
+        "source": "파크웰스테이트 니시아자부 공식"
       }
     ],
     "91": [
@@ -1641,7 +1642,7 @@
       "StageCard",
       "장 — 대욕장. 오래 머무는 사람을 시스템이 잡는다",
       {
-        "media": "니시아자부/service_relaxation01.jpg",
+        "media": "니시아자부/service_relaxation05.jpg",
         "lines": [],
         "scrim": 0.24,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1707,22 +1708,12 @@
       "SpecGridCard",
       "설 — 의료기관을 열 수 있는 주체는 셋뿐이다",
       {
-        "title": "의료기관 개설 주체",
+        "title": "의료기관을 열 수 있는 주체",
         "items": [
           {
-            "label": "의사",
-            "value": "가능",
-            "note": ""
-          },
-          {
-            "label": "의료법인",
-            "value": "가능",
-            "note": ""
-          },
-          {
-            "label": "비영리법인",
-            "value": "가능",
-            "note": ""
+            "label": "일본 의료법",
+            "value": "의사 · 의료법인 · 비영리법인",
+            "note": "이 셋뿐이다"
           }
         ],
         "source": "일본 의료법"
@@ -1759,9 +1750,9 @@
     ],
     "101": [
       "StageCard",
-      "장 — 진료가 이뤄지는 공간",
+      "장 — 진료와 간호가 이뤄지는 자리",
       {
-        "media": "니시아자부/service_health.jpg",
+        "media": "니시아자부/medical_img04.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1827,9 +1818,9 @@
     ],
     "106": [
       "StageCard",
-      "장 — 클리닉 안",
+      "장 — 24시간 상주하는 간호",
       {
-        "media": "니시아자부/medical_img03.jpg",
+        "media": "니시아자부/care_support_img03.jpg",
         "lines": [],
         "scrim": 0.18,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -1904,23 +1895,32 @@
       }
     ],
     "112": [
-      "StageCard",
-      "장 — 입구가 따로 있다",
+      "SpecGridCard",
+      "설 — 입구가 둘이다",
       {
-        "media": "니시아자부/medical_img04.jpg",
-        "lines": [],
-        "scrim": 0.18,
+        "items": [
+          {
+            "label": "입주자 입구",
+            "value": "건물 안",
+            "note": ""
+          },
+          {
+            "label": "클리닉 입구",
+            "value": "대로변 별도",
+            "note": ""
+          }
+        ],
         "source": "파크웰스테이트 니시아자부 공식"
       }
     ],
     "113": [
-      "StageCard",
-      "장 — 대로변 쪽 별도 입구",
+      "StrikeSwapCard",
+      "설 — 입구가 다르면 손님이 다르다",
       {
-        "media": "니시아자부/service_pavilion.jpg",
-        "fit": "contain",
-        "lines": [],
-        "scrim": 0.12,
+        "from": "입주자만 쓰는 시설",
+        "fromLabel": "",
+        "to": "외부 방문객도 받는 시설",
+        "toLabel": "별도 입구",
         "source": "파크웰스테이트 니시아자부 공식"
       }
     ],
@@ -1993,9 +1993,9 @@
     ],
     "119": [
       "StageCard",
-      "장 — 돌봄이 이뤄지는 자리",
+      "장 — 돌봄 회사가 만드는 하루",
       {
-        "media": "니시아자부/care_space_img05.jpg",
+        "media": "니시아자부/care_service_img06.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -2030,9 +2030,9 @@
     ],
     "122": [
       "StageCard",
-      "장 — 맡긴 쪽의 손",
+      "장 — 맡긴 쪽이 만드는 자리",
       {
-        "media": "니시아자부/care_service_img10.jpg",
+        "media": "니시아자부/care_support_img01.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -2111,11 +2111,7 @@
             "note": ""
           }
         ],
-        "source": "TOKIORI",
-        "bg": {
-          "backdrop": "니시아자부/tokiori_top_img06.jpg",
-          "veil": 0.92
-        }
+        "source": "TOKIORI"
       }
     ],
     "127": [
@@ -2130,9 +2126,9 @@
     ],
     "128": [
       "StageCard",
-      "장 — 케어매니저가 있는 자리",
+      "장 — 사업소가 들어 있는 건물",
       {
-        "media": "니시아자부/tokiori_top_img10.jpg",
+        "media": "니시아자부/tokiori_top_img12.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "TOKIORI"
@@ -2199,7 +2195,7 @@
         "source": "파크웰스테이트 니시아자부 공식",
         "bg": {
           "backdrop": "니시아자부/location_panoImg_morning03.jpg",
-          "veil": 0.93
+          "veil": 0.94
         }
       }
     ],
@@ -2592,12 +2588,16 @@
       }
     ],
     "161": [
-      "StageCard",
-      "장 — 보증인을 세워야 들어올 수 있는 문",
+      "SpecGridCard",
+      "설 — 신원인수인이 무엇인가",
       {
-        "media": "니시아자부/service_relaxation03.jpg",
-        "lines": [],
-        "scrim": 0.22,
+        "items": [
+          {
+            "label": "신원인수인",
+            "value": "보증인",
+            "note": "입주할 때 반드시 지정"
+          }
+        ],
         "source": "파크웰스테이트 니시아자부 공식"
       }
     ],
@@ -2628,9 +2628,9 @@
     ],
     "163": [
       "StageCard",
-      "장 — 사람이 사람을 맡는 일이다",
+      "장 — 사람이 사람을 맡는 일",
       {
-        "media": "니시아자부/care_support_img01.jpg",
+        "media": "니시아자부/care_space_img09.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -2700,18 +2700,14 @@
             "note": ""
           }
         ],
-        "source": "파크웰스테이트 니시아자부 공식",
-        "bg": {
-          "backdrop": "니시아자부/care_space_img06.jpg",
-          "veil": 0.92
-        }
+        "source": "파크웰스테이트 니시아자부 공식"
       }
     ],
     "169": [
       "StageCard",
       "장 — 판단이 이뤄지는 자리",
       {
-        "media": "니시아자부/care_support_img03.jpg",
+        "media": "니시아자부/service_relaxation03.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -3046,11 +3042,7 @@
             "note": "앞으로 낼 임대료를 한 번에"
           }
         ],
-        "source": "파크웰스테이트 니시아자부 요금표",
-        "bg": {
-          "backdrop": "니시아자부/plan_104a_plan_illust.jpg",
-          "veil": 0.94
-        }
+        "source": "파크웰스테이트 니시아자부 요금표"
       }
     ],
     "192": [
@@ -3167,11 +3159,7 @@
             "note": "공식 공개 범위 120~360개월"
           }
         ],
-        "source": "파크웰스테이트 니시아자부 요금표",
-        "bg": {
-          "backdrop": "니시아자부/plan_98b_plan_img.jpg",
-          "veil": 0.94
-        }
+        "source": "파크웰스테이트 니시아자부 요금표"
       }
     ],
     "199": [
@@ -3198,7 +3186,7 @@
       "StageCard",
       "장 — 월납으로 사는 방",
       {
-        "media": "니시아자부/plan_75a_choubo.jpg",
+        "media": "니시아자부/plan_tab02_item02.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -3386,7 +3374,7 @@
         "source": "파크웰스테이트 니시아자부 요금표",
         "bg": {
           "backdrop": "니시아자부/location_panoImg_mid03.jpg",
-          "veil": 0.93
+          "veil": 0.94
         }
       }
     ],
@@ -3492,7 +3480,7 @@
         "source": "파크웰스테이트 니시아자부 요금표",
         "bg": {
           "backdrop": "니시아자부/service_bar_corner.jpg",
-          "veil": 0.93
+          "veil": 0.94
         }
       }
     ],
@@ -3632,7 +3620,7 @@
       "StageCard",
       "장 — 모델룸에서 본 방",
       {
-        "media": "니시아자부/plan_119a_choubo.jpg",
+        "media": "니시아자부/plan_tab01_item02.jpg",
         "lines": [],
         "scrim": 0.18,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -3670,14 +3658,17 @@
       }
     ],
     "227": [
-      "StageCard",
-      "장 — 개업 전의 관심",
+      "SpecGridCard",
+      "설 — 보도가 말한 것",
       {
-        "media": "니시아자부/top_topBnr2507_pc.jpg",
-        "fit": "contain",
-        "lines": [],
-        "scrim": 0.08,
-        "source": "파크웰스테이트 니시아자부 공식"
+        "items": [
+          {
+            "label": "개업 시점 보도",
+            "value": "이미 절반이 계약",
+            "note": "보도 기준"
+          }
+        ],
+        "source": "개업 전 보도"
       }
     ],
     "228": [
@@ -3717,7 +3708,7 @@
         "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준",
         "bg": {
           "backdrop": "니시아자부/location_panoImg_morning02.jpg",
-          "veil": 0.93
+          "veil": 0.94
         }
       }
     ],
@@ -3858,9 +3849,9 @@
     ],
     "238": [
       "StageCard",
-      "장 — 아직 스스로 사는 사람들",
+      "장 — 아직 스스로 사는 사람들의 방",
       {
-        "media": "니시아자부/service_relaxation05.jpg",
+        "media": "니시아자부/plan_tab04_item01.jpg",
         "lines": [],
         "scrim": 0.2,
         "source": "파크웰스테이트 니시아자부 공식"
@@ -3922,7 +3913,7 @@
         "source": "후생노동성 とりまとめ",
         "bg": {
           "backdrop": "니시아자부/location_panoImg_night03.jpg",
-          "veil": 0.92
+          "veil": 0.94
         }
       }
     ],
@@ -4183,8 +4174,8 @@
         ],
         "source": "파크웰스테이트 니시아자부 공식",
         "bg": {
-          "backdrop": "니시아자부/location_exampleImg01.jpg",
-          "veil": 0.93
+          "backdrop": "니시아자부/location_panoImg_morning04.jpg",
+          "veil": 0.94
         }
       }
     ],
@@ -4314,8 +4305,8 @@
         "theme": "blueprint",
         "source": "",
         "bg": {
-          "backdrop": "니시아자부/location_exampleImg02.jpg",
-          "veil": 0.93
+          "backdrop": "니시아자부/location_panoImg_mid04.jpg",
+          "veil": 0.94
         }
       }
     ],

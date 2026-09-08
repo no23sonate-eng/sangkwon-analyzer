@@ -1,7 +1,6 @@
 # 영상 소재는 저장소에 안 들어간다 (.gitignore: motion/public/*/*.mp4).
 # 대신 **받아오는 방법**을 여기 적어 둔다 — scripts/fetch_videos.py 가 읽는다.
 # 파일명	출처	ID	자를 길이(초)
-elderly_group_park.mp4	pexels	4806687	10
 elderly_couple_street.mp4	pexels	8970842	10
 skytree_night.mp4	pexels	9396326	10
 dishwashing_hands.mp4	pexels	5894544	10
@@ -9,3 +8,5 @@ chefs_kitchen.mp4	pexels	4253333	10
 doctor_exam.mp4	pexels	12178360	10
 care_hands.mp4	pexels	7516765	10
 apartment_drone.mp4	pexels	13761469	10
+japan_street_elder.mp4	pexels	14027207	10
+japan_street_crowd.mp4	pexels	17431597	10

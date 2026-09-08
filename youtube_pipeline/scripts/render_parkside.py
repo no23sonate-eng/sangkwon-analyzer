@@ -90,7 +90,16 @@ def render(sid, card, props, dur, key, still, outdir):
         cmd = ['npx', 'remotion', 'render', 'src/index.jsx', card, out,
                f'--props={pp}', '--codec=h264', '--crf=20']
     cmd += ['--gl=angle', f'--browser-executable={CHROME}', '--log=error']
-    r = subprocess.run(cmd, cwd=MOTION, capture_output=True, text=True)
+    # ── 한 컷이 멎으면 렌더 전체가 멎는다 ─────────────────────────────
+    # headless 크롬이 가끔 그대로 붙박인다. 같은 배치의 다른 컷은 40초에
+    # 끝났는데 한 컷만 11분을 잡고 있었다 — 268컷 렌더에서 이러면 밤새
+    # 아무것도 안 나온다. 정해진 시간이 지나면 죽이고 실패로 적는다
+    try:
+        r = subprocess.run(cmd, cwd=MOTION, capture_output=True, text=True, timeout=300)
+    except subprocess.TimeoutExpired:
+        os.unlink(pp)
+        print(f'[FAIL] #{sid} {card} — 300초 넘게 안 끝나 죽였다 (크롬 먹통)', flush=True)
+        return False
     os.unlink(pp)
     if r.returncode != 0:
         print(f'[FAIL] #{sid} {card}\n{r.stderr[-600:]}', flush=True)
