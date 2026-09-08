@@ -36,7 +36,11 @@
      }
     ],
     "theme": "ink",
-    "source": "통계청 인구주택총조사"
+    "source": "통계청 인구주택총조사 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/seoul_elder_couple.jpg",
+     "veil": 0.82
+    }
    }
   ],
   "1": [
@@ -1044,7 +1048,12 @@
    {
     "line1": "시니어 레지던스가",
     "line2": "고층이어도 되나",
-    "theme": "blueprint"
+    "theme": "blueprint",
+    "bg": {
+     "backdrop": "니시아자부/tower_lowangle.jpg",
+     "veil": 0.84
+    },
+    "source": "배경 Pexels"
    }
   ],
   "51": [
@@ -2552,7 +2561,12 @@
    {
     "line1": "책을 유통하던 회사가",
     "line2": "왜 공간을 만들었나",
-    "theme": "ink"
+    "theme": "ink",
+    "bg": {
+     "backdrop": "니시아자부/warehouse_aisle_bw.jpg",
+     "veil": 0.84
+    },
+    "source": "배경 Pexels"
    }
   ],
   "150": [

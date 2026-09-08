@@ -38,3 +38,6 @@
 | `calculator_hand.jpg` | https://www.pexels.com/photo/5921494/ | **Pexels License** | `Pexels` |
 | `stamping_document.jpg` | https://www.pexels.com/photo/9655620/ | **Pexels License** | `Pexels` |
 | `concrete_column.jpg` | https://www.pexels.com/photo/11722365/ | **Pexels License** | `Pexels` |
+| `seoul_elder_couple.jpg` | https://www.pexels.com/photo/32028728/ | **Pexels License** | `Pexels` |
+| `tower_lowangle.jpg` | https://www.pexels.com/photo/4985454/ | **Pexels License** | `Pexels` |
+| `warehouse_aisle_bw.jpg` | https://www.pexels.com/photo/31886730/ | **Pexels License** | `Pexels` |
