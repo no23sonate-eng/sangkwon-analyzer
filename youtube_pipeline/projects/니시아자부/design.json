@@ -1270,6 +1270,3074 @@
         "human": true,
         "source": "파크웰스테이트 니시아자부 공식"
       }
+    ],
+    "63": [
+      "PlanTitleCard",
+      "4장 — 챕터 문패",
+      {
+        "kicker": "4",
+        "lines": [
+          "식사"
+        ],
+        "theme": "ink"
+      }
+    ],
+    "64": [
+      "StageCard",
+      "장 — 번거로움은 설명보다 손이 빠르다",
+      {
+        "media": "니시아자부/dishwashing_hands.mp4",
+        "lines": [],
+        "scrim": 0.3,
+        "source": "Pexels"
+      }
+    ],
+    "65": [
+      "StageCard",
+      "사 — 식사를 맡은 곳. 실존 호텔이라 실사만",
+      {
+        "media": "니시아자부/imperial_hotel.jpg",
+        "lines": [
+          [
+            {
+              "t": "제국호텔"
+            }
+          ]
+        ],
+        "scrim": 0.5,
+        "size": 96,
+        "source": "Wikimedia Commons"
+      }
+    ],
+    "66": [
+      "CompareCard",
+      "설 — 한국 시청자에게 위치를 잡아 주는 비유",
+      {
+        "title": "",
+        "leftTitle": "일본",
+        "leftValue": "제국호텔",
+        "leftLines": [
+          "1890 · 도쿄 히비야"
+        ],
+        "rightTitle": "한국",
+        "rightValue": "신라호텔",
+        "rightLines": [
+          "비유"
+        ],
+        "caption": "두 호텔의 자리를 견주기 위한 비유다",
+        "theme": "ink",
+        "source": "제국호텔 공식"
+      }
+    ],
+    "67": [
+      "StageCard",
+      "사 — 호텔의 결은 글자보다 공간이 말한다",
+      {
+        "media": "니시아자부/service_course_img02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "68": [
+      "StageCard",
+      "사 — 조리와 서비스를 하는 사람들",
+      {
+        "media": "니시아자부/service_chef.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "69": [
+      "ArchiveCard",
+      "자 — 1890년 개업. 옛 자료는 필름으로 돌려야 화면이 안 멎는다",
+      {
+        "media": "니시아자부/imperial_1890.jpg",
+        "era": "photo",
+        "year": "1890",
+        "label": "초대 제국호텔",
+        "gate": 1.46,
+        "dim": 0.2,
+        "source": "Wikimedia Commons · 渡辺譲 설계"
+      }
+    ],
+    "70": [
+      "StageCard",
+      "장 — 외국 손님을 맞던 자리",
+      {
+        "media": "니시아자부/service_institution.jpg",
+        "fit": "contain",
+        "lines": [],
+        "scrim": 0.1,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "71": [
+      "StrikeSwapCard",
+      "설 — 땅부터 남의 것이었다",
+      {
+        "title": "개업 당시 땅",
+        "from": "매입",
+        "fromLabel": "",
+        "to": "국유지 무상 대여",
+        "toLabel": "",
+        "source": "제국호텔 공식"
+      }
+    ],
+    "72": [
+      "HeadlineCard",
+      "후 — 화제를 세탁으로 돌린다",
+      {
+        "line1": "세탁",
+        "line2": "",
+        "theme": "ink"
+      }
+    ],
+    "73": [
+      "BigStatsCard",
+      "설 — 단추를 몇 종이나 갖고 있나",
+      {
+        "title": "상비 단추",
+        "items": [
+          {
+            "display": "200",
+            "unit": "종 이상",
+            "hot": true
+          }
+        ],
+        "source": "제국호텔 세탁 서비스"
+      }
+    ],
+    "74": [
+      "StrikeSwapCard",
+      "설 — 떨어질 것 같으면 먼저 뗀다. 그 순서가 서비스다",
+      {
+        "from": "떨어지면 달아 준다",
+        "fromLabel": "보통",
+        "to": "미리 떼고, 끝나면 다시 단다",
+        "toLabel": "제국호텔",
+        "source": "제국호텔 세탁 서비스"
+      }
+    ],
+    "75": [
+      "BigStatsCard",
+      "설 — 그 손을 만드는 데 걸리는 시간",
+      {
+        "title": "세탁 부문 연수",
+        "items": [
+          {
+            "display": "4",
+            "unit": "년",
+            "hot": true
+          }
+        ],
+        "source": "제국호텔 세탁 서비스"
+      }
+    ],
+    "76": [
+      "QuoteCard",
+      "자 — 영화 대사. 포스터·스틸은 못 쓰고 대사만 쓴다",
+      {
+        "quote": "洗濯を頼みたい。東京の帝国ホテルでしてくれるような…",
+        "theme": "ink",
+        "source": "영화 JM 대사 (애드립)",
+        "name": "키아누 리브스",
+        "role": "영화 「JM」 · 촬영 중 애드립"
+      }
+    ],
+    "77": [
+      "SpecGridCard",
+      "설 — 그 대사가 대본에 없던 말이라는 게 요점이다",
+      {
+        "items": [
+          {
+            "label": "원래 대본",
+            "value": "없던 대사",
+            "note": "촬영 중 애드립"
+          }
+        ],
+        "source": "영화 JM"
+      }
+    ],
+    "78": [
+      "StageCard",
+      "장 — 개인 경험으로 넘어가는 자리. 도쿄의 밤 한 장",
+      {
+        "media": "니시아자부/location_panoImg_night01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "79": [
+      "StageCard",
+      "장 — 상 위에 올라오는 것",
+      {
+        "media": "니시아자부/service_course_img01.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "80": [
+      "StageCard",
+      "장 — 응대하는 사람들",
+      {
+        "media": "니시아자부/service_stuff.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "81": [
+      "StageCard",
+      "장 — 연륜이 만드는 안정감",
+      {
+        "media": "니시아자부/service_supportImg01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "82": [
+      "StageCard",
+      "장 — 그 결이 시니어 레지던스와 겹친다",
+      {
+        "media": "니시아자부/service_supportImg02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "83": [
+      "StrikeSwapCard",
+      "설 — 이름만 빌려준 게 아니다",
+      {
+        "from": "브랜드만 빌려준다",
+        "fromLabel": "",
+        "to": "조리와 서비스를 직접 한다",
+        "toLabel": "제국호텔",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "84": [
+      "StageCard",
+      "사 — 상주하는 주방",
+      {
+        "media": "니시아자부/chefs_kitchen.mp4",
+        "lines": [],
+        "scrim": 0.3,
+        "source": "Pexels"
+      }
+    ],
+    "85": [
+      "FloorStackCard",
+      "설 — 다이닝이 어디 있나. 같은 탑으로 돌아온다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "human": false,
+        "zones": [
+          {
+            "from": 35,
+            "to": 36,
+            "label": "다이닝",
+            "note": "제국호텔 · 화식·양식·중식",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "86": [
+      "StrikeSwapCard",
+      "설 — 예약이라는 절차가 사라진다",
+      {
+        "from": "예약하고 간다",
+        "fromLabel": "보통",
+        "to": "매일 그냥 간다",
+        "toLabel": "니시아자부",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "87": [
+      "StageCard",
+      "장 — 35층 다이닝",
+      {
+        "media": "니시아자부/service_diningFloor.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "88": [
+      "StageCard",
+      "장 — 36층 프라이빗 다이닝",
+      {
+        "media": "니시아자부/service_dining01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "89": [
+      "StageCard",
+      "장 — 돌봄이 필요해진 뒤의 식사",
+      {
+        "media": "니시아자부/care_service_img06.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "90": [
+      "SpecGridCard",
+      "설 — 얼굴인증이 들어간 범위",
+      {
+        "title": "얼굴인증",
+        "items": [
+          {
+            "label": "공용부",
+            "value": "전체",
+            "note": ""
+          },
+          {
+            "label": "일반 객실",
+            "value": "전체",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식",
+        "bg": {
+          "backdrop": "니시아자부/top_concept.jpg",
+          "veil": 0.91
+        }
+      }
+    ],
+    "91": [
+      "StrikeSwapCard",
+      "설 — 열쇠가 사라진다",
+      {
+        "from": "열쇠",
+        "fromLabel": "",
+        "to": "얼굴",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "92": [
+      "StageCard",
+      "장 — 계산 절차가 없는 자리",
+      {
+        "media": "니시아자부/service_dinner02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "93": [
+      "StageCard",
+      "장 — 대욕장. 오래 머무는 사람을 시스템이 잡는다",
+      {
+        "media": "니시아자부/service_relaxation01.jpg",
+        "lines": [],
+        "scrim": 0.24,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "94": [
+      "BigStatsCard",
+      "설 — 최초라는 주장은 누가 한 말인지 같이 적는다",
+      {
+        "title": "유료노인홈 얼굴인증",
+        "items": [
+          {
+            "display": "일본 최초",
+            "unit": "",
+            "hot": true
+          }
+        ],
+        "caption": "미쓰이 발표 기준",
+        "theme": "ink",
+        "source": "미쓰이 공식 릴리스"
+      }
+    ],
+    "95": [
+      "HeadlineCard",
+      "후 — 다음 장으로 넘기는 질문",
+      {
+        "line1": "식사는 호텔이 한다",
+        "line2": "그럼 아프면?",
+        "theme": "ink"
+      }
+    ],
+    "96": [
+      "PlanTitleCard",
+      "5장 — 챕터 문패",
+      {
+        "kicker": "5",
+        "lines": [
+          "클리닉"
+        ],
+        "theme": "blueprint"
+      }
+    ],
+    "97": [
+      "FloorStackCard",
+      "설 — 클리닉은 1층이다. 같은 탑에서 자리를 짚는다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "human": false,
+        "zones": [
+          {
+            "from": 1,
+            "to": 1,
+            "label": "니시아자부 메디컬 클리닉",
+            "note": "의료법인사단 게이에이카이",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "98": [
+      "SpecGridCard",
+      "설 — 의료기관을 열 수 있는 주체는 셋뿐이다",
+      {
+        "title": "의료기관 개설 주체",
+        "items": [
+          {
+            "label": "의사",
+            "value": "가능",
+            "note": ""
+          },
+          {
+            "label": "의료법인",
+            "value": "가능",
+            "note": ""
+          },
+          {
+            "label": "비영리법인",
+            "value": "가능",
+            "note": ""
+          }
+        ],
+        "source": "일본 의료법"
+      }
+    ],
+    "99": [
+      "StrikeSwapCard",
+      "설 — 그 목록에 부동산 회사는 없다",
+      {
+        "from": "주식회사",
+        "fromLabel": "",
+        "to": "개설 불가",
+        "toLabel": "",
+        "source": "일본 의료법"
+      }
+    ],
+    "100": [
+      "CompareCard",
+      "설 — 못 하는 것과 할 수 있는 것",
+      {
+        "title": "",
+        "leftTitle": "미쓰이",
+        "leftValue": "직접 운영 불가",
+        "leftLines": [
+          "법이 막는다"
+        ],
+        "rightTitle": "게이에이카이",
+        "rightValue": "의료법인사단",
+        "rightLines": [
+          "클리닉 운영"
+        ],
+        "source": "일본 의료법 · 파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "101": [
+      "StageCard",
+      "장 — 진료가 이뤄지는 공간",
+      {
+        "media": "니시아자부/service_health.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "102": [
+      "StageCard",
+      "장 — 검사 항목을 글자로 나열하는 대신 진료 장면으로",
+      {
+        "media": "니시아자부/doctor_exam.mp4",
+        "lines": [],
+        "scrim": 0.3,
+        "source": "Pexels"
+      }
+    ],
+    "103": [
+      "BigStatsCard",
+      "설 — 입주자에게 주어지는 횟수",
+      {
+        "title": "건강진단",
+        "items": [
+          {
+            "display": "연 1",
+            "unit": "회",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "104": [
+      "CompareCard",
+      "설 — 무료와 유료가 갈리는 자리",
+      {
+        "title": "",
+        "leftTitle": "건강진단",
+        "leftValue": "연 1회",
+        "leftLines": [
+          "입주자"
+        ],
+        "rightTitle": "일상 진료",
+        "rightValue": "유상",
+        "rightLines": [
+          "필요시 왕진"
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "105": [
+      "BigStatsCard",
+      "설 — 사람이 늘 있다는 것",
+      {
+        "title": "간호 스태프",
+        "items": [
+          {
+            "display": "24시간",
+            "unit": "365일",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "106": [
+      "StageCard",
+      "장 — 클리닉 안",
+      {
+        "media": "니시아자부/medical_img03.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "107": [
+      "CompareCard",
+      "설 — 어디와 이어져 있나",
+      {
+        "title": "",
+        "leftTitle": "게이에이카이",
+        "leftValue": "게이오대학 출신",
+        "leftLines": [
+          "클리닉 운영"
+        ],
+        "rightTitle": "게이오대학병원",
+        "rightValue": "협력의료기관",
+        "rightLines": [
+          "의료연계 등록"
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "108": [
+      "StrikeSwapCard",
+      "설 — 넘어가는 지점",
+      {
+        "from": "검사 · 입원이 필요해지면",
+        "fromLabel": "",
+        "to": "게이오대학병원",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "109": [
+      "HeadlineCard",
+      "후 — 다음 컷이 공식 주석이라는 걸 알린다",
+      {
+        "line1": "공식 자료에",
+        "line2": "적혀 있다",
+        "theme": "blueprint"
+      }
+    ],
+    "110": [
+      "StageCard",
+      "자 — 공식 구성도. 본인 판정이 아니라 공시 내용임을 화면으로 못 박는다",
+      {
+        "media": "니시아자부/medical_constitution.jpg",
+        "fit": "contain",
+        "lines": [],
+        "scrim": 0.0,
+        "source": "파크웰스테이트 니시아자부 medicalcare"
+      }
+    ],
+    "111": [
+      "CompareCard",
+      "설 — 한 건물 안의 두 회사",
+      {
+        "title": "",
+        "leftTitle": "같은 건물",
+        "leftValue": "1층",
+        "leftLines": [
+          "클리닉"
+        ],
+        "rightTitle": "다른 회사",
+        "rightValue": "게이에이카이",
+        "rightLines": [
+          "웰네스가 운영하지 않는다"
+        ],
+        "caption": "미쓰이 공식 주석의 내용이다",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "112": [
+      "StageCard",
+      "장 — 입구가 따로 있다",
+      {
+        "media": "니시아자부/medical_img04.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "113": [
+      "StageCard",
+      "장 — 대로변 쪽 별도 입구",
+      {
+        "media": "니시아자부/service_pavilion.jpg",
+        "fit": "contain",
+        "lines": [],
+        "scrim": 0.12,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "114": [
+      "BigStatsCard",
+      "설 — 입주자만 쓰는 시간대",
+      {
+        "title": "입주자 전용",
+        "items": [
+          {
+            "display": "13:30–15:00",
+            "unit": "",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "115": [
+      "CompareCard",
+      "설 — 나머지 시간에는 외부 환자도 받는다",
+      {
+        "title": "",
+        "leftTitle": "13:30–15:00",
+        "leftValue": "입주자 전용",
+        "leftLines": [],
+        "rightTitle": "그 외 시간",
+        "rightValue": "외부 환자",
+        "rightLines": [],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "116": [
+      "HeadlineCard",
+      "후 — 다음 장으로 넘기는 질문",
+      {
+        "line1": "병원 갈 정도는 아닌데",
+        "line2": "도움이 필요하면",
+        "theme": "ink"
+      }
+    ],
+    "117": [
+      "PlanTitleCard",
+      "6장 — 챕터 문패",
+      {
+        "kicker": "6",
+        "lines": [
+          "돌봄"
+        ],
+        "theme": "paper"
+      }
+    ],
+    "118": [
+      "CompareCard",
+      "설 — 돌봄을 맡은 회사가 어디서 나왔나",
+      {
+        "title": "",
+        "leftTitle": "모회사",
+        "leftValue": "도쿄해상",
+        "leftLines": [
+          "손해보험"
+        ],
+        "rightTitle": "자회사",
+        "rightValue": "베터라이프서비스",
+        "rightLines": [
+          "간호 · 돌봄"
+        ],
+        "source": "동경해상일동 베터라이프서비스"
+      }
+    ],
+    "119": [
+      "StageCard",
+      "장 — 돌봄이 이뤄지는 자리",
+      {
+        "media": "니시아자부/care_space_img05.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "120": [
+      "HeadlineCard",
+      "후 — 앞 장과 갈리는 지점을 세운다",
+      {
+        "line1": "클리닉과",
+        "line2": "결정적으로 다른 것",
+        "theme": "blueprint"
+      }
+    ],
+    "121": [
+      "CompareCard",
+      "설 — 법이 막느냐 안 막느냐. 이게 두 장의 차이 전부다",
+      {
+        "title": "주식회사가 할 수 있나",
+        "leftTitle": "의료",
+        "leftValue": "불가",
+        "leftLines": [
+          "의료법이 막는다"
+        ],
+        "rightTitle": "돌봄",
+        "rightValue": "가능",
+        "rightLines": [
+          "미쓰이가 직접 해도 된다"
+        ],
+        "source": "일본 의료법 · 개호보험법"
+      }
+    ],
+    "122": [
+      "StageCard",
+      "장 — 맡긴 쪽의 손",
+      {
+        "media": "니시아자부/care_service_img10.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "123": [
+      "SpecGridCard",
+      "설 — 보험사가 돌봄을 하면 묶이는 것",
+      {
+        "items": [
+          {
+            "label": "보험사가 돌봄을 하면",
+            "value": "상품과 서비스를 묶는다",
+            "note": ""
+          }
+        ],
+        "source": "동경해상일동 베터라이프서비스"
+      }
+    ],
+    "124": [
+      "CompareCard",
+      "설 — 파는 쪽과 하는 쪽이 같아진다",
+      {
+        "title": "",
+        "leftTitle": "판다",
+        "leftValue": "간병보험",
+        "leftLines": [
+          "도쿄해상"
+        ],
+        "rightTitle": "한다",
+        "rightValue": "실제 서비스",
+        "rightLines": [
+          "베터라이프서비스"
+        ],
+        "source": "동경해상일동 베터라이프서비스"
+      }
+    ],
+    "125": [
+      "FloorStackCard",
+      "설 — TOKIORI 는 4층이다. 같은 탑으로 돌아온다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "human": false,
+        "zones": [
+          {
+            "from": 4,
+            "to": 4,
+            "label": "TOKIORI",
+            "note": "동경해상일동 베터라이프서비스",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "126": [
+      "SpecGridCard",
+      "설 — 역할 셋을 한 판에 세운다",
+      {
+        "title": "TOKIORI 의 역할",
+        "items": [
+          {
+            "label": "방문개호",
+            "value": "헬퍼가 방으로",
+            "note": "목욕 · 식사 · 청소 · 장보기"
+          },
+          {
+            "label": "거택개호지원",
+            "value": "케어 플랜",
+            "note": "케어매니저가 짠다"
+          },
+          {
+            "label": "가사대행",
+            "value": "",
+            "note": ""
+          }
+        ],
+        "source": "TOKIORI",
+        "bg": {
+          "backdrop": "니시아자부/tokiori_top_img06.jpg",
+          "veil": 0.92
+        }
+      }
+    ],
+    "127": [
+      "StageCard",
+      "장 — 방으로 오는 손",
+      {
+        "media": "니시아자부/care_hands.mp4",
+        "lines": [],
+        "scrim": 0.3,
+        "source": "Kampus Production / Pexels"
+      }
+    ],
+    "128": [
+      "StageCard",
+      "장 — 케어매니저가 있는 자리",
+      {
+        "media": "니시아자부/tokiori_top_img10.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "TOKIORI"
+      }
+    ],
+    "129": [
+      "BigStatsCard",
+      "설 — 케어 플랜이 정하는 것은 결국 횟수다",
+      {
+        "title": "케어 플랜",
+        "items": [
+          {
+            "display": "주 몇 회",
+            "unit": "",
+            "hot": true
+          }
+        ],
+        "caption": "어떤 서비스를 주에 몇 번 쓸지 정한다",
+        "source": "TOKIORI"
+      }
+    ],
+    "130": [
+      "StageCard",
+      "장 — 생활 지원",
+      {
+        "media": "니시아자부/tokiori_top_img01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "TOKIORI"
+      }
+    ],
+    "131": [
+      "StrikeSwapCard",
+      "설 — 세를 든 게 아니라 일을 받은 것이다",
+      {
+        "from": "임차인",
+        "fromLabel": "",
+        "to": "운영 수탁",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "132": [
+      "SpecGridCard",
+      "설 — 세 가지를 모두 밖에서 데려왔다는 정리",
+      {
+        "items": [
+          {
+            "label": "식사",
+            "value": "제국호텔",
+            "note": ""
+          },
+          {
+            "label": "병원",
+            "value": "게이에이카이",
+            "note": ""
+          },
+          {
+            "label": "돌봄",
+            "value": "베터라이프서비스",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식",
+        "bg": {
+          "backdrop": "니시아자부/location_panoImg_morning03.jpg",
+          "veil": 0.93
+        }
+      }
+    ],
+    "133": [
+      "HeadlineCard",
+      "후 — 다음 장으로 넘기는 질문",
+      {
+        "line1": "그럼 이 건물은",
+        "line2": "어떻게 지었을까",
+        "theme": "ink"
+      }
+    ],
+    "134": [
+      "PlanTitleCard",
+      "7장 — 챕터 문패",
+      {
+        "kicker": "7",
+        "lines": [
+          "하드웨어"
+        ],
+        "theme": "ink"
+      }
+    ],
+    "135": [
+      "PhotoSplitCard",
+      "장 — 오바야시가 지은 이 건물의 두 얼굴",
+      {
+        "sides": [
+          {
+            "photo": "니시아자부/obayashi_2846_01.jpg",
+            "name": "",
+            "sub": "",
+            "lines": []
+          },
+          {
+            "photo": "니시아자부/obayashi_2846_02.jpg",
+            "name": "",
+            "sub": "",
+            "lines": []
+          }
+        ],
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "136": [
+      "StageCard",
+      "사 — 같은 회사가 지은 탑. 실존 구조물이라 실사만",
+      {
+        "media": "니시아자부/skytree_night.mp4",
+        "lines": [
+          [
+            {
+              "t": "634"
+            },
+            {
+              "t": "m",
+              "hot": true
+            }
+          ]
+        ],
+        "scrim": 0.42,
+        "size": 120,
+        "source": "Pexels"
+      }
+    ],
+    "137": [
+      "SpecGridCard",
+      "설 — 탑 한가운데 세운 기둥의 크기",
+      {
+        "title": "심주(心柱)",
+        "items": [
+          {
+            "label": "직경",
+            "value": "8m",
+            "note": ""
+          },
+          {
+            "label": "무게",
+            "value": "11,000t",
+            "note": "콘크리트"
+          }
+        ],
+        "theme": "ink",
+        "source": "도쿄 스카이트리 공식"
+      }
+    ],
+    "138": [
+      "StrikeSwapCard",
+      "설 — 같이 흔들리느냐 따로 흔들리느냐. 여기가 원리다",
+      {
+        "from": "탑과 같이 흔들린다",
+        "fromLabel": "보통 구조",
+        "to": "심주는 따로 흔들린다",
+        "toLabel": "스카이트리",
+        "theme": "ink",
+        "source": "도쿄 스카이트리 공식"
+      }
+    ],
+    "139": [
+      "BarChartCard",
+      "설 — 50%는 막대 두 개면 끝난다",
+      {
+        "title": "지진 때 흔들림",
+        "sub": "심주 제진 구조",
+        "bars": [
+          {
+            "label": "심주 없이",
+            "value": 100,
+            "displayValue": "100"
+          },
+          {
+            "label": "심주 있을 때",
+            "value": 50,
+            "displayValue": "최대 −50%",
+            "hot": true
+          }
+        ],
+        "arrow": true,
+        "theme": "ink",
+        "source": "도쿄 스카이트리 공식"
+      }
+    ],
+    "140": [
+      "TimelineRailCard",
+      "설 — 지진이 났을 때 이 탑은 아직 짓는 중이었다",
+      {
+        "axis": {
+          "from": 2008,
+          "to": 2012,
+          "step": 1
+        },
+        "rails": [
+          {
+            "label": "스카이트리",
+            "events": [
+              {
+                "at": 2011,
+                "label": "동일본대지진 · 시공 중",
+                "hot": true
+              }
+            ]
+          }
+        ],
+        "theme": "blueprint",
+        "source": "도쿄 스카이트리 공식"
+      }
+    ],
+    "141": [
+      "BigStatsCard",
+      "설 — 결과는 숫자 하나다",
+      {
+        "title": "작업자 · 건물 피해",
+        "items": [
+          {
+            "display": "0",
+            "unit": "",
+            "hot": true
+          }
+        ],
+        "theme": "ink",
+        "source": "도쿄 스카이트리 공식"
+      }
+    ],
+    "142": [
+      "StageCard",
+      "장 — 인테리어 (닛켄셋케이)",
+      {
+        "media": "니시아자부/obayashi_2846_03.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "143": [
+      "StageCard",
+      "장 — 외부 공간 (SWA 그룹)",
+      {
+        "media": "니시아자부/obayashi_2846_05.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "144": [
+      "StageCard",
+      "장 — 라이브러리",
+      {
+        "media": "니시아자부/obayashi_2846_06.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "145": [
+      "BigStatsCard",
+      "설 — 서점인데 돈을 내고 들어간다",
+      {
+        "title": "분키츠 입장료",
+        "items": [
+          {
+            "display": "1,500",
+            "unit": "엔",
+            "hot": true
+          }
+        ],
+        "source": "유통뉴스 2012.10.14"
+      }
+    ],
+    "146": [
+      "SpecGridCard",
+      "설 — 그 값에 딸려 오는 것",
+      {
+        "items": [
+          {
+            "label": "장서",
+            "value": "30,000권",
+            "note": "시간 제한 없음"
+          },
+          {
+            "label": "커피",
+            "value": "무료 리필",
+            "note": ""
+          }
+        ],
+        "source": "유통뉴스 2012.10.14"
+      }
+    ],
+    "147": [
+      "BigStatsCard",
+      "설 — 권수 하나로 규모를 박는다",
+      {
+        "title": "분키츠 장서",
+        "items": [
+          {
+            "display": "30,000",
+            "unit": "권",
+            "hot": true
+          }
+        ],
+        "source": "유통뉴스 2012.10.14"
+      }
+    ],
+    "148": [
+      "StageCard",
+      "장 — 책이 놓인 공간",
+      {
+        "media": "니시아자부/obayashi_2846_08.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "149": [
+      "HeadlineCard",
+      "후 — 담당자의 말을 꺼내는 자리",
+      {
+        "line1": "책을 유통하던 회사가",
+        "line2": "왜 공간을 만들었나",
+        "theme": "ink"
+      }
+    ],
+    "150": [
+      "QuoteCard",
+      "자 — 담당자 인용",
+      {
+        "quote": "책을 사는 게 비일상이 되면서, 문화적인 공간에서 책과 만나는 것 자체가 가치를 갖게 됐다",
+        "name": "분키츠 담당자",
+        "role": "일본출판판매",
+        "theme": "ink",
+        "source": "유통뉴스 2012.10.14"
+      }
+    ],
+    "151": [
+      "StageCard",
+      "장 — 그 말이 놓이는 공간",
+      {
+        "media": "니시아자부/obayashi_2846_07.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "152": [
+      "StrikeSwapCard",
+      "설 — 파는 물건이 바뀌었다. 이 장에서 제일 중요한 교체다",
+      {
+        "from": "책을 판다",
+        "fromLabel": "",
+        "to": "책이 있는 공간을 판다",
+        "toLabel": "",
+        "source": "유통뉴스 2012.10.14"
+      }
+    ],
+    "153": [
+      "StageCard",
+      "장 — 공간을 파는 쪽으로 옮긴 결과",
+      {
+        "media": "니시아자부/obayashi_2846_04.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "오바야시구미 실적 소개"
+      }
+    ],
+    "154": [
+      "BigStatsCard",
+      "설 — 니시아자부 쪽 규모",
+      {
+        "title": "니시아자부 라이브러리",
+        "items": [
+          {
+            "display": "1,800",
+            "unit": "권 이상",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "155": [
+      "SpecGridCard",
+      "설 — 감수만 하고 빠진 게 아니라는 증거",
+      {
+        "items": [
+          {
+            "label": "북 컨시어지",
+            "value": "주 1회 방문",
+            "note": "분키츠 롯폰기점에서"
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "156": [
+      "HeadlineCard",
+      "후 — 다음 장으로",
+      {
+        "line1": "그럼 누가",
+        "line2": "들어갈 수 있나",
+        "theme": "blueprint"
+      }
+    ],
+    "157": [
+      "PlanTitleCard",
+      "8장 — 챕터 문패",
+      {
+        "kicker": "8",
+        "lines": [
+          "누가 들어갈 수",
+          "있나"
+        ],
+        "theme": "paper"
+      }
+    ],
+    "158": [
+      "StageCard",
+      "장 — 건강할 때 들어와 사는 곳",
+      {
+        "media": "니시아자부/service_gym01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "159": [
+      "CompareCard",
+      "설 — 두 층의 문턱이 다르다",
+      {
+        "title": "",
+        "leftTitle": "일반층",
+        "leftValue": "만 60세 이상",
+        "leftLines": [
+          "건강할 것"
+        ],
+        "rightTitle": "돌봄층",
+        "rightValue": "만 65세 이상",
+        "rightLines": [
+          "돌봄 등급 있을 것"
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "160": [
+      "QuoteCard",
+      "자 — 공식 조항 원문. 제도 일반 얘기로 읽히지 않게 원문을 건다",
+      {
+        "quote": "입주자보다 나이가 젊은 신원인수인을 지정할 수 있을 것",
+        "name": "입주 조건",
+        "role": "파크웰스테이트 니시아자부 공식",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "161": [
+      "StageCard",
+      "장 — 보증인을 세워야 들어올 수 있는 문",
+      {
+        "media": "니시아자부/service_relaxation03.jpg",
+        "lines": [],
+        "scrim": 0.22,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "162": [
+      "SpecGridCard",
+      "설 — 하는 일 셋",
+      {
+        "title": "신원인수인의 역할",
+        "items": [
+          {
+            "label": "비용",
+            "value": "대신 책임",
+            "note": "못 낼 때"
+          },
+          {
+            "label": "결정",
+            "value": "의견을 낸다",
+            "note": "응급 · 돌봄층 이동"
+          },
+          {
+            "label": "퇴거 · 사망",
+            "value": "신병과 짐 인수",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "163": [
+      "StageCard",
+      "장 — 사람이 사람을 맡는 일이다",
+      {
+        "media": "니시아자부/care_support_img01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "164": [
+      "StrikeSwapCard",
+      "설 — 마지막까지 따라붙는 책임",
+      {
+        "from": "입주할 때만",
+        "fromLabel": "",
+        "to": "퇴거 · 사망까지",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "165": [
+      "QuoteCard",
+      "자 — 공식 문서 문구 그대로",
+      {
+        "quote": "입주심사 결과 입주를 거절하는 경우가 있습니다",
+        "name": "",
+        "role": "파크웰스테이트 니시아자부 공식",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "166": [
+      "HeadlineCard",
+      "후 — 문턱이 낮지 않다는 정리",
+      {
+        "line1": "입주가",
+        "line2": "쉬워 보이진 않는다",
+        "theme": "blueprint"
+      }
+    ],
+    "167": [
+      "StrikeSwapCard",
+      "설 — 본인 의사만으로 옮길 수 없다",
+      {
+        "from": "가고 싶으면 간다",
+        "fromLabel": "",
+        "to": "위원회가 판단한다",
+        "toLabel": "돌봄층 이동",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "168": [
+      "SpecGridCard",
+      "설 — 절차 세 가지",
+      {
+        "title": "파크웰스테이트 위원회",
+        "items": [
+          {
+            "label": "지정 의사",
+            "value": "의견",
+            "note": ""
+          },
+          {
+            "label": "본인",
+            "value": "의사 확인",
+            "note": ""
+          },
+          {
+            "label": "신원인수인",
+            "value": "의견",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식",
+        "bg": {
+          "backdrop": "니시아자부/care_space_img06.jpg",
+          "veil": 0.92
+        }
+      }
+    ],
+    "169": [
+      "StageCard",
+      "장 — 판단이 이뤄지는 자리",
+      {
+        "media": "니시아자부/care_support_img03.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "170": [
+      "StrikeSwapCard",
+      "설 — 등급을 정하는 주체가 시설이 아니다",
+      {
+        "from": "시설이 정한다",
+        "fromLabel": "",
+        "to": "기초지자체가 정한다",
+        "toLabel": "돌봄 등급",
+        "source": "일본 개호보험법"
+      }
+    ],
+    "171": [
+      "SpecGridCard",
+      "설 — 무엇을 재서 정하나",
+      {
+        "items": [
+          {
+            "label": "기준",
+            "value": "하루에 필요한 돌봄 시간",
+            "note": "분 단위로 잰다"
+          }
+        ],
+        "source": "일본 개호보험법"
+      }
+    ],
+    "172": [
+      "BarChartCard",
+      "설 — 등급이 곧 분이라는 걸 막대로 본다",
+      {
+        "title": "요개호 등급별 기준 시간",
+        "sub": "하루 · 분",
+        "bars": [
+          {
+            "label": "요지원1",
+            "value": 28,
+            "displayValue": "25~32분"
+          },
+          {
+            "label": "요개호1",
+            "value": 41,
+            "displayValue": "32~50분"
+          },
+          {
+            "label": "요개호2",
+            "value": 60,
+            "displayValue": "50~70분"
+          },
+          {
+            "label": "요개호3",
+            "value": 80,
+            "displayValue": "70~90분"
+          },
+          {
+            "label": "요개호4",
+            "value": 100,
+            "displayValue": "90~110분"
+          },
+          {
+            "label": "요개호5",
+            "value": 120,
+            "displayValue": "110분 이상",
+            "hot": true
+          }
+        ],
+        "caption": "막대 길이는 구간 중앙값으로 그렸다",
+        "source": "일본 후생노동성 요개호인정 기준"
+      }
+    ],
+    "173": [
+      "HeadlineCard",
+      "후 — 돈 얘기로 넘어간다",
+      {
+        "line1": "그래서",
+        "line2": "얼마야?",
+        "theme": "ink"
+      }
+    ],
+    "174": [
+      "PlanTitleCard",
+      "9장 — 챕터 문패",
+      {
+        "kicker": "9",
+        "lines": [
+          "금액"
+        ],
+        "theme": "ink"
+      }
+    ],
+    "175": [
+      "BigStatsCard",
+      "설 — 이 장의 주인공 숫자. 조건 자막이 없으면 못 쓰는 값이다",
+      {
+        "title": "입주일시금",
+        "items": [
+          {
+            "display": "5억 4천만",
+            "unit": "엔",
+            "hot": true
+          }
+        ],
+        "caption": "119㎡ 타입 · 2인 · 75세 기준",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "176": [
+      "CompareCard",
+      "설 — 엔과 원을 나란히. 환율 구간을 같이 적는다",
+      {
+        "title": "",
+        "leftTitle": "엔",
+        "leftValue": "5억 4천만",
+        "leftLines": [
+          "입주일시금"
+        ],
+        "rightTitle": "원",
+        "rightValue": "약 50억",
+        "rightLines": [
+          "환율 900~1,000원 구간"
+        ],
+        "caption": "직접 계산한 값",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "177": [
+      "StrikeSwapCard",
+      "설 — 보증금이라고 읽으면 안 된다는 걸 먼저 막는다",
+      {
+        "from": "돌려받는 돈",
+        "fromLabel": "",
+        "to": "돌려받지 않는 돈",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "178": [
+      "StageCard",
+      "장 — 그 돈으로 사는 방",
+      {
+        "media": "니시아자부/plan_119a_plan_illust.jpg",
+        "fit": "contain",
+        "lines": [],
+        "scrim": 0.05,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "179": [
+      "BigStatsCard",
+      "설 — 같은 방, 다른 나이",
+      {
+        "title": "82세 입주 시",
+        "items": [
+          {
+            "display": "3억 7천만",
+            "unit": "엔",
+            "hot": true
+          }
+        ],
+        "caption": "같은 119㎡ 타입 · 2인",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "180": [
+      "PriceLadderCard",
+      "설 — 나이가 값을 정한다. 사다리로 보면 기울기가 보인다",
+      {
+        "title": "입주일시금",
+        "sub": "119㎡ · 2인",
+        "rungs": [
+          {
+            "name": "75세",
+            "price": 540,
+            "note": "5억 4천만 엔"
+          },
+          {
+            "name": "82세",
+            "price": 370,
+            "note": "3억 7천만 엔"
+          }
+        ],
+        "axisLabel": "백만 엔",
+        "caption": "일곱 살 차이 = 1억 7천만 엔",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "181": [
+      "HeadlineCard",
+      "후 — 방향을 못 박는다",
+      {
+        "line1": "나이가 어릴수록",
+        "line2": "비싸다",
+        "theme": "blueprint"
+      }
+    ],
+    "182": [
+      "SpecGridCard",
+      "설 — 왜 그런가",
+      {
+        "items": [
+          {
+            "label": "값의 근거",
+            "value": "앞으로 살 기간",
+            "note": "그만큼을 미리 낸다"
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "183": [
+      "StrikeSwapCard",
+      "설 — 한 번 정해지면 안 바뀐다",
+      {
+        "from": "해마다 다시 계산",
+        "fromLabel": "",
+        "to": "계약할 때 나이로 고정",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "184": [
+      "StageCard",
+      "장 — 부부가 함께 쓰는 방",
+      {
+        "media": "니시아자부/plan_104a_choubo02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "185": [
+      "HeadlineCard",
+      "후 — 시청자가 할 법한 질문을 대신 던진다",
+      {
+        "line1": "늦게 들어가는 게",
+        "line2": "이득 아닌가",
+        "theme": "ink"
+      }
+    ],
+    "186": [
+      "ForkPathCard",
+      "설 — 언제 들어가느냐가 갈림길이다",
+      {
+        "title": "언제 들어가나",
+        "trunkLabel": "",
+        "branches": [
+          {
+            "label": "일찍",
+            "sub": "비싸다 · 일반층에 들어간다"
+          },
+          {
+            "label": "늦게",
+            "sub": "싸다 · 돌봄층 60실만 남는다"
+          }
+        ],
+        "decided": null,
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "187": [
+      "FloorStackCard",
+      "설 — 그때 갈 수 있는 곳은 이 두 층뿐이다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "human": false,
+        "zones": [
+          {
+            "from": 2,
+            "to": 3,
+            "label": "돌봄 전용 층",
+            "note": "객실 60실 — 여기만 남는다",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "188": [
+      "BigStatsCard",
+      "설 — 그 수가 경쟁률이 된다",
+      {
+        "title": "돌봄층 객실",
+        "items": [
+          {
+            "display": "60",
+            "unit": "실",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "189": [
+      "CompareCard",
+      "설 — 한국은 아예 다른 방식으로 매긴다",
+      {
+        "title": "한국 시니어 레지던스 보증금",
+        "leftTitle": "인근 아파트 매매가",
+        "leftValue": "70~80%",
+        "leftLines": [],
+        "rightTitle": "전세가",
+        "rightValue": "110~130%",
+        "rightLines": [],
+        "source": "업계 통상 산정 방식"
+      }
+    ],
+    "190": [
+      "StrikeSwapCard",
+      "설 — 그 개념이 일본엔 없다",
+      {
+        "from": "보증금으로 매긴다",
+        "fromLabel": "한국",
+        "to": "보증금 개념이 아니다",
+        "toLabel": "일본",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "191": [
+      "SpecGridCard",
+      "설 — 그럼 정확히 무엇인가",
+      {
+        "items": [
+          {
+            "label": "입주일시금",
+            "value": "미리 낸 사용료",
+            "note": "앞으로 낼 임대료를 한 번에"
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표",
+        "bg": {
+          "backdrop": "니시아자부/plan_104a_plan_illust.jpg",
+          "veil": 0.94
+        }
+      }
+    ],
+    "192": [
+      "StageCard",
+      "장 — 종신을 전제로 한 자리",
+      {
+        "media": "니시아자부/service_view01.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "193": [
+      "BigStatsCard",
+      "설 — 보증금은 따로 있다",
+      {
+        "title": "보증금",
+        "items": [
+          {
+            "display": "임대료 1",
+            "unit": "개월분",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "194": [
+      "CompareCard",
+      "설 — 두 돈의 성격이 정반대다",
+      {
+        "title": "",
+        "leftTitle": "입주일시금",
+        "leftValue": "안 돌려준다",
+        "leftLines": [
+          "미리 낸 사용료"
+        ],
+        "rightTitle": "보증금",
+        "rightValue": "돌려준다",
+        "rightLines": [
+          "퇴실 때 정산"
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "195": [
+      "RatioCard",
+      "설 — 계약하는 순간 없어지는 몫. 원에서 잘려 나가는 게 보인다",
+      {
+        "mode": "circle",
+        "unit": "%",
+        "items": [
+          {
+            "label": "계약 즉시 소멸",
+            "pct": 20,
+            "sub": "1억 800만 엔",
+            "hot": true
+          }
+        ],
+        "caption": "입주일시금 5억 4천만 엔 기준",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "196": [
+      "CostStackCard",
+      "설 — 5억 4천만 엔이 어떻게 갈리나. 사라지는 몫을 먼저 뗀다",
+      {
+        "title": "입주일시금 5억 4천만 엔",
+        "unit": "만 엔",
+        "totalLabel": "합계",
+        "totalDisplay": "54,000",
+        "parts": [
+          {
+            "label": "계약 즉시 소멸 (20%)",
+            "value": 10800,
+            "display": "10,800",
+            "hot": true
+          },
+          {
+            "label": "기간에 걸쳐 균등 소멸",
+            "value": 43200,
+            "display": "43,200"
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "197": [
+      "BigStatsCard",
+      "설 — 사라지는 금액 그 자체",
+      {
+        "title": "계약 즉시 소멸",
+        "items": [
+          {
+            "display": "1억 800만",
+            "unit": "엔",
+            "hot": true
+          }
+        ],
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "198": [
+      "SpecGridCard",
+      "설 — 나머지는 어떻게 되나",
+      {
+        "items": [
+          {
+            "label": "남은 80%",
+            "value": "일정 기간 균등 소멸",
+            "note": "공식 공개 범위 120~360개월"
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표",
+        "bg": {
+          "backdrop": "니시아자부/plan_98b_plan_img.jpg",
+          "veil": 0.94
+        }
+      }
+    ],
+    "199": [
+      "ForkPathCard",
+      "설 — 내는 방식이 둘로 갈린다",
+      {
+        "title": "내는 방식",
+        "trunkLabel": "입주",
+        "branches": [
+          {
+            "label": "일시금",
+            "sub": "한 번에 · 보증금 1개월분"
+          },
+          {
+            "label": "월납",
+            "sub": "매월 · 보증금 6개월분"
+          }
+        ],
+        "decided": null,
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "200": [
+      "StageCard",
+      "장 — 월납으로 사는 방",
+      {
+        "media": "니시아자부/plan_75a_choubo.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "201": [
+      "CompareCard",
+      "설 — 대신 보증금이 여섯 배가 된다",
+      {
+        "title": "보증금",
+        "leftTitle": "일시금 방식",
+        "leftValue": "1개월분",
+        "leftLines": [],
+        "rightTitle": "월납 방식",
+        "rightValue": "6개월분",
+        "rightLines": [],
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "202": [
+      "BigStatsCard",
+      "설 — 매달 따로 나가는 돈",
+      {
+        "title": "월 부담",
+        "items": [
+          {
+            "display": "52",
+            "unit": "만 엔",
+            "hot": true
+          }
+        ],
+        "caption": "119㎡ 타입 기준",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "203": [
+      "RatioCard",
+      "설 — 월 부담을 원 하나로 받는다",
+      {
+        "mode": "circle",
+        "unit": "만 엔",
+        "items": [
+          {
+            "label": "월 부담",
+            "pct": 52,
+            "sub": "약 500만 원",
+            "hot": true
+          }
+        ],
+        "caption": "직접 계산한 값 · 환율 900~1,000원 구간",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "204": [
+      "CostStackCard",
+      "설 — 52만 엔이 무엇으로 되어 있나",
+      {
+        "title": "월 52만 엔",
+        "unit": "만 엔",
+        "totalLabel": "합계",
+        "totalDisplay": "52",
+        "parts": [
+          {
+            "label": "기본서비스료",
+            "value": 35.2,
+            "display": "35.2",
+            "hot": true
+          },
+          {
+            "label": "공익비 (관리비 성격)",
+            "value": 16.8,
+            "display": "16.8"
+          }
+        ],
+        "caption": "공익비는 합계에서 역산한 값",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "205": [
+      "BigStatsCard",
+      "설 — 두 숫자로 정리",
+      {
+        "title": "",
+        "items": [
+          {
+            "display": "50억",
+            "unit": "",
+            "label": "들어갈 때"
+          },
+          {
+            "display": "500만",
+            "unit": "원/월",
+            "label": "매달",
+            "hot": true
+          }
+        ],
+        "caption": "119㎡ · 2인 · 75세 기준 · 직접 계산한 값",
+        "theme": "ink",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "206": [
+      "HeadlineCard",
+      "후 — 뜯어보면 다른 게 나온다는 예고",
+      {
+        "line1": "52만 엔을",
+        "line2": "뜯어보면",
+        "theme": "blueprint"
+      }
+    ],
+    "207": [
+      "BigStatsCard",
+      "설 — 방 크기와 무관한 금액",
+      {
+        "title": "기본서비스료",
+        "items": [
+          {
+            "display": "35만 2천",
+            "unit": "엔",
+            "hot": true
+          }
+        ],
+        "caption": "방 크기와 상관없이 같다",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "208": [
+      "PhotoSplitCard",
+      "설 — 평면도 두 장을 나란히 놓으면 \"같은 값\"이 눈으로 이상해진다",
+      {
+        "sides": [
+          {
+            "photo": "니시아자부/plan_39a_plan_img.jpg",
+            "name": "39㎡",
+            "sub": "기본서비스료",
+            "stat": "35.2",
+            "statUnit": "만 엔",
+            "lines": []
+          },
+          {
+            "photo": "니시아자부/plan_130a_plan_img.jpg",
+            "name": "130㎡",
+            "sub": "기본서비스료",
+            "stat": "35.2",
+            "statUnit": "만 엔",
+            "lines": [],
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "209": [
+      "StrikeSwapCard",
+      "설 — 값을 무엇에 매겼나. 이 장에서 제일 중요한 교체다",
+      {
+        "from": "면적에 매긴다",
+        "fromLabel": "",
+        "to": "사람에게 매긴다",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "210": [
+      "HeadlineCard",
+      "후 — 계산으로 넘어간다",
+      {
+        "line1": "실제로 살면",
+        "line2": "얼마가 드나",
+        "theme": "ink"
+      }
+    ],
+    "211": [
+      "SpecGridCard",
+      "설 — 가정을 먼저 화면에 박는다. 이 없이 다음 컷을 띄우면 안 된다",
+      {
+        "title": "아래 계산의 가정",
+        "items": [
+          {
+            "label": "거주 기간",
+            "value": "20년",
+            "note": "가정 — 공식 상각기간 공개 범위는 120~360개월"
+          }
+        ],
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표",
+        "bg": {
+          "backdrop": "니시아자부/location_panoImg_mid03.jpg",
+          "veil": 0.93
+        }
+      }
+    ],
+    "212": [
+      "FormulaCard",
+      "설 — 나눗셈 하나가 이 장의 답이다",
+      {
+        "title": "입주일시금을 월로 펴면",
+        "top": {
+          "value": "5억 4천만 엔",
+          "label": "입주일시금"
+        },
+        "bottom": {
+          "value": "20년",
+          "label": "가정한 거주 기간"
+        },
+        "result": {
+          "value": "월 225만 엔",
+          "label": "직접 계산한 값"
+        },
+        "caption": "20년은 가정이다 · 실제 상각기간에 따라 달라진다",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "213": [
+      "CostStackCard",
+      "설 — 거기에 매달 내는 돈을 얹는다",
+      {
+        "title": "월 실부담",
+        "unit": "만 엔",
+        "totalLabel": "합계",
+        "totalDisplay": "277",
+        "parts": [
+          {
+            "label": "입주일시금 월 환산",
+            "value": 225,
+            "display": "225"
+          },
+          {
+            "label": "월 부담금",
+            "value": 52,
+            "display": "52",
+            "hot": true
+          }
+        ],
+        "caption": "20년 가정 · 직접 계산한 값",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "214": [
+      "BigStatsCard",
+      "설 — 원으로 옮긴다",
+      {
+        "title": "월 실부담",
+        "items": [
+          {
+            "display": "약 2,600",
+            "unit": "만 원",
+            "hot": true
+          }
+        ],
+        "caption": "2인 기준 · 20년 가정 · 직접 계산한 값",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "215": [
+      "CompareCard",
+      "설 — 1인당으로 나눠 본다",
+      {
+        "title": "",
+        "leftTitle": "2인",
+        "leftValue": "약 2,600만 원",
+        "leftLines": [
+          "월"
+        ],
+        "rightTitle": "1인당",
+        "rightValue": "약 1,300만 원",
+        "rightLines": [
+          "월"
+        ],
+        "caption": "20년 가정 · 직접 계산한 값",
+        "source": "파크웰스테이트 니시아자부 요금표"
+      }
+    ],
+    "216": [
+      "SpecGridCard",
+      "설 — 여기 안 들어간 게 있다는 걸 반드시 적는다",
+      {
+        "title": "위 금액에 빠진 것",
+        "items": [
+          {
+            "label": "식비",
+            "value": "별도",
+            "note": "2인 식사료 월 23.7만 엔"
+          },
+          {
+            "label": "수도광열비",
+            "value": "별도",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 요금표",
+        "bg": {
+          "backdrop": "니시아자부/service_bar_corner.jpg",
+          "veil": 0.93
+        }
+      }
+    ],
+    "217": [
+      "HeadlineCard",
+      "후 — 다음 장으로",
+      {
+        "line1": "그럼 지금",
+        "line2": "운영은 잘 되고 있을까",
+        "theme": "ink"
+      }
+    ],
+    "218": [
+      "PlanTitleCard",
+      "10장 — 챕터 문패",
+      {
+        "kicker": "10",
+        "lines": [
+          "지금",
+          "운영은"
+        ],
+        "theme": "blueprint"
+      }
+    ],
+    "219": [
+      "DotMatrixCard",
+      "설 — 정원을 다 깔고 그중 찬 자리를 켠다. 47%가 그림이 된다",
+      {
+        "perDot": 1,
+        "cols": 43,
+        "merge": true,
+        "groups": [
+          {
+            "label": "입주자",
+            "value": 282,
+            "display": "282명",
+            "hot": true
+          },
+          {
+            "label": "빈 자리",
+            "value": 320,
+            "display": "320명",
+            "gone": true
+          }
+        ],
+        "legend": "right",
+        "caption": "정원 602명 · 2025년 7월 기준 · 개업 10개월 시점",
+        "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
+      }
+    ],
+    "220": [
+      "RatioCard",
+      "설 — 절반이 안 찼다는 걸 원으로",
+      {
+        "mode": "circle",
+        "unit": "%",
+        "items": [
+          {
+            "label": "입주율",
+            "pct": 47,
+            "sub": "282 / 602명",
+            "hot": true
+          }
+        ],
+        "caption": "2025년 7월 기준 · 개업 10개월 시점",
+        "theme": "blueprint",
+        "source": "후생노동성 개호사업소 공표시스템"
+      }
+    ],
+    "221": [
+      "BarChartCard",
+      "설 — 정원이 유별나게 크다는 걸 막대로",
+      {
+        "title": "정원",
+        "sub": "도쿄도 유료노인홈 평균 대비",
+        "bars": [
+          {
+            "label": "도쿄도 평균",
+            "value": 67,
+            "displayValue": "평균"
+          },
+          {
+            "label": "니시아자부",
+            "value": 602,
+            "displayValue": "602명",
+            "hot": true
+          }
+        ],
+        "caption": "평균 대비 9배 이상 — 배수는 공표 자료 기준",
+        "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
+      }
+    ],
+    "222": [
+      "StageCard",
+      "장 — 채워지는 데 걸리는 시간",
+      {
+        "media": "니시아자부/location_panoImg_mid02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "223": [
+      "TimelineRailCard",
+      "설 — 개업 2년 전부터 모았다는 걸 연표로",
+      {
+        "axis": {
+          "from": 2022,
+          "to": 2025,
+          "step": 1
+        },
+        "rails": [
+          {
+            "label": "모집",
+            "events": [
+              {
+                "at": 2022.3,
+                "label": "자료청구 시작"
+              },
+              {
+                "at": 2022.8,
+                "label": "모델룸 · 신청 접수"
+              },
+              {
+                "at": 2024.6,
+                "label": "개업",
+                "hot": true
+              }
+            ]
+          }
+        ],
+        "theme": "blueprint",
+        "source": "파크웰스테이트 공식 뉴스"
+      }
+    ],
+    "224": [
+      "StageCard",
+      "장 — 모델룸에서 본 방",
+      {
+        "media": "니시아자부/plan_119a_choubo.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "225": [
+      "StageCard",
+      "장 — 시설 전경",
+      {
+        "media": "니시아자부/pwsbrand_search_ph_nishiazabu.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "226": [
+      "BigStatsCard",
+      "설 — 개업 석 달 전의 두 숫자",
+      {
+        "title": "개업 3개월 전",
+        "items": [
+          {
+            "display": "4,000",
+            "unit": "건 이상",
+            "label": "문의"
+          },
+          {
+            "display": "180",
+            "unit": "건",
+            "label": "신청",
+            "hot": true
+          }
+        ],
+        "source": "개업 전 보도"
+      }
+    ],
+    "227": [
+      "StageCard",
+      "장 — 개업 전의 관심",
+      {
+        "media": "니시아자부/top_topBnr2507_pc.jpg",
+        "fit": "contain",
+        "lines": [],
+        "scrim": 0.08,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "228": [
+      "CompareCard",
+      "설 — 두 숫자의 단위가 다르다는 게 이 컷의 전부다",
+      {
+        "title": "",
+        "leftTitle": "정원",
+        "leftValue": "602명",
+        "leftLines": [
+          "사람 단위"
+        ],
+        "rightTitle": "객실",
+        "rightValue": "400실",
+        "rightLines": [
+          "방 단위 · 공식 릴리스 기준"
+        ],
+        "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준 · 미쓰이 공식 릴리스"
+      }
+    ],
+    "229": [
+      "SpecGridCard",
+      "설 — 그래서 숫자가 딱 안 맞는다",
+      {
+        "items": [
+          {
+            "label": "계약",
+            "value": "방 단위",
+            "note": ""
+          },
+          {
+            "label": "입주율",
+            "value": "사람 단위",
+            "note": "그대로 맞아떨어지지 않는다"
+          }
+        ],
+        "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준",
+        "bg": {
+          "backdrop": "니시아자부/location_panoImg_morning02.jpg",
+          "veil": 0.93
+        }
+      }
+    ],
+    "230": [
+      "HeadlineCard",
+      "후 — 사업성 질문",
+      {
+        "line1": "그래서 이게",
+        "line2": "돈이 되는 사업일까",
+        "theme": "ink"
+      }
+    ],
+    "231": [
+      "BigStatsCard",
+      "설 — 계속 짓고 있다는 사실",
+      {
+        "title": "파크웰스테이트",
+        "items": [
+          {
+            "display": "6",
+            "unit": "곳",
+            "hot": true
+          }
+        ],
+        "source": "미쓰이 공식 릴리스"
+      }
+    ],
+    "232": [
+      "BarChartCard",
+      "설 — 늘어난 양을 막대로",
+      {
+        "title": "호실 수",
+        "sub": "",
+        "bars": [
+          {
+            "label": "기존",
+            "value": 1091,
+            "displayValue": "1,091호"
+          },
+          {
+            "label": "추가",
+            "value": 1500,
+            "displayValue": "1,500호",
+            "hot": true
+          }
+        ],
+        "arrow": true,
+        "source": "미쓰이 공식 릴리스"
+      }
+    ],
+    "233": [
+      "PhotoSplitCard",
+      "장 — 시리즈의 다른 곳들",
+      {
+        "sides": [
+          {
+            "photo": "니시아자부/pwsbrand_search_ph_hamadayama.jpg",
+            "name": "하마다야마",
+            "sub": "1호점",
+            "lines": []
+          },
+          {
+            "photo": "니시아자부/pwsbrand_search_ph_kamogawa2.jpg",
+            "name": "가모가와",
+            "sub": "",
+            "lines": []
+          }
+        ],
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "234": [
+      "StageCard",
+      "장 — 브랜드가 그리는 그림",
+      {
+        "media": "니시아자부/pwsbrand_fv_brand.jpg",
+        "fit": "contain",
+        "lines": [],
+        "scrim": 0.1,
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "235": [
+      "SpecGridCard",
+      "설 — 전망은 전망이라고 적는다",
+      {
+        "items": [
+          {
+            "label": "오픈 3~4년 차",
+            "value": "입주 완료 전망",
+            "note": "본인 견해 — 확정된 계획이 아니다"
+          }
+        ],
+        "source": ""
+      }
+    ],
+    "236": [
+      "BigStatsCard",
+      "설 — 어떤 사람들이 사는가",
+      {
+        "title": "입주자 평균연령",
+        "items": [
+          {
+            "display": "79.3",
+            "unit": "세",
+            "hot": true
+          }
+        ],
+        "caption": "2025년 7월 기준",
+        "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
+      }
+    ],
+    "237": [
+      "DotMatrixCard",
+      "설 — 자립과 돌봄의 비율을 점으로",
+      {
+        "perDot": 1,
+        "cols": 30,
+        "merge": true,
+        "groups": [
+          {
+            "label": "자립 판정",
+            "value": 229,
+            "display": "229명 · 81.2%",
+            "hot": true
+          },
+          {
+            "label": "그 외",
+            "value": 53,
+            "display": "53명",
+            "gone": true
+          }
+        ],
+        "legend": "right",
+        "caption": "입주자 282명 기준 · 2025년 7월",
+        "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
+      }
+    ],
+    "238": [
+      "StageCard",
+      "장 — 아직 스스로 사는 사람들",
+      {
+        "media": "니시아자부/service_relaxation05.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "239": [
+      "HeadlineCard",
+      "후 — 사실은 사실대로",
+      {
+        "line1": "아직 입주율이 낮은 건",
+        "line2": "사실이다",
+        "theme": "blueprint"
+      }
+    ],
+    "240": [
+      "PlanTitleCard",
+      "11장 — 챕터 문패. 니시아자부 얘기가 아니라는 걸 문패에서 박는다",
+      {
+        "kicker": "11",
+        "lines": [
+          "일본은 지금",
+          "규제를 조인다"
+        ],
+        "sub": "일본 시장 전체 얘기",
+        "theme": "ink"
+      }
+    ],
+    "241": [
+      "StrikeSwapCard",
+      "설 — 무엇이 무엇으로 바뀌나",
+      {
+        "title": "유료노인홈",
+        "from": "신고제",
+        "fromLabel": "지금",
+        "to": "등록제",
+        "toLabel": "바뀌는 중",
+        "theme": "ink",
+        "source": "후생노동성 とりまとめ",
+        "note": "일본 시장 전체 얘기"
+      }
+    ],
+    "242": [
+      "SpecGridCard",
+      "설 — 돈이 들어오는 길이 둘이다",
+      {
+        "title": "실버타운의 수익 통로",
+        "items": [
+          {
+            "label": "① 주거비",
+            "value": "입주자가 낸다",
+            "note": ""
+          },
+          {
+            "label": "② 돌봄비",
+            "value": "개호보험에서 나온다",
+            "note": "본인 부담 10~30%"
+          }
+        ],
+        "source": "후생노동성 とりまとめ",
+        "bg": {
+          "backdrop": "니시아자부/location_panoImg_night03.jpg",
+          "veil": 0.92
+        }
+      }
+    ],
+    "243": [
+      "CostStackCard",
+      "설 — 돌봄비는 대부분 보험이 낸다. 그 구조가 유인을 만든다",
+      {
+        "title": "돌봄비",
+        "unit": "%",
+        "totalLabel": "합계",
+        "totalDisplay": "100",
+        "parts": [
+          {
+            "label": "개호보험",
+            "value": 80,
+            "display": "70~90"
+          },
+          {
+            "label": "본인 부담",
+            "value": 20,
+            "display": "10~30",
+            "hot": true
+          }
+        ],
+        "caption": "소득에 따라 달라진다 · 일본 시장 전체 얘기",
+        "theme": "ink",
+        "source": "후생노동성 とりまとめ"
+      }
+    ],
+    "244": [
+      "StrikeSwapCard",
+      "설 — 사람을 모으는 미끼와 실제로 버는 곳이 다르다",
+      {
+        "from": "주거비를 싸게 내건다",
+        "fromLabel": "모으고",
+        "to": "돌봄비를 최대한 쓴다",
+        "toLabel": "번다",
+        "theme": "ink",
+        "source": "후생노동성 とりまとめ",
+        "note": "일본 시장 전체에서 나타난 구조"
+      }
+    ],
+    "245": [
+      "BarChartCard",
+      "설 — 한도액을 끝까지 쓰는 쪽으로 기운다",
+      {
+        "title": "개호보험 한도액 사용",
+        "sub": "문제가 된 구조 (일본 시장 전체 얘기)",
+        "bars": [
+          {
+            "label": "필요한 만큼",
+            "value": 60,
+            "displayValue": ""
+          },
+          {
+            "label": "한도액까지",
+            "value": 100,
+            "displayValue": "최대",
+            "hot": true
+          }
+        ],
+        "caption": "개념 도해 — 실제 사용률 통계가 아니다",
+        "theme": "ink",
+        "source": "후생노동성 とりまとめ"
+      }
+    ],
+    "246": [
+      "HeadlineCard",
+      "후 — 그래서 등록제로 간다",
+      {
+        "line1": "그래서",
+        "line2": "규제가 들어온다",
+        "theme": "ink"
+      }
+    ],
+    "247": [
+      "PlanTitleCard",
+      "12장 — 챕터 문패",
+      {
+        "kicker": "12",
+        "lines": [
+          "그럼",
+          "한국은"
+        ],
+        "theme": "paper"
+      }
+    ],
+    "248": [
+      "HeadlineCard",
+      "후 — 앞 장들을 뒤집는 단서",
+      {
+        "line1": "일본에서도",
+        "line2": "흔한 시설이 아니다",
+        "theme": "blueprint"
+      }
+    ],
+    "249": [
+      "DotMatrixCard",
+      "설 — 2.5%는 점으로 깔아야 작아 보인다",
+      {
+        "perDot": 100,
+        "cols": 40,
+        "merge": true,
+        "groups": [
+          {
+            "label": "'고급' 분류",
+            "value": 1494,
+            "display": "1,494곳 · 2.5%",
+            "hot": true
+          },
+          {
+            "label": "그 외",
+            "value": 58035,
+            "display": "58,035곳",
+            "gone": true
+          }
+        ],
+        "legend": "right",
+        "caption": "전국 실버타운 59,529곳 · 2026.8 조사 · '고급'은 시설 자기 신고 기준 · 점 하나 = 100곳",
+        "source": "PR TIMES 2026.8"
+      }
+    ],
+    "250": [
+      "RatioCard",
+      "설 — 2.5%는 원에서 실오라기가 된다",
+      {
+        "mode": "circle",
+        "unit": "%",
+        "items": [
+          {
+            "label": "'고급' 분류",
+            "pct": 2.5,
+            "sub": "1,494 / 59,529곳",
+            "hot": true
+          }
+        ],
+        "caption": "시설 자기 신고 기준 · 2026.8 조사",
+        "source": "PR TIMES 2026.8"
+      }
+    ],
+    "251": [
+      "HeadlineCard",
+      "후 — 이 영상이 다룬 게 무엇인지 다시 잡아 준다",
+      {
+        "line1": "상위 2.5% 안에서",
+        "line2": "벌어지는 일",
+        "theme": "blueprint"
+      }
+    ],
+    "252": [
+      "BarChartCard",
+      "설 — 후크에서 본 그 대비를 다시 세운다",
+      {
+        "title": "주거형만 셀 때",
+        "sub": "일본 유료노인홈 · 한국 노인복지주택 (일본 2025 / 한국 2023)",
+        "bars": [
+          {
+            "label": "일본",
+            "value": 12061,
+            "displayValue": "12,061곳"
+          },
+          {
+            "label": "한국",
+            "value": 39,
+            "displayValue": "39곳",
+            "hot": true
+          }
+        ],
+        "source": "후생노동성 · 보건복지부 노인복지시설 현황"
+      }
+    ],
+    "253": [
+      "StrikeSwapCard",
+      "설 — 세는 범위를 바꾸면 그림이 달라진다",
+      {
+        "from": "주거형만 센다",
+        "fromLabel": "",
+        "to": "요양시설까지 합친다",
+        "toLabel": "",
+        "source": "보건복지부 노인복지시설 현황"
+      }
+    ],
+    "254": [
+      "BarChartCard",
+      "설 — 합쳐 세면 격차가 확 준다",
+      {
+        "title": "돌봄까지 합칠 때",
+        "sub": "일본 유료노인홈+개호시설 · 한국 노인주거복지+노인의료복지 (일본 2025 / 한국 2023)",
+        "bars": [
+          {
+            "label": "일본",
+            "value": 17258,
+            "displayValue": "17,258곳"
+          },
+          {
+            "label": "한국",
+            "value": 6436,
+            "displayValue": "6,436곳",
+            "hot": true
+          }
+        ],
+        "source": "후생노동성 · 보건복지부 노인복지시설 현황"
+      }
+    ],
+    "255": [
+      "CompareCard",
+      "설 — 무엇을 지었고 무엇을 안 지었나",
+      {
+        "title": "",
+        "leftTitle": "돌봄이 필요해진 다음",
+        "leftValue": "지었다",
+        "leftLines": [
+          "요양시설"
+        ],
+        "rightTitle": "그 전에 갈 곳",
+        "rightValue": "안 지었다",
+        "rightLines": [
+          "주거형"
+        ],
+        "source": "보건복지부 노인복지시설 현황"
+      }
+    ],
+    "256": [
+      "HeadlineCard",
+      "후 — 정리로 넘어간다",
+      {
+        "line1": "니시아자부를",
+        "line2": "다시 정리하면",
+        "theme": "ink"
+      }
+    ],
+    "257": [
+      "SpecGridCard",
+      "설 — 네 조각을 한 판에. 이 영상의 논지다",
+      {
+        "title": "누가 무엇을 했나",
+        "items": [
+          {
+            "label": "건물",
+            "value": "그룹 안에서 빌렸다",
+            "note": "미쓰이부동산 레지덴셜"
+          },
+          {
+            "label": "식사",
+            "value": "호텔을 불렀다",
+            "note": "제국호텔"
+          },
+          {
+            "label": "병원",
+            "value": "밖에서 들여왔다",
+            "note": "법규 · 게이에이카이"
+          },
+          {
+            "label": "돌봄",
+            "value": "보험사에 맡겼다",
+            "note": "도쿄해상 계열"
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식",
+        "bg": {
+          "backdrop": "니시아자부/location_exampleImg01.jpg",
+          "veil": 0.93
+        }
+      }
+    ],
+    "258": [
+      "PhotoSplitCard",
+      "장 — 시리즈의 다른 두 곳",
+      {
+        "sides": [
+          {
+            "photo": "니시아자부/pwsbrand_search_ph_makuhari.jpg",
+            "name": "마쿠하리",
+            "sub": "",
+            "lines": []
+          },
+          {
+            "photo": "니시아자부/pwsbrand_search_ph_fujisawa_2.jpg",
+            "name": "후지사와",
+            "sub": "",
+            "lines": []
+          }
+        ],
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "259": [
+      "BigStatsCard",
+      "설 — 직접 한 건 둘뿐이다",
+      {
+        "title": "미쓰이가 직접 한 것",
+        "items": [
+          {
+            "display": "2",
+            "unit": "개",
+            "hot": true
+          }
+        ],
+        "caption": "건물 · 운영 법인",
+        "theme": "blueprint",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "260": [
+      "StrikeSwapCard",
+      "설 — 구성의 이름",
+      {
+        "from": "다 직접 한다",
+        "fromLabel": "",
+        "to": "잘하는 것만 하고 나머지는 외주",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "261": [
+      "HeadlineCard",
+      "후 — 일반화를 경계하는 한 줄",
+      {
+        "line1": "비슷해 보여도",
+        "line2": "사업지마다 다르다",
+        "theme": "blueprint"
+      }
+    ],
+    "262": [
+      "StageCard",
+      "장 — 한국으로 넘어온다",
+      {
+        "media": "니시아자부/apartment_drone.mp4",
+        "lines": [],
+        "scrim": 0.32,
+        "source": "Pexels"
+      }
+    ],
+    "263": [
+      "SpecGridCard",
+      "설 — 아파트가 이미 하고 있는 것",
+      {
+        "items": [
+          {
+            "label": "엘리베이터",
+            "value": "있다",
+            "note": ""
+          },
+          {
+            "label": "경비",
+            "value": "있다",
+            "note": ""
+          },
+          {
+            "label": "상가",
+            "value": "붙어 있다",
+            "note": ""
+          }
+        ],
+        "source": ""
+      }
+    ],
+    "264": [
+      "HeadlineCard",
+      "후 — 세 가지를 꺼내는 자리",
+      {
+        "line1": "그런데 아파트가",
+        "line2": "못 하는 게 셋 있다",
+        "theme": "ink"
+      }
+    ],
+    "265": [
+      "SpecGridCard",
+      "설 — 이 영상이 내내 본 세 가지가 그대로 답이 된다",
+      {
+        "title": "아파트가 못 하는 것",
+        "items": [
+          {
+            "label": "밥",
+            "value": "매일",
+            "note": "4장 · 제국호텔"
+          },
+          {
+            "label": "응급 대응",
+            "value": "24시간",
+            "note": "5장 · 클리닉"
+          },
+          {
+            "label": "돌봄으로 넘어가는 통로",
+            "value": "같은 건물 안",
+            "note": "3·6장 · 2·3층"
+          }
+        ],
+        "theme": "blueprint",
+        "source": "",
+        "bg": {
+          "backdrop": "니시아자부/location_exampleImg02.jpg",
+          "veil": 0.93
+        }
+      }
+    ],
+    "266": [
+      "StageCard",
+      "장 — 나이가 들수록 필요해지는 것들",
+      {
+        "media": "니시아자부/location_panoImg_night02.jpg",
+        "lines": [],
+        "scrim": 0.28,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "267": [
+      "StageCard",
+      "장 — 마지막 컷. 글자 없이 닫는다",
+      {
+        "media": "니시아자부/location_panoImg_night04.jpg",
+        "lines": [],
+        "scrim": 0.22,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
     ]
   }
 }
