@@ -39,7 +39,13 @@ def main():
 
     pdir = ROOT / 'projects' / a.project
     design = json.loads((pdir / 'design.json').read_text())['cuts']
-    stills = sorted((pdir / 'stills').glob('*.png'))
+    # **번호 순으로 정렬한다.** 파일명순으로 두면 sec266 이 sec26 앞에 와서
+    # 시트가 컷 순서와 어긋난다 — 이어 붙인 흐름을 보려고 만든 시트인데
+    # 순서가 틀리면 그 목적이 통째로 없어진다
+    def num(f):
+        m = re.match(r'sec(\d+)', f.name)
+        return (int(m.group(1)) if m else 10 ** 9, f.name)
+    stills = sorted((pdir / 'stills').glob('*.png'), key=num)
     if not stills:
         raise SystemExit('스틸이 없다 — render_parkside.py --still 먼저')
 

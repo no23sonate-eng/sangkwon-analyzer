@@ -28,6 +28,16 @@ FPS = 30
 
 
 def load(proj):
+    # ── design.json 이 더 새것이면 멈춘다 ──────────────────────────────────
+    # `apply_design.py --check` 는 **읽기만** 한다. 설계를 고치고 --check 로
+    # 확인만 한 뒤 렌더를 돌리면, 낡은 scene_plan 을 그리면서 조용히
+    # 성공한다. 실제로 그렇게 60컷이 `[skip] 장면 전체가 실사` 로 빠졌다.
+    # 조용히 틀리느니 여기서 세운다
+    dj = os.path.join(proj, 'design.json')
+    sp = os.path.join(proj, 'scene_plan.json')
+    if os.path.exists(dj) and os.path.exists(sp) and os.path.getmtime(dj) > os.path.getmtime(sp):
+        sys.exit('design.json 이 scene_plan.json 보다 새것이다 — '
+                 'apply_design.py 를 (--check 없이) 먼저 돌려라')
     plan = json.load(open(os.path.join(proj, 'scene_plan.json'), encoding='utf-8'))
     props = json.load(open(os.path.join(proj, 'scene_props.json'), encoding='utf-8'))['scenes']
     out = []

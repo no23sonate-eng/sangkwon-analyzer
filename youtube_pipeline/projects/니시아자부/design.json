@@ -966,14 +966,15 @@
             "events": [
               {
                 "at": 1980,
-                "label": "신내진기준 · 45m → 60m",
+                "label": "45m → 60m",
                 "hot": true
               }
             ]
           }
         ],
         "theme": "blueprint",
-        "source": "건축기준법"
+        "source": "건축기준법",
+        "title": "1980 신내진기준"
       }
     ],
     "48": [
@@ -3069,11 +3070,12 @@
         "title": "보증금",
         "items": [
           {
-            "display": "임대료 1",
+            "display": "1",
             "unit": "개월분",
             "hot": true
           }
         ],
+        "caption": "임대료 기준",
         "source": "파크웰스테이트 니시아자부 요금표"
       }
     ],
@@ -3234,16 +3236,14 @@
       }
     ],
     "203": [
-      "RatioCard",
-      "설 — 월 부담을 원 하나로 받는다",
+      "BigStatsCard",
+      "설 — 원으로 옮긴 값 하나",
       {
-        "mode": "circle",
-        "unit": "만 엔",
+        "title": "월 부담",
         "items": [
           {
-            "label": "월 부담",
-            "pct": 52,
-            "sub": "약 500만 원",
+            "display": "약 500",
+            "unit": "만 원",
             "hot": true
           }
         ],
