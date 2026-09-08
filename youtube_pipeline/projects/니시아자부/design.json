@@ -523,6 +523,753 @@
           "dashed": true
         }
       }
+    ],
+    "19": [
+      "PlanTitleCard",
+      "2장 — 챕터 문패",
+      {
+        "kicker": "2",
+        "lines": [
+          "누가",
+          "만들었나"
+        ],
+        "theme": "ink"
+      }
+    ],
+    "20": [
+      "BigStatsCard",
+      "설 — 회사의 나이를 말하는 컷. 연도 하나면 된다",
+      {
+        "title": "미쓰이부동산 창립",
+        "items": [
+          {
+            "display": "1941",
+            "unit": "",
+            "hot": true
+          }
+        ],
+        "caption": "2026년 기준 85년",
+        "source": "미쓰이부동산 회사소개"
+      }
+    ],
+    "21": [
+      "StageCard",
+      "사 — 일본 최초의 초고층. 실존 건물이라 실사만 쓴다",
+      {
+        "media": "니시아자부/kasumigaseki_bldg.jpg",
+        "lines": [
+          [
+            {
+              "t": "1968"
+            }
+          ],
+          [
+            {
+              "t": "가스미가세키 빌딩",
+              "hot": true
+            }
+          ]
+        ],
+        "scrim": 0.28,
+        "size": 88,
+        "source": "미쓰이부동산 오피스빌딩 소개",
+        "fit": "contain"
+      }
+    ],
+    "22": [
+      "StageCard",
+      "사 — 미드타운도 실존 건물이다",
+      {
+        "media": "니시아자부/tokyo_midtown.jpg",
+        "lines": [
+          [
+            {
+              "t": "도쿄 미드타운"
+            }
+          ]
+        ],
+        "scrim": 0.5,
+        "size": 92,
+        "source": "Wikimedia Commons"
+      }
+    ],
+    "23": [
+      "TimelineRailCard",
+      "설 — 앞 세 컷을 한 줄로 묶는다. 이 회사가 무엇을 언제 지었나",
+      {
+        "axis": {
+          "from": 1940,
+          "to": 2020,
+          "step": 20
+        },
+        "rails": [
+          {
+            "label": "미쓰이부동산",
+            "events": [
+              {
+                "at": 1941,
+                "label": "창립"
+              },
+              {
+                "at": 1968,
+                "label": "가스미가세키 빌딩"
+              },
+              {
+                "at": 2007,
+                "label": "도쿄 미드타운"
+              }
+            ]
+          }
+        ],
+        "theme": "blueprint",
+        "source": "미쓰이부동산 회사소개"
+      }
+    ],
+    "24": [
+      "BigStatsCard",
+      "설 — 다음 컷 사진을 받기 위한 연도·설계자 표기",
+      {
+        "title": "21_21 DESIGN SIGHT",
+        "items": [
+          {
+            "display": "2007",
+            "unit": "",
+            "hot": true
+          }
+        ],
+        "caption": "안도 타다오 설계 · 도쿄 미드타운 내",
+        "source": "21_21 DESIGN SIGHT 공식"
+      }
+    ],
+    "25": [
+      "StageCard",
+      "사 — 건물이 주인공인 컷. 글자는 이미 앞 컷이 다 했다",
+      {
+        "media": "니시아자부/designsight_2121.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "21_21 DESIGN SIGHT 공식"
+      }
+    ],
+    "26": [
+      "BrandCard",
+      "설 — 브랜드가 생긴 해. 마크와 연도 하나",
+      {
+        "logo": "니시아자부/pws_logo.svg",
+        "name": "",
+        "line": "2018 · 시니어 레지던스 사업부 신설",
+        "logoScale": 1.0,
+        "source": "미쓰이부동산 릴리스 2018.7.18"
+      }
+    ],
+    "27": [
+      "StrikeSwapCard",
+      "설 — 미쓰이의 맨션 이름이 Park 다. 그 이름에서 갈라져 나온다",
+      {
+        "from": "Park",
+        "fromLabel": "미쓰이 레지덴셜 맨션 시리즈",
+        "to": "PARK WELLSTATE",
+        "toLabel": "시니어 레지던스",
+        "arrowOnly": true,
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "28": [
+      "SpecGridCard",
+      "설 — 이름을 조각으로 뜯는다. 첫 조각",
+      {
+        "title": "",
+        "items": [
+          {
+            "label": "Park",
+            "value": "맨션 시리즈",
+            "note": "미쓰이의 주거 브랜드"
+          }
+        ],
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "29": [
+      "SpecGridCard",
+      "설 — 둘째 조각이 붙는다",
+      {
+        "title": "",
+        "items": [
+          {
+            "label": "Park",
+            "value": "맨션 시리즈",
+            "note": "미쓰이의 주거 브랜드"
+          },
+          {
+            "label": "Well",
+            "value": "건강하게 · 충분히",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "30": [
+      "SpecGridCard",
+      "설 — 셋째 조각까지 붙으면 이름 하나가 된다",
+      {
+        "title": "",
+        "items": [
+          {
+            "label": "Park",
+            "value": "맨션 시리즈",
+            "note": "미쓰이의 주거 브랜드"
+          },
+          {
+            "label": "Well",
+            "value": "건강하게 · 충분히",
+            "note": ""
+          },
+          {
+            "label": "State",
+            "value": "새로운 인생의 무대",
+            "note": ""
+          }
+        ],
+        "source": "파크웰스테이트 브랜드"
+      }
+    ],
+    "31": [
+      "StrikeSwapCard",
+      "설 — 땅을 산 게 아니라 갖고 있던 걸 바꿨다. 그 교체가 이 컷의 전부다",
+      {
+        "title": "이 자리",
+        "from": "미쓰이 오피스 빌딩",
+        "fromLabel": "기존",
+        "to": "시니어 레지던스",
+        "toLabel": "2024",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "32": [
+      "StageCard",
+      "사 — 바뀐 결과를 한 번 보여 준다",
+      {
+        "media": "니시아자부/top_slide04.jpg",
+        "lines": [],
+        "scrim": 0.18,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "33": [
+      "CompareCard",
+      "설 — 사서 짓는 것과 갖고 있던 걸 바꾸는 것은 사업 구조가 다르다",
+      {
+        "title": "땅을 어떻게 마련했나",
+        "leftTitle": "사서 짓기",
+        "leftValue": "매입",
+        "leftLines": [
+          "땅값이 먼저 나간다"
+        ],
+        "rightTitle": "니시아자부",
+        "rightValue": "보유 부지 전환",
+        "rightLines": [
+          "미쓰이 오피스 빌딩 부지"
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "34": [
+      "CompareCard",
+      "설 — 1호점도 같은 방식이었다. 두 사례가 겹치면 그건 습관이 아니라 전략이다",
+      {
+        "title": "1호점 하마다야마",
+        "leftTitle": "니시아자부",
+        "leftValue": "보유 부지",
+        "leftLines": [
+          "미쓰이 오피스 빌딩"
+        ],
+        "rightTitle": "하마다야마",
+        "rightValue": "부지 임차",
+        "rightLines": [
+          "NTT 사택 부지"
+        ],
+        "source": "R.E.port 2018"
+      }
+    ],
+    "35": [
+      "HeadlineCard",
+      "후 — 장의 논점을 세우는 한 줄",
+      {
+        "line1": "운영하는 회사가",
+        "line2": "건물 주인이 아니다",
+        "theme": "blueprint"
+      }
+    ],
+    "36": [
+      "BrandCard",
+      "설 — 운영을 맡은 법인을 세운다. 그룹 마크와 역할 한 줄",
+      {
+        "logo": "니시아자부/mitsui_logo.svg",
+        "name": "미쓰이부동산 레지덴셜 웰네스",
+        "line": "운영",
+        "logoScale": 0.9,
+        "tracking": true,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "37": [
+      "CompareCard",
+      "설 — 누가 무엇을 갖고 누가 무엇을 하나. 나란히 놓아야 갈린다",
+      {
+        "title": "",
+        "leftTitle": "미쓰이부동산 레지덴셜",
+        "leftValue": "소유",
+        "leftLines": [
+          "토지 · 건물"
+        ],
+        "rightTitle": "미쓰이부동산 레지덴셜 웰네스",
+        "rightValue": "운영",
+        "rightLines": [
+          "시설 운영"
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "38": [
+      "StrikeSwapCard",
+      "설 — 둘 사이를 잇는 건 그룹 내부의 임대차다",
+      {
+        "title": "",
+        "from": "한 회사가 다 한다",
+        "fromLabel": "",
+        "to": "그룹 안에서 임대차",
+        "toLabel": "소유 ↔ 운영",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "39": [
+      "HeadlineCard",
+      "후 — 이 장의 결론",
+      {
+        "line1": "개발과 운영을",
+        "line2": "나눴다",
+        "theme": "ink"
+      }
+    ],
+    "40": [
+      "StageCard",
+      "장 — 결론 뒤 한 박자. 건물로 돌아온다",
+      {
+        "media": "니시아자부/top_slide02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "41": [
+      "CompareCard",
+      "설 — 투자·개발 주체와 운영 주체는 결국 다르다는 일반화",
+      {
+        "title": "",
+        "leftTitle": "투자 · 개발",
+        "leftValue": "자본",
+        "leftLines": [
+          "땅과 건물을 만든다"
+        ],
+        "rightTitle": "운영",
+        "rightValue": "서비스",
+        "rightLines": [
+          "매일 굴린다"
+        ],
+        "caption": "니시아자부는 이 둘을 그룹 안에서 나눴다",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "42": [
+      "PlanTitleCard",
+      "3장 — 챕터 문패",
+      {
+        "kicker": "3",
+        "lines": [
+          "특징"
+        ],
+        "theme": "ink"
+      }
+    ],
+    "43": [
+      "FloorStackCard",
+      "설 — 이 영상의 척추. 탑을 미터로 세우고 바닥에 사람을 둔다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "zones": [],
+        "human": true,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "44": [
+      "FloorStackCard",
+      "설 — 같은 탑에 법이 긋는 선을 얹는다. 두 배가 넘는다는 걸 선으로 본다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "zones": [],
+        "human": true,
+        "markM": [
+          {
+            "m": 60,
+            "label": "건축기준법 60m"
+          }
+        ],
+        "source": "건축기준법 · 파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "45": [
+      "SpecGridCard",
+      "설 — 60m 를 넘으면 무엇이 더 필요한가. 두 가지다",
+      {
+        "title": "60m 를 넘으면",
+        "items": [
+          {
+            "label": "시간이력응답해석",
+            "value": "실제 지진파",
+            "note": "시간에 따른 흔들림을 계산"
+          },
+          {
+            "label": "대신인정",
+            "value": "국토교통성 장관",
+            "note": "개별 인정을 따로 받는다"
+          }
+        ],
+        "source": "건축기준법"
+      }
+    ],
+    "46": [
+      "StrikeSwapCard",
+      "설 — 일반 심사로는 안 되고 장관 인정으로 넘어간다",
+      {
+        "from": "일반 구조 심사",
+        "fromLabel": "60m 이하",
+        "to": "국토교통성 장관 인정",
+        "toLabel": "60m 초과",
+        "source": "건축기준법"
+      }
+    ],
+    "47": [
+      "TimelineRailCard",
+      "설 — 그 선이 언제 45m 에서 60m 로 올라갔나",
+      {
+        "axis": {
+          "from": 1960,
+          "to": 2000,
+          "step": 10
+        },
+        "rails": [
+          {
+            "label": "높이 기준선",
+            "events": [
+              {
+                "at": 1980,
+                "label": "신내진기준 · 45m → 60m",
+                "hot": true
+              }
+            ]
+          }
+        ],
+        "theme": "blueprint",
+        "source": "건축기준법"
+      }
+    ],
+    "48": [
+      "ScaleCompareCard",
+      "설 — 기준과 실제를 나란히 세우면 두 배가 눈으로 재진다",
+      {
+        "title": "",
+        "unit": "m",
+        "items": [
+          {
+            "label": "법 기준선",
+            "meters": 60,
+            "shape": "slab",
+            "note": "60m"
+          },
+          {
+            "label": "니시아자부",
+            "meters": 125,
+            "shape": "slab",
+            "note": "125m",
+            "hot": true
+          }
+        ],
+        "axisStep": 25,
+        "showHuman": true,
+        "source": "건축기준법 · 파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "49": [
+      "BigStatsCard",
+      "설 — 규모 두 값",
+      {
+        "title": "",
+        "items": [
+          {
+            "display": "2,123",
+            "unit": "평",
+            "label": "대지"
+          },
+          {
+            "display": "13,900",
+            "unit": "평",
+            "label": "연면적",
+            "hot": true
+          }
+        ],
+        "caption": "㎡ → 평 환산은 직접 계산한 값",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "50": [
+      "HeadlineCard",
+      "후 — 여기서 질문을 던진다",
+      {
+        "line1": "시니어 레지던스가",
+        "line2": "고층이어도 되나",
+        "theme": "blueprint"
+      }
+    ],
+    "51": [
+      "StageCard",
+      "장 — 질문을 사람 쪽에서 받는다",
+      {
+        "media": "니시아자부/elderly_couple_street.mp4",
+        "lines": [],
+        "scrim": 0.3,
+        "source": "SHVETS production / Pexels"
+      }
+    ],
+    "52": [
+      "StageCard",
+      "장 — 땅에 붙어 있는 감각. 조경 판으로 받는다",
+      {
+        "media": "니시아자부/top_slide03.jpg",
+        "lines": [],
+        "scrim": 0.22,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "53": [
+      "StrikeSwapCard",
+      "설 — 뷰가 목적이 아니라는 걸 교체로 말한다",
+      {
+        "from": "높은 뷰",
+        "fromLabel": "",
+        "to": "기능의 분리",
+        "toLabel": "",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "54": [
+      "FloorStackCard",
+      "설 — 여기서 탑에 기능이 들어온다. 이 장의 답이다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "zones": [
+          {
+            "from": 1,
+            "to": 1,
+            "label": "니시아자부 메디컬 클리닉",
+            "note": "의료법인사단 게이에이카이"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "돌봄 전용 층",
+            "note": "객실 60실"
+          },
+          {
+            "from": 4,
+            "to": 4,
+            "label": "TOKIORI",
+            "note": "동경해상일동 베터라이프서비스"
+          },
+          {
+            "from": 9,
+            "to": 9,
+            "label": "대욕장",
+            "note": ""
+          },
+          {
+            "from": 35,
+            "to": 36,
+            "label": "다이닝",
+            "note": "제국호텔"
+          }
+        ],
+        "human": true,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "55": [
+      "FloorStackCard",
+      "설 — 돌봄이 필요해지는 순간, 갈 곳은 같은 탑 안이다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "human": true,
+        "zones": [
+          {
+            "from": 1,
+            "to": 1,
+            "label": "니시아자부 메디컬 클리닉",
+            "note": "의료법인사단 게이에이카이",
+            "hot": false
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "돌봄 전용 층",
+            "note": "객실 60실",
+            "hot": true
+          },
+          {
+            "from": 4,
+            "to": 4,
+            "label": "TOKIORI",
+            "note": "동경해상일동 베터라이프서비스",
+            "hot": false
+          },
+          {
+            "from": 9,
+            "to": 9,
+            "label": "대욕장",
+            "note": "",
+            "hot": false
+          },
+          {
+            "from": 35,
+            "to": 36,
+            "label": "다이닝",
+            "note": "제국호텔",
+            "hot": false
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "56": [
+      "StrikeSwapCard",
+      "설 — 나가는 게 아니라 층을 옮긴다",
+      {
+        "from": "다른 건물 · 병원으로 이동",
+        "fromLabel": "보통",
+        "to": "같은 건물의 다른 층",
+        "toLabel": "니시아자부",
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "57": [
+      "StageCard",
+      "장 — 옮겨 간 그 층이 어떤 곳인지 한 장",
+      {
+        "media": "니시아자부/care_space_img09.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "58": [
+      "BigStatsCard",
+      "설 — 돌봄 층의 규모",
+      {
+        "title": "2 · 3층 돌봄 전용",
+        "items": [
+          {
+            "display": "60",
+            "unit": "실",
+            "hot": true
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "59": [
+      "PhotoSplitCard",
+      "장 — 스테이션과 식당. 두 장을 나란히",
+      {
+        "sides": [
+          {
+            "photo": "니시아자부/care_space_img10.jpg",
+            "name": "",
+            "sub": "",
+            "lines": []
+          },
+          {
+            "photo": "니시아자부/care_space_img11.jpg",
+            "name": "",
+            "sub": "",
+            "lines": []
+          }
+        ],
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "60": [
+      "StageCard",
+      "장 — 돌봄 욕실 한 장",
+      {
+        "media": "니시아자부/care_service_img02.jpg",
+        "lines": [],
+        "scrim": 0.2,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
+    ],
+    "61": [
+      "HeadlineCard",
+      "후 — 사업성과 편의가 같이 있었다는 결론의 앞머리",
+      {
+        "line1": "높이는",
+        "line2": "사업성에서 나왔지만",
+        "theme": "blueprint"
+      }
+    ],
+    "62": [
+      "FloorStackCard",
+      "설 — 결론은 다시 탑으로. 기능이 다 켜진 판으로 닫는다",
+      {
+        "floors": 36,
+        "heightM": 125,
+        "zones": [
+          {
+            "from": 1,
+            "to": 1,
+            "label": "니시아자부 메디컬 클리닉",
+            "note": "의료법인사단 게이에이카이"
+          },
+          {
+            "from": 2,
+            "to": 3,
+            "label": "돌봄 전용 층",
+            "note": "객실 60실"
+          },
+          {
+            "from": 4,
+            "to": 4,
+            "label": "TOKIORI",
+            "note": "동경해상일동 베터라이프서비스"
+          },
+          {
+            "from": 9,
+            "to": 9,
+            "label": "대욕장",
+            "note": ""
+          },
+          {
+            "from": 35,
+            "to": 36,
+            "label": "다이닝",
+            "note": "제국호텔"
+          }
+        ],
+        "human": true,
+        "source": "파크웰스테이트 니시아자부 공식"
+      }
     ]
   }
 }
