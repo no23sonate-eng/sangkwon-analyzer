@@ -66,6 +66,19 @@ export const StageCard = ({
           'Transportation Hub' 와 '서울역' 이 왼쪽으로 잘려 있었다).
           남는 자리는 무대 바탕(검정) 그대로 두고, 자를 이유가 없으니
           느린 확대도 끈다 */}
+      {/* ── 2026-09-08 · 세로 사진의 양옆 검정 기둥 ────────────────────────
+          세로로 긴 자료(가스미가세키 빌딩·평면도·구성도)를 contain 으로 놓으면
+          1920 폭 중 실제 그림은 4할뿐이고 나머지가 통째로 검정이다. 화면이
+          '작다'가 아니라 '비었다'로 읽힌다. 같은 그림을 꽉 채워 깔고 크게
+          흐린 뒤 어둡게 눌러, 그림이 제 색으로 번지는 바탕을 만든다 */}
+      {fit === 'contain' && !isVid ? (
+        <AbsoluteFill>
+          <Img src={src}
+               style={{width: '100%', height: '100%', objectFit: 'cover',
+                       transform: 'scale(1.16)', filter: 'blur(44px) saturate(0.72)'}} />
+          <AbsoluteFill style={{background: 'rgba(11,14,18,0.62)'}} />
+        </AbsoluteFill>
+      ) : null}
       <AbsoluteFill style={{transform: fit === 'contain' ? 'none' : `scale(${zoom})`}}>
         {isVid
           ? <OffthreadVideo src={src} muted

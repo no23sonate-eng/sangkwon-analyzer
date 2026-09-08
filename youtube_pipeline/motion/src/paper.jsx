@@ -405,15 +405,21 @@ export const PaperSource = ({source = '', dark = false, theme, onPhoto = false})
   const T = themeOf(theme, dark);
   const txt = /^\s*source\s*:/i.test(source) ? source : `Source : ${source}`;
   return (
-    <div style={{position: 'absolute', right: 44, top: 34, textAlign: 'right',
-                 maxWidth: 760,
+    <div style={{position: 'absolute', right: onPhoto ? 0 : 44, top: onPhoto ? 22 : 34,
+                 textAlign: 'right', maxWidth: 800,
                  fontFamily: 'A2Z Light, sans-serif', fontSize: 20,
                  letterSpacing: '0.04em', lineHeight: 1.3,
                  // 사진을 꽉 채우는 카드는 무대 색이 없다. 사진이 밝을지
-                 // 어두울지 모르니 흰 글자 + 그림자로 고정한다
+                 // 어두울지 모르니 흰 글자 + 그림자로 고정한다.
+                 // 그림자만으로는 흰 자료(구성도·평면도) 위에서 지워졌다 —
+                 // 오른쪽에서 스며드는 옅은 그늘을 깔아 어떤 바탕에서도 읽히게
                  color: onPhoto ? '#FFFFFF' : T.soft,
-                 textShadow: onPhoto ? '0 2px 10px rgba(0,0,0,0.8)' : 'none',
-                 opacity: 0.85 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
+                 padding: onPhoto ? '10px 44px 10px 120px' : 0,
+                 background: onPhoto
+                   ? 'linear-gradient(270deg, rgba(11,14,18,0.62) 0%, rgba(11,14,18,0.44) 46%, rgba(11,14,18,0) 100%)'
+                   : 'none',
+                 textShadow: onPhoto ? '0 2px 10px rgba(0,0,0,0.9)' : 'none',
+                 opacity: 0.9 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
       {txt}
     </div>
   );
