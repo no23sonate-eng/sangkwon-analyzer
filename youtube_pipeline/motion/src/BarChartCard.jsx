@@ -72,7 +72,11 @@ export const BarChartCard = ({
         {list.map((b, i) => {
           const grow = spring({frame: frame - 14 - i * 8, fps,
                                config: {damping: 200, mass: 0.8}, durationInFrames: 26});
-          const h = (Math.abs(Number(b.value)) || 0) / maxValue * MAX_BAR_H * grow;
+          // 39 : 12,061 이면 막대가 1.1px 다 — 옐로를 칠해도 화면에 아무것도
+          // 안 나타나서 '적다'가 아니라 '빠졌다'로 읽힌다 (#9·#252).
+          // 값이 0 이 아니면 최소 7px 은 긋는다. 실오라기여야지 공백이면 안 된다
+          const raw = (Math.abs(Number(b.value)) || 0) / maxValue * MAX_BAR_H;
+          const h = (raw > 0 ? Math.max(7, raw) : 0) * grow;
           const on = Boolean(b.hot);
           // ghost — **아직 없는 것**. 점선 윤곽만 그린다. 빈 자리가 있다는
           // 말을 글자로 하지 않고 그림으로 한다 (#92 "비어 있던 칸")

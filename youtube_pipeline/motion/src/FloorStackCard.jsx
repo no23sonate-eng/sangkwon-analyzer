@@ -72,23 +72,33 @@ export const FloorStackCard = ({
   // 아래로만 밀면 안 된다. 1·2·3·4층 띠는 바닥에 몰려 있어서, 겹치지 말라고
   // 96px 씩 내리면 마지막 라벨이 **자막 안전선 아래로** 내려간다 (실제로
   // 1F 라벨이 y=1000 까지 내려갔다). 아래로 민 뒤, 넘친 만큼 전체를 올린다
-  const GAP = 92, LIM = CONTENT_BOTTOM - 66, HI = TOP + 16;
+  // ── 2026-09-08 · 간격이 92 하나로 고정이라 주석 있는 라벨이 겹쳤다 ──────
+  // 라벨 한 덩어리는 이름줄(40px, 줄높이 ~48) + 주석(32px, ~42) 이다.
+  // 주석이 있으면 94px, 없으면 48px 인데 둘 다 92 로 띄우니 '4F TOKIORI /
+  // 동경해상일동 베터라이프서비스' 가 바로 아래 '2–3F 돌봄 전용 층' 을
+  // 파고들었다 (#55·#125·#187). 덩어리마다 제 높이로 띄운다
+  const PAD = 20, HI = TOP + 16;
+  const hOf = (z) => (z.note ? 96 : 50);
   const order = zones
-    .map((z, i) => ({i, y: (yOfFloor(z.to) + yOfFloor(z.from - 1)) / 2}))
+    .map((z, i) => ({i, z, h: hOf(z), y: (yOfFloor(z.to) + yOfFloor(z.from - 1)) / 2}))
     .sort((a, b) => a.y - b.y);
-  const labY = {};
-  // ① 위에서 아래로 — 겹치면 아래로 민다
-  let prev = -1e9;
-  for (const e of order) { labY[e.i] = Math.max(e.y, prev + GAP); prev = labY[e.i]; }
-  // ② 아래에서 위로 — 자막 안전선을 넘은 만큼 **되올린다.**
-  // ①만 돌리면 바닥에 몰린 띠(1·2·3·4층)의 라벨이 줄줄이 화면 밖으로 나간다.
-  // 한 번 내려 보고 넘치면 다시 올리는 두 번 훑기가 있어야 자리가 잡힌다
-  let next = LIM + GAP;
-  for (let k = order.length - 1; k >= 0; k--) {
-    const i = order[k].i;
-    labY[i] = Math.max(HI, Math.min(labY[i], next - GAP));
-    next = labY[i];
+  const top = {};                          // 덩어리 **윗머리**
+  // ① 위에서 아래로 — 앞 덩어리 바닥 + 여백보다 아래로
+  let floor0 = -1e9;
+  for (const e of order) {
+    top[e.i] = Math.max(e.y - 34, floor0);
+    floor0 = top[e.i] + e.h + PAD;
   }
+  // ② 아래에서 위로 — 마지막 덩어리 **바닥**이 자막 안전선 안에 들어와야 한다.
+  // ①만 돌리면 바닥에 몰린 띠(1·2·3·4층) 라벨이 줄줄이 화면 밖으로 나간다
+  let ceil0 = CONTENT_BOTTOM;
+  for (let k = order.length - 1; k >= 0; k--) {
+    const e = order[k];
+    top[e.i] = Math.max(HI - 34, Math.min(top[e.i], ceil0 - e.h));
+    ceil0 = top[e.i] - PAD;
+  }
+  const labY = {};
+  for (const e of order) labY[e.i] = top[e.i] + 34;
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -154,12 +164,28 @@ export const FloorStackCard = ({
         })}
 
         {/* 사람 1.7m — 축척의 기준 */}
+        {/* 125m 탑에서 1.7m 는 7px 이다. 축척대로 그리는 게 맞지만, 그대로
+            두면 사람이 아니라 얼룩으로 보여 축척의 기준 노릇을 못 한다.
+            **크기는 그대로 두고** 옆에 눈금과 '1.7m' 을 붙인다 — 글자가
+            사람보다 크다는 것 자체가 이 그림이 하려는 말이다 */}
         {human ? (() => {
-          const hh = Math.max(6, 1.7 * mpp), x = TX - 46;
+          const hh = Math.max(6, 1.7 * mpp), x = TX - 52;
           return (
             <g opacity={fadeIn(frame, 44, 14)}>
-              <circle cx={x} cy={BOT - hh * 0.86} r={hh * 0.15} fill={T.ink} />
-              <line x1={x} y1={BOT - hh * 0.72} x2={x} y2={BOT} stroke={T.ink} strokeWidth={2} />
+              <circle cx={x} cy={BOT - hh * 0.86} r={Math.max(2.2, hh * 0.16)} fill={T.ink} />
+              <line x1={x} y1={BOT - hh * 0.66} x2={x} y2={BOT}
+                    stroke={T.ink} strokeWidth={2.4} strokeLinecap="round" />
+              {/* 눈금: 바닥 ~ 머리 */}
+              <line x1={x - 26} y1={BOT} x2={x - 12} y2={BOT}
+                    stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
+              <line x1={x - 26} y1={BOT - hh} x2={x - 12} y2={BOT - hh}
+                    stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
+              <line x1={x - 19} y1={BOT - hh} x2={x - 19} y2={BOT}
+                    stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
+              <text x={x - 34} y={BOT + 30} textAnchor="end" fill={T.soft}
+                    style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26}}>
+                사람 1.7m
+              </text>
             </g>
           );
         })() : null}

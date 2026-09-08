@@ -1410,7 +1410,8 @@
     "bg": {
      "backdrop": "니시아자부/shirt_hanger.jpg",
      "veil": 0.93
-    }
+    },
+    "source": "배경 Pexels"
    }
   ],
   "73": [
@@ -2288,7 +2289,8 @@
     "bg": {
      "backdrop": "니시아자부/location_panoImg_morning01.jpg",
      "veil": 0.93
-    }
+    },
+    "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
   "134": [
@@ -2303,7 +2305,8 @@
     "bg": {
      "backdrop": "니시아자부/construction_bw.jpg",
      "veil": 0.92
-    }
+    },
+    "source": "배경 Pexels"
    }
   ],
   "135": [
@@ -2667,7 +2670,8 @@
     "bg": {
      "backdrop": "니시아자부/contract_sign.jpg",
      "veil": 0.92
-    }
+    },
+    "source": "배경 Pexels"
    }
   ],
   "158": [
@@ -2943,7 +2947,8 @@
     "bg": {
      "backdrop": "니시아자부/yen_notes.jpg",
      "veil": 0.92
-    }
+    },
+    "source": "배경 Pexels"
    }
   ],
   "175": [
@@ -3522,7 +3527,8 @@
      "backdrop": "니시아자부/calculator_hand.jpg",
      "veil": 0.92,
      "blur": 2
-    }
+    },
+    "source": "배경 Pexels"
    }
   ],
   "211": [
@@ -3661,7 +3667,8 @@
     "bg": {
      "backdrop": "니시아자부/location_panoImg_mid01.jpg",
      "veil": 0.93
-    }
+    },
+    "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
   "218": [
@@ -4052,7 +4059,8 @@
     "bg": {
      "backdrop": "니시아자부/japan_street_crowd.mp4",
      "veil": 0.9
-    }
+    },
+    "source": "배경 Pexels"
    }
   ],
   "241": [
@@ -4492,7 +4500,7 @@
      }
     ],
     "theme": "blueprint",
-    "source": "",
+    "source": "파크웰스테이트 니시아자부 공식",
     "bg": {
      "backdrop": "니시아자부/location_panoImg_mid04.jpg",
      "veil": 0.94
