@@ -84,13 +84,23 @@ export const RatioCard = ({
   // one=true 면 **원 하나에 여러 몫**을 겹쳐 그린다. 큰 것부터 깔고 작은 것을
   // 위에 얹으면 "전체 안의 부문, 그 안의 세부" 가 한 원에서 읽힌다.
   // 동심원(AreaNestCard)은 크기를 견주는 그림이고, 이건 **몫**을 나누는 그림이다
-  const one = mode === 'circle' && items.length > 1 && single;
+  // ── 2026-09-08 · 원 하나짜리 컷이 세로로 쌓여 캡션을 밟았다 ─────────────
+  // 라벨(위) → 원 → 수치(아래) → 캡션 을 세로로 쌓으면 874px 가 필요한데
+  // 쓸 수 있는 띠는 754px 뿐이다. 그래서 라벨이 화면 맨 위(y=6)에 붙고
+  // 96px 수치가 캡션 위로 올라탔다 (#195·#220·#250).
+  // 원이 하나면 **옆에 세운다** — 원 왼쪽, 이름·수치 오른쪽. 세로로 겹칠
+  // 일이 없어지고 원도 310 까지 키울 수 있다
+  const stacked = mode === 'circle' && items.length > 1 && single;
+  const one = stacked || (mode === 'circle' && items.length === 1);
   // 원 하나짜리 그림이면 원을 키운다. 예전엔 items 개수로 반지름을 정해서
   // one 모드인데도 190 으로 쪼그라들었다 — 도표가 주인공인 컷에서 그러면 안 된다
   const R = one ? 310 : (n === 1 ? 262 : (n === 2 ? 210 : 158));
   // 파이 중심. 라벨(위)·수치(아래)를 합쳐 한 덩어리로 앉힌다
+  // 원 바닥이 캡션 줄을 밟지 않게 아래로 한 번 더 막는다 (#195·#220)
+  const FLOOR = CONTENT_BOTTOM - (caption ? 74 : 12);
   const CY = one
-    ? stageTop(titleH(title, sub) + 64 + R * 2, {top: 170}) + titleH(title, sub) + 64 + R
+    ? Math.min(stageTop(titleH(title, sub) + 64 + R * 2, {top: 170}) + titleH(title, sub) + 64 + R,
+               FLOOR - R)
     : stageTop(titleH(title, sub) + 64 + 430, {top: 150}) + titleH(title, sub) + 64 + 215;
   // one 모드는 원을 왼쪽에 두고 오른쪽에 범례를 세운다. 원 아래에 라벨과
   // 수치를 다 깔면 캡션과 겹친다 (#22 가 그랬다)

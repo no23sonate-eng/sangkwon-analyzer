@@ -51,6 +51,21 @@ export const TimelineRailCard = ({
   const ROW = n === 1 ? 0 : RAIL_H / (n - 1);
   const railY = (i) => railTop + i * ROW;
 
+  // ── 2026-09-08 · 제목과 사건 이름표가 겹치던 것 ─────────────────────────
+  // 제목 자리를 stageTop(제목+레일높이+120) 으로 잡았는데, 레일이 하나뿐인
+  // 컷은 RAIL_H 가 0 이라 그 식이 제목을 화면 한가운데(382) 로 보낸다.
+  // 그런데 첫 레일 사건 이름표는 railTop 에서 LIFT 만큼 **위로** 올라간다 —
+  // #47 '1980 신내진기준' 제목 위로 '45m → 60m' 칩이 얹혔다.
+  // 맨 위 이름표 머리를 구해, 제목이 그보다 위에 오게 눌러 준다
+  const topRailLift = Math.max(
+    0, ...(rails[0]?.events || []).map((_, j) => LIFT(j)));
+  const topLabelH = (rails[0]?.events || []).some((e) => e.sub) ? 44 + 44 : 44;
+  const labelHead = railTop - topRailLift - topLabelH;
+  const titleTop = Math.max(
+    130,
+    Math.min(stageTop(headH + (title ? 64 : 0) + RAIL_H + 120, {top: 150}),
+             labelHead - headH - 72));
+
   const ticks = [];
   for (let y = axis.from; y <= axis.to; y += axis.step) ticks.push(y);
 
@@ -58,11 +73,11 @@ export const TimelineRailCard = ({
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
       <PaperBg theme={theme} {...bg} />
       <PaperTitle title={title} sub={sub} theme={theme} align={align}
-                  top={stageTop(headH + (title ? 64 : 0) + RAIL_H + 120, {top: 150})} />
+                  top={titleTop} />
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 연도 눈금 — 세로 가이드가 먼저 깔린다 */}
         {ticks.map((y, i) => (
-          <line key={`t${i}`} x1={px(y)} y1={366} x2={px(y)} y2={AXIS_Y}
+          <line key={`t${i}`} x1={px(y)} y1={Math.max(300, labelHead + 10)} x2={px(y)} y2={AXIS_Y}
                 stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.14 * fadeIn(frame, 4)} />
         ))}
         {/* 축 */}

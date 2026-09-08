@@ -23,7 +23,18 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   // 쓸 수 있는 띠는 [타이틀 아래 ~ 자막 안전영역 위] 이고, 그 한가운데에 블록을 놓는다.
   const bandTop = title ? titleBottom(title, sub) + 22 : 150;
   const hasSub = items.some((it) => it.sub);
-  const blockH = 148 + SP.GAP + 56 + (hasSub ? 44 : 0);      // 수치 + 라벨 (+ 보조줄)
+  // ── 2026-09-08 · 긴 값이 두 줄로 접히던 것 ─────────────────────────────
+  // 크기가 148/124 로 **못 박혀** 있었다. 숫자 두세 자리면 맞지만
+  // '13:30–15:00' 같은 문자열은 칸(slot)을 넘어 두 줄이 됐다 (#114).
+  // 칸에 들어갈 만큼만 줄인다 — 칸마다 다르면 견줌이 깨지므로 제일 긴 값 기준
+  const measure = (it) => (it.display == null ? 0
+    : String(it.display).length + String(it.unit ?? '').length * 0.5);
+  const longest = Math.max(0, ...items.map(measure));
+  const fitW = slot - 48;
+  const scale = longest > 4 ? Math.min(1, fitW / (longest * 148 * 0.56)) : 1;
+  const hotSize = Math.max(64, Math.round(148 * scale));
+  const coldSize = Math.max(56, Math.round(124 * scale));
+  const blockH = hotSize + SP.GAP + 56 + (hasSub ? 44 : 0);  // 수치 + 라벨 (+ 보조줄)
   // 수치가 **하나뿐이면** 제목과 수치가 한 덩어리다. 둘 사이를 띠 절반만큼
   // 벌려 놓으면 제목은 위에 떠 있고 숫자는 아래에 떨어져 두 화면처럼 읽힌다.
   // 여럿일 때는 칸을 나눠 견주는 그림이라 띠 한가운데가 맞다.
@@ -66,25 +77,26 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
             <div style={{lineHeight: 1}}>
               {it.display != null ? (
                 <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                              fontSize: it.hot ? 148 : 124, color: T.ink,
+                              fontSize: it.hot ? hotSize : coldSize, color: T.ink,
+                              whiteSpace: 'nowrap',
                               fontVariantNumeric: 'tabular-nums'}}>
                   {/* "약", "최대" 같은 한정어는 **수치보다 작게**. 같은 크기로 두면
                       한정어가 수치만큼 세게 읽혀서 값이 흐려진다 */}
                   {it.prefix ? (
-                    <span style={{fontSize: it.hot ? 58 : 50, marginRight: 10,
+                    <span style={{fontSize: Math.round((it.hot ? 58 : 50) * scale), marginRight: 10,
                                   color: T.soft,
                                   fontFamily: 'A2Z Light, sans-serif'}}>{it.prefix}</span>
                   ) : null}
                   {/* chip 을 주면 값이 색 박스에 들어간다 (§40-6).
                       도해 옆에 붙는 수치처럼 **배경에서 떼어 내야** 할 때 쓴다 */}
                   {it.chip ? (
-                    <ValueChip size={it.hot ? 118 : 96} hot={it.hot} theme={theme}>
+                    <ValueChip size={Math.round((it.hot ? 118 : 96) * scale)} hot={it.hot} theme={theme}>
                       {it.display}{it.unit}
                     </ValueChip>
                   ) : (
                     <>
                       {it.display}
-                      <span style={{fontSize: it.hot ? 66 : 56, marginLeft: 6,
+                      <span style={{fontSize: Math.round((it.hot ? 66 : 56) * scale), marginLeft: 6,
                                     color: it.hot ? T.ink : T.soft}}>{it.unit}</span>
                     </>
                   )}
@@ -92,7 +104,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
               ) : (
                 <NumberIn to={it.value ?? 0} start={14 + i * 12} dur={44}
                           decimals={it.decimals ?? 0} unit={it.unit} unitSize={0.45}
-                          size={it.hot ? 148 : 124} color={T.ink} align="center"
+                          size={it.hot ? hotSize : coldSize} color={T.ink} align="center"
                           underline={it.hot ? YELLOW : null} />
               )}
             </div>

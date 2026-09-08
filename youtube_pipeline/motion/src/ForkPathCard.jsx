@@ -25,9 +25,17 @@ export const ForkPathCard = ({
   if (bs.length < 2) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   const bandTop = title ? titleBottom(title, sub) + 26 : 190;
-  // 갈라지는 지점이 곧 이 그림의 가운데다. 띠 중간이 아니라 화면 가운데
-  const midY = Math.max(bandTop + 120, OPTICAL_CENTER);
   const SPREAD = 190;                // 갈래 간 세로 벌어짐
+  // 위 가지는 midY 에서 SPREAD 만큼 **올라간다.** 게다가 이름표가 그 위로
+  // 58px 더 붙는다. midY 를 bandTop+120 으로만 잡으면 위 가지 이름표가
+  // 제목을 뚫고 올라간다 (#186·#199 에서 실제로 겹쳤다).
+  const HEAD = SPREAD + 58 + 24;     // 위 가지 이름표 윗머리까지
+  // 아래로도 같은 만큼 자리가 필요하다 — 아래 가지 note 두 줄까지 본다
+  const FOOT = SPREAD + 58 + 46 + 32 * 2;
+  const midY = Math.max(
+    bandTop + HEAD,
+    Math.min(OPTICAL_CENTER, CONTENT_BOTTOM - FOOT),
+  );
   const X0 = 210, XF = 760, X1 = 1180;   // 줄기 시작 · 분기점 · 가지 끝
 
   const trunk = interpolate(frame, [10, 34], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});

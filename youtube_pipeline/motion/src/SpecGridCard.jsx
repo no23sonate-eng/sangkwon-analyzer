@@ -36,10 +36,13 @@ export const SpecGridCard = ({
   const ROWS = Math.ceil(n / COLS);
 
   // 항목이 적을수록 크게. 하나뿐인 컷은 그 하나가 주인공이다
-  const vBase = n === 1 ? 92 : n === 2 ? 72 : n === 3 ? 62 : 58;
+  // 라벨도 주석도 없는 판(순수 목록)은 칸 안이 값 하나뿐이라 같은 크기로
+  // 두면 빈 칸처럼 보인다 → 키우고 칸 높이를 줄인다 (#101 진료과)
+  const bare = !list.some((it) => it.label) && !list.some((it) => it.note);
+  const vBase = (n === 1 ? 92 : n === 2 ? 72 : n === 3 ? 62 : 58) * (bare ? 1.35 : 1);
   const lSize = n === 1 ? FS.LABEL : FS.SMALL;
   const nSize = n === 1 ? FS.SMALL : FS.MICRO + 2;
-  const cellH = n === 1 ? 300 : 250;
+  const cellH = bare ? 190 : (n === 1 ? 300 : 250);
 
   const GRID_W = n === 1 ? 1180 : n === 3 ? 1560 : 1440;
   const GRID_H = cellH * ROWS;
@@ -102,11 +105,14 @@ export const SpecGridCard = ({
                                  display: 'flex', flexDirection: 'column',
                                  alignItems: 'center', justifyContent: 'center',
                                  opacity: o, transform: `translateY(${dy}px)`}}>
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: lSize, color: T.soft,
-                           marginBottom: SP.NEAR, wordBreak: 'keep-all', textAlign: 'center',
-                           letterSpacing: '0.01em'}}>
-                {it.label}
-              </div>
+              {/* 라벨이 비면 빈 줄 하나가 값 위에 남는다 — 아예 안 그린다 */}
+              {it.label ? (
+                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: lSize, color: T.soft,
+                             marginBottom: SP.NEAR, wordBreak: 'keep-all', textAlign: 'center',
+                             letterSpacing: '0.01em'}}>
+                  {it.label}
+                </div>
+              ) : null}
               {v ? (
                 <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: vSize,
                              lineHeight: 1.12, letterSpacing: '-0.02em',

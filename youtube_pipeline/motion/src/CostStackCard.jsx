@@ -32,7 +32,9 @@ export const CostStackCard = ({
 
   const total = parts.reduce((a, p) => a + (p.value || 0), 0);
   const bandTop = title ? titleBottom(title, sub) + 26 : 190;
-  const baseY = CONTENT_BOTTOM - 30;
+  // 캡션이 있으면 그 자리를 먼저 빼 놓는다. 예전엔 기둥 바닥이 874, 캡션이
+  // 878 에서 시작해 4px 사이로 붙고 캡션 아랫줄은 안전선을 넘었다
+  const baseY = CONTENT_BOTTOM - (caption ? 92 : 30);
   const colTop = bandTop + 70;                 // 총액 선이 놓일 높이
   const colH = baseY - colTop;
 
@@ -137,8 +139,10 @@ export const CostStackCard = ({
       </div>
 
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+        <div style={{position: 'absolute', left: 200, width: 1520,
+                     bottom: 1080 - CONTENT_BOTTOM + 8,
+                     textAlign: 'center', lineHeight: 1.35,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 30,
                      color: T.soft, opacity: fadeIn(frame, 70), wordBreak: 'keep-all'}}>
           {caption}
         </div>

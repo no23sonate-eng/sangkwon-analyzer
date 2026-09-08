@@ -110,7 +110,7 @@ export const SilhouetteCompareCard = ({
       })}
 
       {caption ? (
-        <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 26,
+        <div style={{position: 'absolute', left: 200, width: 1520, bottom: 1080 - CONTENT_BOTTOM + 8, lineHeight: 1.35,
                      textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
                      color: T.soft, opacity: fadeIn(frame, 60), wordBreak: 'keep-all'}}>
           {caption}

@@ -35,6 +35,12 @@ const PRESET = {
   film:  {weave: 2.2, grain: 0.16, dust: 1.0, flicker: 0.035, sat: 0.28, sepia: 0.30, scan: 0},
   video: {weave: 0.6, grain: 0.10, dust: 0.2, flicker: 0.020, sat: 0.62, sepia: 0.06, scan: 0.16},
   photo: {weave: 0.8, grain: 0.09, dust: 0.3, flicker: 0.012, sat: 0.45, sepia: 0.22, scan: 0},
+  // 'print' — 19세기 인화. 1890년 알부민 프린트를 'photo' 로 돌렸더니
+  // **어제 찍은 스캔**처럼 깨끗했다. 그 시대 사진엔 색이 거의 없고,
+  // 은염이 바래 가장자리가 뿌옇고, 종이 결이 굵게 남는다.
+  // 채도를 거의 빼고 세피아를 올리고 알갱이를 굵게 간다
+  print: {weave: 0.5, grain: 0.15, dust: 0.6, flicker: 0.010, sat: 0.16, sepia: 0.44, scan: 0,
+          soft: 1.1, fade: 0.10},
 };
 
 // 켄번스 — 사진 안을 **천천히 가로지른다.** 확대만 하면 줌이고,
@@ -89,13 +95,23 @@ export const ArchiveFilm = ({
         <div style={{position: 'absolute', inset: -8,
                      transform: `translate(${wx + px}px, ${wy + py}px) scale(${s})`,
                      filter: `saturate(${P.sat}) sepia(${P.sepia}) `
-                           + `brightness(${bright}) contrast(1.06)`}}>
+                           + `brightness(${bright}) contrast(${1.06 - (P.fade || 0)})`
+                           + (P.soft ? ` blur(${P.soft}px)` : '')}}>
           {media}
         </div>
 
         {/* ⑤ 비네팅 + 가장자리 흐림 — 필름 게이트 */}
         <div style={{position: 'absolute', inset: 0, pointerEvents: 'none',
-                     boxShadow: 'inset 0 0 120px 34px rgba(0,0,0,0.66)'}} />
+                     boxShadow: P.soft
+                       ? 'inset 0 0 190px 62px rgba(0,0,0,0.72)'
+                       : 'inset 0 0 120px 34px rgba(0,0,0,0.66)'}} />
+        {/* 인화지의 바랜 기운 — 가운데는 옅고 가장자리로 갈수록 누렇다 */}
+        {P.fade ? (
+          <div style={{position: 'absolute', inset: 0, pointerEvents: 'none',
+                       background: 'radial-gradient(ellipse at 50% 46%,'
+                                 + ' rgba(214,196,160,0) 34%, rgba(214,196,160,0.30) 100%)',
+                       mixBlendMode: 'multiply'}} />
+        ) : null}
 
         {/* ② 그레인 — 프레임마다 위치가 바뀐다 */}
         <svg width="100%" height="100%" style={{position: 'absolute', inset: 0,

@@ -41,8 +41,12 @@ export const BarChartCard = ({
   const BASELINE = Math.min(700, CONTENT_BOTTOM - (caption || closingLine ? 96 : 40) - FOOT);
   const MAX_BAR_H = Math.max(160, BASELINE - bandTop - 20);
 
-  const side = Math.min(240, Math.round(1180 / n));
-  const gap = Math.min(110, Math.round(side * 0.5));
+  // 폭 상한이 240 으로 하나뿐이었다. 막대가 둘인 컷은 240+110+240 = 590,
+  // 1920 화면의 3할만 쓰고 나머지가 텅 빈다 (#139 심주 제진). 두셋일 때는
+  // 막대가 곧 그림이므로 넓게 쓴다
+  const side = n <= 3 ? Math.min(n === 3 ? 300 : 360, Math.round(1280 / n), Math.round(MAX_BAR_H * 0.8))
+                      : Math.min(240, Math.round(1180 / n));
+  const gap = Math.min(n <= 3 ? 180 : 110, Math.round(side * 0.55));
   const totalW = side * n + gap * (n - 1);
   const startX = (1920 - totalW) / 2;
 
@@ -114,12 +118,22 @@ export const BarChartCard = ({
             <div style={{fontFamily: 'A2Z Light, sans-serif',
                          fontSize: n > 5 ? 25 : 30, color: T.soft,
                          wordBreak: 'keep-all'}}>{b.label}</div>
-            <div style={{marginTop: SP.TIGHT,
-                         fontFamily: 'A2Z Medium, sans-serif',
-                         fontSize: (on ? 54 : 44) * (n > 5 ? 0.8 : 1), color: T.ink,
-                         fontVariantNumeric: 'tabular-nums'}}>
-              {b.displayValue ?? b.value}
-            </div>
+            {/* 값은 한 줄이다. 예전엔 줄바꿈을 허용해 '3억 7천만 / 엔' 처럼
+                단위 한 글자가 다음 줄로 떨어졌다 (#180). 칸을 넘치면 줄인다 */}
+            {(() => {
+              const txt = String(b.displayValue ?? b.value ?? '');
+              const base = (on ? 54 : 44) * (n > 5 ? 0.8 : 1);
+              const room = side + gap - 24;
+              const size = Math.max(24, Math.min(base, Math.floor(room / Math.max(2, txt.length) * 1.5)));
+              return (
+                <div style={{marginTop: SP.TIGHT,
+                             fontFamily: 'A2Z Medium, sans-serif',
+                             fontSize: size, color: T.ink, whiteSpace: 'nowrap',
+                             fontVariantNumeric: 'tabular-nums'}}>
+                  {txt}
+                </div>
+              );
+            })()}
             {b.subValue ? (
               <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif',
                            fontSize: 24, color: T.soft}}>{b.subValue}</div>

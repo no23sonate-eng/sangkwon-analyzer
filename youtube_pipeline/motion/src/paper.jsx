@@ -529,8 +529,12 @@ export const PaperCaption = ({children, theme, dark = false, opacity = 1, top = 
   const T = themeOf(theme, dark);
   if (!children) return null;
   return (
+    // top 을 CONTENT_BOTTOM-26 으로 두면 28px 글자의 **아랫줄이** 안전선을
+    // 13px 넘어간다 (자막이 올라오는 자리다). 위가 아니라 **아래를** 안전선에
+    // 맞춰 건다 — 두 줄이 되면 위로 자란다
     <div style={{position: 'absolute', left: 200, width: 1520,
-                 top: top == null ? CONTENT_BOTTOM - 26 : top, textAlign: 'center',
+                 ...(top == null ? {bottom: 1080 - CONTENT_BOTTOM + 8} : {top}),
+                 textAlign: 'center', lineHeight: 1.35,
                  fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
                  opacity, wordBreak: 'keep-all'}}>
       {children}
