@@ -30,3 +30,11 @@
 | `bookshelf_cozy.jpg` | https://www.pexels.com/photo/34033755/ | **Pexels License** | `Pexels` |
 | `japan_street_elder.mp4` | https://www.pexels.com/video/14027207/ | **Pexels License** | `Pexels` |
 | `japan_street_crowd.mp4` | https://www.pexels.com/video/17431597/ | **Pexels License** | `Pexels` |
+| `buttons_closeup.jpg` | https://www.pexels.com/photo/19737261/ | Beate Vogl, **Pexels License** | `Pexels` |
+| `sewing_threads.jpg` | https://www.pexels.com/photo/15391103/ | Jonathan Borba, **Pexels License** | `Pexels` |
+| `ironing_closeup.jpg` | https://www.pexels.com/photo/9462648/ | **Pexels License** | `Pexels` |
+| `access_panel.jpg` | https://www.pexels.com/photo/37538043/ | **Pexels License** | `Pexels` |
+| `weekly_planner.jpg` | https://www.pexels.com/photo/5706225/ | **Pexels License** | `Pexels` |
+| `calculator_hand.jpg` | https://www.pexels.com/photo/5921494/ | **Pexels License** | `Pexels` |
+| `stamping_document.jpg` | https://www.pexels.com/photo/9655620/ | **Pexels License** | `Pexels` |
+| `concrete_column.jpg` | https://www.pexels.com/photo/11722365/ | **Pexels License** | `Pexels` |

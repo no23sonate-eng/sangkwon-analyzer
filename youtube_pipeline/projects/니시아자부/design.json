@@ -1416,7 +1416,12 @@
       "hot": true
      }
     ],
-    "source": "제국호텔 세탁 서비스"
+    "source": "제국호텔 공식 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/buttons_closeup.jpg",
+     "veil": 0.95,
+     "blur": 3
+    }
    }
   ],
   "74": [
@@ -1427,7 +1432,12 @@
     "fromLabel": "보통",
     "to": "미리 떼고, 끝나면 다시 단다",
     "toLabel": "제국호텔",
-    "source": "제국호텔 세탁 서비스"
+    "source": "제국호텔 공식 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/sewing_threads.jpg",
+     "veil": 0.94,
+     "blur": 2
+    }
    }
   ],
   "75": [
@@ -1442,7 +1452,12 @@
       "hot": true
      }
     ],
-    "source": "제국호텔 세탁 서비스"
+    "source": "제국호텔 공식 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/ironing_closeup.jpg",
+     "veil": 0.88,
+     "blur": 2
+    }
    }
   ],
   "76": [
@@ -1629,7 +1644,12 @@
     "fromLabel": "",
     "to": "얼굴",
     "toLabel": "",
-    "source": "파크웰스테이트 니시아자부 공식"
+    "source": "파크웰스테이트 니시아자부 공식 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/access_panel.jpg",
+     "veil": 0.9,
+     "blur": 2
+    }
    }
   ],
   "92": [
@@ -2188,7 +2208,12 @@
      }
     ],
     "caption": "어떤 서비스를 주에 몇 번 쓸지 정한다",
-    "source": "TOKIORI"
+    "source": "TOKIORI · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/weekly_planner.jpg",
+     "veil": 0.93,
+     "blur": 2
+    }
    }
   ],
   "130": [
@@ -2348,7 +2373,11 @@
     "to": "심주는 따로 흔들린다",
     "toLabel": "스카이트리",
     "theme": "ink",
-    "source": "도쿄 스카이트리 공식"
+    "source": "도쿄 스카이트리 공식 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/concrete_column.jpg",
+     "veil": 0.8
+    }
    }
   ],
   "139": [
@@ -3474,7 +3503,12 @@
    {
     "line1": "실제로 살면",
     "line2": "얼마가 드나",
-    "theme": "ink"
+    "theme": "ink",
+    "bg": {
+     "backdrop": "니시아자부/calculator_hand.jpg",
+     "veil": 0.92,
+     "blur": 2
+    }
    }
   ],
   "211": [
@@ -4017,11 +4051,32 @@
     "to": "등록제",
     "toLabel": "바뀌는 중",
     "theme": "ink",
-    "source": "후생노동성 とりまとめ",
-    "note": "일본 시장 전체 얘기"
+    "source": "후생노동성 とりまとめ · 배경 Pexels",
+    "note": "일본 시장 전체 얘기",
+    "bg": {
+     "backdrop": "니시아자부/stamping_document.jpg",
+     "veil": 0.91,
+     "blur": 2
+    }
    }
   ],
   "242": [
+   "BigStatsCard",
+   "설 — 통로가 몇 개인지부터 못 박는다",
+   {
+    "title": "실버타운 수익 통로",
+    "items": [
+     {
+      "display": "2",
+      "unit": "개",
+      "hot": true
+     }
+    ],
+    "theme": "ink",
+    "source": "후생노동성 とりまとめ"
+   }
+  ],
+  "243": [
    "SpecGridCard",
    "설 — 돈이 들어오는 길이 둘이다",
    {
@@ -4045,7 +4100,7 @@
     }
    }
   ],
-  "243": [
+  "244": [
    "CostStackCard",
    "설 — 돌봄비는 대부분 보험이 낸다. 그 구조가 유인을 만든다",
    {
@@ -4071,7 +4126,7 @@
     "source": "후생노동성 とりまとめ"
    }
   ],
-  "244": [
+  "245": [
    "StrikeSwapCard",
    "설 — 사람을 모으는 미끼와 실제로 버는 곳이 다르다",
    {
@@ -4081,10 +4136,11 @@
     "toLabel": "번다",
     "theme": "ink",
     "source": "후생노동성 とりまとめ",
-    "note": "일본 시장 전체에서 나타난 구조"
+    "note": "일본 시장 전체에서 나타난 구조",
+    "arrowOnly": true
    }
   ],
-  "245": [
+  "246": [
    "BarChartCard",
    "설 — 한도액을 끝까지 쓰는 쪽으로 기운다",
    {
@@ -4106,15 +4162,6 @@
     "caption": "개념 도해 — 실제 사용률 통계가 아니다",
     "theme": "ink",
     "source": "후생노동성 とりまとめ"
-   }
-  ],
-  "246": [
-   "HeadlineCard",
-   "후 — 그래서 등록제로 간다",
-   {
-    "line1": "그래서",
-    "line2": "규제가 들어온다",
-    "theme": "ink"
    }
   ],
   "247": [
@@ -4149,7 +4196,7 @@
      {
       "label": "'고급' 분류",
       "value": 1494,
-      "display": "1,494곳 · 2.5%",
+      "display": "1,494곳",
       "hot": true
      },
      {
