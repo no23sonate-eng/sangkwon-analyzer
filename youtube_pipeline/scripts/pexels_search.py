@@ -37,8 +37,15 @@ def api(path, **q):
     curl 쪽에만 키를 끼워 주는 것으로 보인다. 이유를 캐는 것보다 되는 쪽을
     쓰는 게 낫다.
 
-    사진(`/v1/`)만 열려 있고 **영상(`/videos/`)은 401** 이다. 영상 ID 는
-    웹검색으로 `pexels.com/video/...-{id}` 주소를 찾아 손으로 넘긴다.
+    ── 2026-09-08 · 이제 **검색 API 는 사진도 401** 이다 ──────────────────
+    예전엔 프록시가 curl 에 키를 끼워 줘서 `/v1/` 은 열렸는데, 컨테이너가
+    새로 뜨면서 그것도 막혔다. `PEXELS_KEY` 환경변수도 비어 있다.
+
+    **그래도 소재는 쓸 수 있다.** 막힌 건 검색뿐이고 받는 건 열려 있다:
+      ① 웹검색으로 `pexels.com/video/...-{id}/` 주소를 찾는다 (제목에 ID 가 붙어 있다)
+      ② `--get video {id} {파일명}` 으로 받는다 — 키 없이 200 이 떨어진다 (실측)
+    검색 API 가 죽었다고 소재를 못 쓰는 게 아니다. 한 번 그렇게 판단해서
+    스톡이 필요한 컷을 그래프로 돌려 놓은 적이 있다.
     """
     url = f'{API}{path}?' + urllib.parse.urlencode(q)
     out = subprocess.run(['curl', '-s', '--max-time', '40', url,
@@ -118,6 +125,25 @@ def main():
             n = dl(p['src']['large2x'], pdir / name)
             who = p['photographer']
             src = p['url']
+        # ── 되받을 방법을 **받는 그 자리에서** 적는다 ─────────────────────
+        # mp4 는 저장소에 안 들어간다. 컨테이너가 되돌아가면 사라지는데,
+        # 여기 줄이 없으면 무엇을 받았는지조차 남지 않는다. 더그랜드롯데에서
+        # 실제로 클립 세 개를 그렇게 잃었다 — CREDITS.md 는 사람이 읽는
+        # 문서라 fetch_videos.py 가 못 읽는다. TSV 가 있어야 되살아난다
+        if kind == 'video':
+            tsv = pdir / 'VIDEOS.tsv'
+            if not tsv.exists():
+                tsv.write_text('# 영상 소재는 저장소에 안 들어간다 '
+                               '(.gitignore: motion/public/*/*.mp4).\n'
+                               '# 대신 **받아오는 방법**을 여기 적어 둔다 — '
+                               'scripts/fetch_videos.py 가 읽는다.\n'
+                               '# 파일명\t출처\tID\t자를 길이(초)\n', encoding='utf-8')
+            have = {l.split('\t')[0] for l in tsv.read_text(encoding='utf-8').splitlines()
+                    if l and not l.startswith('#')}
+            if name not in have:
+                with open(tsv, 'a', encoding='utf-8') as fh:
+                    fh.write(f'{name}\tpexels\t{pid}\t10\n')
+
         cred = pdir / 'CREDITS.md'
         if not cred.exists():
             cred.write_text(f'# {a.project} — 자료 출처\n\n| 파일 | 원본 | 출처 / 라이선스 | 화면 표기 |\n|---|---|---|---|\n')
