@@ -23,6 +23,7 @@ import {GeoMapCard} from './GeoMapCard';
 import {SeatDotsCard} from './SeatDotsCard';
 import {UnitBlocksCard} from './UnitBlocksCard';
 import {TrendCard} from './TrendCard';
+import {CrossCurveCard} from './CrossCurveCard';
 import {TimelineBarsCard} from './TimelineBarsCard';
 import {SphereHeroCard} from './SphereHeroCard';
 import {YQuoteCard} from './YQuoteCard';
@@ -150,6 +151,7 @@ export const CARDS = {
   SeatDotsCard,
   UnitBlocksCard,
   TrendCard,
+  CrossCurveCard,
   TimelineBarsCard,
   SphereHeroCard,
   YQuoteCard,

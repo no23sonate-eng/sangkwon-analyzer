@@ -49,8 +49,11 @@ export const DotMatrixCard = ({
   // 기준으로 자리를 맞춰 놓고 737개를 그렸다 — 아래 두 줄이 자막 영역까지
   // 흘러내렸는데 렌더는 그대로 성공했다 (#3)
   const fitDots = merge ? dotsAll : maxDots;
+  // **위에서부터 내려온다.** 예전엔 30 에서 시작해서, 점이 몇 개 안 되는
+  // 판(‘다섯 중 하나’ 같은)도 지름 20px 짜리 좁쌀로 그려졌다. 셀 게 적을수록
+  // 점은 커야 한다 — 적은 수를 세는 판에서 점이 작으면 셀 것이 없어 보인다
   let PITCH = 30, nCol = 4;
-  for (let pitch = 30; pitch >= 7; pitch -= 1) {
+  for (let pitch = 108; pitch >= 7; pitch -= 1) {
     const c = Math.max(4, Math.min(cols, Math.floor((slot - 24) / pitch)));
     if (Math.ceil(fitDots / c) * pitch <= AVAIL_H) { PITCH = pitch; nCol = c; break; }
     PITCH = pitch; nCol = c;                          // 끝까지 못 맞으면 최소 간격
