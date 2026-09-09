@@ -48,3 +48,8 @@ projects/*/clips/
 # fetch_videos.py 가 받는 중에 쓰는 임시 파일. 다 받으면 지우지만, 중간에
 # 끊기면(컨테이너 재시작 등) 남는다 — 저장소에 들어갈 물건이 아니다
 motion/public/*/_dl.bin
+
+# 생성형으로 만든 도해. 크레딧을 쓴 물건이고 같은 결과가 다시 나온다는
+# 보장이 없다 — 스톡 클립처럼 다시 받을 수 없으므로 저장소에 남긴다.
+# mp4 차단(motion/public/*/*.mp4)보다 **아래**에 있어야 먹는다
+!motion/public/*/floor_move_section.mp4

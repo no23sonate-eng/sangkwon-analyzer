@@ -51,3 +51,24 @@
 | `keieikai_clinic_ext.jpg` | https://nishiazabu-medicalclinic.jp/ | 니시아자부 메디컬 클리닉(의료법인사단 게이에이카이) 공식 | `니시아자부 메디컬 클리닉 공식` |
 | `keieikai_reception.jpg` | https://nishiazabu-medicalclinic.jp/ | 니시아자부 메디컬 클리닉(의료법인사단 게이에이카이) 공식 | `니시아자부 메디컬 클리닉 공식` |
 | `imperial_old.jpg` | https://commons.wikimedia.org/wiki/File:Imperial_Hotel_Tky.jpg | Wikimedia Commons, **Public domain** | `초대 제국호텔 · Wikimedia PD` |
+| `hl_balconies.jpg` | https://www.pexels.com/photo/27164633/ | **Pexels License** | `Pexels` |
+| `hl_clinic_corridor.jpg` | https://www.pexels.com/photo/33812023/ | **Pexels License** | `Pexels` |
+| `hl_complex.jpg` | https://www.pexels.com/photo/10901928/ | **Pexels License** | `Pexels` |
+| `hl_corridor_bw.jpg` | https://www.pexels.com/photo/5203594/ | **Pexels License** | `Pexels` |
+| `hl_elder_rings.jpg` | https://www.pexels.com/photo/12982208/ | **Pexels License** | `Pexels` |
+| `hl_facade_dusk.jpg` | https://www.pexels.com/photo/37703566/ | **Pexels License** | `Pexels` |
+| `hl_hall_sym.jpg` | https://www.pexels.com/photo/11288795/ | **Pexels License** | `Pexels` |
+| `hl_hands_hold.jpg` | https://www.pexels.com/photo/33525563/ | **Pexels License** | `Pexels` |
+| `hl_lowangle.jpg` | https://www.pexels.com/photo/5993772/ | **Pexels License** | `Pexels` |
+| `hl_night_wall.jpg` | https://www.pexels.com/photo/19841001/ | **Pexels License** | `Pexels` |
+| `hl_oximeter.jpg` | https://www.pexels.com/photo/8376202/ | **Pexels License** | `Pexels` |
+| `hl_quiet_street.jpg` | https://www.pexels.com/photo/33333228/ | **Pexels License** | `Pexels` |
+| `hl_resi_street.jpg` | https://www.pexels.com/photo/39047741/ | **Pexels License** | `Pexels` |
+| `hl_room_number.jpg` | https://www.pexels.com/photo/6234625/ | **Pexels License** | `Pexels` |
+| `hl_shibuya_aerial.jpg` | https://www.pexels.com/photo/35072449/ | **Pexels License** | `Pexels` |
+| `hl_tokyo_apt.jpg` | https://www.pexels.com/photo/38051271/ | **Pexels License** | `Pexels` |
+| `hl_tokyo_apt_night.jpg` | https://www.pexels.com/photo/35995443/ | **Pexels License** | `Pexels` |
+| `hl_tokyo_arch.jpg` | https://www.pexels.com/photo/31323398/ | **Pexels License** | `Pexels` |
+| `hl_wrinkled_hand.jpg` | https://www.pexels.com/photo/36730753/ | **Pexels License** | `Pexels` |
+| `hl_yen_coins.jpg` | https://www.pexels.com/photo/29916084/ | **Pexels License** | `Pexels` |
+| `floor_move_section.mp4` | 생성형 (Higgsfield · seedance_2_5) | 추상 단면 도해 — 실존 건물 도면이 아님 | `도해 — 생성형(Higgsfield)으로 만든 추상 단면` |

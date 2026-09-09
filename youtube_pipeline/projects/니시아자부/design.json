@@ -814,12 +814,13 @@
    }
   ],
   "35": [
-   "HeadlineCard",
-   "후 — 장의 논점을 세우는 한 줄",
+   "StageCard",
+   "장 — 장의 논점을 세우는 한 줄 · 글자는 자막이 말한다",
    {
-    "line1": "운영하는 회사가",
-    "line2": "건물 주인이 아니다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_tokyo_arch.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "36": [
@@ -870,12 +871,13 @@
    }
   ],
   "39": [
-   "HeadlineCard",
-   "후 — 이 장의 결론",
+   "StageCard",
+   "장 — 이 장의 결론 · 글자는 자막이 말한다",
    {
-    "line1": "개발과 운영을",
-    "line2": "나눴다",
-    "theme": "ink"
+    "media": "니시아자부/hl_balconies.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "40": [
@@ -1055,16 +1057,12 @@
    }
   ],
   "50": [
-   "HeadlineCard",
-   "후 — 여기서 질문을 던진다",
+   "StageCard",
+   "장 — 여기서 질문을 던진다 · 글자는 자막이 말한다",
    {
-    "line1": "시니어 레지던스가",
-    "line2": "고층이어도 되나",
-    "theme": "blueprint",
-    "bg": {
-     "backdrop": "니시아자부/tower_lowangle.jpg",
-     "veil": 0.84
-    },
+    "media": "니시아자부/tower_lowangle.jpg",
+    "lines": [],
+    "scrim": 0.34,
     "source": "배경 Pexels"
    }
   ],
@@ -1189,14 +1187,13 @@
    }
   ],
   "56": [
-   "StrikeSwapCard",
-   "설 — 나가는 게 아니라 층을 옮긴다",
+   "StageCard",
+   "장 — 이 문장이 곧 움직임이다. 층을 타고 내려가는 단면 (생성 도해)",
    {
-    "from": "다른 건물 · 병원으로 이동",
-    "fromLabel": "보통",
-    "to": "같은 건물의 다른 층",
-    "toLabel": "니시아자부",
-    "source": "파크웰스테이트 니시아자부 공식"
+    "media": "니시아자부/floor_move_section.mp4",
+    "lines": [],
+    "scrim": 0.0,
+    "source": "도해 — 생성형(Higgsfield) · 실제 도면 아님"
    }
   ],
   "57": [
@@ -1245,12 +1242,13 @@
    }
   ],
   "61": [
-   "HeadlineCard",
-   "후 — 사업성과 편의가 같이 있었다는 결론의 앞머리",
+   "StageCard",
+   "장 — 사업성과 편의가 같이 있었다는 결론의 앞머리 · 글자는 자막이 말한다",
    {
-    "line1": "높이는",
-    "line2": "사업성에서 나왔지만",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_lowangle.jpg",
+    "lines": [],
+    "scrim": 0.26,
+    "source": "Pexels"
    }
   ],
   "62": [
@@ -1419,16 +1417,12 @@
    }
   ],
   "72": [
-   "HeadlineCard",
-   "후 — 화제를 세탁으로 돌린다",
+   "StageCard",
+   "장 — 화제를 세탁으로 돌린다 · 글자는 자막이 말한다",
    {
-    "line1": "세탁",
-    "line2": "",
-    "theme": "ink",
-    "bg": {
-     "backdrop": "니시아자부/shirt_hanger.jpg",
-     "veil": 0.93
-    },
+    "media": "니시아자부/shirt_hanger.jpg",
+    "lines": [],
+    "scrim": 0.3,
     "source": "배경 Pexels"
    }
   ],
@@ -1722,12 +1716,13 @@
    }
   ],
   "95": [
-   "HeadlineCard",
-   "후 — 다음 장으로 넘기는 질문",
+   "StageCard",
+   "장 — 다음 장으로 넘기는 질문 · 글자는 자막이 말한다",
    {
-    "line1": "식사는 호텔이 한다",
-    "line2": "그럼 아프면?",
-    "theme": "ink"
+    "media": "니시아자부/hl_corridor_bw.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "96": [
@@ -1955,12 +1950,13 @@
    }
   ],
   "109": [
-   "HeadlineCard",
-   "후 — 다음 컷이 공식 주석이라는 걸 알린다",
+   "StageCard",
+   "장 — 다음 컷이 공식 주석이라는 걸 알린다 · 글자는 자막이 말한다",
    {
-    "line1": "공식 자료에",
-    "line2": "적혀 있다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_room_number.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "110": [
@@ -2067,12 +2063,13 @@
    }
   ],
   "116": [
-   "HeadlineCard",
-   "후 — 다음 장으로 넘기는 질문",
+   "StageCard",
+   "장 — 다음 장으로 넘기는 질문 · 글자는 자막이 말한다",
    {
-    "line1": "병원 갈 정도는 아닌데",
-    "line2": "도움이 필요하면",
-    "theme": "ink"
+    "media": "니시아자부/hl_oximeter.jpg",
+    "lines": [],
+    "scrim": 0.28,
+    "source": "Pexels"
    }
   ],
   "117": [
@@ -2115,12 +2112,13 @@
    }
   ],
   "120": [
-   "HeadlineCard",
-   "후 — 앞 장과 갈리는 지점을 세운다",
+   "StageCard",
+   "장 — 앞 장과 갈리는 지점을 세운다 · 글자는 자막이 말한다",
    {
-    "line1": "클리닉과",
-    "line2": "결정적으로 다른 것",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_clinic_corridor.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "121": [
@@ -2322,16 +2320,12 @@
    }
   ],
   "133": [
-   "HeadlineCard",
-   "후 — 다음 장으로 넘기는 질문",
+   "StageCard",
+   "장 — 다음 장으로 넘기는 질문 · 글자는 자막이 말한다",
    {
-    "line1": "그럼 이 건물은",
-    "line2": "어떻게 지었을까",
-    "theme": "ink",
-    "bg": {
-     "backdrop": "니시아자부/location_panoImg_morning01.jpg",
-     "veil": 0.93
-    },
+    "media": "니시아자부/location_panoImg_morning01.jpg",
+    "lines": [],
+    "scrim": 0.2,
     "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
@@ -2607,16 +2601,12 @@
    }
   ],
   "149": [
-   "HeadlineCard",
-   "후 — 담당자의 말을 꺼내는 자리",
+   "StageCard",
+   "장 — 담당자의 말을 꺼내는 자리 · 글자는 자막이 말한다",
    {
-    "line1": "책을 유통하던 회사가",
-    "line2": "왜 공간을 만들었나",
-    "theme": "ink",
-    "bg": {
-     "backdrop": "니시아자부/warehouse_aisle_bw.jpg",
-     "veil": 0.84
-    },
+    "media": "니시아자부/warehouse_aisle_bw.jpg",
+    "lines": [],
+    "scrim": 0.34,
     "source": "배경 Pexels"
    }
   ],
@@ -2697,12 +2687,13 @@
    }
   ],
   "156": [
-   "HeadlineCard",
-   "후 — 다음 장으로",
+   "StageCard",
+   "장 — 다음 장으로 · 글자는 자막이 말한다",
    {
-    "line1": "그럼 누가",
-    "line2": "들어갈 수 있나",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_resi_street.jpg",
+    "lines": [],
+    "scrim": 0.26,
+    "source": "Pexels"
    }
   ],
   "157": [
@@ -2848,12 +2839,13 @@
    }
   ],
   "166": [
-   "HeadlineCard",
-   "후 — 문턱이 낮지 않다는 정리",
+   "StageCard",
+   "장 — 문턱이 낮지 않다는 정리 · 글자는 자막이 말한다",
    {
-    "line1": "입주가",
-    "line2": "쉬워 보이진 않는다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_quiet_street.jpg",
+    "lines": [],
+    "scrim": 0.28,
+    "source": "Pexels"
    }
   ],
   "167": [
@@ -2975,12 +2967,13 @@
    }
   ],
   "173": [
-   "HeadlineCard",
-   "후 — 돈 얘기로 넘어간다",
+   "StageCard",
+   "장 — 돈 얘기로 넘어간다 · 글자는 자막이 말한다",
    {
-    "line1": "그래서",
-    "line2": "얼마야?",
-    "theme": "ink"
+    "media": "니시아자부/hl_yen_coins.jpg",
+    "lines": [],
+    "scrim": 0.24,
+    "source": "Pexels"
    }
   ],
   "174": [
@@ -3103,12 +3096,13 @@
    }
   ],
   "181": [
-   "HeadlineCard",
-   "후 — 방향을 못 박는다",
+   "StageCard",
+   "장 — 방향을 못 박는다 · 글자는 자막이 말한다",
    {
-    "line1": "나이가 어릴수록",
-    "line2": "비싸다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_wrinkled_hand.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "182": [
@@ -3151,12 +3145,13 @@
    }
   ],
   "185": [
-   "HeadlineCard",
-   "후 — 시청자가 할 법한 질문을 대신 던진다",
+   "StageCard",
+   "장 — 시청자가 할 법한 질문을 대신 던진다 · 글자는 자막이 말한다",
    {
-    "line1": "늦게 들어가는 게",
-    "line2": "이득 아닌가",
-    "theme": "ink"
+    "media": "니시아자부/hl_elder_rings.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "186": [
@@ -3503,12 +3498,13 @@
    }
   ],
   "206": [
-   "HeadlineCard",
-   "후 — 뜯어보면 다른 게 나온다는 예고",
+   "StageCard",
+   "장 — 뜯어보면 다른 게 나온다는 예고 · 글자는 자막이 말한다",
    {
-    "line1": "52만 엔을",
-    "line2": "뜯어보면",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_hall_sym.jpg",
+    "lines": [],
+    "scrim": 0.32,
+    "source": "Pexels"
    }
   ],
   "207": [
@@ -3565,17 +3561,12 @@
    }
   ],
   "210": [
-   "HeadlineCard",
-   "후 — 계산으로 넘어간다",
+   "StageCard",
+   "장 — 계산으로 넘어간다 · 글자는 자막이 말한다",
    {
-    "line1": "실제로 살면",
-    "line2": "얼마가 드나",
-    "theme": "ink",
-    "bg": {
-     "backdrop": "니시아자부/calculator_hand.jpg",
-     "veil": 0.92,
-     "blur": 2
-    },
+    "media": "니시아자부/calculator_hand.jpg",
+    "lines": [],
+    "scrim": 0.32,
     "source": "배경 Pexels"
    }
   ],
@@ -3706,16 +3697,12 @@
    }
   ],
   "217": [
-   "HeadlineCard",
-   "후 — 다음 장으로",
+   "StageCard",
+   "장 — 다음 장으로 · 글자는 자막이 말한다",
    {
-    "line1": "그럼 지금",
-    "line2": "운영은 잘 되고 있을까",
-    "theme": "ink",
-    "bg": {
-     "backdrop": "니시아자부/location_panoImg_mid01.jpg",
-     "veil": 0.93
-    },
+    "media": "니시아자부/location_panoImg_mid01.jpg",
+    "lines": [],
+    "scrim": 0.24,
     "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
@@ -3940,12 +3927,13 @@
    }
   ],
   "230": [
-   "HeadlineCard",
-   "후 — 사업성 질문",
+   "StageCard",
+   "장 — 사업성 질문 · 글자는 자막이 말한다",
    {
-    "line1": "그래서 이게",
-    "line2": "돈이 되는 사업일까",
-    "theme": "ink"
+    "media": "니시아자부/hl_hands_hold.jpg",
+    "lines": [],
+    "scrim": 0.28,
+    "source": "Pexels"
    }
   ],
   "231": [
@@ -4086,12 +4074,13 @@
    }
   ],
   "239": [
-   "HeadlineCard",
-   "후 — 사실은 사실대로",
+   "StageCard",
+   "장 — 사실은 사실대로 · 글자는 자막이 말한다",
    {
-    "line1": "아직 입주율이 낮은 건",
-    "line2": "사실이다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_tokyo_apt_night.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "240": [
@@ -4248,12 +4237,13 @@
    }
   ],
   "248": [
-   "HeadlineCard",
-   "후 — 앞 장들을 뒤집는 단서",
+   "StageCard",
+   "장 — 앞 장들을 뒤집는 단서 · 글자는 자막이 말한다",
    {
-    "line1": "일본에서도",
-    "line2": "흔한 시설이 아니다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_night_wall.jpg",
+    "lines": [],
+    "scrim": 0.3,
+    "source": "Pexels"
    }
   ],
   "249": [
@@ -4301,12 +4291,13 @@
    }
   ],
   "251": [
-   "HeadlineCard",
-   "후 — 이 영상이 다룬 게 무엇인지 다시 잡아 준다",
+   "StageCard",
+   "장 — 이 영상이 다룬 게 무엇인지 다시 잡아 준다 · 글자는 자막이 말한다",
    {
-    "line1": "상위 2.5% 안에서",
-    "line2": "벌어지는 일",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_shibuya_aerial.jpg",
+    "lines": [],
+    "scrim": 0.28,
+    "source": "Pexels"
    }
   ],
   "252": [
@@ -4383,12 +4374,13 @@
    }
   ],
   "256": [
-   "HeadlineCard",
-   "후 — 정리로 넘어간다",
+   "StageCard",
+   "장 — 정리로 넘어간다 · 글자는 자막이 말한다",
    {
-    "line1": "니시아자부를",
-    "line2": "다시 정리하면",
-    "theme": "ink"
+    "media": "니시아자부/hl_facade_dusk.jpg",
+    "lines": [],
+    "scrim": 0.28,
+    "source": "Pexels"
    }
   ],
   "257": [
@@ -4475,12 +4467,13 @@
    }
   ],
   "261": [
-   "HeadlineCard",
-   "후 — 일반화를 경계하는 한 줄",
+   "StageCard",
+   "장 — 일반화를 경계하는 한 줄 · 글자는 자막이 말한다",
    {
-    "line1": "비슷해 보여도",
-    "line2": "사업지마다 다르다",
-    "theme": "blueprint"
+    "media": "니시아자부/hl_complex.jpg",
+    "lines": [],
+    "scrim": 0.28,
+    "source": "Pexels"
    }
   ],
   "262": [
@@ -4518,12 +4511,13 @@
    }
   ],
   "264": [
-   "HeadlineCard",
-   "후 — 세 가지를 꺼내는 자리",
+   "StageCard",
+   "장 — 세 가지를 꺼내는 자리 · 글자는 자막이 말한다",
    {
-    "line1": "그런데 아파트가",
-    "line2": "못 하는 게 셋 있다",
-    "theme": "ink"
+    "media": "니시아자부/hl_tokyo_apt.jpg",
+    "lines": [],
+    "scrim": 0.26,
+    "source": "Pexels"
    }
   ],
   "265": [
