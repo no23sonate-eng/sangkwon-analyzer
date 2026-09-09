@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, SP} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -24,12 +24,94 @@ export const DotMatrixCard = ({
   // over 로 판 위에 얹었더니 글자가 점을 가려 정작 센 것이 안 보였다 (#3).
   // 판과 범례가 자리를 나눠 가지면 둘 다 온전히 보인다
   legend = '',
+  // shape='person' — 점 대신 사람 모양. 'auto' 면 셀 것이 열 개 이하일 때만
+  shape = 'auto',
 }) => {
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const n = groups.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
+
+  // ── 세는 수가 몇 개뿐일 때: 점이 아니라 사람으로 ────────────────────────
+  // 이 카드의 문법은 **깔린 판** 이다 — 수백 개 중 얼마가 켜졌나. 그런데
+  // '다섯 중 하나' 를 같은 문법으로 그리면 지름 70px 짜리 동그라미 다섯 개가
+  // 화면 왼쪽에 옹기종기 모이고 오른쪽에 글자가 따로 서서, 판도 아니고
+  // 그림도 아닌 것이 된다 (#1). 셀 것이 열 몇 개 안쪽이면 **사람 모양**으로
+  // 크게 그린다 — 어차피 이 컷이 세는 건 사람이다.
+  // 세로 배치도 뒤집는다: 수치가 위, 사람이 아래, 바닥선 하나에 나란히.
+  const dotCount = groups.reduce((a, g) => a + Math.max(1, Math.round(g.value / perDot)), 0);
+  const asPeople = shape === 'person' || (shape === 'auto' && dotCount <= 10);
+  if (asPeople) {
+    const BASE = CONTENT_BOTTOM - 44;
+    const headH = titleH(title, sub);
+    const heads = groups.filter((g) => g.display);
+    const headBlock = heads.length ? 58 + 132 + SP.GAP : 0;
+    const top = (title ? headH + 56 : 0) + (title ? 150 : 210);
+    // 사람 키는 남은 높이와 가로 폭 양쪽에 맞춘다 (몸 폭 0.455H · 사이 0.30H)
+    const WU = 0.455, GU = 0.30;
+    const H = Math.min(
+      360,
+      BASE - (top + headBlock) - 20,
+      Math.floor(1560 / (WU * dotCount + GU * Math.max(0, dotCount - 1))),
+    );
+    const W = H * WU, GAP = H * GU;
+    const totalW = dotCount * W + (dotCount - 1) * GAP;
+    const x0 = (1920 - totalW) / 2;
+    // 어느 자리가 어느 그룹 몫인지 — 앞 그룹부터 채운다
+    const owner = [];
+    for (const g of groups) {
+      const nd = Math.max(1, Math.round(g.value / perDot));
+      for (let k = 0; k < nd; k++) owner.push(g);
+    }
+    return (
+      <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
+        <PaperBg theme={theme} {...bg} />
+        <PaperTitle title={title} sub={sub} theme={theme} align={align} />
+        {heads.length ? (
+          <div style={{position: 'absolute', left: 180, width: 1560, top,
+                       textAlign: 'center'}}>
+            {heads.map((g, gi) => (
+              <div key={gi} style={{marginTop: gi ? SP.GAP : 0,
+                                    opacity: fadeIn(frame, 4 + gi * 10)}}>
+                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 40,
+                             color: T.soft, letterSpacing: '0.01em'}}>{g.label}</div>
+                <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Medium, sans-serif',
+                             fontSize: 132, lineHeight: 1.04, color: T.ink,
+                             letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums'}}>
+                  {g.display}<span style={{fontSize: 64, marginLeft: 6}}>{unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
+          <line x1={x0 - 40} y1={BASE + 2} x2={x0 + totalW + 40} y2={BASE + 2}
+                stroke={T.ink} strokeWidth={LW.THIN} opacity={0.35 * fadeIn(frame, 6)} />
+          {owner.map((g, k) => {
+            const o = fadeIn(frame, 14 + k * 7, 12);
+            if (o <= 0) return null;
+            const gone = g.gone;
+            return (
+              <g key={k} opacity={o * (gone ? 0.34 : 1)}
+                 transform={`translate(${x0 + k * (W + GAP)} ${BASE - H}) scale(${W / 100} ${H / 220})`}>
+                <g fill={gone ? T.tones[0] : (g.hot ? YELLOW : T.tones[3])}
+                   stroke={gone ? 'none' : T.ink} strokeWidth={g.hot ? 4 : 3}
+                   strokeLinejoin="round">
+                  <circle cx={50} cy={30} r={27} />
+                  <path d="M50 64 c-21 0-35 15-35 35 v50 h70 v-50 c0-20-14-35-35-35 z" />
+                  <rect x={20} y={146} width={23} height={74} rx={7} />
+                  <rect x={57} y={146} width={23} height={74} rx={7} />
+                </g>
+              </g>
+            );
+          })}
+        </svg>
+        {caption ? <PaperCaption theme={theme}>{caption}</PaperCaption> : null}
+        <PaperSource source={source} theme={theme} />
+      </AbsoluteFill>
+    );
+  }
 
   // 열 수와 점 크기를 그대로 믿지 않는다. 737개를 1:1 로 그리라고 하면
   // 격자가 화면 밖으로 나가는데 **렌더는 성공한다** — 시트에서야 안다.
