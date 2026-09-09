@@ -86,7 +86,7 @@ def main():
         sys.exit(f'{pdir / "clips"} 에 클립이 없다 — 먼저 렌더해야 한다')
 
     tmp = Path(tempfile.mkdtemp(prefix='settled_'))
-    bad, skipped, seen = [], [], 0
+    bad, bydesign, skipped, seen = [], [], [], 0
     for f in clips:
         sid = int(re.match(r'sec(\d+)', f.name).group(1))
         row = design.get(str(sid)) or ['', '', {}]
@@ -94,8 +94,21 @@ def main():
         if card in PHOTO_CARDS:
             continue
         props = row[2] if len(row) > 2 and isinstance(row[2], dict) else {}
-        if props.get('media') or (props.get('bg') or {}).get('backdrop', '').endswith('.mp4'):
-            continue                      # 배경 영상도 내내 움직인다
+        if props.get('media'):
+            continue
+        # ── 설계상 끝까지 안 멎는 것들 ─────────────────────────────────────
+        # 결함이 아니라 의도다. 그렇다고 조용히 빼면 검사기가 또 거짓말을
+        # 한다 — 따로 세서 눈에 보이게 둔다.
+        #   · 배경 사진: LiveBackdrop 이 홀드 내내 아주 느리게 민다
+        #   · punch: 3.5% 스케일이라 스프링이 안착해도 가장자리 1~2픽셀이 남는다
+        bg = (props.get('bg') or {}).get('backdrop', '')
+        by_design = []
+        if bg.endswith('.mp4'):
+            continue
+        if bg:
+            by_design.append('배경 사진')
+        if (props.get('_motion') or {}).get('punchAt') is not None:
+            by_design.append('강조 punch')
         dur = duration(f)
         if dur < 0.3:
             continue
@@ -106,15 +119,19 @@ def main():
             continue
         diff = int((np.abs(a2.astype(np.int32) - b.astype(np.int32)) > 24).sum())
         if diff > a.tol:
-            bad.append((sid, card, dur, diff))
+            (bydesign if by_design else bad).append(
+                (sid, card, dur, diff, ' · '.join(by_design)))
 
     print(f'{a.project} — 그래픽 컷 {seen}개 검사')
     if skipped:
         print(f'  ⚠ 못 잰 컷 {len(skipped)}개: {skipped[:12]} — 이건 통과가 아니다')
+    if bydesign:
+        print(f'  · 설계상 끝까지 움직이는 컷 {len(bydesign)}개 (결함 아님): ' +
+              ', '.join(f'#{s}({w})' for s, _, _, _, w in bydesign[:8]))
     if not bad:
         print('  끝까지 다 자란다')
         return 0
-    for sid, card, dur, diff in bad:
+    for sid, card, dur, diff, _ in bad:
         print(f'  #{sid:3d} {card:18s} {dur:.1f}s · 끝에서 화소 {diff:,}개가 바뀐다 '
               f'— 다 자라기 전에 끝난다')
     print(f'  걸린 컷 {len(bad)}개')
