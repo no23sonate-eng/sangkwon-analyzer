@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW, titleBottom, useFitEnd} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW, titleBottom, useFitEnd, useFade} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -14,6 +14,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const fitEnd = useFitEnd();
+  const fade = useFade();
   const n = items.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
   const slot = Math.min(720, 1680 / n);
@@ -52,7 +53,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
       <PaperBg theme={theme} {...bg} />
       {one ? (
         <div style={{position: 'absolute', top: stackY, left: 0, width: 1920,
-                     textAlign: 'center', opacity: fadeIn(frame, 0),
+                     textAlign: 'center', opacity: fade(0),
                      fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: 80, letterSpacing: '-0.01em', color: T.ink,
                      wordBreak: 'keep-all'}}>
@@ -65,7 +66,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         {items.slice(1).map((_, i) => (
           <line key={i} x1={startX + slot * (i + 1)} y1={TOPY - 12}
                 x2={startX + slot * (i + 1)} y2={TOPY + blockH + 4}
-                stroke={T.ink} strokeWidth={LW.THIN} opacity={0.22 * fadeIn(frame, 10)} />
+                stroke={T.ink} strokeWidth={LW.THIN} opacity={0.22 * fade(10)} />
         ))}
       </svg>
       {items.map((it, i) => {
@@ -73,7 +74,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
           <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: TOPY,
-                               textAlign: 'center', opacity: fadeIn(frame, 8 + i * 12)}}>
+                               textAlign: 'center', opacity: fade(8 + i * 12)}}>
             {/* 강조 수치만 밑줄까지 그어 "확정"시킨다 — §27 */}
             <div style={{lineHeight: 1}}>
               {it.display != null ? (
@@ -137,7 +138,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: 792, textAlign: 'center',
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
-                     opacity: fadeIn(frame, 56), wordBreak: 'keep-all'}}>
+                     opacity: fade(56), wordBreak: 'keep-all'}}>
           {caption}
         </div>
       ) : null}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP, estW, useFitEnd} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP, estW, useFitEnd, useFade} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
@@ -17,6 +17,7 @@ export const RatioCard = ({
   const T = themeOf(theme);
   const frame = useCurrentFrame();
   const fitEnd = useFitEnd();
+  const fade = useFade();
   const n = items.length;
 
   if (mode === 'bar') {
@@ -52,12 +53,12 @@ export const RatioCard = ({
           const y = rowY(i);
           return (
             <React.Fragment key={i}>
-              <div style={{position: 'absolute', left: x0, top: y - 78, opacity: fadeIn(frame, 10 + i * 10), lineHeight: 1,
+              <div style={{position: 'absolute', left: x0, top: y - 78, opacity: fade(10 + i * 10), lineHeight: 1,
                            fontFamily: 'A2Z Medium, sans-serif', fontSize: 42, color: T.ink}}>
                 {it.label}
               </div>
               <div style={{position: 'absolute', left: x0, width: BW, top: y - 92, textAlign: 'right',
-                           opacity: fadeIn(frame, 20 + i * 10)}}>
+                           opacity: fade(20 + i * 10)}}>
                 <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64, color: T.ink,
                               fontVariantNumeric: 'tabular-nums'}}>
                   {Number(v.toFixed(it.decimals ?? 0)).toLocaleString('ko-KR')}<span style={{fontSize: 42}}>{unit}</span>
@@ -71,7 +72,7 @@ export const RatioCard = ({
             </React.Fragment>
           );
         })}
-        <PaperCaption theme={theme} opacity={fadeIn(frame, 60)}>{caption}</PaperCaption>
+        <PaperCaption theme={theme} opacity={fade(60)}>{caption}</PaperCaption>
       <PaperSource source={source} theme={theme} />
       </AbsoluteFill>
     );
@@ -182,7 +183,7 @@ export const RatioCard = ({
         const c = it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
         return (
           <div key={i} style={{position: 'absolute', left: LEG_X, width: legUsed, top: y,
-                               opacity: fadeIn(frame, 24 + i * 10)}}>
+                               opacity: fade(24 + i * 10)}}>
             <div style={{display: 'flex', alignItems: 'baseline', gap: 18}}>
               <span style={{width: 22, height: 22, background: c, flex: '0 0 auto',
                             border: `${LW.HAIR}px solid ${T.ink}`, alignSelf: 'center'}} />
@@ -209,7 +210,7 @@ export const RatioCard = ({
           <React.Fragment key={i}>
             <div style={{position: 'absolute', left: cx - slot / 2,
                          width: slot, top: CY + R + 22, textAlign: 'center',
-                         opacity: fadeIn(frame, 24 + i * 10)}}>
+                         opacity: fade(24 + i * 10)}}>
               <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 96, color: T.ink,
                             fontVariantNumeric: 'tabular-nums'}}>
                 {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 54}}>{unit}</span>
@@ -221,7 +222,7 @@ export const RatioCard = ({
                 116 고정이라 라벨 아랫줄이 원에 닿았다 (#4·#25·#74·#80) */}
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot,
                          top: CY - R - (it.sub ? 176 : 112) - SP.GAP, textAlign: 'center',
-                         opacity: fadeIn(frame, 30 + i * 10)}}>
+                         opacity: fade(30 + i * 10)}}>
               <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
                 {it.label}
               </div>
@@ -234,7 +235,7 @@ export const RatioCard = ({
           </React.Fragment>
         );
       })}
-      <PaperCaption theme={theme} opacity={fadeIn(frame, 60)}>{caption}</PaperCaption>
+      <PaperCaption theme={theme} opacity={fade(60)}>{caption}</PaperCaption>
       <PaperSource source={source} theme={theme} />
     </AbsoluteFill>
   );

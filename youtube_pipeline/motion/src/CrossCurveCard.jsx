@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, useFitEnd} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, useFitEnd, useFade} from './paper';
 
 // ── 교차 곡선 ─────────────────────────────────────────────────────────────
 // 두 값이 시간 위에서 **자리를 바꾸는** 순간을 그린다.
@@ -36,6 +36,7 @@ export const CrossCurveCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const fitEnd = useFitEnd();
+  const fade = useFade();
   const T = themeOf(theme);
 
   // 판. 아래는 자막 안전선(904)에서 캡션 두 줄을 빼고 잡는다
@@ -101,7 +102,7 @@ export const CrossCurveCard = ({
           const y = TOP + ((BOT - TOP) / 4) * i;
           return (
             <text key={'v' + i} x={L - 22} y={y + 9} textAnchor="end"
-                  fill={T.soft} opacity={0.75 * fadeIn(frame, 6)}
+                  fill={T.soft} opacity={0.75 * fade(6)}
                   style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29}}>
               {Math.round(v)}
             </text>
@@ -112,7 +113,7 @@ export const CrossCurveCard = ({
 
         {/* 해 눈금 */}
         {xTicks.map((x) => (
-          <g key={x} opacity={fadeIn(frame, 4)}>
+          <g key={x} opacity={fade(4)}>
             <line x1={px(x)} y1={BOT} x2={px(x)} y2={BOT + 12}
                   stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
           </g>
@@ -122,7 +123,7 @@ export const CrossCurveCard = ({
         {cross && atCross ? (
           <line x1={px(cross.x)} y1={TOP - 18} x2={px(cross.x)} y2={BOT}
                 stroke={T.ink} strokeWidth={LW.HAIR} strokeDasharray="7 9"
-                opacity={0.42 * fadeIn(frame, 0, 8)} />
+                opacity={0.42 * fade(0, 8)} />
         ) : null}
 
         {/* 선 */}
@@ -137,7 +138,7 @@ export const CrossCurveCard = ({
 
         {/* 교차 표식 — 이 화면에서 노랑은 여기 하나다 */}
         {cross && atCross ? (
-          <g opacity={fadeIn(frame, 0, 10)}>
+          <g opacity={fade(0, 10)}>
             <circle cx={px(cross.x)} cy={py(crossY(series, cross.x))} r={19}
                     fill={YELLOW} stroke={T.ink} strokeWidth={LW.BODY} />
           </g>
@@ -149,7 +150,7 @@ export const CrossCurveCard = ({
           return grow > 0.985 ? (
             <circle key={i} cx={px(p[0])} cy={py(p[1])} r={s.hot ? 11 : 8}
                     fill={T.bg} stroke={T.ink} strokeWidth={LW.THIN}
-                    opacity={(s.hot ? 1 : 0.45) * fadeIn(frame, 0, 8)} />
+                    opacity={(s.hot ? 1 : 0.45) * fade(0, 8)} />
           ) : null;
         })}
       </svg>
@@ -159,7 +160,7 @@ export const CrossCurveCard = ({
         <div key={x} style={{position: 'absolute', top: BOT + 24, left: px(x) - 90,
                              width: 180, textAlign: 'center',
                              fontFamily: 'A2Z Light, sans-serif', fontSize: FS.MICRO + 4,
-                             color: T.soft, opacity: fadeIn(frame, 6)}}>
+                             color: T.soft, opacity: fade(6)}}>
           {x}
         </div>
       ))}
@@ -170,7 +171,7 @@ export const CrossCurveCard = ({
         return grow > 0.985 ? (
           <div key={i} style={{position: 'absolute', left: px(p[0]) + 26,
                                top: endTop[i], width: 340,
-                               opacity: fadeIn(frame, 0, 10)}}>
+                               opacity: fade(0, 10)}}>
             <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: FS.LABEL,
                          color: s.hot ? T.ink : T.soft, letterSpacing: '-0.01em'}}>
               {s.label}
@@ -194,7 +195,7 @@ export const CrossCurveCard = ({
                      left: Math.min(px(cross.x) - 170, R - 380), top: TOP - 96,
                      width: 340,
                      textAlign: px(cross.x) > R - 220 ? 'right' : 'center',
-                     opacity: fadeIn(frame, 0, 10)}}>
+                     opacity: fade(0, 10)}}>
           <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: FS.LEAD,
                        color: T.ink, letterSpacing: '-0.02em'}}>
             {cross.label}
@@ -205,7 +206,7 @@ export const CrossCurveCard = ({
       {yUnit ? (
         <div style={{position: 'absolute', left: L - 66, top: TOP - 48,
                      fontFamily: 'A2Z Light, sans-serif', fontSize: FS.MICRO,
-                     color: T.soft, opacity: fadeIn(frame, 6)}}>
+                     color: T.soft, opacity: fade(6)}}>
           {yUnit}
         </div>
       ) : null}

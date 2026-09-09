@@ -118,6 +118,24 @@ export const estW = (s, size) => {
 //
 // 컷이 짧으면 끝을 앞으로 당긴다. tail 은 다 자란 것을 보여 줄 여유다 —
 // 마지막 프레임에 겨우 도착하면 도착한 걸 못 본다.
+// 페이드도 컷 안에서 끝나야 한다.
+//
+// useFitEnd 로 **세는 숫자**는 맞췄는데도 컷이 남았다. 어디가 움직이는지
+// 화소로 찾아보니 값이 아니라 **캡션**이었다 — #193 은 y 797~829 만 바뀐다.
+// BigStatsCard 의 캡션은 fadeIn(frame, 56) 이라 70프레임에 끝나는데 그 컷은
+// 69프레임이다. 캡션이 컷이 끝나는 바로 그 순간에 나타난다.
+//
+// 늦게 뜨는 것마다 손으로 맞추면 카드를 고칠 때마다 또 어긋난다.
+// fadeIn 자체를 컷 길이를 아는 것으로 바꾼다
+export const useFade = () => {
+  const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+  return (start, len = 14) => {
+    const s = Math.min(start, Math.max(0, durationInFrames - 8 - len));
+    return fadeIn(frame, s, len);
+  };
+};
+
 export const useFitEnd = () => {
   const {durationInFrames} = useVideoConfig();
   return (end, tail = 8) => Math.min(end, Math.max(14, durationInFrames - tail));

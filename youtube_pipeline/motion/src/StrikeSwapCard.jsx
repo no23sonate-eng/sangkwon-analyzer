@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, useFitEnd} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, useFitEnd, useFade} from './paper';
 import {fit} from './layout';
 
 // ── 값이 갈아치워지는 카드 ────────────────────────────────────────────────
@@ -36,6 +36,7 @@ export const StrikeSwapCard = ({
   useA2ZFonts();
   const frame = useCurrentFrame();
   const fitEnd = useFitEnd();
+  const fade = useFade();
   const T = themeOf(theme);
   const center = align !== 'left';
 
@@ -91,7 +92,7 @@ export const StrikeSwapCard = ({
       <div style={{position: 'absolute', left: 0, right: 0, top,
                    textAlign: center ? 'center' : 'left',
                    paddingLeft: center ? 0 : 150,
-                   opacity: fadeIn(frame, 2)}}>
+                   opacity: fade(2)}}>
         <div style={{position: 'relative', display: 'inline-block',
                      fontFamily: 'A2Z Medium, sans-serif',
                      fontSize: fromSize, color: T.ink, opacity: 0.66, lineHeight: 1.1,
@@ -112,7 +113,7 @@ export const StrikeSwapCard = ({
       {fromLabel && !arrowOnly ? (
         <div style={{position: 'absolute', left: 0, right: 0, top: top - 42,
                      textAlign: center ? 'center' : 'left',
-                     paddingLeft: center ? 0 : 150, opacity: fadeIn(frame, 6),
+                     paddingLeft: center ? 0 : 150, opacity: fade(6),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 34, color: T.soft,
                      letterSpacing: '0.02em', whiteSpace: 'nowrap'}}>
           {fromLabel}
@@ -122,9 +123,9 @@ export const StrikeSwapCard = ({
       {/* ②-b 갈아치운다는 걸 화살표로 못 박는다. 취소선만으론 '지웠다' 까지고
           '이걸로 바뀌었다' 가 안 남는다 (검수 지적 #85) */}
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
-        <g opacity={arrowOnly ? fadeIn(frame, 8)
-                    : noStrike ? fadeIn(frame, READ + 2)
-                    : (s2 > 0.9 ? fadeIn(frame, READ + STRIKE + 2) : 0)}>
+        <g opacity={arrowOnly ? fade(8)
+                    : noStrike ? fade(READ + 2)
+                    : (s2 > 0.9 ? fade(READ + STRIKE + 2) : 0)}>
           <line x1={center ? 960 : 190} y1={top + fromSize * 1.35 + 12}
                 x2={center ? 960 : 190} y2={top + fromSize * 1.35 + ARROW_H - 40}
                 stroke={T.ink} strokeWidth={LW.BOLD} opacity={0.75} />
@@ -164,7 +165,7 @@ export const StrikeSwapCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150,
                      top: noteTop, textAlign: center ? 'center' : 'left',
-                     opacity: fadeIn(frame, fitEnd(READ + STRIKE + 44) - 14),
+                     opacity: fade(fitEnd(READ + STRIKE + 44) - 14),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
