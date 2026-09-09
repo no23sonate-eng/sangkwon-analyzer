@@ -24,6 +24,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('project')
     ap.add_argument('--crf', type=int, default=20)
+    # 로컬에서 볼 때는 원본 1080p 가 맞다. 다만 21분짜리를 **보내야** 할
+    # 때가 있는데 그건 수백 MB 라 통째로는 못 넘긴다. 리듬·컷 길이·같은
+    # 화면이 붙는 자리를 보는 데는 540p 면 충분하다
+    ap.add_argument('--height', type=int, default=0, help='0이면 원본 그대로')
     a = ap.parse_args()
 
     pdir = os.path.join(ROOT, 'projects', a.project)
@@ -47,10 +51,14 @@ def main():
         for p in files:
             f.write(f"file '{p}'\n")
 
-    out = os.path.join(pdir, f'{a.project}_미리보기.mp4')
-    subprocess.run([FF, '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', lst,
-                    '-c:v', 'libx264', '-preset', 'medium', '-crf', str(a.crf),
-                    '-pix_fmt', 'yuv420p', '-video_track_timescale', '90000', out], check=True)
+    tag = f'_{a.height}p' if a.height else ''
+    out = os.path.join(pdir, f'{a.project}_미리보기{tag}.mp4')
+    cmd = [FF, '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', lst,
+           '-c:v', 'libx264', '-preset', 'medium', '-crf', str(a.crf)]
+    if a.height:
+        cmd += ['-vf', f'scale=-2:{a.height}:flags=lanczos']
+    cmd += ['-pix_fmt', 'yuv420p', '-video_track_timescale', '90000', out]
+    subprocess.run(cmd, check=True)
     os.remove(lst)
 
     dur = subprocess.run([FF, '-i', out], capture_output=True, text=True).stderr
