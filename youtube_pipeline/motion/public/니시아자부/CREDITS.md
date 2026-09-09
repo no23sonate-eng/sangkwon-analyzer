@@ -2,9 +2,6 @@
 
 | 파일 | 원본 | 출처 / 라이선스 | 화면 표기 |
 |---|---|---|---|
-| `minato_area.png` | 지도 타일 z14 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
-| `nishiazabu_close.png` | 지도 타일 z16 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
-| `station_walk.png` | 지도 타일 z15 (light) | © OpenStreetMap contributors © CARTO, **ODbL** | `© OpenStreetMap contributors © CARTO` |
 | `elderly_couple_street.mp4` | https://www.pexels.com/video/8970842/ (pexels) | Pexels, **Pexels License** | `Pexels / Pexels` |
 | `elderly_group_park.mp4` | https://www.pexels.com/video/4806687/ (pexels) | Pexels, **Pexels License** | `Pexels / Pexels` |
 | `skytree_night.mp4` | https://www.pexels.com/video/9396326/ (pexels) | Pexels, **Pexels License** | `Pexels / Pexels` |
@@ -41,3 +38,6 @@
 | `seoul_elder_couple.jpg` | https://www.pexels.com/photo/32028728/ | **Pexels License** | `Pexels` |
 | `tower_lowangle.jpg` | https://www.pexels.com/photo/4985454/ | **Pexels License** | `Pexels` |
 | `warehouse_aisle_bw.jpg` | https://www.pexels.com/photo/31886730/ | **Pexels License** | `Pexels` |
+| `nishiazabu_close.png` | 지도 타일 z16 (osm·paper) | © OpenStreetMap contributors, **ODbL** | `© OpenStreetMap contributors` |
+| `station_walk.png` | 지도 타일 z15 (osm·paper) | © OpenStreetMap contributors, **ODbL** | `© OpenStreetMap contributors` |
+| `minato_area.png` | 지도 타일 z15 (osm·paper) | © OpenStreetMap contributors, **ODbL** | `© OpenStreetMap contributors` |

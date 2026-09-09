@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, useCurrentFrame, interpolate, Img, staticFile} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption,
-        CONTENT_BOTTOM, fadeIn, stageTop, FS, LW, SP} from './paper';
+        CONTENT_BOTTOM, fadeIn, stageTop, titleH, FS, LW, SP} from './paper';
 
 // 두 입장/두 항목을 좌우로 대비하는 카드.
 // rightEmpty=true 면 오른쪽에 옅은 대시(—)와 emptyLabel 만 — 한쪽이
@@ -47,7 +47,14 @@ export const CompareCard = ({
 
   const lineN = Math.max(leftLines.length, rightEmpty ? 2 : rightLines.length);
   const blockH = 44 + vSize * 1.1 + lineN * 46 + (caption ? 54 : 0);
-  const COL_TOP = hasImage ? 370 : stageTop(blockH, {top: title ? 300 : 210});
+  // ── 2026-09-09 · 제목과 두 칸이 따로 앉아 있었다 ────────────────────────
+  // 제목은 PaperTitle 이 제 기본값(150)에, 두 칸은 stageTop 으로 각자 자리를
+  // 잡았다. 그래서 위쪽 60% 에 다 몰리고 아래가 통째로 비었다 (#3).
+  // 제목 + 사이 + 두 칸을 **한 덩어리**로 재서 통째로 시각 중심에 앉힌다
+  const headH = title && !hasImage ? titleH(title, sub) : 0;
+  const HEAD_GAP = headH ? SP.BAND : 0;
+  const stackY = stageTop(headH + HEAD_GAP + blockH, {top: 150});
+  const COL_TOP = hasImage ? 370 : stackY + headH + HEAD_GAP;
 
   const COL_W = 560, GAP = 150;
   const LEFT_X = 1920 / 2 - GAP / 2 - COL_W;
@@ -64,7 +71,11 @@ export const CompareCard = ({
   } : null;
 
   const Col = ({x, name, value, lines, empty, o}) => (
-    <div style={{position: 'absolute', top: COL_TOP, left: x, width: COL_W, opacity: o}}>
+    // 칸 안 글자가 왼쪽 정렬이라, 왼 칸은 가운데 선에서 멀찍이 떨어지고
+    // 오른 칸은 선에 딱 붙어 두 덩이가 흩어져 보였다. 칸마다 가운데로 모으면
+    // 두 값이 선을 사이에 두고 마주 본다 — 견주는 그림이 그제야 성립한다
+    <div style={{position: 'absolute', top: COL_TOP, left: x, width: COL_W,
+                 textAlign: 'center', opacity: o}}>
       {textPanel ? <div style={textPanel} /> : null}
       <div style={{position: 'relative', fontFamily: 'A2Z Light, sans-serif',
                    fontSize: FS.SMALL, letterSpacing: '0.02em',
@@ -123,9 +134,9 @@ export const CompareCard = ({
 
       {/* 가운데 자 — 두 값을 가르는 선. 위아래 삐침이 있어야 '가른다'로 읽힌다 */}
       <svg width={1920} height={1080} style={{position: 'absolute', inset: 0}}>
-        <g opacity={0.34 * fadeIn(frame, 10)}>
+        <g opacity={0.44 * fadeIn(frame, 10)}>
           <line x1={960} y1={COL_TOP - 24} x2={960} y2={COL_TOP + ruleH}
-                stroke={hasImage ? '#FFFFFF' : T.ink} strokeWidth={LW.HAIR} />
+                stroke={hasImage ? '#FFFFFF' : T.ink} strokeWidth={LW.THIN} />
           <line x1={946} y1={COL_TOP - 24} x2={974} y2={COL_TOP - 24}
                 stroke={hasImage ? '#FFFFFF' : T.ink} strokeWidth={LW.HAIR} />
           <line x1={946} y1={COL_TOP + ruleH} x2={974} y2={COL_TOP + ruleH}

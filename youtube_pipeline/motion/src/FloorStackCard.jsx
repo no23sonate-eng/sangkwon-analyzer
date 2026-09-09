@@ -45,9 +45,18 @@ export const FloorStackCard = ({
   const fH = H / floors;                   // 한 층
   // 띠·라벨이 없는 컷에서는 오른쪽이 통째로 빈다. 그럴 땐 탑을 가운데로
   // 옮기고 넓힌다 — 라벨 자리를 비워 두는 건 라벨이 있을 때 얘기다
+  // ── 2026-09-09 · 판이 왼쪽으로 쏠려 있었다 ──────────────────────────────
+  // TX 를 372 에 못 박아 두니 [높이표 122–352][탑 372–692][이름표 810–1430]
+  // 전체가 122–1430, 즉 화면 가운데(960)보다 180px 왼쪽에 앉았다.
+  // 게다가 높이표(‘125m’)와 탑 사이가 20px 뿐이라 글자가 도형에 붙었다.
+  // 세 칸(높이표·탑·이름표)을 한 덩어리로 재서 통째로 가운데에 놓는다
   const bare = zones.length === 0;
   const TW = bare ? 420 : 320;
-  const TX = bare ? (1920 - TW) / 2 : 372;
+  const H_W = 290;                         // 왼쪽 높이표 칸 (라벨 250 + 사이 40)
+  const LAB_GAP = 118, LAB_W = 620;        // 이음선 + 오른쪽 이름표 칸
+  const TX = bare
+    ? (1920 - TW) / 2
+    : Math.round((1920 - (H_W + TW + LAB_GAP + LAB_W)) / 2) + H_W;
   const yOfFloor = (f) => BOT - f * fH;    // f층 **바닥**
   const yOfM = (m) => BOT - m * mpp;
 
@@ -114,7 +123,7 @@ export const FloorStackCard = ({
         </defs>
 
         {/* 지반선 */}
-        <line x1={TX - 120} y1={BOT} x2={1560} y2={BOT}
+        <line x1={TX - 130} y1={BOT} x2={Math.min(1800, TX + TW + LAB_GAP + 420)} y2={BOT}
               stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
 
         <g clipPath="url(#fs-grow)">
@@ -224,7 +233,7 @@ export const FloorStackCard = ({
       ))}
 
       {/* 전체 높이 — 탑 왼쪽 위 */}
-      <div style={{position: 'absolute', left: TX - 250, top: TOP - 12, width: 230,
+      <div style={{position: 'absolute', left: TX - H_W, top: TOP - 12, width: H_W - 40,
                    textAlign: 'right', opacity: fadeIn(frame, 30, 14)}}>
         <div style={{fontFamily: 'A2Z Bold, A2Z Medium, sans-serif', fontSize: FS.HERO,
                      color: T.ink, letterSpacing: '-0.03em', lineHeight: 1}}>

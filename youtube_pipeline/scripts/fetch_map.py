@@ -29,13 +29,25 @@ PUBLIC = os.path.join(ROOT, 'motion', 'public')
 TILE = 256
 UA = 'sangkwon-analyzer/1.0 (youtube pipeline; contact: no23sonate@gmail.com)'
 
+# ── 2026-09-09 · CARTO 는 키 없이 못 쓴다 ──────────────────────────────
+# light/dark 로 받아 둔 지도 석 장에 'API KEY REQUIRED' 워터마크가 화면
+# 전체에 대각선으로 박혀 있었다. **HTTP 200 으로 멀쩡히 돌아온다** — 실패로
+# 안 잡히고, 검수시트에서는 타일이 620px 이라 글자가 안 읽혀 그대로 지나갔다.
+# 키 없이 되는 osm 을 기본으로 두고, 종이 톤은 받은 뒤에 입힌다(--wash).
 STYLES = {
+    'osm':   ('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              '© OpenStreetMap contributors'),
+    # 아래 둘은 CARTO 계정 키가 있어야 한다. 키 없이 받으면 워터마크가 박힌다
     'light': ('https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
               '© OpenStreetMap contributors © CARTO'),
     'dark':  ('https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
               '© OpenStreetMap contributors © CARTO'),
-    'osm':   ('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              '© OpenStreetMap contributors'),
+}
+# 종이 톤 — 밝은 쪽은 종이색, 어두운 쪽은 옅은 먹. 채도를 걷어내고 그 사이로
+# 편다. CARTO Positron 을 쓰던 이유가 이 톤이었으니 그걸 직접 만든다
+WASH = {
+    'paper': ((0x86, 0x82, 0x7A), (0xF2, 0xEF, 0xE8)),
+    'blueprint': ((0x0E, 0x18, 0x2C), (0x8FA, 0x0, 0x0)),   # 미사용 자리표시
 }
 MAX_TILES = 64          # 타일 서버 예의. 이걸 넘기면 줌을 낮추라고 말한다
 NOMINATIM = 'https://nominatim.openstreetmap.org/search'
@@ -74,7 +86,32 @@ def px2deg(x, y, z):
     return lat, lon
 
 
-def fetch(project, name, lat, lon, zoom, w, h, style):
+def wash_paper(im):
+    """지도를 종이 톤 2색으로 눕힌다 — 위에 얹을 글자·핀이 이겨야 한다."""
+    import numpy as np
+    from PIL import Image
+    a = np.asarray(im.convert('RGB'), dtype=np.float32)
+    lum = (a[..., 0] * 0.299 + a[..., 1] * 0.587 + a[..., 2] * 0.114) / 255.0
+    # 가운데 대비를 살짝 눌러 도로망이 얼룩이 되지 않게
+    lum = np.clip(lum, 0, 1) ** 1.06
+    lo, hi = WASH['paper']
+    out = np.stack([lo[c] + lum * (hi[c] - lo[c]) for c in range(3)], axis=-1)
+    return Image.fromarray(np.clip(out, 0, 255).astype('uint8'))
+
+
+def looks_watermarked(im):
+    """키 없이 받은 타일에 박히는 워터마크를 잡는다.
+
+    베이스맵은 밝다 — 근검정 화소가 3% 를 넘는 일이 없다. 워터마크는 진한
+    글자가 판 전체에 반복되므로 그 비율이 훌쩍 뛴다. 실패가 HTTP 200 으로
+    돌아오는 판이라, 받은 다음에 그림을 보고 판단하는 수밖에 없다.
+    """
+    import numpy as np
+    g = np.asarray(im.convert('L'))
+    return float((g < 110).mean())
+
+
+def fetch(project, name, lat, lon, zoom, w, h, style, wash=None):
     from PIL import Image
     url, credit = STYLES[style]
 
@@ -102,6 +139,13 @@ def fetch(project, name, lat, lon, zoom, w, h, style):
             got += 1
             time.sleep(0.08)                    # 타일 서버 예의
 
+    dark = looks_watermarked(canvas)
+    if dark > 0.06:
+        print(f'  ✗ 진한 화소가 {dark:.1%} 다 — 워터마크(키 요구) 타일일 수 있다.')
+        print(f'    {style} 대신 osm 으로 받아 볼 것.')
+    if wash == 'paper':
+        canvas = wash_paper(canvas)
+
     out = os.path.join(PUBLIC, project, f'{name}.png')
     os.makedirs(os.path.dirname(out), exist_ok=True)
     canvas.save(out)
@@ -116,7 +160,7 @@ def fetch(project, name, lat, lon, zoom, w, h, style):
     # 같은 파일 줄이 이미 있으면 **갈아 끼운다.** 그냥 붙이기만 하면 줌이나
     # 스타일을 바꿔 다시 받을 때마다 줄이 쌓이고, 지난 줄이 지금 파일과
     # 다른 내용을 말하게 된다 (z17 light 를 받아 놨는데 "dark" 줄이 남는 식).
-    row = (f"| `{name}.png` | 지도 타일 z{zoom} ({style}) | "
+    row = (f"| `{name}.png` | 지도 타일 z{zoom} ({style}{'·' + wash if wash else ''}) | "
            f"{credit}, **ODbL** | `{credit}` |\n")
     lines = open(cred, encoding='utf-8').read().splitlines(keepends=True)
     kept = [ln for ln in lines if not ln.startswith(f"| `{name}.png` |")]
@@ -140,7 +184,9 @@ def main():
     ap.add_argument('--zoom', type=int, default=15,
                     help='13=도시권 · 15=동네 · 17=블록 (기본 15)')
     ap.add_argument('--size', nargs=2, type=int, default=[1920, 1080], metavar=('W', 'H'))
-    ap.add_argument('--style', choices=list(STYLES), default='light')
+    ap.add_argument('--style', choices=list(STYLES), default='osm')
+    ap.add_argument('--wash', choices=['paper'], default=None,
+                    help='받은 뒤 종이 톤 2색으로 눕힌다 (osm 색이 시끄러울 때)')
     ap.add_argument('--find', action='append', default=[],
                     help='주소·지명으로 좌표를 찾아 출력만 한다 (여러 번). 지도는 안 받는다')
     a = ap.parse_args()
@@ -165,7 +211,8 @@ def main():
         print('      근처 랜드마크(역·구청·학교)로 잡을 것.')
         return
 
-    fetch(a.project, a.name, a.center[0], a.center[1], a.zoom, a.size[0], a.size[1], a.style)
+    fetch(a.project, a.name, a.center[0], a.center[1], a.zoom,
+          a.size[0], a.size[1], a.style, a.wash)
 
 
 if __name__ == '__main__':

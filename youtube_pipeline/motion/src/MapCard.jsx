@@ -41,7 +41,16 @@ export const MapCard = ({
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
+  const {fps, durationInFrames} = useVideoConfig();
+  // ── 2026-09-09 · 마지막 핀 이름표가 컷이 끝나도록 안 떴다 ────────────────
+  // 34 + i*10 에 꽂고 44 + i*10 에 이름을 띄우는 고정 일정이었다. 핀이 넷인
+  // #18 은 마지막(니시아자부·주인공)이 74프레임에야 뜨기 시작한다 — 검수
+  // 스틸(78프레임)에서 29% 로 흐리게 나왔고, 짧은 컷이면 본편에서도 못 뜬다.
+  // **컷 길이 안에서 다 꽂는다** — 마지막 이름표가 끝나기 0.6초 전에는 서게
+  const PIN_T0 = 20;
+  const nPin = Math.max(1, pins.length);
+  const PIN_GAP = Math.max(
+    4, Math.min(10, Math.floor((durationInFrames - 18 - PIN_T0 - 10) / nPin)));
   const T = themeOf(theme);
   const dark = T.dark;
 
@@ -124,8 +133,8 @@ export const MapCard = ({
         {pins.map((p, i) => {
           // 핀이 많으면 간격을 좁힌다. 10프레임 고정이면 6개째가 3초 뒤에 꽂혀
           // 짧은 컷에서는 아예 안 보인다 (검수에서 3개만 보였다)
-          const gap = pins.length > 4 ? 6 : 10;
-          const s = spring({frame: frame - (34 + i * gap), fps,
+          const gap = PIN_GAP;
+          const s = spring({frame: frame - (PIN_T0 + i * gap), fps,
                             config: {damping: 200, mass: 0.5}});
           if (s <= 0.001) return null;
           const [X, Y] = px(p.lat, p.lon);
@@ -147,7 +156,7 @@ export const MapCard = ({
           프레임마다 값이 누적돼 라벨이 계속 내려간다 */}
       {(() => { window.__mapDy = []; window.__mapSide = []; return null; })()}
       {pins.map((p, i) => {
-        const o = fadeIn(frame, 44 + i * (pins.length > 4 ? 6 : 10));
+        const o = fadeIn(frame, PIN_T0 + 10 + i * PIN_GAP);
         if (o <= 0.01) return null;
         const [X, Y] = px(p.lat, p.lon);
         const size = fit(p.label || '', 40, 520);

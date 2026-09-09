@@ -111,16 +111,15 @@
     "leftTitle": "한국",
     "leftValue": "20%",
     "leftLines": [
-     "65세 이상 1,072만 명",
      "2026"
     ],
     "rightTitle": "일본",
     "rightValue": "29%",
     "rightLines": [
-     "65세 이상",
      "2025"
     ],
-    "source": "통계청 · 총무성 통계국"
+    "source": "통계청 · 총무성 통계국",
+    "sub": "65세 이상 비율"
    }
   ],
   "4": [
@@ -418,10 +417,10 @@
    {
     "image": "니시아자부/minato_area.png",
     "bounds": [
-     139.643603,
-     35.622333,
-     139.808397,
-     35.697649
+     139.685801,
+     35.642669,
+     139.768199,
+     35.680326
     ],
     "pins": [
      {
@@ -451,7 +450,7 @@
       "hot": true
      }
     ],
-    "source": "© OpenStreetMap contributors © CARTO"
+    "source": "© OpenStreetMap contributors"
    }
   ],
   "16": [
@@ -483,7 +482,7 @@
       "hot": true
      }
     ],
-    "source": "© OpenStreetMap contributors © CARTO"
+    "source": "© OpenStreetMap contributors"
    }
   ],
   "18": [
@@ -520,7 +519,7 @@
       "hot": true
      }
     ],
-    "source": "© OpenStreetMap contributors © CARTO",
+    "source": "© OpenStreetMap contributors",
     "sub": "세 역에서 도보 약 12분",
     "route": {
      "points": [
@@ -616,7 +615,7 @@
    {
     "axis": {
      "from": 1940,
-     "to": 2020,
+     "to": 2010,
      "step": 20
     },
     "rails": [
@@ -917,7 +916,8 @@
     "heightM": 125,
     "zones": [],
     "human": true,
-    "source": "파크웰스테이트 니시아자부 공식"
+    "source": "파크웰스테이트 니시아자부 공식",
+    "theme": "blueprint"
    }
   ],
   "44": [
@@ -934,7 +934,8 @@
       "label": "건축기준법 60m"
      }
     ],
-    "source": "건축기준법 · 파크웰스테이트 니시아자부 공식"
+    "source": "건축기준법 · 파크웰스테이트 니시아자부 공식",
+    "theme": "blueprint"
    }
   ],
   "45": [
@@ -954,7 +955,8 @@
       "note": "개별 인정을 따로 받는다"
      }
     ],
-    "source": "건축기준법"
+    "source": "건축기준법",
+    "theme": "blueprint"
    }
   ],
   "46": [
@@ -965,7 +967,8 @@
     "fromLabel": "60m 이하",
     "to": "국토교통성 장관 인정",
     "toLabel": "60m 초과",
-    "source": "건축기준법"
+    "source": "건축기준법",
+    "theme": "blueprint"
    }
   ],
   "47": [
@@ -1015,7 +1018,8 @@
     ],
     "axisStep": 25,
     "showHuman": true,
-    "source": "건축기준법 · 파크웰스테이트 니시아자부 공식"
+    "source": "건축기준법 · 파크웰스테이트 니시아자부 공식",
+    "theme": "blueprint"
    }
   ],
   "49": [

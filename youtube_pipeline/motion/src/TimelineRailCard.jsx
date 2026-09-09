@@ -38,8 +38,18 @@ export const TimelineRailCard = ({
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   // 레일 이름이 있으면 왼쪽에 자리를 비우고, 이름이 없는 일정표는 화면 가운데로 편다.
+  // ── 2026-09-09 · 레일이 화면 가득 늘어지고 왼쪽으로 쏠렸다 ───────────────
+  // 400~1780 이라 축이 화면 폭의 72% 를 먹는데, 왼쪽 레일 이름은 30 부터
+  // 시작하니 [이름 30–294][축 400–1780] 전체가 오른쪽으로 밀려 앉았다.
+  // 이름칸 + 사이 + 축을 한 덩어리로 재서 가운데에 놓고, 축은 좁혀서
+  // 사건 사이 간격이 벌어져 보이게 한다
   const hasLabel = rails.some((r) => r.label);
-  const X0 = hasLabel ? 400 : 250, X1 = hasLabel ? 1780 : 1670;
+  const NAME_W = 330, NAME_GAP = 76;
+  const RAIL_W = hasLabel ? 1060 : 1300;
+  const X0 = hasLabel
+    ? Math.round((1920 - (NAME_W + NAME_GAP + RAIL_W)) / 2) + NAME_W + NAME_GAP
+    : Math.round((1920 - RAIL_W) / 2);
+  const X1 = X0 + RAIL_W;
   // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침.
   // 다만 레일이 여럿이면 **위 레일 선 위로 올라타면 안 된다.** 190px 을
   // 그대로 쓰면 한국 레일의 라벨이 정확히 일본 레일 선 위에 앉는다 (#2).
