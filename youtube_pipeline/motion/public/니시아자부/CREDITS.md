@@ -72,3 +72,24 @@
 | `hl_wrinkled_hand.jpg` | https://www.pexels.com/photo/36730753/ | **Pexels License** | `Pexels` |
 | `hl_yen_coins.jpg` | https://www.pexels.com/photo/29916084/ | **Pexels License** | `Pexels` |
 | `floor_move_section.mp4` | 생성형 (Higgsfield · seedance_2_5) | 추상 단면 도해 — 실존 건물 도면이 아님 | `도해 — 생성형(Higgsfield)으로 만든 추상 단면` |
+| `tokyo_aerial_bw.jpg` | Pexels photo 35344916 | Pexels License | (표기 의무 없음) |
+| `facade_grid.jpg` | Pexels photo 28861794 | Pexels License | (표기 의무 없음) |
+| `dining_night_setting.jpg` | Pexels photo 37968303 | Pexels License | (표기 의무 없음) |
+| `caregiver_corridor.jpg` | Pexels photo 18509802 | Pexels License | (표기 의무 없음) |
+| `seoul_dense_housing.jpg` | Pexels photo 36178449 | Pexels License | (표기 의무 없음) |
+| `bookstore_reading.jpg` | Pexels photo 31600273 | Pexels License | (표기 의무 없음) |
+| `corporate_lobby_glass.jpg` | Pexels photo 35566906 | Pexels License | (표기 의무 없음) |
+| `clinic_corridor_bright.jpg` | Pexels photo 37036967 | Pexels License | (표기 의무 없음) |
+| `apt_windows_night.jpg` | Pexels photo 35758486 | Pexels License | (표기 의무 없음) |
+| `care_floor_only.mp4` | 생성형 (Higgsfield · seedance_2_5) | 추상 단면 도해 — 실존 건물 도면이 아님 | `도해 — 생성형(Higgsfield) · 실제 도면 아님` |
+| `elder_group_outdoor.jpg` | Pexels photo 29871540 | Pexels License | (표기 의무 없음) |
+| `vacant_lot_fence.jpg` | Pexels photo 9666115 | Pexels License | (표기 의무 없음) |
+| `courthouse_columns.jpg` | Pexels photo 14212986 | Pexels License | (표기 의무 없음) |
+| `clipboard_pointing.jpg` | Pexels photo 7731397 | Pexels License | (표기 의무 없음) |
+| `insurance_policy.jpg` | Pexels photo 7736032 | Pexels License | (표기 의무 없음) |
+| `seoul_resi_district.jpg` | Pexels photo 19848427 | Pexels License | (표기 의무 없음) |
+| `desk_calendar.jpg` | Pexels photo 29509484 | Pexels License | (표기 의무 없음) |
+| `han_river_skyline.jpg` | Pexels photo 31728574 | Pexels License | (표기 의무 없음) |
+| `documents_closeup.jpg` | Pexels photo 6929030 | Pexels License | (표기 의무 없음) |
+| `hospital_building.jpg` | Pexels photo 19447467 | Pexels License | (표기 의무 없음) |
+| `park_grass_city.jpg` | Pexels photo 20074182 | Pexels License | (표기 의무 없음) |

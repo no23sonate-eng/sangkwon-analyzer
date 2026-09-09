@@ -129,7 +129,10 @@ export const CompareCard = ({
           ? <div style={{position: 'absolute', top: 96, left: 0, width: 1920, textAlign: 'center',
                          fontFamily: 'A2Z Medium, sans-serif', fontSize: FS.LEAD,
                          color: '#EDEFF3', opacity: titleOpacity}}>{title}</div>
-          : <PaperTitle title={title} sub={sub} theme={theme} />
+          // stackY 를 안 넘기면 제목만 PaperTitle 기본값(150)에 남는다.
+          // 두 칸은 stackY 로 내려가 있으니 제목과 300px 넘게 벌어져
+          // "위에 제목 하나, 가운데 표 하나" 두 화면처럼 읽혔다 (#33·#121)
+          : <PaperTitle title={title} sub={sub} theme={theme} top={stackY} />
       ) : null}
 
       {/* 가운데 자 — 두 값을 가르는 선. 위아래 삐침이 있어야 '가른다'로 읽힌다 */}

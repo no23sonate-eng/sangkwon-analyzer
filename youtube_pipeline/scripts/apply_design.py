@@ -113,7 +113,15 @@ def video_slots():
     src = ROOT / 'motion' / 'src'
     out = {}
     for f in src.glob('*Card.jsx'):
-        out[f.stem] = set(re.findall(r'backdrop=\{(\w+)\}', f.read_text()))
+        t = f.read_text()
+        safe = set(re.findall(r'backdrop=\{(\w+)\}', t))
+        # `<PaperBg theme={theme} {...bg} />` — 인자를 통째로 흘리는 꼴.
+        # 이름이 `backdrop=` 로 안 적히니 위 정규식엔 안 걸린다. 이걸 못 보고
+        # #240(챕터 문패 배경 영상)을 "사진 슬롯에 영상"으로 잡아 세웠다.
+        # 흘려보내는 카드에서는 `backdrop` 이라는 키 자체가 PaperBg 것이다
+        if re.search(r'<PaperBg[^>]*\{\.\.\.\w+\}', t):
+            safe.add('backdrop')
+        out[f.stem] = safe
     return out
 
 
