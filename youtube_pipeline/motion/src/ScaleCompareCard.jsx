@@ -101,7 +101,10 @@ export const ScaleCompareCard = ({
   const n = items.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
-  const baseY = CONTENT_BOTTOM - 74;
+  // 바닥선 아래에 이름(34px)이 붙고, note 가 있으면 그 아래 한 줄이 더 붙는다.
+  // 74 로 못 박아 두니 note 있는 컷에서 그 줄이 자막 안전선을 23px 넘었다 (#48)
+  const hasNote = items.some((it) => it.note);
+  const baseY = CONTENT_BOTTOM - (hasNote ? 122 : 74);
   const topRoom = (title ? titleBottom(title, sub) + 16 : 150);
   const maxM = Math.max(...items.map((i) => i.meters || 0), axisStep);
   // 눈금 하나 여유를 두고 축을 잡는다 — 꼭대기 수치가 잘리지 않게

@@ -38,7 +38,10 @@ export const CrossCurveCard = ({
   const T = themeOf(theme);
 
   // 판. 아래는 자막 안전선(904)에서 캡션 두 줄을 빼고 잡는다
-  const L = 250, R = 1690, TOP = title ? 356 : 268, BOT = CONTENT_BOTTOM - 118;
+  // R 이 1690 이었다. 끝점 라벨은 px(마지막해)+26 에서 폭 260 으로 그리니까
+  // 1716~1976 — **화면(1920) 밖으로 나갔다.** '37%' 의 오른쪽이 잘렸다 (#6).
+  // 판을 왼쪽으로 물려 라벨 자리를 화면 안에 확보한다
+  const L = 250, R = 1500, TOP = title ? 356 : 268, BOT = CONTENT_BOTTOM - 118;
   const px = (x) => L + ((x - xFrom) / (xTo - xFrom)) * (R - L);
   const py = (y) => BOT - ((y - yFrom) / (yTo - yFrom)) * (BOT - TOP);
 
@@ -54,15 +57,28 @@ export const CrossCurveCard = ({
     .map((p, i) => `${i ? 'L' : 'M'}${px(p[0]).toFixed(1)} ${py(p[1]).toFixed(1)}`)
     .join(' ');
 
-  // 끝점 라벨이 포개지는 걸 막는다. 두 계열의 끝값이 가까우면 아래를 민다
+  // ── 끝점 라벨 자리 ────────────────────────────────────────────────────
+  // 예전엔 62px 씩 밀었다. 그런데 주인공 계열의 덩어리는 이름(40px, 줄높이
+  // ~48) + 끝값(64px, ~72) = 120px 이다. 62 로 밀면 다음 계열 이름이 앞
+  // 계열의 끝값 위에 그대로 얹힌다 — #6 에서 '일본' 이 '37%' 를 덮어써서
+  // 글자가 겹쳐 찍혔다. 덩어리마다 제 높이로 띄운다
+  const blockH = (s) => 48 + (s.endLabel ? (s.hot ? 76 : 60) : 0);
+  const PADY = 22;
   const ends = series
-    .map((s, i) => ({i, s, y: py(s.points[s.points.length - 1][1])}))
+    .map((s, i) => ({i, s, h: blockH(s), y: py(s.points[s.points.length - 1][1])}))
     .sort((a, b) => a.y - b.y);
-  let prev = -1e9;
-  const endY = {};
+  const endTop = {};                       // 덩어리 윗머리
+  let floorY = TOP - 52;
   for (const e of ends) {
-    endY[e.i] = Math.max(e.y, prev + 62);
-    prev = endY[e.i];
+    endTop[e.i] = Math.max(e.y - 26, floorY);
+    floorY = endTop[e.i] + e.h + PADY;
+  }
+  // 아래로만 밀면 마지막 덩어리가 자막 안전선을 넘는다 — 넘친 만큼 되올린다
+  let ceilY = CONTENT_BOTTOM - 40;
+  for (let k = ends.length - 1; k >= 0; k--) {
+    const e = ends[k];
+    endTop[e.i] = Math.max(TOP - 52, Math.min(endTop[e.i], ceilY - e.h));
+    ceilY = endTop[e.i] - PADY;
   }
 
   return (
@@ -76,6 +92,19 @@ export const CrossCurveCard = ({
           const y = TOP + ((BOT - TOP) / 4) * i;
           return <line key={i} x1={L} y1={y} x2={R} y2={y}
                        stroke={T.ink} strokeWidth={1} opacity={0.09} />;
+        })}
+        {/* 눈금에 값을 적는다. 기울기만 보라고 숫자를 다 뺐더니 '37%' 가
+            판의 어디쯤인지 잴 데가 없었다 */}
+        {[...Array(5)].map((_, i) => {
+          const v = yTo - ((yTo - yFrom) / 4) * i;
+          const y = TOP + ((BOT - TOP) / 4) * i;
+          return (
+            <text key={'v' + i} x={L - 22} y={y + 9} textAnchor="end"
+                  fill={T.soft} opacity={0.75 * fadeIn(frame, 6)}
+                  style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26}}>
+              {Math.round(v)}
+            </text>
+          );
         })}
         <line x1={L} y1={BOT} x2={R} y2={BOT}
               stroke={T.ink} strokeWidth={LW.THIN} opacity={0.55} />
@@ -139,7 +168,7 @@ export const CrossCurveCard = ({
         const p = s.points[s.points.length - 1];
         return grow > 0.985 ? (
           <div key={i} style={{position: 'absolute', left: px(p[0]) + 26,
-                               top: endY[i] - 44, width: 260,
+                               top: endTop[i], width: 340,
                                opacity: fadeIn(frame, 0, 10)}}>
             <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: FS.LABEL,
                          color: s.hot ? T.ink : T.soft, letterSpacing: '-0.01em'}}>
@@ -173,7 +202,7 @@ export const CrossCurveCard = ({
       ) : null}
 
       {yUnit ? (
-        <div style={{position: 'absolute', left: L - 78, top: TOP - 46,
+        <div style={{position: 'absolute', left: L - 66, top: TOP - 48,
                      fontFamily: 'A2Z Light, sans-serif', fontSize: FS.MICRO,
                      color: T.soft, opacity: fadeIn(frame, 6)}}>
           {yUnit}

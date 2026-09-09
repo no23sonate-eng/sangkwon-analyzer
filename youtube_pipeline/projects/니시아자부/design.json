@@ -92,7 +92,7 @@
       "events": [
        {
         "at": 2026,
-        "label": "20% 도달",
+        "label": "21년 뒤",
         "hot": true
        }
       ]
@@ -212,7 +212,7 @@
     "series": [
      {
       "label": "일본",
-      "endLabel": "",
+      "endLabel": "36.3%",
       "points": [
        [
         2005,
@@ -1004,14 +1004,12 @@
      {
       "label": "법 기준선",
       "meters": 60,
-      "shape": "slab",
-      "note": "60m"
+      "shape": "slab"
      },
      {
       "label": "니시아자부",
       "meters": 125,
       "shape": "slab",
-      "note": "125m",
       "hot": true
      }
     ],

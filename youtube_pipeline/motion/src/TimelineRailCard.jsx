@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
 
@@ -29,13 +29,21 @@ export const TimelineRailCard = ({
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
+  // 쓸고 지나가는 앞머리가 컷이 끝날 때까지도 달리고 있으면, 사건 표식
+  // **옆에 노란 점이 하나 더** 서 있는 꼴이 된다 (#2 한국 레일).
+  // 쓸기를 컷 길이 안에서 끝낸다 — 마지막 0.7초는 완성된 판으로 둔다
+  const {durationInFrames} = useVideoConfig();
+  const SWEEP_END = Math.max(34, Math.min(74, durationInFrames - 22));
   const n = rails.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
 
   // 레일 이름이 있으면 왼쪽에 자리를 비우고, 이름이 없는 일정표는 화면 가운데로 편다.
   const hasLabel = rails.some((r) => r.label);
   const X0 = hasLabel ? 400 : 250, X1 = hasLabel ? 1780 : 1670;
-  const LIFT = (j) => 82 + ((j + 1) % 2) * 108;  // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침
+  // 사건 라벨 높이를 번갈아 — 가까운 사건끼리 안 겹침.
+  // 다만 레일이 여럿이면 **위 레일 선 위로 올라타면 안 된다.** 190px 을
+  // 그대로 쓰면 한국 레일의 라벨이 정확히 일본 레일 선 위에 앉는다 (#2).
+  // 레일 간격 안쪽으로 가둔다 (LIFT 는 ROW 를 안 뒤 아래에서 정의한다)
   const px = (y) => X0 + ((y - axis.from) / (axis.to - axis.from)) * (X1 - X0);
   // 축 라벨(top = AXIS_Y + 22, 34px)까지 자막 안전영역(CONTENT_BOTTOM) 위에 들어와야 한다
   const AXIS_Y = CONTENT_BOTTOM - 66;
@@ -50,6 +58,8 @@ export const TimelineRailCard = ({
                            AXIS_Y - RAIL_GAP - RAIL_H);
   const ROW = n === 1 ? 0 : RAIL_H / (n - 1);
   const railY = (i) => railTop + i * ROW;
+  const LIFT_CAP = n === 1 ? 1e4 : Math.max(76, ROW - 64);
+  const LIFT = (j) => Math.min(LIFT_CAP, 82 + ((j + 1) % 2) * 108);
 
   // ── 2026-09-08 · 제목과 사건 이름표가 겹치던 것 ─────────────────────────
   // 제목 자리를 stageTop(제목+레일높이+120) 으로 잡았는데, 레일이 하나뿐인
@@ -90,7 +100,7 @@ export const TimelineRailCard = ({
 
         {rails.map((r, i) => {
           const y = railY(i);
-          const SWEEP0 = 10 + i * 10, SWEEP1 = 74 + i * 10;
+          const SWEEP0 = 10 + i * 6, SWEEP1 = SWEEP_END + i * 6;
           const grow = interpolate(frame, [SWEEP0, SWEEP1], [0, 1],
                                    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
           const fill = r.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
@@ -109,9 +119,10 @@ export const TimelineRailCard = ({
                         stroke={T.ink} strokeWidth={LW.BODY} strokeLinecap="round" />
                   {/* 쓸고 지나가는 앞머리 — 시간이 '지금 여기까지 왔다' 를
                       한 점으로 보여 준다. 선만 자라면 길이가 변할 뿐 흐르지 않는다 */}
-                  {grow > 0.02 && grow < 0.995 ? (
+                  {grow > 0.02 && grow < 0.999 ? (
                     <circle cx={x0 + (x1 - x0) * grow} cy={y} r={9}
-                            fill={YELLOW} stroke={T.ink} strokeWidth={LW.THIN} />
+                            fill={YELLOW} stroke={T.ink} strokeWidth={LW.THIN}
+                            opacity={Math.max(0, Math.min(1, (0.94 - grow) / 0.1))} />
                   ) : null}
                 </>
               )}
@@ -174,7 +185,7 @@ export const TimelineRailCard = ({
                                    // 먼저 뜨면 어느 해를 가리키는지 알 수 없다
                                    opacity: fadeIn(frame,
                                      reachAt(px(e.at), px(r.from ?? axis.from), px(r.to ?? axis.to),
-                                             10 + i * 10, 74 + i * 10) + 2, 8)}}>
+                                             10 + i * 6, SWEEP_END + i * 6) + 2, 8)}}>
                 <div style={{fontFamily: e.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              fontSize: 36, color: T.ink, lineHeight: 1.2, wordBreak: 'keep-all'}}>
                   {/* 형광펜 위 글자는 늘 먹이다. 청사진 테마에서 T.ink 는
