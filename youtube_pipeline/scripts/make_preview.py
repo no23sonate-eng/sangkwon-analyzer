@@ -46,7 +46,9 @@ def main():
     if not files:
         sys.exit(f'{clips} 에 클립이 없다.')
 
-    lst = os.path.join(pdir, '_preview_list.txt')
+    # 파일명을 고정으로 두니 같은 프로젝트를 두 번 동시에 돌렸을 때
+    # 한쪽이 목록을 지워 다른 쪽이 os.remove 에서 죽었다. 실행마다 다르게
+    lst = os.path.join(pdir, f'_preview_list_{os.getpid()}.txt')
     with open(lst, 'w', encoding='utf-8') as f:
         for p in files:
             f.write(f"file '{p}'\n")
