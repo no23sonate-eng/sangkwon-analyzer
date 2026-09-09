@@ -805,7 +805,12 @@
     "rightLines": [
      "NTT 사택 부지"
     ],
-    "source": "R.E.port 2018"
+    "source": "R.E.port 2018 · 사진 파크웰스테이트 하마다야마 공식",
+    "bg": {
+     "backdrop": "니시아자부/hamadayama_entrance.jpg",
+     "veil": 0.9,
+     "blur": 2
+    }
    }
   ],
   "35": [
@@ -1394,7 +1399,11 @@
       "note": ""
      }
     ],
-    "source": "제국호텔 공식"
+    "source": "제국호텔 공식 · 사진 초대 제국호텔 (Wikimedia PD)",
+    "bg": {
+     "backdrop": "니시아자부/imperial_old.jpg",
+     "veil": 0.88
+    }
    }
   ],
   "71": [
@@ -1903,7 +1912,12 @@
      }
     ],
     "theme": "blueprint",
-    "source": "파크웰스테이트 니시아자부 medicalcare"
+    "source": "파크웰스테이트 니시아자부 medicalcare · 배경 게이오대학 히요시 캠퍼스 (Wikimedia CC BY-SA 4.0)",
+    "bg": {
+     "backdrop": "니시아자부/keio_campus.jpg",
+     "veil": 0.91,
+     "blur": 3
+    }
    }
   ],
   "107": [
@@ -1921,9 +1935,9 @@
     "rightLines": [
      "의료연계 등록"
     ],
-    "source": "파크웰스테이트 니시아자부 공식 · 배경은 게이오대학 히요시 캠퍼스 (Wikimedia CC BY-SA 4.0)",
+    "source": "파크웰스테이트 니시아자부 공식 · 배경 게이오대학병원 (Wikimedia CC0)",
     "bg": {
-     "backdrop": "니시아자부/keio_campus.jpg",
+     "backdrop": "니시아자부/keio_hospital.jpg",
      "veil": 0.9,
      "blur": 3
     }
@@ -1976,7 +1990,12 @@
      "웰네스가 운영하지 않는다"
     ],
     "caption": "미쓰이 공식 주석의 내용이다",
-    "source": "파크웰스테이트 니시아자부 공식"
+    "source": "파크웰스테이트 니시아자부 공식 · 사진 니시아자부 메디컬 클리닉 공식",
+    "bg": {
+     "backdrop": "니시아자부/keieikai_clinic_ext.jpg",
+     "veil": 0.9,
+     "blur": 2
+    }
    }
   ],
   "112": [
@@ -1995,7 +2014,12 @@
       "note": ""
      }
     ],
-    "source": "파크웰스테이트 니시아자부 공식"
+    "source": "파크웰스테이트 니시아자부 공식 · 사진 니시아자부 메디컬 클리닉 공식",
+    "bg": {
+     "backdrop": "니시아자부/keieikai_reception.jpg",
+     "veil": 0.88,
+     "blur": 2
+    }
    }
   ],
   "113": [
