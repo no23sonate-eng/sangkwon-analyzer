@@ -103,7 +103,10 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
                   )}
                 </span>
               ) : (
-                <NumberIn to={it.value ?? 0} start={14 + i * 12} dur={44}
+                // interpolate 만 맞추고 NumberIn 은 놓쳤었다 — 세는 숫자는
+                // 이쪽이라 #24·#193·#203 이 그대로 덜 자란 채 끝났다
+                <NumberIn to={it.value ?? 0} start={14 + i * 12}
+                          dur={Math.max(16, fitEnd(58 + i * 12) - (14 + i * 12))}
                           decimals={it.decimals ?? 0} unit={it.unit} unitSize={0.45}
                           size={it.hot ? hotSize : coldSize} color={T.ink} align="center"
                           underline={it.hot ? YELLOW : null} />

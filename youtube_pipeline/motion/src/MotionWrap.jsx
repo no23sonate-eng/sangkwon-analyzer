@@ -49,7 +49,12 @@ export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5}
   // 어두운 전면 실사 카드는 이름으로 고정한다.
   return (
     <MotionShell durationSec={durationSec} dir={dir} push={slow} enterF={enterF}
-                 punchAt={punchAt == null ? null : Math.round(punchAt * 30)}
+                 punchAt={punchAt == null ? null
+                          // 펀치 스프링은 22프레임이 필요하다. #220(2.2초)에
+                          // 1.6초를 찍었더니 2.33초에 끝나 **컷 밖으로 넘어갔다** —
+                          // 강조가 다 커지기 전에 화면이 바뀐다. 컷 안으로 당긴다
+                          : Math.min(Math.round(punchAt * 30),
+                                     Math.max(6, Math.round(durationSec * 30) - 26))}
                  punch={punch} exitF={move ? Math.round(exitSec * 30) : 0}
                  bg={bg || (DARK_CARDS.has(card) ? '#0b0e12' : themeOf(props.theme).bg)}>
       <C {...props} durationSec={durationSec} />

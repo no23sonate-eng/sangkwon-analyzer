@@ -164,7 +164,7 @@ export const StrikeSwapCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150,
                      top: noteTop, textAlign: center ? 'center' : 'left',
-                     opacity: fadeIn(frame, READ + STRIKE + 30),
+                     opacity: fadeIn(frame, fitEnd(READ + STRIKE + 44) - 14),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}

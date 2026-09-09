@@ -87,8 +87,11 @@ export const FloorStackCard = ({
   // **70프레임 안에 다 켠다** — 2.3초면 다섯 개가 차례로 서기에 충분하다
   const total = Math.max(30, Math.round(durationSec * 30));
   const zEnd = Math.min(62, total - 10);
-  const zAt = (i) => (zones.length < 2 ? Math.max(8, zEnd - 12)
-                      : Math.max(8, zEnd - (zones.length - 1 - i) * ((zEnd - 24) / (zones.length - 1))));
+  // 띠가 뜨는 시각. 마지막 띠와 그 라벨(+6, 12프레임)까지 컷 안이어야 한다 —
+  // #54 는 층이 넷이라 마지막 라벨이 컷을 넘겼다
+  const zEndFit = fitEnd(zEnd + 18) - 18;
+  const zAt = (i) => (zones.length < 2 ? Math.max(8, zEndFit - 12)
+                      : Math.max(8, zEndFit - (zones.length - 1 - i) * ((zEndFit - 24) / (zones.length - 1))));
 
   // ── 라벨 자리 ─────────────────────────────────────────────────────────
   // 아래로만 밀면 안 된다. 1·2·3·4층 띠는 바닥에 몰려 있어서, 겹치지 말라고
