@@ -96,3 +96,4 @@
 | `coffee_sunlit.jpg` | Pexels photo 18699459 | Pexels License | (표기 의무 없음) |
 | `apt_elevators.jpg` | Pexels photo 12407009 | Pexels License | (표기 의무 없음) |
 | `turnstile_entrance.jpg` | Pexels photo 33175809 | Pexels License | (표기 의무 없음) |
+| `tokyo_dome.jpg` | https://commons.wikimedia.org/wiki/File:Tokyo_Dome_2.jpg | Wikimedia Commons, **CC0** | `사진 Wikimedia · CC0` |
