@@ -22,6 +22,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -37,21 +38,25 @@ PHOTO_CARDS = {
 }
 
 
-def tail_frame(path, back):
-    """**끝에서부터** 센다.
+def tail_pair(path, tmp):
+    """마지막 프레임과 그 6프레임 앞을 꺼낸다.
 
-    처음엔 ffmpeg 이 말하는 길이에서 빼서(`길이-0.04`) 찾았다. 그런데 컨테이너
-    길이(2.26초)와 마지막으로 디코딩되는 프레임은 다르다 — 그 시점을 찾으면
-    빈 결과가 온다. 그리고 빈 결과를 `continue` 로 넘겼더니 **268컷이 전부
-    조용히 빠진 채 '끝까지 다 자란다'** 가 나왔다. 검사기가 못 재고도 통과를
-    말하면 없느니만 못하다. -sseof 로 끝에서 되짚는다."""
-    out = subprocess.run(
-        [FF, '-v', 'error', '-sseof', f'-{back:.3f}', '-i', str(path), '-frames:v', '1',
-         '-f', 'image2pipe', '-vcodec', 'png', '-'],
-        capture_output=True).stdout
-    if not out:
-        return None
-    return np.asarray(Image.open(io.BytesIO(out)).convert('L'), dtype=np.int16)
+    **시간으로 찾는 걸 그만뒀다.** 두 번 데었다:
+      · `길이-0.04` — 컨테이너 길이(2.26초)와 마지막으로 디코딩되는 프레임
+        (2.167초)이 다르다. 빈 결과가 온다
+      · `-sseof -0.05` — 이것도 컨테이너 끝에서 되짚으므로 똑같이 지나친다
+    끝 0.4초를 통째로 뽑아서 **나온 것 중 처음과 끝**을 쓴다. 길이가
+    무엇이라고 적혀 있든 상관없다.
+    """
+    for f in tmp.glob('*.png'):
+        f.unlink()
+    subprocess.run([FF, '-v', 'error', '-sseof', '-0.40', '-i', str(path),
+                    '-vsync', '0', str(tmp / 'f%03d.png')], capture_output=True)
+    fs = sorted(tmp.glob('*.png'))
+    if len(fs) < 2:
+        return None, None
+    rd = lambda q: np.asarray(Image.open(q).convert('L'), dtype=np.int16)
+    return rd(fs[0]), rd(fs[-1])
 
 
 def duration(path):
@@ -78,6 +83,7 @@ def main():
     if not clips:
         sys.exit(f'{pdir / "clips"} 에 클립이 없다 — 먼저 렌더해야 한다')
 
+    tmp = Path(tempfile.mkdtemp(prefix='settled_'))
     bad, skipped, seen = [], [], 0
     for f in clips:
         sid = int(re.match(r'sec(\d+)', f.name).group(1))
@@ -92,8 +98,7 @@ def main():
         if dur < 0.3:
             continue
         seen += 1
-        b = tail_frame(f, 0.05)
-        a2 = tail_frame(f, 0.22)
+        a2, b = tail_pair(f, tmp)
         if a2 is None or b is None:
             skipped.append(sid)          # 조용히 넘어가지 않는다
             continue
