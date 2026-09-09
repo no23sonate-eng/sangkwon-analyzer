@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, estW} from './paper';
 
 // ── 층 쌓기 ───────────────────────────────────────────────────────────────
 // 한 건물 안에서 **층이 곧 기능**인 곳을 그린다.
@@ -53,9 +53,18 @@ export const FloorStackCard = ({
   const bare = zones.length === 0;
   const TW = bare ? 420 : 320;
   const H_W = 290;                         // 왼쪽 높이표 칸 (라벨 250 + 사이 40)
-  const LAB_GAP = 118, LAB_W = 620;        // 이음선 + 오른쪽 이름표 칸
+  const LAB_GAP = 118;
+  // ── 2026-09-09 · 탑이 왼쪽으로 100~140px 쏠려 있었다 ────────────────────
+  // ① 층 이름이 없는 컷(bare)은 탑만 가운데 놓고, 왼쪽 높이표(125m·290px)는
+  //    그 밖에 매달았다. 눈에 보이는 덩어리는 높이표부터인데 계산에서 빠졌다
+  // ② 이름이 있는 컷은 오른쪽 이름표 칸을 620 으로 못 박아 뒀다. '4F TOKIORI'
+  //    처럼 짧은 이름이면 200px 넘게 비어 덩어리가 왼쪽으로 밀린다
+  // 둘 다 **잡아 둔 칸이 아니라 쓰는 폭**으로 다시 가운데 맞춘다
+  const LAB_W = bare ? 0 : Math.min(620, Math.max(300, 34 + Math.max(
+    0, ...zones.map((z) => Math.max(estW(z.label, FS.LABEL) + 74,
+                                    estW(z.note, FS.SMALL))))));
   const TX = bare
-    ? (1920 - TW) / 2
+    ? Math.round((1920 - (H_W + TW)) / 2) + H_W
     : Math.round((1920 - (H_W + TW + LAB_GAP + LAB_W)) / 2) + H_W;
   const yOfFloor = (f) => BOT - f * fH;    // f층 **바닥**
   const yOfM = (m) => BOT - m * mpp;

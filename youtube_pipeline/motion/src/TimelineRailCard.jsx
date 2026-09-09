@@ -44,7 +44,13 @@ export const TimelineRailCard = ({
   // 이름칸 + 사이 + 축을 한 덩어리로 재서 가운데에 놓고, 축은 좁혀서
   // 사건 사이 간격이 벌어져 보이게 한다
   const hasLabel = rails.some((r) => r.label);
-  const NAME_W = 330, NAME_GAP = 76;
+  // 이름 칸을 330 으로 못 박아 두니, '일본'·'모집' 처럼 두 글자짜리 컷은
+  // 왼쪽 220px 이 통째로 비고 레일이 화면 오른쪽으로 밀렸다 (#2·#223 은
+  // 148px 오른쪽으로 쏠려 있었다). 이름은 오른쪽 정렬이라 빈자리가
+  // 그대로 여백이 된다 — 제일 긴 이름에 맞춰 칸을 줄인다
+  const NAME_CH = Math.max(0, ...rails.map((r) => String(r.label || '').length));
+  const NAME_W = Math.min(430, Math.max(110, NAME_CH * 42 + 16));
+  const NAME_GAP = 76;
   const RAIL_W = hasLabel ? 1060 : 1300;
   const X0 = hasLabel
     ? Math.round((1920 - (NAME_W + NAME_GAP + RAIL_W)) / 2) + NAME_W + NAME_GAP
@@ -56,18 +62,15 @@ export const TimelineRailCard = ({
   // 레일 간격 안쪽으로 가둔다 (LIFT 는 ROW 를 안 뒤 아래에서 정의한다)
   const px = (y) => X0 + ((y - axis.from) / (axis.to - axis.from)) * (X1 - X0);
   // 축 라벨(top = AXIS_Y + 22, 34px)까지 자막 안전영역(CONTENT_BOTTOM) 위에 들어와야 한다
-  const AXIS_Y = CONTENT_BOTTOM - 66;
+  const AXIS_FLOOR = CONTENT_BOTTOM - 66;
   const headH = titleH(title, sub);
   // 레일 시작을 400 에 못 박아 두니 레일이 하나뿐인 컷은 화면 아래에
   // 홀로 떠 있고 위가 텅 비었다. 레일 묶음을 한 덩어리로 앉힌다
-  const RAIL_H = n === 1 ? 0 : Math.min(190, (AXIS_Y - 400) / (n - 1)) * (n - 1);
+  const RAIL_H = n === 1 ? 0 : Math.min(190, (AXIS_FLOOR - 400) / (n - 1)) * (n - 1);
   // 레일 묶음을 화면 가운데에 앉히면 아래 연도축과 멀어져 **둘이 다른
   // 그림처럼** 보인다. 연도축에서 한 뼘 위에 붙인다 (#48)
   const RAIL_GAP = 150;
-  const railTop = Math.max(headH + (title ? 64 : 0) + 190,
-                           AXIS_Y - RAIL_GAP - RAIL_H);
   const ROW = n === 1 ? 0 : RAIL_H / (n - 1);
-  const railY = (i) => railTop + i * ROW;
   const LIFT_CAP = n === 1 ? 1e4 : Math.max(76, ROW - 64);
   const LIFT = (j) => Math.min(LIFT_CAP, 82 + ((j + 1) % 2) * 108);
 
@@ -80,11 +83,25 @@ export const TimelineRailCard = ({
   const topRailLift = Math.max(
     0, ...(rails[0]?.events || []).map((_, j) => LIFT(j)));
   const topLabelH = (rails[0]?.events || []).some((e) => e.sub) ? 44 + 44 : 44;
+
+  // ── 2026-09-09 · 연표가 늘 화면 아래 절반에 있었다 ──────────────────────
+  // 연도축을 자막 안전선 바로 위(CONTENT_BOTTOM-66)에 **못 박아** 두고,
+  // 레일을 거기서 한 뼘 위에 붙였다. 그러니 위가 무조건 비었다 —
+  // check_balance 로 재 보니 #23·#47·#140·#223 넷 다 잉크가 452~896 에
+  // 몰려 있었다(160px 아래로 쏠림). 안전선은 **넘지 말아야 할 선**이지
+  // 붙어 있어야 할 선이 아니다.
+  // 이름표 머리부터 연도축 라벨 발까지를 한 덩어리로 재서 통째로 앉히고,
+  // 그래도 안전선을 넘을 때만 위로 끌어올린다
+  const headBlock = title ? headH + 72 : 0;
+  const railBlockH = topLabelH + topRailLift + RAIL_H;
+  const totalH = headBlock + railBlockH + RAIL_GAP + 56;
+  const stackTop = stageTop(totalH, {top: 130});
+  const AXIS_Y = Math.min(AXIS_FLOOR,
+                          stackTop + headBlock + railBlockH + RAIL_GAP);
+  const railTop = AXIS_Y - RAIL_GAP - RAIL_H;
+  const railY = (i) => railTop + i * ROW;
   const labelHead = railTop - topRailLift - topLabelH;
-  const titleTop = Math.max(
-    130,
-    Math.min(stageTop(headH + (title ? 64 : 0) + RAIL_H + 120, {top: 150}),
-             labelHead - headH - 72));
+  const titleTop = Math.max(130, Math.min(stackTop, labelHead - headH - 72));
 
   const ticks = [];
   for (let y = axis.from; y <= axis.to; y += axis.step) ticks.push(y);
@@ -97,7 +114,12 @@ export const TimelineRailCard = ({
       <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
         {/* 연도 눈금 — 세로 가이드가 먼저 깔린다 */}
         {ticks.map((y, i) => (
-          <line key={`t${i}`} x1={px(y)} y1={Math.max(300, labelHead + 10)} x2={px(y)} y2={AXIS_Y}
+          // 가이드 머리는 300 에 못 박혀 있었다. 연표를 가운데로 옮기니
+          // 이름표가 300 위로 올라가 가이드가 이름표를 뚫고 시작했다.
+          // 제목 아래에서 시작해 이름표 머리를 따라간다
+          <line key={`t${i}`} x1={px(y)}
+                y1={Math.max(titleTop + (title ? headH + 24 : 0), labelHead + 10)}
+                x2={px(y)} y2={AXIS_Y}
                 stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.14 * fadeIn(frame, 4)} />
         ))}
         {/* 축 */}

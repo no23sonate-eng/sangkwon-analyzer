@@ -1954,7 +1954,8 @@
     "items": [
      {
       "display": "24시간",
-      "unit": "365일",
+      "unit": "",
+      "label": "365일",
       "hot": true
      }
     ],
@@ -2660,11 +2661,11 @@
    "BigStatsCard",
    "설 — 그 값에 딸려 오는 것 ②",
    {
-    "title": "커피",
+    "title": "커피 리필",
     "items": [
      {
       "display": "무료",
-      "unit": "리필",
+      "unit": "",
       "hot": true
      }
     ],

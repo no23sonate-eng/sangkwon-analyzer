@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP, estW} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
@@ -104,7 +104,20 @@ export const RatioCard = ({
     : stageTop(titleH(title, sub) + 64 + 430, {top: 150}) + titleH(title, sub) + 64 + 215;
   // one 모드는 원을 왼쪽에 두고 오른쪽에 범례를 세운다. 원 아래에 라벨과
   // 수치를 다 깔면 캡션과 겹친다 (#22 가 그랬다)
-  const OCX = one ? 700 : 960;
+  // ── 2026-09-09 · one 모드가 오른쪽으로 198px 쏠려 있었다 ────────────────
+  // 원을 700 에, 범례를 1090 에 폭 700(→1790)으로 못 박아 뒀다. 범례 글자가
+  // 700 중 절반만 쓰면 오른쪽이 통째로 비어 원+범례 덩어리가 오른쪽으로
+  // 밀린다. 쓰는 폭으로 재서 둘을 다시 가운데 맞춘다
+  const LEG_GAP = 80;
+  const legUsed = one
+    ? Math.min(700, Math.max(320, 64 + Math.max(0, ...items.map((it) => Math.max(
+        estW(it.label, 42) + estW(it.sub, 35) + 60,
+        estW('00.0', 92) + estW(unit, 52))))))
+    : 0;
+  const OCX = one
+    ? Math.round((1920 - (R * 2 + LEG_GAP + legUsed)) / 2) + R
+    : 960;
+  const LEG_X = one ? OCX + R + LEG_GAP : 1090;
   const slot = one ? 1600 : Math.min(560, 1600 / n);
   const wedge = (cx, cy, pct) => {
     const a = 2 * Math.PI * Math.min(99.999, Math.max(0, pct)) / 100;
@@ -167,7 +180,7 @@ export const RatioCard = ({
         const y = CY - (n * rowH) / 2 + i * rowH;
         const c = it.hot ? YELLOW : T.tones[(i + 1) % T.tones.length];
         return (
-          <div key={i} style={{position: 'absolute', left: 1090, width: 700, top: y,
+          <div key={i} style={{position: 'absolute', left: LEG_X, width: legUsed, top: y,
                                opacity: fadeIn(frame, 24 + i * 10)}}>
             <div style={{display: 'flex', alignItems: 'baseline', gap: 18}}>
               <span style={{width: 22, height: 22, background: c, flex: '0 0 auto',
@@ -181,7 +194,8 @@ export const RatioCard = ({
               ) : null}
             </div>
             <div style={{marginLeft: 40, fontFamily: 'A2Z Medium, sans-serif', fontSize: 92,
-                         lineHeight: 1.05, color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
+                         lineHeight: 1.05, color: T.ink, whiteSpace: 'nowrap',
+                         fontVariantNumeric: 'tabular-nums'}}>
               {v.toFixed(it.decimals ?? 1)}<span style={{fontSize: 52}}>{unit}</span>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, SP} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, SP, estW} from './paper';
 
 // 점 격자 카드 — 숫자를 막대 길이가 아니라 **개수 그 자체**로 보여준다.
 // 청약 경쟁률(모집 대 접수)처럼 "몇 대 몇"이 셀 수 있는 양일 때, 점이 하나씩
@@ -145,7 +145,23 @@ export const DotMatrixCard = ({
   // 조금 줄여 틈을 벌린다 — 세라고 만든 판이니 알갱이가 떨어져 보여야 한다
   const R = Math.max(2.5, PITCH * 0.28);
   const blockW = nCol * PITCH;
-  const startX = side ? FIELD_L + FIELD_W / 2 : (1920 - slot * n) / 2 + slot / 2;
+  // ── 2026-09-09 · 점판이 왼쪽으로 140px 쏠려 있었다 ──────────────────────
+  // 점판은 FIELD(190~1030) 한가운데, 범례는 1120 에서 폭 620 으로 잡아 뒀다.
+  // 둘을 합친 자리(190~1740)는 화면 가운데지만, 범례 글자가 620 중 300만
+  // 쓰면 오른쪽 320 이 통째로 빈다. **잡아 둔 칸이 아니라 쓰는 폭**으로
+  // 둘을 다시 가운데 맞춘다
+  const legUsed = side
+    ? Math.min(LEG_W, Math.max(260, 66 + Math.max(
+        0, ...groups.map((g) => Math.max(
+          estW(g.label, 44),
+          estW(String((g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value), 96)
+            + estW(unit, 52),
+          estW(g.sub, 35))))))
+    : 0;
+  const PAIR_GAP = 130;
+  const pairL = side ? Math.round((1920 - (blockW + PAIR_GAP + legUsed)) / 2) : 0;
+  const startX = side ? pairL + blockW / 2 : (1920 - slot * n) / 2 + slot / 2;
+  const legX = side ? pairL + blockW + PAIR_GAP : LEG_L;
   // 그룹마다 행 수가 달라도 수치·라벨은 **가장 큰 격자 아래 한 줄**에 맞춘다.
   // 제각각 높이에 두면 격자 크기 차이가 아니라 배치 실수처럼 보인다.
   const maxRows = merge
@@ -215,7 +231,7 @@ export const DotMatrixCard = ({
       {/* 범례를 오른쪽에 세로로 — 위에서 아래로 groups 순서 그대로.
           점 색을 그대로 앞에 찍어 어느 색이 무엇인지 글자 없이 잇는다 */}
       {side ? (
-        <div style={{position: 'absolute', left: LEG_L, width: LEG_W,
+        <div style={{position: 'absolute', left: legX, width: legUsed,
                      top: FIELD_MID, transform: 'translateY(-50%)'}}>
           {groups.map((g, gi) => (
             <div key={gi} style={{marginTop: gi ? SP.BAND : 0,
@@ -230,9 +246,12 @@ export const DotMatrixCard = ({
                 <div style={{fontFamily: g.hot ? 'A2Z Medium, sans-serif' : 'A2Z Regular, sans-serif',
                              fontSize: 44, color: T.ink, wordBreak: 'keep-all'}}>{g.label}</div>
               </div>
+              {/* 수치와 단위는 **한 줄이다.** 칸을 좁히자 '282 / 명' 으로
+                  접혀서, 자리를 고친 게 오히려 더 나빠졌다 (#219·#237) */}
               <div style={{marginTop: SP.TIGHT, marginLeft: 42,
                            fontFamily: 'A2Z Medium, sans-serif', fontSize: 96, color: T.ink,
                            lineHeight: 1.02, letterSpacing: '-0.02em',
+                           whiteSpace: 'nowrap',
                            fontVariantNumeric: 'tabular-nums'}}>
                 {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
                 <span style={{fontSize: 52, marginLeft: 4}}>{unit}</span>

@@ -93,6 +93,20 @@ export const titleBottom = (title, sub, align = 'center') => {
   return top + line + (sub ? 62 : 0);
 };
 
+// ── 글자 폭 어림 ──────────────────────────────────────────────────────────
+// 자리를 정할 때는 아직 글자가 안 그려져 있어서 실제 폭을 못 잰다. 그래서
+// 카드마다 `LEG_W = 620` 처럼 넉넉한 칸을 잡아 두는데, 내용이 그 절반만
+// 쓰면 남은 절반이 통째로 여백이 되고 그림이 반대쪽으로 밀린다 —
+// 점판(#219·#237)이 140px, 원(#250)이 198px 왼쪽/오른쪽으로 쏠려 있었다.
+// 한글·한자·가나는 한 칸, 나머지는 0.55칸으로 세면 실측과 5% 안쪽이다
+export const estW = (s, size) => {
+  let u = 0;
+  for (const ch of String(s ?? '')) {
+    u += /[　-鿿가-힯＀-｠]/.test(ch) ? 1 : 0.62;
+  }
+  return u * size;
+};
+
 export const stageTop = (h, {top = 120, bottom = CONTENT_BOTTOM} = {}) => {
   let y = Math.round(OPTICAL_CENTER - h / 2);
   if (y + h > bottom) y = bottom - h;      // 아래로 넘치면 끌어올린다
