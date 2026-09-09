@@ -212,7 +212,9 @@ export const FloorStackCard = ({
                     stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
               <line x1={x - 19} y1={BOT - hh} x2={x - 19} y2={BOT}
                     stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
-              <text x={x - 34} y={BOT + 44} textAnchor="end" fill={T.soft}
+              {/* 선에서 띄우되 자막선은 넘지 않는다 — 44 를 그냥 더했더니
+                  바닥이 낮은 컷(#55·#62)에서 13px 넘어갔다 */}
+              <text x={x - 34} y={Math.min(BOT + 44, CONTENT_BOTTOM - 10)} textAnchor="end" fill={T.soft}
                     style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29}}>
                 사람 1.7m
               </text>

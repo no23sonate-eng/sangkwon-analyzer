@@ -69,6 +69,15 @@ def check(project, verbose=False):
         e = edges(Image.open(f))
         h, w = e.shape
         hits = []
+        # ── punch 를 준 컷은 화면 전체가 커진다 ────────────────────────────
+        # 3.5% 를 키우면 오른쪽 위 출처 줄이 1876 → 1908 로 32px 밀린다.
+        # **잘리는 게 아니다** — 카메라가 밀고 들어오면 출처도 같이 밀리는 게
+        # 맞다. 가장자리 잣대는 '내용이 잘렸나'를 보는 것이므로, 커진 만큼
+        # 잣대도 물려 준다. 안 그러면 강조를 넣을 때마다 검사기가 운다
+        pu = float(((dz[2] if len(dz) > 2 and isinstance(dz[2], dict) else {})
+                    .get('_motion') or {}).get('punch', 0.035)) \
+            if (dz[2] if len(dz) > 2 and isinstance(dz[2], dict) else {}).get('_motion', {}).get('punchAt') is not None else 0.0
+        edge = EDGE - round(960 * pu) if pu else EDGE
 
         band = e[SAFE_BOTTOM:, :]
         n = int((band > GRAD).sum())
@@ -77,7 +86,7 @@ def check(project, verbose=False):
             deep = SAFE_BOTTOM + int(rows.max()) if len(rows) else SAFE_BOTTOM
             hits.append(f'자막선 {deep - SAFE_BOTTOM}px 침범 ({n}점)')
 
-        for name, sl in (('왼쪽', e[:, :EDGE]), ('오른쪽', e[:, w - EDGE:])):
+        for name, sl in (('왼쪽', e[:, :max(4, edge)]), ('오른쪽', e[:, w - max(4, edge):])):
             n = int((sl > GRAD).sum())
             if n > 200:
                 hits.append(f'{name} 가장자리 ({n}점)')
