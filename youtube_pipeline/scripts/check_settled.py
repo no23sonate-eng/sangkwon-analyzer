@@ -35,6 +35,8 @@ PHOTO_CARDS = {
     'StageCard', 'ArchiveCard', 'PhotoSplitCard', 'FullBleedCard', 'MediaPlateCard',
     'PaperImageCard', 'SectionPhotoCard', 'AnnotatedShotCard', 'BeforeAfterCard',
     'PhotoStepsCard', 'TwoPanelCard', 'SplitProofCard',
+    # 지도는 5초에 걸친 느린 밀기가 설계다 — 사진의 느린 줌과 같다
+    'MapCard', 'GeoMapCard',
 }
 
 

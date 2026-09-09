@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
+import {PaperBg, PaperTitle, PaperSource, themeOf, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, useFitEnd} from './paper';
 import {fit} from './layout';
 
 // ── 값이 갈아치워지는 카드 ────────────────────────────────────────────────
@@ -35,15 +35,22 @@ export const StrikeSwapCard = ({
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const fitEnd = useFitEnd();
   const T = themeOf(theme);
   const center = align !== 'left';
 
   const READ = 26;                       // 옛 값을 읽는 시간
   const STRIKE = 16;                     // 선이 그어지는 시간
-  const strike = interpolate(frame, [READ, READ + STRIKE], [0, 1],
+  // 옛 값 읽기 → 선 긋기 → 새 값 올라오기. 다 합치면 68프레임(2.27초)인데
+  // #91 은 2.1초다 — 새 값이 다 올라오기 전에 컷이 끝났다. 짧은 컷에서는
+  // 사다리 전체를 앞으로 당긴다
+  const END = fitEnd(READ + STRIKE + 26);
+  const riseFrom = Math.max(READ + 6, END - 22);
+  const strikeEnd = Math.min(READ + STRIKE, riseFrom - 4);
+  const strike = interpolate(frame, [Math.min(READ, strikeEnd - 6), strikeEnd], [0, 1],
                              {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const s2 = strike * strike * (3 - 2 * strike);
-  const rise = interpolate(frame, [READ + STRIKE + 4, READ + STRIKE + 26], [0, 1],
+  const rise = interpolate(frame, [riseFrom, END], [0, 1],
                            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const r2 = rise * rise * (3 - 2 * rise);
 

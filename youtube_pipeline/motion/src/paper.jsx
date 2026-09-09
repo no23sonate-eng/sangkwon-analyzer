@@ -1,5 +1,5 @@
 import React from 'react';
-import {Img, OffthreadVideo, staticFile, useCurrentFrame} from 'remotion';
+import {Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 
 // ── 종이 설명 그래픽 공통 토큰 (2026-08-02, Billionaires' Row 레퍼런스) ──
 // B1M의 "밝은 종이 + 그리드 + 플랫 실루엣" 설명 문법을 채널 팔레트로 번역:
@@ -105,6 +105,22 @@ export const estW = (s, size) => {
     u += /[　-鿿가-힯＀-｠]/.test(ch) ? 1 : 0.62;
   }
   return u * size;
+};
+
+// ── 컷 길이에 일정을 맞춘다 ────────────────────────────────────────────────
+// 카드들은 저마다 `interpolate(frame, [16, 70], …)` 처럼 **프레임 수를 손으로
+// 적어** 일정을 짠다. 그런데 컷 길이는 대본 줄 길이가 정한다. #220 은 값이
+// 42.6% 인데 컷이 2.2초(66프레임)라, 카운트업이 70프레임에서 끝나도록
+// 짜여 있어 **화면에 40.9% 로 끝났다.** 틀린 수가 나간 것이다.
+//
+// 검수 시트로는 못 잡는다 — 스틸은 프레임 78 을 굽는데 그건 이 컷에
+// 존재하지도 않는 시점이라, 시트에서는 42.6% 로 멀쩡히 보인다.
+//
+// 컷이 짧으면 끝을 앞으로 당긴다. tail 은 다 자란 것을 보여 줄 여유다 —
+// 마지막 프레임에 겨우 도착하면 도착한 걸 못 본다.
+export const useFitEnd = () => {
+  const {durationInFrames} = useVideoConfig();
+  return (end, tail = 8) => Math.min(end, Math.max(14, durationInFrames - tail));
 };
 
 export const stageTop = (h, {top = 120, bottom = CONTENT_BOTTOM} = {}) => {

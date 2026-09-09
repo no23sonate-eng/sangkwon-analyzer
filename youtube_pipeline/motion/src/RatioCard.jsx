@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP, estW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, PaperCaption, SP, estW, useFitEnd} from './paper';
 
 // 비율 비교 카드 — B1M "큰 원 하나로 비중" 문법.
 // items:[{label, pct, sub, hot}] — 원 안이 pct 만큼 채워지고 숫자 카운트업.
@@ -16,6 +16,7 @@ export const RatioCard = ({
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
+  const fitEnd = useFitEnd();
   const n = items.length;
 
   if (mode === 'bar') {
@@ -33,7 +34,7 @@ export const RatioCard = ({
         <PaperTitle title={title} sub={sub} theme={theme} align={align} />
         <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0}}>
           {items.map((it, i) => {
-            const v = interpolate(frame, [14 + i * 10, 66 + i * 10], [0, it.pct ?? 0],
+            const v = interpolate(frame, [14 + i * 10, fitEnd(66 + i * 10)], [0, it.pct ?? 0],
                                   {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
             const y = rowY(i);
             return (
@@ -46,7 +47,7 @@ export const RatioCard = ({
           })}
         </svg>
         {items.map((it, i) => {
-          const v = interpolate(frame, [14 + i * 10, 66 + i * 10], [0, it.pct ?? 0],
+          const v = interpolate(frame, [14 + i * 10, fitEnd(66 + i * 10)], [0, it.pct ?? 0],
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
           const y = rowY(i);
           return (
@@ -135,7 +136,7 @@ export const RatioCard = ({
             {[...items].map((it, i) => ({it, i}))
               .sort((a, b) => (b.it.pct ?? 0) - (a.it.pct ?? 0))
               .map(({it, i}) => {
-                const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
+                const v = interpolate(frame, [16 + i * 10, fitEnd(70 + i * 10)], [0, it.pct ?? 0],
                                       {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
                 return (
                   <g key={i}>
@@ -154,7 +155,7 @@ export const RatioCard = ({
         ) : items.map((it, i) => {
           const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;
           const cy = CY;
-          const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
+          const v = interpolate(frame, [16 + i * 10, fitEnd(70 + i * 10)], [0, it.pct ?? 0],
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
           return (
             <g key={i}>
@@ -174,7 +175,7 @@ export const RatioCard = ({
           예전엔 라벨을 288px 에 못 박고 수치를 원 아래에 깔았는데, 라벨 상자
           너비가 1600 이라 둘이 겹치고 수치는 캡션을 밟았다 (#22) */}
       {one ? items.map((it, i) => {
-        const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
+        const v = interpolate(frame, [16 + i * 10, fitEnd(70 + i * 10)], [0, it.pct ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         const rowH = 212;
         const y = CY - (n * rowH) / 2 + i * rowH;
@@ -202,7 +203,7 @@ export const RatioCard = ({
         );
       }) : items.map((it, i) => {
         const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;
-        const v = interpolate(frame, [16 + i * 10, 70 + i * 10], [0, it.pct ?? 0],
+        const v = interpolate(frame, [16 + i * 10, fitEnd(70 + i * 10)], [0, it.pct ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
           <React.Fragment key={i}>

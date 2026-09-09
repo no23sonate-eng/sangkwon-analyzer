@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW, titleBottom} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, NumberIn, ValueChip, YELLOW, CONTENT_BOTTOM, fadeIn, SP, stageTop, titleH, LW, titleBottom, useFitEnd} from './paper';
 
 // 큰 수치만 남긴 카드 — 도형을 걷어내고 숫자 2~3개로 끝낸다.
 // 격자·막대가 오히려 지저분해지는 구간에서 쓴다.
@@ -13,6 +13,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
   useA2ZFonts();
   const T = themeOf(theme);
   const frame = useCurrentFrame();
+  const fitEnd = useFitEnd();
   const n = items.length;
   if (!n) return <AbsoluteFill><PaperBg theme={theme} {...bg} /></AbsoluteFill>;
   const slot = Math.min(720, 1680 / n);
@@ -68,7 +69,7 @@ export const BigStatsCard = ({title = '', sub = '', items = [], source = '', cap
         ))}
       </svg>
       {items.map((it, i) => {
-        const v = interpolate(frame, [14 + i * 12, 62 + i * 12], [0, it.value ?? 0],
+        const v = interpolate(frame, [14 + i * 12, fitEnd(62 + i * 12)], [0, it.value ?? 0],
                               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
         return (
           <div key={i} style={{position: 'absolute', left: startX + i * slot, width: slot, top: TOPY,

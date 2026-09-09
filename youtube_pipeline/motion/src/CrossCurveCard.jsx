@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, useFitEnd} from './paper';
 
 // ── 교차 곡선 ─────────────────────────────────────────────────────────────
 // 두 값이 시간 위에서 **자리를 바꾸는** 순간을 그린다.
@@ -35,6 +35,7 @@ export const CrossCurveCard = ({
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const fitEnd = useFitEnd();
   const T = themeOf(theme);
 
   // 판. 아래는 자막 안전선(904)에서 캡션 두 줄을 빼고 잡는다
@@ -46,7 +47,7 @@ export const CrossCurveCard = ({
   const py = (y) => BOT - ((y - yFrom) / (yTo - yFrom)) * (BOT - TOP);
 
   // 선이 자라는 구간. 26프레임(0.87초)이면 눈이 왼쪽부터 따라간다
-  const grow = interpolate(frame, [10, 62], [0, 1],
+  const grow = interpolate(frame, [10, fitEnd(62)], [0, 1],
                            {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const crossX = cross ? (cross.x - xFrom) / (xTo - xFrom) : 1;
   // 교차 표식은 선이 그 지점을 **지난 뒤에** 선다. 미리 서 있으면

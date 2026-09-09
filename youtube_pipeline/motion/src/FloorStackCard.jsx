@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, estW} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, estW, useFitEnd} from './paper';
 
 // ── 층 쌓기 ───────────────────────────────────────────────────────────────
 // 한 건물 안에서 **층이 곧 기능**인 곳을 그린다.
@@ -36,6 +36,10 @@ export const FloorStackCard = ({
 }) => {
   useA2ZFonts();
   const frame = useCurrentFrame();
+  const fitEnd = useFitEnd();
+  // 페이드가 **끝나는** 프레임을 컷 안으로 당기고 시작을 거기서 되짚는다.
+  // #54 는 층 이름표 넷이 98프레임에 끝나도록 짜여 있는데 컷은 84프레임이다
+  const fadeAt = (s, l = 14) => fitEnd(s + l) - l;
   const T = themeOf(theme);
 
   const BOT = CONTENT_BOTTOM - 34;
@@ -164,7 +168,7 @@ export const FloorStackCard = ({
         {markM.map((m, i) => {
           const y = yOfM(m.m);
           return (
-            <g key={i} opacity={fadeIn(frame, 62 + i * 8, 12)}>
+            <g key={i} opacity={fadeIn(frame, fadeAt(62 + i * 8, 12), 12)}>
               <line x1={TX - 96} y1={y} x2={1500} y2={y}
                     stroke={T.ink} strokeWidth={LW.THIN} strokeDasharray="10 8" opacity={0.62} />
             </g>
@@ -189,7 +193,7 @@ export const FloorStackCard = ({
         {human ? (() => {
           const hh = Math.max(6, 1.7 * mpp), x = TX - 52;
           return (
-            <g opacity={fadeIn(frame, 44, 14)}>
+            <g opacity={fadeIn(frame, fadeAt(44), 14)}>
               <circle cx={x} cy={BOT - hh * 0.86} r={Math.max(2.2, hh * 0.16)} fill={T.ink} />
               <line x1={x} y1={BOT - hh * 0.66} x2={x} y2={BOT}
                     stroke={T.ink} strokeWidth={2.4} strokeLinecap="round" />
@@ -235,7 +239,7 @@ export const FloorStackCard = ({
       {/* 높이 기준선 라벨 — 선 위에 얹는다 */}
       {markM.map((m, i) => (
         <div key={i} style={{position: 'absolute', left: TX - 96, top: yOfM(m.m) - 44,
-                             width: 420, opacity: fadeIn(frame, 64 + i * 8, 12)}}>
+                             width: 420, opacity: fadeIn(frame, fadeAt(64 + i * 8, 12), 12)}}>
           <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: FS.SMALL,
                        color: T.soft, wordBreak: 'keep-all'}}>{m.label}</div>
         </div>
