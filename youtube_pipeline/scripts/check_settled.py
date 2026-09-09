@@ -37,9 +37,16 @@ PHOTO_CARDS = {
 }
 
 
-def frame_at(path, t):
+def tail_frame(path, back):
+    """**끝에서부터** 센다.
+
+    처음엔 ffmpeg 이 말하는 길이에서 빼서(`길이-0.04`) 찾았다. 그런데 컨테이너
+    길이(2.26초)와 마지막으로 디코딩되는 프레임은 다르다 — 그 시점을 찾으면
+    빈 결과가 온다. 그리고 빈 결과를 `continue` 로 넘겼더니 **268컷이 전부
+    조용히 빠진 채 '끝까지 다 자란다'** 가 나왔다. 검사기가 못 재고도 통과를
+    말하면 없느니만 못하다. -sseof 로 끝에서 되짚는다."""
     out = subprocess.run(
-        [FF, '-v', 'error', '-ss', f'{t:.3f}', '-i', str(path), '-frames:v', '1',
+        [FF, '-v', 'error', '-sseof', f'-{back:.3f}', '-i', str(path), '-frames:v', '1',
          '-f', 'image2pipe', '-vcodec', 'png', '-'],
         capture_output=True).stdout
     if not out:
@@ -71,7 +78,7 @@ def main():
     if not clips:
         sys.exit(f'{pdir / "clips"} 에 클립이 없다 — 먼저 렌더해야 한다')
 
-    bad, seen = [], 0
+    bad, skipped, seen = [], [], 0
     for f in clips:
         sid = int(re.match(r'sec(\d+)', f.name).group(1))
         row = design.get(str(sid)) or ['', '', {}]
@@ -85,15 +92,18 @@ def main():
         if dur < 0.3:
             continue
         seen += 1
-        b = frame_at(f, dur - 0.04)
-        a2 = frame_at(f, dur - 0.20)
+        b = tail_frame(f, 0.05)
+        a2 = tail_frame(f, 0.22)
         if a2 is None or b is None:
+            skipped.append(sid)          # 조용히 넘어가지 않는다
             continue
         diff = int((np.abs(a2.astype(np.int32) - b.astype(np.int32)) > 24).sum())
         if diff > a.tol:
             bad.append((sid, card, dur, diff))
 
     print(f'{a.project} — 그래픽 컷 {seen}개 검사')
+    if skipped:
+        print(f'  ⚠ 못 잰 컷 {len(skipped)}개: {skipped[:12]} — 이건 통과가 아니다')
     if not bad:
         print('  끝까지 다 자란다')
         return 0
