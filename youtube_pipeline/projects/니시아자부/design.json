@@ -2501,19 +2501,13 @@
    }
   ],
   "138": [
-   "StrikeSwapCard",
-   "설 — 같이 흔들리느냐 따로 흔들리느냐. 여기가 원리다",
+   "StageCard",
+   "설 — 심주가 탑과 따로 흔들린다. 글자로 적던 원리를 움직임이 말한다 (생성 도해)",
    {
-    "from": "탑과 같이",
-    "fromLabel": "보통 구조",
-    "to": "심주는 따로",
-    "toLabel": "스카이트리",
-    "theme": "ink",
-    "source": "도쿄 스카이트리 공식 · 배경 Pexels",
-    "bg": {
-     "backdrop": "니시아자부/concrete_column.jpg",
-     "veil": 0.8
-    }
+    "media": "니시아자부/core_column_sway.mp4",
+    "lines": [],
+    "scrim": 0.0,
+    "source": "도해 — 생성형(Higgsfield) · 실제 도면 아님"
    }
   ],
   "139": [

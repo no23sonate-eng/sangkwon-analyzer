@@ -91,3 +91,4 @@
 | `documents_closeup.jpg` | Pexels photo 6929030 | Pexels License | (표기 의무 없음) |
 | `hospital_building.jpg` | Pexels photo 19447467 | Pexels License | (표기 의무 없음) |
 | `park_grass_city.jpg` | Pexels photo 20074182 | Pexels License | (표기 의무 없음) |
+| `core_column_sway.mp4` | 생성형 (Higgsfield · seedance_2_5) | 심주 제진 개념 도해 — 실존 구조 도면이 아님 | `도해 — 생성형(Higgsfield) · 실제 도면 아님` |
