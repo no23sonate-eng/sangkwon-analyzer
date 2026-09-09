@@ -122,9 +122,14 @@ export const DotMatrixCard = ({
   // 라벨 자리는 필요 없어져 높이를 다 쓴다
   const FIELD_L = 190, FIELD_W = 840;                 // 왼쪽 점판이 쓰는 자리
   const LEG_L = 1120, LEG_W = 620;                    // 오른쪽 범례
-  const bandTop = title ? 330 : 210;
+  // 캡션이 점판 **위**에 오는 판이다. 점판이 캡션에 붙으면 둘이 한 덩어리로
+   // 뭉쳐 읽힌다 — 캡션 자리(46)와 그 아래 숨 쉴 틈을 미리 뺀다
+  const capH = caption ? 46 + SP.BAND : 0;
+  const bandTop = (title ? 330 : 210) + capH;
   const slot = side ? FIELD_W : Math.min(760, 1560 / n);
-  const AVAIL_H = CONTENT_BOTTOM - bandTop - (side ? 20 : 96);   // 아래 수치·라벨 자리
+  // 점 개수는 그대로 두고 **판을 작게** 만든다. 개수가 곧 뜻이라 뺄 수 없지만
+  // 화면을 꽉 채울 이유도 없다 — 아래로도 여유를 남긴다
+  const AVAIL_H = CONTENT_BOTTOM - bandTop - (side ? 96 : 96);
   const dotsAll = groups.reduce((s, g) => s + Math.max(1, Math.round(g.value / perDot)), 0);
   const maxDots = Math.max(...groups.map((g) => Math.max(1, Math.round(g.value / perDot))));
   // **merge 면 이어 붙인 전체 개수로 재야 한다.** 예전엔 가장 큰 그룹(590)
@@ -248,7 +253,7 @@ export const DotMatrixCard = ({
               </div>
               {/* 수치와 단위는 **한 줄이다.** 칸을 좁히자 '282 / 명' 으로
                   접혀서, 자리를 고친 게 오히려 더 나빠졌다 (#219·#237) */}
-              <div style={{marginTop: SP.TIGHT, marginLeft: 42,
+              <div style={{marginTop: SP.NEAR, marginLeft: 42,
                            fontFamily: 'A2Z Medium, sans-serif', fontSize: 96, color: T.ink,
                            lineHeight: 1.02, letterSpacing: '-0.02em',
                            whiteSpace: 'nowrap',
@@ -257,7 +262,7 @@ export const DotMatrixCard = ({
                 <span style={{fontSize: 52, marginLeft: 4}}>{unit}</span>
               </div>
               {g.sub ? (
-                <div style={{marginTop: 6, marginLeft: 42, fontFamily: 'A2Z Light, sans-serif',
+                <div style={{marginTop: SP.TIGHT, marginLeft: 42, fontFamily: 'A2Z Light, sans-serif',
                              fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>{g.sub}</div>
               ) : null}
             </div>
@@ -283,14 +288,15 @@ export const DotMatrixCard = ({
                          fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>
               {g.label}
             </div>
-            <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Medium, sans-serif',
+            {/* 이름 바로 아래 76px 숫자를 8px 띄워 놓으니 둘이 붙어 읽힌다 */}
+            <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Medium, sans-serif',
                          fontSize: 76, color: T.ink,
                          lineHeight: 1.05, fontVariantNumeric: 'tabular-nums'}}>
               {(g.display ?? g.value).toLocaleString?.() ?? g.display ?? g.value}
               <span style={{fontSize: 46, marginLeft: 4}}>{unit}</span>
             </div>
             {g.sub ? (
-              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
+              <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
                 {g.sub}
               </div>
             ) : null}
@@ -299,7 +305,7 @@ export const DotMatrixCard = ({
       })}
 
       {caption ? (
-        <div style={{position: 'absolute', left: 0, width: 1920, top: TOP - 62, textAlign: 'center',
+        <div style={{position: 'absolute', left: 0, width: 1920, top: TOP - 96, textAlign: 'center',
                      opacity: fadeIn(frame, 10), fontFamily: 'A2Z Light, sans-serif',
                      fontSize: 35, color: T.soft, letterSpacing: '0.04em'}}>
           {caption}

@@ -116,7 +116,9 @@ export const FloorStackCard = ({
   }
   // ② 아래에서 위로 — 마지막 덩어리 **바닥**이 자막 안전선 안에 들어와야 한다.
   // ①만 돌리면 바닥에 몰린 띠(1·2·3·4층) 라벨이 줄줄이 화면 밖으로 나간다
-  let ceil0 = CONTENT_BOTTOM;
+  // 천장은 자막 안전선이 아니라 **바닥선**이다. 라벨이 그 아래로 내려가면
+  // 탑이 서 있는 땅을 그린 선이 글자를 관통한다 (#54 '의료법인사단 게이에이카이')
+  let ceil0 = Math.min(CONTENT_BOTTOM, BOT - 18);
   for (let k = order.length - 1; k >= 0; k--) {
     const e = order[k];
     top[e.i] = Math.max(HI - 34, Math.min(top[e.i], ceil0 - e.h));
@@ -139,7 +141,10 @@ export const FloorStackCard = ({
         </defs>
 
         {/* 지반선 */}
-        <line x1={TX - 130} y1={BOT} x2={Math.min(1800, TX + TW + LAB_GAP + 420)} y2={BOT}
+        {/* 바닥선을 라벨 칸까지 끌고 갔더니 맨 아래 층 주석(‘의료법인사단
+            게이에이카이’)을 **관통했다.** 이 선은 탑이 서 있는 땅이지
+            라벨 밑줄이 아니다 — 탑에서 한 뼘만 더 나간다 */}
+        <line x1={TX - 130} y1={BOT} x2={TX + TW + 44} y2={BOT}
               stroke={T.ink} strokeWidth={LW.THIN} opacity={0.5} />
 
         <g clipPath="url(#fs-grow)">
@@ -207,7 +212,7 @@ export const FloorStackCard = ({
                     stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
               <line x1={x - 19} y1={BOT - hh} x2={x - 19} y2={BOT}
                     stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
-              <text x={x - 34} y={BOT + 30} textAnchor="end" fill={T.soft}
+              <text x={x - 34} y={BOT + 44} textAnchor="end" fill={T.soft}
                     style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29}}>
                 사람 1.7m
               </text>
