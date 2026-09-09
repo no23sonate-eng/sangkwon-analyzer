@@ -844,7 +844,12 @@
     "rightLines": [
      "시설 운영"
     ],
-    "source": "파크웰스테이트 니시아자부 공식"
+    "source": "파크웰스테이트 니시아자부 공식 · 배경 Pexels",
+    "bg": {
+     "backdrop": "니시아자부/office_tower_glass.jpg",
+     "veil": 0.92,
+     "blur": 3
+    }
    }
   ],
   "38": [
@@ -1340,7 +1345,9 @@
     ],
     "caption": "두 호텔의 자리를 견주기 위한 비유다",
     "theme": "ink",
-    "source": "제국호텔 공식"
+    "source": "제국호텔 도쿄 · 신라호텔 사진 Wikimedia (CC0 · CC BY 2.0)",
+    "leftImage": "니시아자부/hibiya_imperial.jpg",
+    "rightImage": "니시아자부/shilla_hotel.jpg"
    }
   ],
   "67": [
@@ -1478,9 +1485,13 @@
    {
     "quote": "세탁을 맡기고 싶다. 도쿄 제국호텔에서 해주는 것 같은…",
     "theme": "ink",
-    "source": "일본 보도 인용 · 우리말 옮김",
+    "source": "일본 보도 인용 · 우리말 옮김 · 사진 Wikimedia CC BY-SA 4.0",
     "name": "키아누 리브스",
-    "role": "영화 「JM」 · 촬영 중 애드립"
+    "role": "영화 「JM」 · 촬영 중 애드립",
+    "bg": {
+     "backdrop": "니시아자부/keanu_reeves.jpg",
+     "veil": 0.84
+    }
    }
   ],
   "77": [
@@ -1910,7 +1921,12 @@
     "rightLines": [
      "의료연계 등록"
     ],
-    "source": "파크웰스테이트 니시아자부 공식"
+    "source": "파크웰스테이트 니시아자부 공식 · 배경은 게이오대학 히요시 캠퍼스 (Wikimedia CC BY-SA 4.0)",
+    "bg": {
+     "backdrop": "니시아자부/keio_campus.jpg",
+     "veil": 0.9,
+     "blur": 3
+    }
    }
   ],
   "108": [
@@ -4013,14 +4029,15 @@
    "설 — 자립과 돌봄의 비율을 점으로",
    {
     "perDot": 1,
-    "cols": 30,
+    "cols": 24,
     "merge": true,
     "groups": [
      {
       "label": "자립 판정",
       "value": 229,
-      "display": "229명 · 81.2%",
-      "hot": true
+      "display": "229명",
+      "hot": true,
+      "sub": "81.2%"
      },
      {
       "label": "그 외",

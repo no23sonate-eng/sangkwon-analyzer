@@ -140,7 +140,10 @@ export const DotMatrixCard = ({
     if (Math.ceil(fitDots / c) * pitch <= AVAIL_H) { PITCH = pitch; nCol = c; break; }
     PITCH = pitch; nCol = c;                          // 끝까지 못 맞으면 최소 간격
   }
-  const R = Math.max(2.5, PITCH / 3);
+  // 점 반지름이 PITCH/3 이면 점 사이 틈이 지름의 절반뿐이라, 수백 개가
+  // 깔린 판은 셀 수 있는 알갱이가 아니라 **덩어리**로 뭉쳐 보인다 (#237).
+  // 조금 줄여 틈을 벌린다 — 세라고 만든 판이니 알갱이가 떨어져 보여야 한다
+  const R = Math.max(2.5, PITCH * 0.28);
   const blockW = nCol * PITCH;
   const startX = side ? FIELD_L + FIELD_W / 2 : (1920 - slot * n) / 2 + slot / 2;
   // 그룹마다 행 수가 달라도 수치·라벨은 **가장 큰 격자 아래 한 줄**에 맞춘다.

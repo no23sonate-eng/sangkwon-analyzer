@@ -41,3 +41,8 @@
 | `nishiazabu_close.png` | 지도 타일 z16 (osm·paper) | © OpenStreetMap contributors, **ODbL** | `© OpenStreetMap contributors` |
 | `station_walk.png` | 지도 타일 z15 (osm·paper) | © OpenStreetMap contributors, **ODbL** | `© OpenStreetMap contributors` |
 | `minato_area.png` | 지도 타일 z15 (osm·paper) | © OpenStreetMap contributors, **ODbL** | `© OpenStreetMap contributors` |
+| `keio_campus.jpg` | https://commons.wikimedia.org/wiki/File:Keio_University_Hiyoshi_Campus_(2).jpg | Wikimedia Commons, **CC BY-SA 4.0** | `게이오대학 히요시 캠퍼스 · Wikimedia CC BY-SA 4.0` |
+| `keanu_reeves.jpg` | https://commons.wikimedia.org/wiki/File:Keanu_Reeves_(crop_and_levels)_(cropped).jpg | Wikimedia Commons, **CC BY-SA 4.0** | `Wikimedia CC BY-SA 4.0` |
+| `hibiya_imperial.jpg` | https://commons.wikimedia.org/wiki/File:Buildings_around_Hibiya_(20261).jpg | Wikimedia Commons, **CC0** | `제국호텔 도쿄 · Wikimedia CC0` |
+| `office_tower_glass.jpg` | https://www.pexels.com/photo/4319752/ | **Pexels License** | `Pexels` |
+| `shilla_hotel.jpg` | https://commons.wikimedia.org/wiki/File:The_Shilla_Hotel_(1542197453).jpg | Wikimedia Commons, **CC BY 2.0** | `신라호텔 · Wikimedia CC BY 2.0` |
