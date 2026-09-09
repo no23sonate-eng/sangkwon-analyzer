@@ -27,6 +27,12 @@ export const StageCard = ({
   kicker = '',             // 위에 작게 한 줄 (연도·분류)
   note = '',               // 아래 작게 한 줄 (근거·가정)
   fit = 'cover',           // 'contain' 이면 자르지 않고 다 보여 준다 (지도·조감도)
+  // ── 2026-09-09 · 세로 영상을 가운데로 자르면 주인공이 밖으로 나간다 ──────
+  // care_hands.mp4 는 1920×3414 다. cover 로 16:9 에 맞추면 가운데 31% 만
+  // 남는데, 그 자리가 하필 흰 셔츠라 6.3초 내내 흰 화면이었다. 정작 이 컷의
+  // 주인공인 두 손은 아래 가장자리로 밀려 있었다.
+  // focus 는 그 자름의 기준점이다 — CSS object-position 을 그대로 받는다
+  focus = '',              // 예: '50% 78%' (아래쪽을 화면 가운데로)
   scrim = 0.5,             // 실사를 누르는 정도. 밝은 화면일수록 올린다
   size = 0,                // 글자 크기를 직접 정할 때
   align = 'center',
@@ -75,6 +81,7 @@ export const StageCard = ({
         <AbsoluteFill>
           <Img src={src}
                style={{width: '100%', height: '100%', objectFit: 'cover',
+                       objectPosition: focus || 'center',
                        transform: 'scale(1.16)', filter: 'blur(44px) saturate(0.72)'}} />
           <AbsoluteFill style={{background: 'rgba(11,14,18,0.62)'}} />
         </AbsoluteFill>
@@ -82,8 +89,10 @@ export const StageCard = ({
       <AbsoluteFill style={{transform: fit === 'contain' ? 'none' : `scale(${zoom})`}}>
         {isVid
           ? <OffthreadVideo src={src} muted
-                            style={{width: '100%', height: '100%', objectFit: fit}} />
-          : <Img src={src} style={{width: '100%', height: '100%', objectFit: fit}} />}
+                            style={{width: '100%', height: '100%', objectFit: fit,
+                                    objectPosition: focus || 'center'}} />
+          : <Img src={src} style={{width: '100%', height: '100%', objectFit: fit,
+                                   objectPosition: focus || 'center'}} />}
       </AbsoluteFill>
       {/* 위아래로 살짝 더 눌러 준다 — 가운데 글자가 앉을 자리 */}
       <AbsoluteFill style={{background: `rgba(11,14,18,${scrim})`}} />
