@@ -87,7 +87,7 @@ export const BrandCard = ({
               {tags.map((tg, i) => (
                 <div key={i} style={{opacity: fadeIn(frame, 34 + i * 6),
                                      border: `2px solid ${T.ink}`, borderRadius: 999,
-                                     padding: '8px 22px', fontSize: 24, color: T.ink,
+                                     padding: '8px 22px', fontSize: 27, color: T.ink,
                                      whiteSpace: 'nowrap'}}>{tg}</div>
               ))}
             </div>
@@ -163,7 +163,7 @@ export const BrandCard = ({
           {tags.map((tg, i) => (
             <div key={i} style={{opacity: fadeIn(frame, 30 + i * 6),
                                  border: `2px solid ${T.ink}`, borderRadius: 999,
-                                 padding: '7px 20px', fontSize: 24, color: T.ink,
+                                 padding: '7px 20px', fontSize: 27, color: T.ink,
                                  whiteSpace: 'nowrap'}}>{tg}</div>
           ))}
         </div>

@@ -85,7 +85,7 @@ export const TrendCard = ({
               {e.s.display}
             </div>
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 28, color: T.soft, wordBreak: 'keep-all'}}>
+                         fontSize: 31, color: T.soft, wordBreak: 'keep-all'}}>
               {e.s.label}
             </div>
           </div>

@@ -132,7 +132,7 @@ export const GeoMapCard = ({
                 {m.label}
               </div>
               {m.sub ? (
-                <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.05em', color: m.hot ? T.ink : T.soft}}>
+                <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, letterSpacing: '0.05em', color: m.hot ? T.ink : T.soft}}>
                   {m.sub}
                 </div>
               ) : null}

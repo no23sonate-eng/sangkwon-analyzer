@@ -90,7 +90,7 @@ export const CalendarCompareCard = ({
       <div
         style={{
           position: 'absolute', top: 110, left: 0, width: '100%', textAlign: 'center',
-          fontSize: 32, opacity: titleOpacity, color: T.ink, fontFamily: 'A2Z Medium, sans-serif',
+          fontSize: 35, opacity: titleOpacity, color: T.ink, fontFamily: 'A2Z Medium, sans-serif',
         }}
       >
         {title}
@@ -120,11 +120,11 @@ export const CalendarCompareCard = ({
 
       <div style={{position: 'absolute', top: NUM_TOP, left: LEFT_X, width: GRID_W, textAlign: 'center', opacity: leftNumOpacity}}>
         <div style={{fontSize: 54, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.03em'}}>{leftValue}</div>
-        <div style={{fontSize: 28, marginTop: 12, color: T.soft, fontFamily: 'A2Z Light, sans-serif'}}>{leftLabel}</div>
+        <div style={{fontSize: 31, marginTop: 12, color: T.soft, fontFamily: 'A2Z Light, sans-serif'}}>{leftLabel}</div>
       </div>
       <div style={{position: 'absolute', top: NUM_TOP, left: RIGHT_X, width: GRID_W, textAlign: 'center', opacity: rightNumOpacity}}>
         <div style={{fontSize: 54, color: '#EDEFF3', fontFamily: 'A2Z Regular, sans-serif', letterSpacing: '0.03em'}}>{rightValue}</div>
-        <div style={{fontSize: 28, marginTop: 12, color: T.soft, fontFamily: 'A2Z Light, sans-serif'}}>{rightLabel}</div>
+        <div style={{fontSize: 31, marginTop: 12, color: T.soft, fontFamily: 'A2Z Light, sans-serif'}}>{rightLabel}</div>
       </div>
 
       {closingLine ? (

@@ -98,7 +98,7 @@ export const ExplodedStackCard = ({
               {L.hot ? <span style={{background: 'rgba(250,255,46,0.75)', padding: '2px 10px'}}>{L.label}</span> : L.label}
             </div>
             {L.sub ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
+              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
                 {L.sub}
               </div>
             ) : null}

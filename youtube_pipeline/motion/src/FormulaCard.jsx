@@ -50,7 +50,7 @@ export const FormulaCard = ({
                    wordBreak: 'keep-all'}}>{v}</div>
       {l ? (
         <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                     fontSize: 28, color: T.soft, wordBreak: 'keep-all'}}>{l}</div>
+                     fontSize: 31, color: T.soft, wordBreak: 'keep-all'}}>{l}</div>
       ) : null}
     </div>
   );
@@ -95,7 +95,7 @@ export const FormulaCard = ({
           </div>
           {result.label ? (
             <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
+                         fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
               {result.label}
             </div>
           ) : null}

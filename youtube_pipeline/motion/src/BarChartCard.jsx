@@ -61,7 +61,7 @@ export const BarChartCard = ({
                        fontSize: 42, color: T.ink, wordBreak: 'keep-all'}}>{title}</div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 28, color: T.soft}}>{sub}</div>
+                         fontSize: 31, color: T.soft}}>{sub}</div>
           ) : null}
         </div>
       ) : null}
@@ -140,7 +140,7 @@ export const BarChartCard = ({
             })()}
             {b.subValue ? (
               <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif',
-                           fontSize: 24, color: T.soft}}>{b.subValue}</div>
+                           fontSize: 27, color: T.soft}}>{b.subValue}</div>
             ) : null}
           </div>
         );

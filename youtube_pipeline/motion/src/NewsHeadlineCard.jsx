@@ -41,12 +41,12 @@ export const NewsHeadlineCard = ({
       <div style={{display: 'flex', alignItems: 'center', marginBottom: SP.GAP}}>
         <div style={{width: 6, height: 34, background: YELLOW, marginRight: 18}} />
         <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                      fontSize: 28, letterSpacing: '0.08em', color: '#16181C'}}>
+                      fontSize: 31, letterSpacing: '0.08em', color: '#16181C'}}>
           {ol}
         </span>
         {dt ? (
           <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                        fontSize: 28, color: '#7A8089'}}>{dt}</span>
+                        fontSize: 31, color: '#7A8089'}}>{dt}</span>
         ) : null}
       </div>
       <div style={{fontFamily: 'Myeongjo, Georgia, serif', fontSize: 46,

@@ -118,7 +118,7 @@ export const ArticleCard = ({
           <div style={{position: 'absolute', left: 0, right: 0, top: 74, textAlign: 'center',
                        opacity: fadeIn(frame, 4),
                        fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 28, letterSpacing: '0.14em', color: T.ink}}>
+                       fontSize: 31, letterSpacing: '0.14em', color: T.ink}}>
             {[outlet, date].filter(Boolean).join('  ')}
           </div>
         ) : null}
@@ -146,7 +146,7 @@ export const ArticleCard = ({
         {(outlet || date) ? (
           <div style={{opacity: fadeIn(frame, 4), marginBottom: 54, textAlign: 'center',
                        fontFamily: 'A2Z Medium, sans-serif',
-                       fontSize: 28, letterSpacing: '0.14em', color: TEXT,
+                       fontSize: 31, letterSpacing: '0.14em', color: TEXT,
                        paddingBottom: 18, borderBottom: `2px solid ${TEXT}`,
                        minWidth: 360}}>
             {[outlet, date].filter(Boolean).join('  ')}
@@ -162,7 +162,7 @@ export const ArticleCard = ({
                            filter: 'grayscale(1) contrast(1.05)'}} />
               {who ? (
                 <div style={{marginTop: 16, fontFamily: 'A2Z Medium, sans-serif',
-                             fontSize: 24, color: TEXT, wordBreak: 'keep-all'}}>{who}</div>
+                             fontSize: 27, color: TEXT, wordBreak: 'keep-all'}}>{who}</div>
               ) : null}
               {role ? (
                 <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',

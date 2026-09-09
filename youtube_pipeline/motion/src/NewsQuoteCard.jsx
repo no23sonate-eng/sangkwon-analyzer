@@ -42,7 +42,7 @@ export const NewsQuoteCard = ({
             {outlet}
           </span>
           <span style={{width: 1, height: 30, background: 'rgba(255,255,255,0.35)'}} />
-          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: '#B9BFC9', letterSpacing: '0.04em'}}>
+          <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: '#B9BFC9', letterSpacing: '0.04em'}}>
             {date}
           </span>
         </div>

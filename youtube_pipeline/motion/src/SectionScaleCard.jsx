@@ -214,7 +214,7 @@ export const SectionScaleCard = ({
               </div>
               {c.note ? (
                 <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 28, color: T.soft, wordBreak: 'keep-all'}}>
+                             fontSize: 31, color: T.soft, wordBreak: 'keep-all'}}>
                   {c.note}
                 </div>
               ) : null}
@@ -225,7 +225,7 @@ export const SectionScaleCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, bottom: 1080 - CONTENT_BOTTOM + 8, lineHeight: 1.35,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                      color: T.soft, opacity: fadeIn(frame, 64), wordBreak: 'keep-all'}}>
           {caption}
         </div>

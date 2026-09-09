@@ -102,7 +102,7 @@ export const AreaNestCard = ({
                 {it.label}
               </div>
               {it.sub ? (
-                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
                   {it.sub}
                 </div>
               ) : null}

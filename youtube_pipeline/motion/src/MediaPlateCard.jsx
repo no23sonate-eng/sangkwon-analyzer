@@ -111,7 +111,7 @@ export const MediaPlateCard = ({
           <div style={{display: 'flex', alignItems: 'baseline', justifyContent: 'center',
                        gap: SP.NEAR}}>
             {num ? (
-              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 32,
+              <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 35,
                             color: YELLOW, fontVariantNumeric: 'tabular-nums'}}>{num}</span>
             ) : null}
             <span style={{fontFamily: 'A2Z Medium, sans-serif',
@@ -122,7 +122,7 @@ export const MediaPlateCard = ({
           </div>
           {note ? (
             <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 28, color: T.soft, wordBreak: 'keep-all'}}>
+                         fontSize: 31, color: T.soft, wordBreak: 'keep-all'}}>
               {note}
             </div>
           ) : null}
@@ -131,7 +131,7 @@ export const MediaPlateCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 18,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                      color: T.soft, opacity: fadeIn(frame, 52), wordBreak: 'keep-all'}}>
           {caption}
         </div>

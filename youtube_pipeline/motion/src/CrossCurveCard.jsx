@@ -101,7 +101,7 @@ export const CrossCurveCard = ({
           return (
             <text key={'v' + i} x={L - 22} y={y + 9} textAnchor="end"
                   fill={T.soft} opacity={0.75 * fadeIn(frame, 6)}
-                  style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26}}>
+                  style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29}}>
               {Math.round(v)}
             </text>
           );

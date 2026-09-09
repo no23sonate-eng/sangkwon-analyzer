@@ -84,7 +84,7 @@ const Party = ({cx, cy, node, o, T = THEMES.paper}) => {
         <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, color: T.ink,
                      lineHeight: 1.2, wordBreak: 'keep-all'}}>{node.label}</div>
         {node.sub ? (
-          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
+          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
                        wordBreak: 'keep-all'}}>{node.sub}</div>
         ) : null}
       </div>
@@ -150,7 +150,7 @@ export const ExchangeMotionCard = ({
                 </span>
               </div>
               {item.sub ? (
-                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                              color: T.soft, whiteSpace: 'nowrap'}}>{item.sub}</div>
               ) : null}
             </div>

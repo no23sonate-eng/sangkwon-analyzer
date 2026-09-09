@@ -141,7 +141,7 @@ export const ShapeCompareCard = ({
           return (
             <div key={i} style={{position: 'absolute', left: bx, width: 460,
                                  top: baseY - h / 2 - 52, opacity: op, textAlign: 'left'}}>
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
                            letterSpacing: '0.16em', color: T.soft, marginBottom: SP.TIGHT}}>
                 {String(i + 1).padStart(2, '0')}
               </div>
@@ -152,7 +152,7 @@ export const ShapeCompareCard = ({
               </div>
               {o.note ? (
                 <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 24, color: T.soft}}>{o.note}</div>
+                             fontSize: 27, color: T.soft}}>{o.note}</div>
               ) : null}
             </div>
           );
@@ -166,7 +166,7 @@ export const ShapeCompareCard = ({
             {o.label}
             {o.note ? (
               <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                           fontSize: 24, color: T.soft}}>{o.note}</div>
+                           fontSize: 27, color: T.soft}}>{o.note}</div>
             ) : null}
           </div>
         );
@@ -175,7 +175,7 @@ export const ShapeCompareCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 62,
                      textAlign: 'center', opacity: fadeIn(frame, 52),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

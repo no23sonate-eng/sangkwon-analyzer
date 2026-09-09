@@ -87,7 +87,7 @@ export const ElevatorCard = ({title = '', sub = '', stops = [], source = '',
               {s.label}
             </div>
             {s.sub ? (
-              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.ink, opacity: 0.72}}>
+              <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.ink, opacity: 0.72}}>
                 {s.sub}
               </div>
             ) : null}

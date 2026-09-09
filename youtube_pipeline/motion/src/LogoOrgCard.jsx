@@ -79,7 +79,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
         <div
           style={{
             position: 'absolute', top: PARENT_TOP + PARENT_H + 14, left: CX - PARENT_W / 2, width: PARENT_W,
-            textAlign: 'center', fontSize: 30, opacity: parentOpacity, color: T.ink,
+            textAlign: 'center', fontSize: 33, opacity: parentOpacity, color: T.ink,
             fontFamily: 'A2Z Medium, sans-serif',
           }}
         >
@@ -115,7 +115,7 @@ export const OrgDiagram = ({parentLogo, parentLabel, children = [], items = null
             <div
               style={{
                 position: 'absolute', top: CHILD_TOP + CHILD_H + 14, left: x - CHILD_W / 2, width: CHILD_W,
-                textAlign: 'center', fontSize: 30, opacity: childOpacity, color: T.soft,
+                textAlign: 'center', fontSize: 33, opacity: childOpacity, color: T.soft,
                 fontFamily: 'A2Z Light, sans-serif',
               }}
             >
@@ -153,7 +153,7 @@ export const LogoOrgCard = ({title = '', subtitle = '', parentLogo = '', parentL
       ) : null}
       {subtitle ? (
         <div style={{position: 'absolute', top: headTop + (title ? 60 : 0), left: 0, width: '100%',
-                     textAlign: 'center', fontSize: 30, opacity: titleOpacity, color: T.soft,
+                     textAlign: 'center', fontSize: 33, opacity: titleOpacity, color: T.soft,
                      fontFamily: 'A2Z Light, sans-serif'}}>
           {subtitle}
         </div>

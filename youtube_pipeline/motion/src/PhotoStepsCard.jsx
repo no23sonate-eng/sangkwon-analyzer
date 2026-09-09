@@ -129,7 +129,7 @@ export const PhotoStepsCard = ({
               <div style={{position: 'absolute', left: x - 14, top: y - 14, width: 54, height: 54,
                            borderRadius: 27, background: T.ink, color: '#FFF', opacity: pop,
                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 28}}>
+                           fontFamily: 'A2Z Medium, sans-serif', fontSize: 31}}>
                 {i + 1}
               </div>
             )}
@@ -142,7 +142,7 @@ export const PhotoStepsCard = ({
                 {st.label}
               </span>
               {st.sub ? (
-                <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
+                <div style={{marginTop: 10, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
                   {st.sub}
                 </div>
               ) : null}

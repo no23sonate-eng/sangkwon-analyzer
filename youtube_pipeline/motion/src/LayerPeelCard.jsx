@@ -185,7 +185,7 @@ export const LayerPeelCard = ({
         <div style={{position: 'absolute', left: 150, right: 900, top: 748,
                      textAlign: 'left',
                      opacity: fadeIn(frame, 40 + n * 12),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

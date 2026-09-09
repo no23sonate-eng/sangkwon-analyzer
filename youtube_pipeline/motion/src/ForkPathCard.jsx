@@ -88,7 +88,7 @@ export const ForkPathCard = ({
       {/* 줄기 이름표 — 선 아래. 위에 두면 분기점 물음표와 같은 띠에 얹힌다 */}
       {trunkLabel ? (
         <div style={{position: 'absolute', left: X0, top: midY + SP.NEAR, width: XF - X0 - 60,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 32, letterSpacing: '0.08em',
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 35, letterSpacing: '0.08em',
                      color: T.soft, opacity: fadeIn(frame, 14), wordBreak: 'keep-all'}}>
           {trunkLabel}
         </div>
@@ -109,7 +109,7 @@ export const ForkPathCard = ({
                 : b.label}
             </div>
             {b.note ? (
-              <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+              <div style={{marginTop: SP.NEAR, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                            lineHeight: 1.4, color: T.soft, wordBreak: 'keep-all'}}>
                 {b.note}
               </div>
@@ -121,7 +121,7 @@ export const ForkPathCard = ({
       {/* 미정이면 분기점 위에 물음표 하나 — 답을 주지 않는다는 표시 */}
       {decided == null && question ? (
         <div style={{position: 'absolute', left: XF - 170, width: 340, top: midY - 104,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                      letterSpacing: '0.16em', color: T.soft, opacity: fadeIn(frame, 70)}}>
           {question}
         </div>

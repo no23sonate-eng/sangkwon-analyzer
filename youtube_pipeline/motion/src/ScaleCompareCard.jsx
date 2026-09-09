@@ -177,14 +177,14 @@ export const ScaleCompareCard = ({
       {ticks.map((m, i) => (
         <div key={m} style={{position: 'absolute', left: 0, width: AX - 22, top: yOf(m) - 20,
                              textAlign: 'right', opacity: 0.75 * fadeIn(frame, 2 + i * 2),
-                             fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
+                             fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft,
                              fontVariantNumeric: 'tabular-nums'}}>
           {m}{unit}
         </div>
       ))}
       {showHuman ? (
         <div style={{position: 'absolute', left: AX + 58, top: baseY - 46, opacity: fadeIn(frame, 40),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft}}>
           사람 1.7{unit}
         </div>
       ) : null}
@@ -203,7 +203,7 @@ export const ScaleCompareCard = ({
                          textAlign: 'center', opacity: o}}>
               <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                             color: T.ink, fontVariantNumeric: 'tabular-nums'}}>
-                {Math.round(shown).toLocaleString('ko-KR')}<span style={{fontSize: 32}}>{unit}</span>
+                {Math.round(shown).toLocaleString('ko-KR')}<span style={{fontSize: 35}}>{unit}</span>
               </span>
             </div>
             <div style={{position: 'absolute', left: cxOf(i) - slot / 2, width: slot, top: baseY + 18,
@@ -214,7 +214,7 @@ export const ScaleCompareCard = ({
                 {it.label}
               </div>
               {it.note ? (
-                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft}}>
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft}}>
                   {it.note}
                 </div>
               ) : null}

@@ -44,7 +44,7 @@ export const Kicker = ({title, sub = '', opacity = 1}) => (
       <div
         style={{
           marginTop: 14, marginLeft: 28,
-          fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+          fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
           letterSpacing: '0.1em', color: MUTE,
         }}
       >
@@ -63,7 +63,7 @@ export const Footer = ({caption = '', source = '', opacity = 1}) => (
       </div>
     ) : null}
     {source ? (
-      <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.08em', color: MUTE}}>
+      <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.08em', color: MUTE}}>
         {source}
       </div>
     ) : null}

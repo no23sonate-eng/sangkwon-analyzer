@@ -36,7 +36,7 @@ export const TowerGaugeCard = ({title = '', sub = '', items = [], source = '',
           <React.Fragment key={i}>
             {/* 공연장 이름 — 돔 위 가운데 정렬 */}
             <div style={{position: 'absolute', left: cx - slot / 2, width: slot, top: baseY - DOME_H - 96, textAlign: 'center',
-                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 32, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
+                         fontFamily: 'A2Z Medium, sans-serif', fontSize: 35, letterSpacing: '0.01em', color: T.ink, opacity: o}}>
               {it.label}
             </div>
             <svg width={1920} height={1080} style={{position: 'absolute', top: 0, left: 0, opacity: o}}>
@@ -77,13 +77,13 @@ export const TowerGaugeCard = ({title = '', sub = '', items = [], source = '',
                   <span style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 46}}>%</span>
                 </span>
                 {it.sub ? (
-                  <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft, letterSpacing: '0.05em'}}>
+                  <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft, letterSpacing: '0.05em'}}>
                     {it.sub}
                   </span>
                 ) : null}
               </div>
               {it.note ? (
-                <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 24, color: T.soft, letterSpacing: '0.03em'}}>
+                <div style={{marginTop: 2, fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft, letterSpacing: '0.03em'}}>
                   {it.note}
                 </div>
               ) : null}

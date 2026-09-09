@@ -119,7 +119,7 @@ export const DataTable = ({
                 style={{
                   width: cellMode ? '40%' : '50%', display: 'flex', alignItems: 'center',
                   padding: cellMode ? '0 32px' : 0,
-                  fontSize: 32, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
+                  fontSize: 35, color: labelColor, fontFamily: 'A2Z Light, sans-serif', letterSpacing: '0.02em',
                 }}
               >
                 {row.label}
@@ -135,7 +135,7 @@ export const DataTable = ({
                   {row.value}
                 </span>
                 {row.note ? (
-                  <span style={{fontSize: 24, color: noteColor, marginLeft: 14, fontFamily: 'A2Z Light, sans-serif'}}>
+                  <span style={{fontSize: 27, color: noteColor, marginLeft: 14, fontFamily: 'A2Z Light, sans-serif'}}>
                     {row.note}
                   </span>
                 ) : null}

@@ -149,7 +149,7 @@ export const ShareSplitCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 6,
                      textAlign: 'center', opacity: fadeIn(frame, bidAt + 24),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

@@ -59,7 +59,7 @@ export const TwoPanelCard = ({
                                opacity: e,
                                transform: `translateX(${(1 - e) * dir * 42}px)`}}>
             {p.tag ? (
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                            letterSpacing: '0.2em', color: p.hot ? YELLOW : T.soft}}>
                 {p.tag}
               </div>
@@ -84,7 +84,7 @@ export const TwoPanelCard = ({
             </div>
             {p.note ? (
               <div style={{marginTop: SP.BLOCK, fontFamily: 'A2Z Light, sans-serif',
-                           fontSize: 32, lineHeight: 1.45, color: T.soft,
+                           fontSize: 35, lineHeight: 1.45, color: T.soft,
                            wordBreak: 'keep-all', padding: '0 30px'}}>
                 {p.note}
               </div>
@@ -95,7 +95,7 @@ export const TwoPanelCard = ({
 
       {divider ? (
         <div style={{position: 'absolute', left: 960 - 90, width: 180, top: midY - 22,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                      letterSpacing: '0.1em', color: T.soft, background: T.bg,
                      padding: '6px 0', opacity: fadeIn(frame, 26)}}>
           {divider}
@@ -104,7 +104,7 @@ export const TwoPanelCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 20,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                      color: T.soft, opacity: fadeIn(frame, 60), wordBreak: 'keep-all'}}>
           {caption}
         </div>

@@ -65,12 +65,12 @@ const Side = ({side, x, w, delay, frame, fps}) => {
                   style={{
                     display: 'flex', alignItems: 'baseline', gap: 18,
                     marginBottom: 20,
-                    fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                    fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                     letterSpacing: '0.03em', lineHeight: 1.4,
                     color: hot ? WHITE : GRAY,
                   }}
                 >
-                  <span style={{color: hot ? YELLOW : MUTE, fontSize: 24}}>—</span>
+                  <span style={{color: hot ? YELLOW : MUTE, fontSize: 27}}>—</span>
                   <span>{ln}</span>
                 </div>
               ))}
@@ -109,7 +109,7 @@ export const YCompareCard = ({
         <div
           style={{
             position: 'absolute', top: 462, left: 0, width: 1920, textAlign: 'center',
-            fontFamily: 'A2Z Medium, sans-serif', fontSize: 32,
+            fontFamily: 'A2Z Medium, sans-serif', fontSize: 35,
             letterSpacing: '0.2em', color: MUTE,
             opacity: fadeIn(frame, 28),
           }}

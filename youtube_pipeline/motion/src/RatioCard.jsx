@@ -62,7 +62,7 @@ export const RatioCard = ({
                   {Number(v.toFixed(it.decimals ?? 0)).toLocaleString('ko-KR')}<span style={{fontSize: 42}}>{unit}</span>
                 </span>
                 {it.sub ? (
-                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
+                  <span style={{marginLeft: 16, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
                     {it.sub}
                   </span>
                 ) : null}
@@ -175,7 +175,7 @@ export const RatioCard = ({
               <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 42,
                             color: T.ink, wordBreak: 'keep-all'}}>{it.label}</span>
               {it.sub ? (
-                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
+                <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
                   {it.sub}
                 </span>
               ) : null}

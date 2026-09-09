@@ -59,7 +59,7 @@ export const PaperImageCard = ({
         </div>
       </div>
       {caption ? (
-        <div style={{position: 'absolute', left: 260, width: 1400, top: top + H + 16, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32, lineHeight: 1.4, letterSpacing: '0.04em', color: T.soft, opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
+        <div style={{position: 'absolute', left: 260, width: 1400, top: top + H + 16, textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 35, lineHeight: 1.4, letterSpacing: '0.04em', color: T.soft, opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
           {caption}
         </div>
       ) : null}

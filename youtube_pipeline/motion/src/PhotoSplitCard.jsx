@@ -43,7 +43,7 @@ const Side = ({s, x, w, frame, i, statSize = 110}) => {
         <div style={{margin: '16px auto 0', width: 92, height: 4,
                      background: s.hot ? YELLOW : 'rgba(255,255,255,0.42)'}} />
         {s.sub ? (
-          <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+          <div style={{marginTop: 14, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>
         ) : null}
         {s.stat ? (

@@ -192,7 +192,7 @@ export const FloorStackCard = ({
               <line x1={x - 19} y1={BOT - hh} x2={x - 19} y2={BOT}
                     stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
               <text x={x - 34} y={BOT + 30} textAnchor="end" fill={T.soft}
-                    style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 26}}>
+                    style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29}}>
                 사람 1.7m
               </text>
             </g>

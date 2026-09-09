@@ -77,7 +77,7 @@ export const BeforeAfterCard = ({
             {lb}
           </div>
           {nt ? (
-            <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+            <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                          color: '#E4E8EE', textShadow: SHADOW}}>{nt}</div>
           ) : null}
         </div>

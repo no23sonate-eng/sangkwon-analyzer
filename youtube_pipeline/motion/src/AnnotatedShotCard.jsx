@@ -238,7 +238,7 @@ export const AnnotatedShotCard = ({
           <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 64,
                        color: '#FFFFFF', textShadow: SHADOW, letterSpacing: '-0.01em'}}>{title}</div>
           {titleSub ? (
-            <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+            <div style={{marginTop: 12, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                          color: '#D8DDE4', textShadow: SHADOW}}>{titleSub}</div>
           ) : null}
         </div>

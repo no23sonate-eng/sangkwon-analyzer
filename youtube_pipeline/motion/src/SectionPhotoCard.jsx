@@ -108,7 +108,7 @@ export const SectionPhotoCard = ({
             {o.floors}<span style={{fontSize: 54}}>층</span>
           </div>
           {o.note ? (
-            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+            <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                          color: '#D8DDE4', lineHeight: 1.2, textShadow: SHADOW}}>{o.note}</div>
           ) : null}
         </div>

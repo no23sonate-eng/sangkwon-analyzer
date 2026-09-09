@@ -97,14 +97,14 @@ export const YardViewCard = ({
 
       <div style={{position: 'absolute', left: PX - 110, width: 220, top: GY - 172,
                    textAlign: 'center', opacity: fadeIn(frame, 14),
-                   fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
+                   fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft}}>
         {personLabel}
       </div>
       <div style={{position: 'absolute', left: BX - 60, width: 320, top: 0,
                    marginTop: Math.max(200, bTop - 58), textAlign: 'center',
                    opacity: fadeIn(frame, 20),
                    fontFamily: 'A2Z Medium, sans-serif',
-                   fontSize: 32, color: T.ink}}>
+                   fontSize: 35, color: T.ink}}>
         {buildingLabel}
       </div>
 
@@ -121,7 +121,7 @@ export const YardViewCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 18,
                      textAlign: 'center', opacity: fadeIn(frame, 70),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft}}>
           {note}
         </div>
       ) : null}

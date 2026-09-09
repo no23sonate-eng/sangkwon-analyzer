@@ -239,7 +239,7 @@ export const DotMatrixCard = ({
               </div>
               {g.sub ? (
                 <div style={{marginTop: 6, marginLeft: 42, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>{g.sub}</div>
+                             fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>{g.sub}</div>
               ) : null}
             </div>
           ))}
@@ -271,7 +271,7 @@ export const DotMatrixCard = ({
               <span style={{fontSize: 46, marginLeft: 4}}>{unit}</span>
             </div>
             {g.sub ? (
-              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
+              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
                 {g.sub}
               </div>
             ) : null}
@@ -282,7 +282,7 @@ export const DotMatrixCard = ({
       {caption ? (
         <div style={{position: 'absolute', left: 0, width: 1920, top: TOP - 62, textAlign: 'center',
                      opacity: fadeIn(frame, 10), fontFamily: 'A2Z Light, sans-serif',
-                     fontSize: 32, color: T.soft, letterSpacing: '0.04em'}}>
+                     fontSize: 35, color: T.soft, letterSpacing: '0.04em'}}>
           {caption}
         </div>
       ) : null}

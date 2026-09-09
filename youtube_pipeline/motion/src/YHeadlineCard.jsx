@@ -56,14 +56,14 @@ export const YHeadlineCard = ({
                        justifyContent: align === 'center' ? 'center' : 'flex-start'}}>
             <div style={{width: 46, height: 5, background: YELLOW}} />
             <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                          fontSize: 32, letterSpacing: '0.06em', color: T.ink,
+                          fontSize: 35, letterSpacing: '0.06em', color: T.ink,
                           wordBreak: 'keep-all'}}>{kicker}</span>
           </div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT,
                          marginLeft: align === 'center' ? 0 : 66,
                          textAlign: align === 'center' ? 'center' : 'left',
-                         fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                         fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                          color: T.soft, wordBreak: 'keep-all'}}>{sub}</div>
           ) : null}
         </div>
@@ -105,7 +105,7 @@ export const YHeadlineCard = ({
         })}
         {caption ? (
           <div style={{marginTop: SP.GAP, fontFamily: 'A2Z Light, sans-serif',
-                       fontSize: 32, letterSpacing: '0.04em', color: T.soft,
+                       fontSize: 35, letterSpacing: '0.04em', color: T.soft,
                        opacity: fadeIn(frame, 8 + n * 9 + 10), wordBreak: 'keep-all'}}>
             {caption}
           </div>

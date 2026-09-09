@@ -127,7 +127,7 @@ export const BuildingCard = ({
       <div
         style={{
           position: 'absolute', top: 90, left: 0, width: '100%', textAlign: 'center',
-          color: '#C7CBD3', fontSize: 32, fontFamily: 'A2Z Light, sans-serif',
+          color: '#C7CBD3', fontSize: 35, fontFamily: 'A2Z Light, sans-serif',
           letterSpacing: '0.02em', opacity: titleOpacity,
           transform: `translateY(${titleY}px)`,
         }}

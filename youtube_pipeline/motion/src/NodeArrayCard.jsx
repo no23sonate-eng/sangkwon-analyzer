@@ -183,7 +183,7 @@ export const NodeArrayCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 900, top: 748, textAlign: 'left',
                      opacity: fadeIn(frame, 60), fontFamily: 'A2Z Light, sans-serif',
-                     fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
+                     fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
           {note}
         </div>
       ) : null}

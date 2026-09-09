@@ -113,7 +113,7 @@ export const YFlowCard = ({
                     position: 'absolute', top: -17, left: 24,
                     padding: '3px 12px 1px', background: T.bg,
                     border: `2.5px solid ${node.hot ? YELLOW : T.ink}`,
-                    fontFamily: 'A2Z Medium, sans-serif', fontSize: 24,
+                    fontFamily: 'A2Z Medium, sans-serif', fontSize: 27,
                     letterSpacing: '0.16em', color: node.hot ? YELLOW : T.soft,
                   }}
                 >
@@ -137,7 +137,7 @@ export const YFlowCard = ({
                 {node.value}
               </div>
               {node.sub ? (
-                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
                              letterSpacing: '0.02em', color: T.soft,
                              wordBreak: 'keep-all', textAlign: 'center', padding: '0 14px'}}>
                   {node.sub}
@@ -177,7 +177,7 @@ export const YFlowCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: CONTENT_BOTTOM - 30,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                      color: T.soft, opacity: fadeIn(frame, 12 + n * 12 + 16),
                      wordBreak: 'keep-all'}}>
           {caption}
@@ -211,7 +211,7 @@ const ArrowBetween = ({x, y, w, grow, label, T}) => {
           style={{
             position: 'absolute', top: y - 72, left: x, width: w,
             textAlign: 'center', fontFamily: 'A2Z Light, sans-serif',
-            fontSize: 24, letterSpacing: '0.04em', color: T.soft,
+            fontSize: 27, letterSpacing: '0.04em', color: T.soft,
             opacity: grow,
           }}
         >

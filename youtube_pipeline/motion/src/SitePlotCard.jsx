@@ -90,7 +90,7 @@ export const SitePlotCard = ({
           </div>
           {secondLabel ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 28, color: T.soft}}>{secondLabel}</div>
+                         fontSize: 31, color: T.soft}}>{secondLabel}</div>
           ) : null}
         </div>
       ) : null}
@@ -98,7 +98,7 @@ export const SitePlotCard = ({
       {note ? (
         <div style={{position: 'absolute', left: 150, right: 150, bottom: 1080 - CONTENT_BOTTOM + 8, lineHeight: 1.35,
                      textAlign: 'center', opacity: fadeIn(frame, 60),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft}}>
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft}}>
           {note}
         </div>
       ) : null}

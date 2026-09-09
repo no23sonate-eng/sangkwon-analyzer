@@ -99,7 +99,7 @@ export const AreaBudgetCard = ({
         </span>
         {totalLabel ? (
           <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                        fontSize: 28, color: T.soft}}>{totalLabel}</span>
+                        fontSize: 31, color: T.soft}}>{totalLabel}</span>
         ) : null}
       </div>
 
@@ -122,7 +122,7 @@ export const AreaBudgetCard = ({
               </div>
               {b.note ? (
                 <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
-                             fontSize: 24, color: T.soft, wordBreak: 'keep-all'}}>
+                             fontSize: 27, color: T.soft, wordBreak: 'keep-all'}}>
                   {b.note}
                 </div>
               ) : null}
@@ -140,7 +140,7 @@ export const AreaBudgetCard = ({
           <div style={{marginTop: SP.BLOCK, paddingTop: SP.GAP,
                        borderTop: `2px solid ${T.ink}`,
                        opacity: fadeIn(frame, 18 + items.length * step)}}>
-            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
+            <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
               {over > 0 ? '모자란 면적' : '남는 면적'}
             </span>
             <span style={{marginLeft: SP.GAP, fontFamily: 'A2Z Medium, sans-serif',
@@ -154,7 +154,7 @@ export const AreaBudgetCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: X, width: W, top: Y + H + SP.GAP,
-                     textAlign: 'left', fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+                     textAlign: 'left', fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
                      color: T.soft, opacity: fadeIn(frame, 20 + items.length * step),
                      wordBreak: 'keep-all'}}>
           {caption}

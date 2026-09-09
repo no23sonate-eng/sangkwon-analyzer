@@ -142,7 +142,7 @@ export const IsoDiagramCard = ({
         <div style={{position: 'absolute', left: 150, right: 150, top: CONTENT_BOTTOM - 56,
                      textAlign: align === 'left' ? 'left' : 'center',
                      opacity: fadeIn(frame, 52),
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft,
                      wordBreak: 'keep-all'}}>
           {note}
         </div>

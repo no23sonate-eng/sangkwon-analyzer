@@ -74,7 +74,7 @@ export const LowerThirdCard = ({
             {num}
           </div>
         ) : kicker ? (
-          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+          <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                        letterSpacing: '0.22em', color: YELLOW, opacity: numIn,
                        marginBottom: 14}}>
             {kicker}

@@ -259,7 +259,7 @@ export const SkylineCompareCard = ({
               </div>
             ) : null}
             <div style={{position: 'absolute', left: cx - (slot - 24) / 2, width: slot - 24, top: baseY + 18, textAlign: 'center', opacity: o}}>
-              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 32, lineHeight: 1.35, color: hot ? T.ink : T.soft, letterSpacing: '0.02em', whiteSpace: 'pre-line', wordBreak: 'keep-all'}}>
+              <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 35, lineHeight: 1.35, color: hot ? T.ink : T.soft, letterSpacing: '0.02em', whiteSpace: 'pre-line', wordBreak: 'keep-all'}}>
                 {b.label}
               </div>
             </div>
@@ -269,7 +269,7 @@ export const SkylineCompareCard = ({
       {/* 단서 조항 — 하단은 자막 자리라 **타이틀 바로 아래**에 둔다 */}
       {note ? (
         <div style={{position: 'absolute', left: 260, width: 1400, top: title ? titleBottom(title, sub) + 17 : 120,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
                      letterSpacing: '0.03em', color: T.soft, opacity: fadeIn(frame, 64),
                      wordBreak: 'keep-all'}}>
           {note}

@@ -103,7 +103,7 @@ export const PriceLadderCard = ({
           return (
             <div key={i} style={{position: 'absolute', left: LX + 26, top: y - 52,
                                  opacity: 0.6 * hole,
-                                 fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft}}>
+                                 fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft}}>
               비어 있던 자리
             </div>
           );
@@ -120,13 +120,13 @@ export const PriceLadderCard = ({
               </span>
               {r.note ? (
                 <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                              fontSize: 24, color: T.soft}}>{r.note}</span>
+                              fontSize: 27, color: T.soft}}>{r.note}</span>
               ) : null}
             </div>
             {r.priceLabel ? (
               isNew
                 ? <ValueChip size={38} hot theme={theme}>{r.priceLabel}</ValueChip>
-                : <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 32, color: T.ink,
+                : <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 35, color: T.ink,
                                 fontVariantNumeric: 'tabular-nums'}}>{r.priceLabel}</span>
             ) : null}
           </div>
@@ -136,7 +136,7 @@ export const PriceLadderCard = ({
       {/* 축이 0 에서 시작하지 않는다는 걸 밝힌다 */}
       {axisLabel ? (
         <div style={{position: 'absolute', left: LX - 300, width: 280, top: yTop - 4,
-                     textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     textAlign: 'right', fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                      color: T.soft, opacity: fadeIn(frame, 6), wordBreak: 'keep-all'}}>
           {axisLabel}
         </div>
@@ -144,7 +144,7 @@ export const PriceLadderCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, bottom: 1080 - CONTENT_BOTTOM + 8, lineHeight: 1.35,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                      color: T.soft, opacity: fadeIn(frame, 96), wordBreak: 'keep-all'}}>
           {caption}
         </div>

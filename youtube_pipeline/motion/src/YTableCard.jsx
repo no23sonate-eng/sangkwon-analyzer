@@ -73,7 +73,7 @@ export const YTableCard = ({
             <div
               style={{
                 position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 10,
-                fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                 letterSpacing: '0.05em', color: r.hot ? T.ink : T.soft,
               }}
             >
@@ -101,7 +101,7 @@ export const YTableCard = ({
                 <span
                   style={{
                     marginLeft: 20, fontFamily: 'A2Z Light, sans-serif',
-                    fontSize: 24, letterSpacing: '0.04em', color: T.soft,
+                    fontSize: 27, letterSpacing: '0.04em', color: T.soft,
                   }}
                 >
                   {r.note}
@@ -128,7 +128,7 @@ export const YTableCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, bottom: 1080 - CONTENT_BOTTOM + 8, lineHeight: 1.35,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                      color: T.soft, opacity: fadeIn(frame, 12 + n * 8 + 14), wordBreak: 'keep-all'}}>
           {caption}
         </div>

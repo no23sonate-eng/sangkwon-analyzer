@@ -46,8 +46,8 @@ export const LW = {HAIR: 1.5, THIN: 2.5, BODY: 4, BOLD: 7};
 // 여덟 단계로 모은다. 단계 사이가 이만큼 벌어져야 위계가 눈에 보인다 —
 // 62 와 65 는 다른 크기가 아니라 그냥 어긋난 값이다.
 export const FS = {
-  MICRO: 26,   // 출처 · 주석 · 단위
-  SMALL: 32,   // 보조 설명
+  MICRO: 29,   // 출처 · 주석 · 단위
+  SMALL: 35,   // 보조 설명
   LABEL: 40,   // 축 항목 · 라벨
   BODY: 50,    // 본문 한 줄
   LEAD: 64,    // 부제 · 리드
@@ -156,7 +156,7 @@ export const palette = (dark, theme) => (theme
 //   ink        딥 차콜                    무게를 싣는 구간, 종이 사이의 쉼표
 //   blueprint  네이비 청사진 · 촘촘한 격자  도면·구조·계획 이야기
 export const THEMES = {
-  paper:     {bg: '#EFEAE3', ink: '#23262B', soft: '#6E747C',
+  paper:     {bg: '#EFEAE3', ink: '#23262B', soft: '#5C636D',
               grid: 'rgba(35,38,43,0.10)', step: 80, fine: false,
               tones: ['#B9BFC9', '#5C6470', '#8F97A3', '#3A414C', '#A8B0BC']},
   ink:       {bg: '#242830', ink: '#F2F0EC', soft: '#A7AEB8',
@@ -407,7 +407,7 @@ export const PaperSource = ({source = '', dark = false, theme, onPhoto = false})
   return (
     <div style={{position: 'absolute', right: onPhoto ? 0 : 44, top: onPhoto ? 22 : 34,
                  textAlign: 'right', maxWidth: 800,
-                 fontFamily: 'A2Z Light, sans-serif', fontSize: 20,
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: 23,
                  letterSpacing: '0.04em', lineHeight: 1.3,
                  // 사진을 꽉 채우는 카드는 무대 색이 없다. 사진이 밝을지
                  // 어두울지 모르니 흰 글자 + 그림자로 고정한다.
@@ -419,7 +419,7 @@ export const PaperSource = ({source = '', dark = false, theme, onPhoto = false})
                    ? 'linear-gradient(270deg, rgba(11,14,18,0.62) 0%, rgba(11,14,18,0.44) 46%, rgba(11,14,18,0) 100%)'
                    : 'none',
                  textShadow: onPhoto ? '0 2px 10px rgba(0,0,0,0.9)' : 'none',
-                 opacity: 0.9 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
+                 opacity: 0.96 * fadeIn(frame, 40), wordBreak: 'keep-all'}}>
       {txt}
     </div>
   );
@@ -517,12 +517,12 @@ export const PaperKicker = ({title = '', sub = '', theme, dark = false, opacity 
       <div style={{display: 'flex', alignItems: 'center', gap: SP.NEAR}}>
         <div style={{width: 46, height: 5, background: YELLOW}} />
         <span style={{fontFamily: 'A2Z Medium, sans-serif',
-                      fontSize: 32, letterSpacing: '0.06em', color: T.ink,
+                      fontSize: 35, letterSpacing: '0.06em', color: T.ink,
                       wordBreak: 'keep-all'}}>{title}</span>
       </div>
       {sub ? (
         <div style={{marginTop: SP.TIGHT, marginLeft: 66,
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 28,
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 31,
                      color: T.soft, wordBreak: 'keep-all'}}>{sub}</div>
       ) : null}
     </div>
@@ -541,7 +541,7 @@ export const PaperCaption = ({children, theme, dark = false, opacity = 1, top = 
     <div style={{position: 'absolute', left: 200, width: 1520,
                  ...(top == null ? {bottom: 1080 - CONTENT_BOTTOM + 8} : {top}),
                  textAlign: 'center', lineHeight: 1.35,
-                 fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: T.soft,
+                 fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft,
                  opacity, wordBreak: 'keep-all'}}>
       {children}
     </div>

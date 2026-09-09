@@ -115,7 +115,7 @@ export const AspectRatioCard = ({
                            fontVariantNumeric: 'tabular-nums'}}>
                 {it.w}{unit}
                 <span style={{marginLeft: SP.NEAR, fontFamily: 'A2Z Light, sans-serif',
-                              fontSize: 28, letterSpacing: '0.12em', color: T.soft}}>
+                              fontSize: 31, letterSpacing: '0.12em', color: T.soft}}>
                   {frontLabel}
                 </span>
               </div>
@@ -135,7 +135,7 @@ export const AspectRatioCard = ({
 
       {caption ? (
         <div style={{position: 'absolute', left: 200, width: 1520, top: baseY + LABEL_H,
-                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+                     textAlign: 'center', fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                      color: T.soft, opacity: fadeIn(frame, 66), wordBreak: 'keep-all'}}>
           {caption}
         </div>

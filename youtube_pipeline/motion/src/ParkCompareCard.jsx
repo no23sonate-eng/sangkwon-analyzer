@@ -53,7 +53,7 @@ const Side = ({s, x, w, frame, i, shapeW, shapeH, shapeCY}) => {
           {s.area}
         </div>
         {s.sub ? (
-          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 32,
+          <div style={{marginTop: 8, fontFamily: 'A2Z Light, sans-serif', fontSize: 35,
                        color: '#D8DDE4', textShadow: SHADOW}}>{s.sub}</div>
         ) : null}
       </div>
@@ -103,7 +103,7 @@ export const ParkCompareCard = ({title = '', sub = '', sides = [], note = '', so
 
       {source ? (
         <div style={{position: 'absolute', right: 44, top: 1028, textAlign: 'right',
-                     fontFamily: 'A2Z Light, sans-serif', fontSize: 24, letterSpacing: '0.05em',
+                     fontFamily: 'A2Z Light, sans-serif', fontSize: 27, letterSpacing: '0.05em',
                      color: '#FFFFFF', opacity: 0.75 * fadeIn(frame, 40), textShadow: SHADOW}}>
           {source}
         </div>

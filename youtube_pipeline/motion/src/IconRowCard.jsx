@@ -51,7 +51,7 @@ export const IconRowCard = ({
         <div
           style={{
             position: 'absolute', top: framed ? 100 : 150, left: 0, width: '100%', textAlign: 'center',
-            fontSize: 32, opacity: titleOpacity, ...TEXT.label, color: subtitleColor,
+            fontSize: 35, opacity: titleOpacity, ...TEXT.label, color: subtitleColor,
           }}
         >
           {subtitle}

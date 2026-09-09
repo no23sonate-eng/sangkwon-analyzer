@@ -161,7 +161,7 @@ export const TimelineRailCard = ({
       {ticks.map((y, i) => (
         <div key={i} style={{position: 'absolute', left: px(y) - 100, width: 200, top: AXIS_Y + 22,
                              textAlign: 'center', opacity: fadeIn(frame, 6),
-                             fontFamily: 'A2Z Regular, sans-serif', fontSize: 32, color: T.soft}}>
+                             fontFamily: 'A2Z Regular, sans-serif', fontSize: 35, color: T.soft}}>
           {tickLabels ? (tickLabels[i] ?? '') : y}
         </div>
       ))}
@@ -206,7 +206,7 @@ export const TimelineRailCard = ({
                     : e.label}
                 </div>
                 {e.sub ? (
-                  <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 32, color: T.soft, wordBreak: 'keep-all'}}>
+                  <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 35, color: T.soft, wordBreak: 'keep-all'}}>
                     {e.sub}
                   </div>
                 ) : null}

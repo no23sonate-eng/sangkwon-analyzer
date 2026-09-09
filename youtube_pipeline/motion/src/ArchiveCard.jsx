@@ -60,7 +60,7 @@ export const ArchiveCard = ({
           </div>
           {sub ? (
             <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
-                         fontSize: 32, color: 'rgba(255,255,255,0.8)',
+                         fontSize: 35, color: 'rgba(255,255,255,0.8)',
                          textShadow: '0 2px 12px rgba(0,0,0,0.9)', wordBreak: 'keep-all'}}>
               {sub}
             </div>

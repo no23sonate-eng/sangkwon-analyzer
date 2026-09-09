@@ -48,7 +48,7 @@ export const TimelineBarsCard = ({
       <div style={{position: 'absolute', right: 120, top: bandTop - 62, display: 'flex',
                    alignItems: 'center', gap: 14, opacity: fadeIn(frame, 24)}}>
         <div style={{width: 16, height: 22, border: `2px solid ${T.ink}`, opacity: 0.6}} />
-        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 24,
+        <span style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 27,
                       letterSpacing: '0.04em', color: T.soft}}>= 1개월</span>
       </div>
 

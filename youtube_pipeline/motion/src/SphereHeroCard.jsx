@@ -95,11 +95,11 @@ export const SphereHeroCard = ({
         <>
           <div style={{position: 'absolute', left: 180, top: 800, width: 560, textAlign: 'center', opacity: fadeIn(frame, 34)}}>
             <div style={{fontFamily: 'A2Z Regular, sans-serif', fontSize: 42, color: GRAY, letterSpacing: '0.03em'}}>{compare.mainLabel}</div>
-            {compare.mainSub ? <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: MUTE}}>{compare.mainSub}</div> : null}
+            {compare.mainSub ? <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: MUTE}}>{compare.mainSub}</div> : null}
           </div>
           <div style={{position: 'absolute', left: 1120, top: 800, width: 560, textAlign: 'center', opacity: fadeIn(frame, 44)}}>
             <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46, color: WHITE, letterSpacing: '0.03em'}}>{compare.smallLabel}</div>
-            {compare.smallSub ? <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, color: WHITE}}>{compare.smallSub}</div> : null}
+            {compare.smallSub ? <div style={{marginTop: 6, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: WHITE}}>{compare.smallSub}</div> : null}
           </div>
         </>
       ) : (
@@ -126,7 +126,7 @@ export const SphereHeroCard = ({
             const yLab = 300 + i * 170;
             return (
               <div key={i} style={{position: 'absolute', left: 1360, top: yLab - 26, opacity: fadeIn(frame, 34 + i * 10)}}>
-                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.08em', color: a.hot ? WHITE : MUTE}}>
+                <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 31, letterSpacing: '0.08em', color: a.hot ? WHITE : MUTE}}>
                   {a.label}
                 </div>
                 <div style={{marginTop: 2, fontFamily: 'A2Z Medium, sans-serif', fontSize: a.hot ? 84 : 56, letterSpacing: '0.01em', color: a.hot ? WHITE : GRAY, fontVariantNumeric: 'tabular-nums'}}>

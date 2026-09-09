@@ -63,7 +63,7 @@ export const YQuoteCard = ({
             {name}
           </span>
           {role ? (
-            <span style={{marginLeft: 24, fontFamily: 'A2Z Light, sans-serif', fontSize: 28, letterSpacing: '0.06em', color: MUTE}}>
+            <span style={{marginLeft: 24, fontFamily: 'A2Z Light, sans-serif', fontSize: 31, letterSpacing: '0.06em', color: MUTE}}>
               {role}
             </span>
           ) : null}

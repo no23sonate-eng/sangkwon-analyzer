@@ -93,7 +93,7 @@ export const StageCard = ({
       <div style={{position: 'absolute', left: 140, right: 140, top,
                    textAlign: align, opacity: fadeIn(frame, 6, 18)}}>
         {kicker ? (
-          <div style={{marginBottom: SP.NEAR, fontSize: 28, letterSpacing: '0.18em',
+          <div style={{marginBottom: SP.NEAR, fontSize: 31, letterSpacing: '0.18em',
                        color: 'rgba(255,255,255,0.72)', textShadow: SH}}>
             {kicker}
           </div>
@@ -109,7 +109,7 @@ export const StageCard = ({
           </div>
         ))}
         {note ? (
-          <div style={{marginTop: SP.GAP, fontSize: 28, letterSpacing: '0.02em',
+          <div style={{marginTop: SP.GAP, fontSize: 31, letterSpacing: '0.02em',
                        color: 'rgba(255,255,255,0.7)', textShadow: SH,
                        opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
             {note}
