@@ -45,7 +45,7 @@
 | `keanu_reeves.jpg` | https://commons.wikimedia.org/wiki/File:Keanu_Reeves_(crop_and_levels)_(cropped).jpg | Wikimedia Commons, **CC BY-SA 4.0** | `Wikimedia CC BY-SA 4.0` |
 | `hibiya_imperial.jpg` | https://commons.wikimedia.org/wiki/File:Buildings_around_Hibiya_(20261).jpg | Wikimedia Commons, **CC0** | `제국호텔 도쿄 · Wikimedia CC0` |
 | `office_tower_glass.jpg` | https://www.pexels.com/photo/4319752/ | **Pexels License** | `Pexels` |
-| `shilla_hotel.jpg` | https://commons.wikimedia.org/wiki/File:The_Shilla_Hotel_(1542197453).jpg | Wikimedia Commons, **CC BY 2.0** | `신라호텔 · Wikimedia CC BY 2.0` |
+| `shilla_hotel.jpg` | https://commons.wikimedia.org/wiki/File:%E3%83%9B%E3%83%86%E3%83%AB%E6%96%B0%E7%BE%85.jpg | Wikimedia Commons, **CC BY-SA 4.0** | `신라호텔 · Wikimedia CC BY-SA 4.0` |
 | `hamadayama_entrance.jpg` | https://www.mfrw.co.jp/bukken/N1701/ | 미쓰이부동산 레지덴셜 웰네스 공식 | `파크웰스테이트 하마다야마 공식` |
 | `keio_hospital.jpg` | https://commons.wikimedia.org/wiki/File:Keio_University_Hospital_20110130.JPG | Wikimedia Commons, **CC0** | `게이오대학병원 · Wikimedia CC0` |
 | `keieikai_clinic_ext.jpg` | https://nishiazabu-medicalclinic.jp/ | 니시아자부 메디컬 클리닉(의료법인사단 게이에이카이) 공식 | `니시아자부 메디컬 클리닉 공식` |
