@@ -1266,7 +1266,7 @@
     ],
     "source": "파크웰스테이트 니시아자부 공식",
     "bg": {
-     "backdrop": "니시아자부/top_topBnr2507_pc.jpg",
+     "backdrop": "니시아자부/plan_49a_plan_img.jpg",
      "veil": 0.94
     }
    }
@@ -1846,11 +1846,7 @@
     "fromLabel": "",
     "to": "개설 불가",
     "toLabel": "",
-    "source": "일본 의료법 · 배경 Pexels",
-    "bg": {
-     "backdrop": "니시아자부/clipboard_pointing.jpg",
-     "veil": 0.94
-    }
+    "source": "일본 의료법"
    }
   ],
   "100": [
@@ -2266,11 +2262,7 @@
     "rightLines": [
      "베터라이프서비스"
     ],
-    "source": "도쿄해상일동 베터라이프서비스 · 배경 Pexels",
-    "bg": {
-     "backdrop": "니시아자부/insurance_policy.jpg",
-     "veil": 0.94
-    }
+    "source": "도쿄해상일동 베터라이프서비스"
    }
   ],
   "125": [

@@ -85,8 +85,6 @@
 | `elder_group_outdoor.jpg` | Pexels photo 29871540 | Pexels License | (표기 의무 없음) |
 | `vacant_lot_fence.jpg` | Pexels photo 9666115 | Pexels License | (표기 의무 없음) |
 | `courthouse_columns.jpg` | Pexels photo 14212986 | Pexels License | (표기 의무 없음) |
-| `clipboard_pointing.jpg` | Pexels photo 7731397 | Pexels License | (표기 의무 없음) |
-| `insurance_policy.jpg` | Pexels photo 7736032 | Pexels License | (표기 의무 없음) |
 | `seoul_resi_district.jpg` | Pexels photo 19848427 | Pexels License | (표기 의무 없음) |
 | `desk_calendar.jpg` | Pexels photo 29509484 | Pexels License | (표기 의무 없음) |
 | `han_river_skyline.jpg` | Pexels photo 31728574 | Pexels License | (표기 의무 없음) |
