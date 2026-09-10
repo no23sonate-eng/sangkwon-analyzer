@@ -143,7 +143,9 @@ export const useFade = () => {
 
 export const useFitEnd = () => {
   const {durationInFrames} = useVideoConfig();
-  return (end, tail = 8) => Math.min(end, Math.max(14, durationInFrames - tail));
+  // 끝에서 남기는 여유. 8프레임(0.27초)로 뒀더니 값이 앉자마자 컷이 끝나
+  // 쫓기듯 읽혔다 — 도착한 걸 보여 줄 시간이 없다. 반 박자(0.47초)를 남긴다
+  return (end, tail = 14) => Math.min(end, Math.max(14, durationInFrames - tail));
 };
 
 export const stageTop = (h, {top = 120, bottom = CONTENT_BOTTOM} = {}) => {
