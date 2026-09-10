@@ -60,3 +60,4 @@ motion/public/*/_dl.bin
 # 옮기고, 나머지는 저장소에 안 남긴다 — harvest_official.py 로 언제든 다시 훑는다
 projects/*/_후보/
 projects/*/_후보시트_*.png
+projects/*/premiere_package/
