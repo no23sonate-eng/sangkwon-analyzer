@@ -17,13 +17,16 @@ scene_plan.json (타이밍) + scene_props.json (카드·props) 를 합쳐 Remoti
 놀고 있다. 코어 수보다 하나 적게 띄우면 벽시계 시간이 3분의 1 아래로 준다.
 동시에 여러 개를 띄우면 메모리를 많이 쓰므로 기본값은 안전하게 잡는다.
 """
-import argparse, json, os, subprocess, sys, tempfile
+import argparse, glob, json, os, re, subprocess, sys, tempfile
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOTION = os.path.join(ROOT, 'motion')
 DEFAULT_PROJECT = '더파크사이드서울'
 CHROME = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'
+PUBLIC = os.path.join(MOTION, 'public')
+# 이것들보다 결과물이 오래됐으면 다시 굽는다 — 카드 코드가 바뀌면 전부 낡는다
+_WATCH = [f for f in glob.glob(os.path.join(MOTION, 'src', '*.jsx')) if os.path.exists(f)]
 FPS = 30
 
 
@@ -71,11 +74,39 @@ def load(proj):
     return out
 
 
-def render(sid, card, props, dur, key, still, outdir):
+def stale(out, props):
+    """이미 있는 결과물이 **아직 쓸 만한가.**
+
+    컨테이너가 스냅샷으로 되돌아가면 클립이 통째로 날아간다. 500MB 라
+    저장소에 넣을 수도 없어서 다시 굽는 수밖에 없는데, 그때마다 269컷을
+    처음부터 구우면 35분이다. 살아남은 것은 건너뛴다.
+
+    무엇과 견주나: 결과물이 **설계(scene_props)보다 뒤에 만들어졌고**,
+    그 컷이 쓰는 **소재 파일보다도 뒤**면 다시 구울 이유가 없다.
+    카드 코드(motion/src)가 바뀌었으면 전부 다시 구워야 하므로 그것도 본다.
+    """
+    if not os.path.exists(out):
+        return True
+    made = os.path.getmtime(out)
+    for src in _WATCH:
+        if os.path.getmtime(src) > made:
+            return True
+    for name in re.findall(r'"([^"]+\.(?:jpg|jpeg|png|svg|webp|mp4|webm|mov))"',
+                           json.dumps(props, ensure_ascii=False)):
+        f = os.path.join(PUBLIC, name)
+        if os.path.exists(f) and os.path.getmtime(f) > made:
+            return True
+    return False
+
+
+def render(sid, card, props, dur, key, still, outdir, fresh=False):
     props = dict(props)
     props['durationSec'] = dur
     ext = 'png' if still else 'mp4'
     out = os.path.join(outdir, f'sec{sid:02d}_{key}.{ext}')
+    if fresh and not stale(out, props):
+        print(f'[건너뜀] #{sid:02d} {key:12s} 이미 최신', flush=True)
+        return True
     with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False, encoding='utf-8') as f:
         json.dump(props, f, ensure_ascii=False)
         pp = f.name
@@ -112,6 +143,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('ids', nargs='*', type=int)
     ap.add_argument('--still', action='store_true')
+    # 되살릴 때 쓴다 — 살아남은 컷은 건너뛰고 없는 것만 굽는다
+    ap.add_argument('--fresh', action='store_true',
+                    help='이미 최신인 결과물은 건너뛴다 (스냅샷 복구용)')
     ap.add_argument('--project', default=DEFAULT_PROJECT)
     ap.add_argument('-j', '--jobs', type=int, default=0,
                     help='동시에 띄울 렌더 수 (기본: 코어-1, 최대 3)')
@@ -124,10 +158,10 @@ def main():
     jobs = max(1, a.jobs or min(3, (os.cpu_count() or 2) - 1))
     if jobs > 1 and len(scenes) > 1:
         with ThreadPoolExecutor(max_workers=jobs) as ex:
-            oks = list(ex.map(lambda s: render(*s, a.still, outdir), scenes))
+            oks = list(ex.map(lambda s: render(*s, a.still, outdir, a.fresh), scenes))
         fails = [s[0] for s, ok in zip(scenes, oks) if not ok]
     else:
-        fails = [s[0] for s in scenes if not render(*s, a.still, outdir)]
+        fails = [s[0] for s in scenes if not render(*s, a.still, outdir, a.fresh)]
     print(('FAILS: ' + str(fails)) if fails else f'all ok ({len(scenes)} scenes) → {outdir}', flush=True)
     sys.exit(1 if fails else 0)
 
