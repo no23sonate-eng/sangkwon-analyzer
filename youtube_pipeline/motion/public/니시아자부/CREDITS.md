@@ -97,3 +97,6 @@
 | `apt_elevators.jpg` | Pexels photo 12407009 | Pexels License | (표기 의무 없음) |
 | `turnstile_entrance.jpg` | Pexels photo 33175809 | Pexels License | (표기 의무 없음) |
 | `tokyo_dome.jpg` | https://commons.wikimedia.org/wiki/File:Tokyo_Dome_2015.jpg | IQRemix / Wikimedia Commons, **CC BY-SA 2.0** | `도쿄돔 사진 IQRemix / Wikimedia · CC BY-SA 2.0` |
+| `pws_library_shelves.jpg` | https://www.mfrw.co.jp/parkwellstate/nishiazabu/images/gallery/tab02/item06.jpg | 파크웰스테이트 니시아자부 공식 (니시아자부 라이브러리 서가) | `파크웰스테이트 니시아자부 공식` |
+| `pws_entrance_hall.jpg` | https://www.mfrw.co.jp/parkwellstate/nishiazabu/images/gallery/tab02/item02.jpg | 파크웰스테이트 니시아자부 공식 (엔트런스 홀) | `파크웰스테이트 니시아자부 공식` |
+| `pws_premium_living.jpg` | https://www.mfrw.co.jp/parkwellstate/nishiazabu/images/plan/premium/mr130a_ph01.jpg | 파크웰스테이트 니시아자부 공식 (130B 타입 모델룸) | `파크웰스테이트 니시아자부 공식` |
