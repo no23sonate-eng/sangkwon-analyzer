@@ -30,11 +30,24 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 README = """파크웰스테이트 니시아자부 — 프리미어 꾸러미
 
-1. 이 zip 을 통째로 한 폴더에 푼다. clips 폴더는 timeline.xml 과 같은
-   자리에 있어야 한다.
-2. 프리미어에서 File > Import 로 timeline.xml 을 연다.
-3. 미디어를 찾을 수 없다고 물으면 clips 폴더를 지정한다. 한 번만 지정하면
-   나머지는 알아서 붙는다.
+조각이 여러 개면 **맥에서 더블클릭하지 말 것.** 맥 Archive Utility 는
+압축을 합쳐 주지 않는다 — 같은 이름이 있으면 `clips 2`, `clips 3` 으로
+따로 만든다. 조각 스무 개면 폴더가 스무 개 생긴다.
+
+터미널에서 (조각들이 있는 폴더에서):
+
+    for z in *_premiere_*.zip; do unzip -o -q "$z" -d nishiazabu; done
+
+그러면 `nishiazabu/clips/` 하나에 다 모인다.
+
+1. 프리미어에서 File > Import 로 nishiazabu/timeline.xml 을 연다.
+2. 미디어를 찾을 수 없다고 물으면 clips 폴더를 지정한다. 한 번만 지정하면
+   나머지는 알아서 붙는다 — XML 은 폴더 없이 파일 이름만 갖고 있어서
+   클립을 어디에 두든 상관없다.
+
+터미널을 안 쓰겠다면: 스무 개를 다 더블클릭해 폴더 스무 개를 만든 뒤,
+프리미어의 미디어 찾기에서 **그 폴더들을 담고 있는 상위 폴더**를 지정한다.
+프리미어는 하위 폴더까지 뒤진다.
 
 컷 이름은 sec(컷번호)_cut(순번).mp4 다. 시퀀스의 클립 이름 앞에도 #컷번호가
 붙어 있어 검수 시트의 번호와 그대로 대응된다.
