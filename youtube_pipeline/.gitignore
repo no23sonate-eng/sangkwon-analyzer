@@ -55,3 +55,8 @@ motion/public/*/_dl.bin
 !motion/public/*/floor_move_section.mp4
 !motion/public/*/care_floor_only.mp4
 !motion/public/*/core_column_sway.mp4
+
+# 공식 사이트에서 훑어 온 **후보** 사진과 그 시트. 고른 것만 motion/public 으로
+# 옮기고, 나머지는 저장소에 안 남긴다 — harvest_official.py 로 언제든 다시 훑는다
+projects/*/_후보/
+projects/*/_후보시트_*.png
