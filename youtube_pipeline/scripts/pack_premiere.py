@@ -49,6 +49,11 @@ def main():
     ap.add_argument('project')
     ap.add_argument('--split', type=int, default=1,
                     help='이 개수로 나눠 담는다 (큰 파일을 못 보낼 때)')
+    # **개수로 나누면 안 된다.** 컷 하나가 200KB 인 것도 6.5MB 인 것도 있어서
+    # 68컷씩 넷으로 잘랐더니 156MB / 111MB / 121MB / 111MB 로 들쭉날쭉했다.
+    # 보내는 쪽에 한도가 있으면 **크기로** 잘라야 한다
+    ap.add_argument('--max-mb', type=float, default=0,
+                    help='한 조각이 이 크기를 넘지 않게 자른다 (0이면 --split 을 쓴다)')
     a = ap.parse_args()
 
     pdir = ROOT / 'projects' / a.project
@@ -68,14 +73,27 @@ def main():
         shutil.rmtree(out)
     out.mkdir(parents=True)
 
-    n = max(1, a.split)
-    per = (len(clips) + n - 1) // n
+    if a.max_mb:
+        # XML·README 가 들어가는 첫 조각은 그만큼 여유를 둔다
+        cap = a.max_mb * 1024 * 1024
+        batches, cur, size = [], [], xml.stat().st_size + 4096
+        for f in clips:
+            s = f.stat().st_size
+            if cur and size + s > cap:
+                batches.append(cur); cur, size = [], 0
+            cur.append(f); size += s
+        if cur:
+            batches.append(cur)
+    else:
+        n = max(1, a.split)
+        per = (len(clips) + n - 1) // n
+        batches = [clips[i * per:(i + 1) * per] for i in range(n)]
+        batches = [b for b in batches if b]
+
+    n = len(batches)
     made = []
-    for i in range(n):
-        batch = clips[i * per:(i + 1) * per]
-        if not batch:
-            continue
-        name = f'{a.project}_premiere' if n == 1 else f'{a.project}_premiere_{i + 1}of{n}'
+    for i, batch in enumerate(batches):
+        name = f'{a.project}_premiere' if n == 1 else f'{a.project}_premiere_{i + 1:02d}of{n}'
         name = re.sub(r'[^\x00-\x7F]+', 'nishiazabu', name)
         z = out / f'{name}.zip'
         # mp4 는 이미 압축돼 있다 — 다시 줄이려 들면 시간만 쓰고 안 준다
