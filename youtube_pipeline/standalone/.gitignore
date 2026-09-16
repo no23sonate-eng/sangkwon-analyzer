@@ -1,0 +1,18 @@
+# 소재 — 저작권 출처가 제각각이라 저장소에 넣지 않는다
+motion/public/*/
+!motion/public/fonts/
+# 렌더 결과 — design.json 에서 다시 나온다
+projects/*/clips/
+projects/*/stills/
+projects/*/premiere_package/
+projects/*/_후보/
+projects/*/*.mp4
+projects/*/검수시트_*.png
+projects/*/_후보시트_*.png
+# 파생물
+projects/*/scene_plan.json
+projects/*/scene_props.json
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store

@@ -61,3 +61,6 @@ motion/public/*/_dl.bin
 projects/*/_후보/
 projects/*/_후보시트_*.png
 projects/*/premiere_package/
+
+# 떼어낸 꾸러미 (pack_standalone.py 가 만든다)
+_standalone/
