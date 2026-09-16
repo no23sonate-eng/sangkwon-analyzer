@@ -38,11 +38,20 @@ export const SpecGridCard = ({
   // 항목이 적을수록 크게. 하나뿐인 컷은 그 하나가 주인공이다
   // 라벨도 주석도 없는 판(순수 목록)은 칸 안이 값 하나뿐이라 같은 크기로
   // 두면 빈 칸처럼 보인다 → 키우고 칸 높이를 줄인다 (#101 진료과)
-  const bare = !list.some((it) => it.label) && !list.some((it) => it.note);
-  const vBase = (n === 1 ? 92 : n === 2 ? 72 : n === 3 ? 62 : 58) * (bare ? 1.35 : 1);
+  const hasLabel = list.some((it) => it.label);
+  const hasNote = list.some((it) => it.note);
+  const bare = !hasLabel && !hasNote;
+  // ── 2026-09-16 · 주석 줄을 걷어내고 나서 ───────────────────────────────
+  // 화면 글자를 덜어내며 note 스무 개를 뺐다(나레이션이 이미 말하는 것들).
+  // 그러자 칸 안이 라벨+값 둘뿐인 컷이 열넷 생겼는데, 칸 높이가 셋일 때
+  // 그대로라 **값 아래가 통째로 빈 채** 남았다. 줄이 하나 줄면 칸도 줄고
+  // 값은 커져야 한다 — 빈 자리는 여백으로 돌려주는 게 아니라 접는다
+  const lite = hasLabel && !hasNote;
+  const vBase = (n === 1 ? 92 : n === 2 ? 72 : n === 3 ? 62 : 58)
+    * (bare ? 1.35 : lite ? 1.18 : 1);
   const lSize = n === 1 ? FS.LABEL : FS.SMALL;
   const nSize = n === 1 ? FS.SMALL : FS.MICRO + 2;
-  const cellH = bare ? 190 : (n === 1 ? 300 : 250);
+  const cellH = bare ? 190 : (n === 1 ? 300 : 250) - (lite ? 46 : 0);
 
   const GRID_W = n === 1 ? 1180 : n === 3 ? 1560 : 1440;
   const GRID_H = cellH * ROWS;
