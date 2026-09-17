@@ -13,7 +13,18 @@ const DARK_CARDS = new Set([
   'SphereHeroCard', 'ElevatorCard',
 ]);
 
-export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5}) => {
+// ── 글자 끄기 (check_overlap.py) ───────────────────────────────────────────
+// 같은 프레임을 글자만 투명하게 한 번 더 굽는다. 켠 것과 뺀 차이가 글자 픽셀이고,
+// 그 자리에 선·도형이 있으면 겹친 것이다. 형광펜 띠(span background)도 글자의
+// 일부로 보고 같이 끈다 — 안 끄면 띠가 '구조'로 잡혀 모든 강조가 걸린다.
+const HIDE_TEXT_CSS = `
+  * { color: transparent !important; text-shadow: none !important;
+      -webkit-text-fill-color: transparent !important; }
+  span { background: transparent !important; }
+  svg text, svg tspan { fill: transparent !important; stroke: none !important; }
+`;
+
+export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5, hideText = false}) => {
   const C = CARDS[card];
   if (!C) return <AbsoluteFill style={{background: '#300'}} />;
   // **모션은 기본값이 "없음"이다.**
@@ -57,6 +68,7 @@ export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5}
                                      Math.max(6, Math.round(durationSec * 30) - 26))}
                  punch={punch} exitF={move ? Math.round(exitSec * 30) : 0}
                  bg={bg || (DARK_CARDS.has(card) ? '#0b0e12' : themeOf(props.theme).bg)}>
+      {hideText ? <style>{HIDE_TEXT_CSS}</style> : null}
       <C {...props} durationSec={durationSec} />
     </MotionShell>
   );

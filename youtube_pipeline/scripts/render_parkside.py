@@ -123,9 +123,11 @@ def stale(out, props):
     return False
 
 
-def render(sid, card, props, dur, key, still, outdir, fresh=False):
+def render(sid, card, props, dur, key, still, outdir, fresh=False, no_text=False):
     props = dict(props)
     props['durationSec'] = dur
+    if no_text:
+        props['hideText'] = True     # check_overlap.py 용 — 글자만 투명하게
     ext = 'png' if still else 'mp4'
     out = os.path.join(outdir, f'sec{sid:02d}_{key}.{ext}')
     if fresh and not stale(out, props):
@@ -167,6 +169,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('ids', nargs='*', type=int)
     ap.add_argument('--still', action='store_true')
+    # 겹침 검사용. 같은 프레임을 글자만 끄고 한 장 더 굽는다 (stills_notext/)
+    ap.add_argument('--no-text', action='store_true',
+                    help='글자를 투명하게 한 스틸 (check_overlap.py 가 쓴다)')
     # 되살릴 때 쓴다 — 살아남은 컷은 건너뛰고 없는 것만 굽는다
     ap.add_argument('--fresh', action='store_true',
                     help='이미 최신인 결과물은 건너뛴다 (스냅샷 복구용)')
@@ -176,16 +181,16 @@ def main():
     a = ap.parse_args()
 
     proj = os.path.join(ROOT, 'projects', a.project)
-    outdir = os.path.join(proj, 'stills' if a.still else 'clips')
+    outdir = os.path.join(proj, ('stills_notext' if a.no_text else 'stills') if a.still else 'clips')
     os.makedirs(outdir, exist_ok=True)
     scenes = [s for s in load(proj) if not a.ids or s[0] in a.ids]
     jobs = max(1, a.jobs or min(3, (os.cpu_count() or 2) - 1))
     if jobs > 1 and len(scenes) > 1:
         with ThreadPoolExecutor(max_workers=jobs) as ex:
-            oks = list(ex.map(lambda s: render(*s, a.still, outdir, a.fresh), scenes))
+            oks = list(ex.map(lambda s: render(*s, a.still, outdir, a.fresh, a.no_text), scenes))
         fails = [s[0] for s, ok in zip(scenes, oks) if not ok]
     else:
-        fails = [s[0] for s in scenes if not render(*s, a.still, outdir, a.fresh)]
+        fails = [s[0] for s in scenes if not render(*s, a.still, outdir, a.fresh, a.no_text)]
     print(('FAILS: ' + str(fails)) if fails else f'all ok ({len(scenes)} scenes) → {outdir}', flush=True)
     sys.exit(1 if fails else 0)
 
