@@ -53,6 +53,16 @@ def edges(img):
     return hi - lo
 
 
+# ── 구조가 가운데를 잡고 있는 카드 ─────────────────────────────────────
+# CompareCard 는 화면 한가운데(960)에 구분선을 놓고 좌우 560px 칸을 대칭으로
+# 둔다. 그런데 한쪽이 "매입", 마주 보는 쪽이 "보유 부지 전환" 이면 잉크
+# bbox 는 **반드시** 오른쪽으로 기운다. 그건 글자 길이 차이지 배치가 틀린
+# 게 아니다 — 여기에 맞춰 카드를 비틀면 구분선이 가운데를 벗어난다.
+# #33(99px) · #119(107px) 를 계속 걸고 있었고, 둘 다 눈으로 봐서 멀쩡했다.
+# 가로 쏠림만 면제한다. 세로는 그대로 잰다
+CENTERED_BY_BUILD = {'CompareCard'}
+
+
 def flat_background(props):
     """배경 사진이 **깔려도 판판하면** 이 잣대가 통한다.
 
@@ -80,12 +90,20 @@ def main():
     if not stills:
         sys.exit(f'{a.project}: stills 가 없다')
 
-    rows, seen = [], 0
+    rows, seen, exempt = [], 0, []
     for f in stills:
         sid = int(re.match(r'sec(\d+)', f.name).group(1))
         dz = design.get(str(sid)) or ['', '', {}]
         card, props = dz[0], (dz[2] if len(dz) > 2 and isinstance(dz[2], dict) else {})
         if card in PHOTO_CARDS or not flat_background(props):
+            continue
+        # 컷 하나만 면제해야 할 때가 있다. #4~#6 은 같은 축 위에 곡선을 얹어
+        # 가는 3컷 빌드다 — #4 는 곡선이 아직 없어 축만 남으니 잉크가 왼쪽에
+        # 몰리는데, 그렇다고 #4 의 축만 가운데로 옮기면 #5 에서 축이 튄다.
+        # design.json 에 이유를 적어야만 빠진다. 이유 없는 면제는 없다
+        skip = props.get('_balance')
+        if skip:
+            exempt.append((sid, card, skip))
             continue
         if props.get('media') or props.get('image') or props.get('leftImage'):
             continue
@@ -112,7 +130,8 @@ def main():
                        f'(잉크 {y0}~{y1} · 아래 여백 {CONTENT_BOTTOM - y1})')
         # 가로도 같이 본다. 출처 줄은 늘 오른쪽 위에 있으므로 그 띠를 뺀 뒤
         # 재야 한다 — 안 빼면 모든 컷이 오른쪽으로 쏠린 것으로 나온다
-        colink = (e[SOURCE_STRIP:, :] > GRAD).sum(axis=0)
+        colink = (e[SOURCE_STRIP:, :] > GRAD).sum(axis=0) if card not in CENTERED_BY_BUILD \
+            else np.zeros(1)
         xs = np.where(colink > MIN_ROW)[0]
         if len(xs) >= 2:
             x0, x1 = int(xs.min()), int(xs.max())
@@ -124,13 +143,21 @@ def main():
             rows.append((sid, card, y0, y1, ' · '.join(msg)))
 
     print(f'{a.project} — 그래픽 컷 {seen}개 검사 (허용 ±{a.tol}px)')
-    if not rows:
-        print('  균형 벗어난 컷 없음')
-        return 0
     for sid, card, y0, y1, msg in rows:
         print(f'  #{sid:3d} {card:18s} {msg}')
-    print(f'  걸린 컷 {len(rows)}개')
-    return 1
+    print(f'  걸린 컷 {len(rows)}개' if rows else '  균형 벗어난 컷 없음')
+
+    # 면제한 컷은 **반드시 세서 보고한다.** 걸린 게 없다고 여기서 먼저
+    # 빠져나가면 면제가 통과처럼 읽힌다 — check_settled 가 268컷을 조용히
+    # 건너뛰고 "끝까지 다 자란다" 고 출력한 적이 있다. 안 잰 건 통과가 아니다
+    if exempt:
+        print(f'  면제 {len(exempt)}컷 — 이건 통과가 아니라 안 잰 것이다')
+        for sid, card, why in exempt:
+            print(f'    #{sid:3d} {card:18s} {why}')
+    if CENTERED_BY_BUILD:
+        print(f'  가로 쏠림 안 잰 카드: {", ".join(sorted(CENTERED_BY_BUILD))} '
+              f'(구분선이 구조상 가운데다)')
+    return 1 if rows else 0
 
 
 if __name__ == '__main__':

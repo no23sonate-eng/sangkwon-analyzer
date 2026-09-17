@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, OPTICAL_CENTER, fadeIn, SP, LW, titleBottom} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, OPTICAL_CENTER, fadeIn, SP, LW, titleBottom, estW} from './paper';
 
 // ── 갈림길 ────────────────────────────────────────────────────────────
 // "이미 다른 브랜드들이 보여준 방식을 따라갈지 / 올리브영만의 공간 콘텐츠를
@@ -36,7 +36,19 @@ export const ForkPathCard = ({
     bandTop + HEAD,
     Math.min(OPTICAL_CENTER, CONTENT_BOTTOM - FOOT),
   );
-  const X0 = 210, XF = 760, X1 = 1180;   // 줄기 시작 · 분기점 · 가지 끝
+  // ── 자리 ──────────────────────────────────────────────────────────────
+  // 이름표 칸을 `1920 - (X1+SP.BLOCK) - 120` 으로 **고정 폭** 잡고 있었다.
+  // 556px 인데 실제 글자는 "일찍 / 비싸다 · 일반층" 처럼 절반도 안 찬다.
+  // 남는 오른쪽 여백만큼 그림 전체가 왼쪽으로 밀려 보인다 —
+  // check_balance 가 #187 을 '왼쪽으로 98px' 로 잡은 게 이것이다.
+  // 칸을 글자에 맞춘 뒤, 그린 것 전체를 화면 가운데에 다시 앉힌다
+  const LAB_W = Math.min(556, Math.max(220, ...bs.flatMap((b) => [
+    estW(b.label, 46), estW(b.note, 35),
+  ])) + 18);
+  const BASE0 = 210, BASEF = 760, BASE1 = 1180;
+  const SPAN = (BASE1 + SP.BLOCK + LAB_W) - BASE0;
+  const SHIFT = Math.round((1920 - SPAN) / 2 - BASE0);
+  const X0 = BASE0 + SHIFT, XF = BASEF + SHIFT, X1 = BASE1 + SHIFT;
 
   const trunk = interpolate(frame, [10, 34], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const split = interpolate(frame, [32, 62], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
@@ -100,7 +112,7 @@ export const ForkPathCard = ({
         const on = decided == null || decided === i;
         return (
           <div key={i} style={{position: 'absolute', left: X1 + SP.BLOCK, top: midY + dy - 58,
-                               width: 1920 - (X1 + SP.BLOCK) - 120,
+                               width: LAB_W,
                                opacity: (on ? 1 : 0.4) * fadeIn(frame, 56 + i * 8)}}>
             <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 46,
                          lineHeight: 1.15, color: T.ink, wordBreak: 'keep-all'}}>

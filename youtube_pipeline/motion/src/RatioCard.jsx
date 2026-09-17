@@ -150,8 +150,13 @@ export const RatioCard = ({
                   </g>
                 );
               })}
-            <circle cx={OCX} cy={CY} r={R} fill="none" stroke={T.ink}
-                    strokeWidth={LW.BODY} opacity={0.4} />
+            {/* 전체를 나타내는 테두리. 0.4 는 너무 옅었다 — #251 은 "59,529곳
+              중 1,494곳" 이라 조각이 2.5%밖에 안 되는데, 그 작음이 보이려면
+              **비교 대상인 원 전체가 먼저 보여야 한다.** 옅으면 노란 조각만
+              떠 있고 분모가 사라진다. check_balance 도 이 테두리를 잉크로
+              못 세서 #251 을 '위로 134px' 로 잡고 있었다 */}
+          <circle cx={OCX} cy={CY} r={R} fill="none" stroke={T.ink}
+                    strokeWidth={LW.BODY} opacity={0.62} />
           </g>
         ) : items.map((it, i) => {
           const cx = (1920 - slot * n) / 2 + slot / 2 + i * slot;

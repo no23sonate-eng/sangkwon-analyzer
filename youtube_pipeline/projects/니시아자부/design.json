@@ -143,7 +143,8 @@
     "yUnit": "%",
     "series": [],
     "note": "과거 통계청 전망",
-    "source": "통계청 장래인구추계"
+    "source": "통계청 장래인구추계",
+    "_balance": "#4~#6 은 같은 축에 곡선을 얹는 3컷 빌드다. #4 만 가운데로 옮기면 #5 에서 축이 튄다"
    }
   ],
   "5": [
@@ -813,9 +814,7 @@
     "title": "땅을 어떻게 마련했나",
     "leftTitle": "사서 짓기",
     "leftValue": "매입",
-    "leftLines": [
-     "땅값 선지출"
-    ],
+    "leftLines": [],
     "rightTitle": "니시아자부",
     "rightValue": "보유 부지 전환",
     "rightLines": [
@@ -876,14 +875,10 @@
     "title": "",
     "leftTitle": "미쓰이부동산 레지덴셜",
     "leftValue": "소유",
-    "leftLines": [
-     "토지 · 건물"
-    ],
+    "leftLines": [],
     "rightTitle": "미쓰이부동산 레지덴셜 웰네스",
     "rightValue": "운영",
-    "rightLines": [
-     "시설 운영"
-    ],
+    "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식 · 배경 Pexels",
     "bg": {
      "backdrop": "니시아자부/office_tower_glass.jpg",
@@ -931,14 +926,10 @@
     "title": "",
     "leftTitle": "투자 · 개발",
     "leftValue": "자본",
-    "leftLines": [
-     "땅 · 건물"
-    ],
+    "leftLines": [],
     "rightTitle": "운영",
     "rightValue": "서비스",
-    "rightLines": [
-     "매일의 운영"
-    ],
+    "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
@@ -1423,9 +1414,7 @@
     ],
     "rightTitle": "한국",
     "rightValue": "신라호텔",
-    "rightLines": [
-     "비유"
-    ],
+    "rightLines": [],
     "caption": "두 호텔의 자리를 견주기 위한 비유다",
     "theme": "ink",
     "source": "사진 Wikimedia · CC0 · CC BY-SA 4.0",
@@ -1885,14 +1874,10 @@
     "title": "",
     "leftTitle": "미쓰이",
     "leftValue": "직접 운영 불가",
-    "leftLines": [
-     "법이 막는다"
-    ],
+    "leftLines": [],
     "rightTitle": "게이에이카이",
     "rightValue": "의료법인사단",
-    "rightLines": [
-     "클리닉 운영"
-    ],
+    "rightLines": [],
     "source": "일본 의료법 · 파크웰스테이트 니시아자부 공식",
     "bg": {
      "backdrop": "니시아자부/medical_img04.jpg",
@@ -1960,14 +1945,10 @@
     "title": "",
     "leftTitle": "건강진단",
     "leftValue": "연 1회",
-    "leftLines": [
-     "입주자"
-    ],
+    "leftLines": [],
     "rightTitle": "일상 진료",
     "rightValue": "유상",
-    "rightLines": [
-     "필요시 왕진"
-    ],
+    "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식",
     "bg": {
      "backdrop": "니시아자부/medical_img03.jpg",
@@ -2028,14 +2009,10 @@
     "title": "",
     "leftTitle": "게이에이카이",
     "leftValue": "게이오대학 출신",
-    "leftLines": [
-     "클리닉 운영"
-    ],
+    "leftLines": [],
     "rightTitle": "게이오대학병원",
     "rightValue": "협력의료기관",
-    "rightLines": [
-     "의료연계 등록"
-    ],
+    "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식 · 배경 게이오대학병원 (Wikimedia CC0)",
     "bg": {
      "backdrop": "니시아자부/keio_hospital.jpg",
@@ -2200,14 +2177,10 @@
     "title": "",
     "leftTitle": "모회사",
     "leftValue": "도쿄해상",
-    "leftLines": [
-     "손해보험"
-    ],
+    "leftLines": [],
     "rightTitle": "자회사",
     "rightValue": "베터라이프서비스",
-    "rightLines": [
-     "간호 · 돌봄"
-    ],
+    "rightLines": [],
     "source": "도쿄해상일동 베터라이프서비스"
    }
   ],
@@ -2243,9 +2216,7 @@
     ],
     "rightTitle": "돌봄",
     "rightValue": "가능",
-    "rightLines": [
-     "미쓰이 직접"
-    ],
+    "rightLines": [],
     "source": "일본 의료법 · 개호보험법"
    }
   ],
@@ -3433,14 +3404,10 @@
     "title": "",
     "leftTitle": "입주일시금",
     "leftValue": "안 돌려준다",
-    "leftLines": [
-     "미리 낸 사용료"
-    ],
+    "leftLines": [],
     "rightTitle": "보증금",
     "rightValue": "돌려준다",
-    "rightLines": [
-     "퇴실 때 정산"
-    ],
+    "rightLines": [],
     "source": "파크웰스테이트 니시아자부 요금표"
    }
   ],

@@ -26,7 +26,28 @@ DEFAULT_PROJECT = '더파크사이드서울'
 CHROME = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'
 PUBLIC = os.path.join(MOTION, 'public')
 # 이것들보다 결과물이 오래됐으면 다시 굽는다 — 카드 코드가 바뀌면 전부 낡는다
-_WATCH = [f for f in glob.glob(os.path.join(MOTION, 'src', '*.jsx')) if os.path.exists(f)]
+# ── 무엇이 바뀌면 그 컷이 낡는가 ──────────────────────────────────────────
+# 처음엔 src/*.jsx 를 통째로 봤다. 그러면 **카드 하나만 고쳐도 269컷 전부가
+# 낡은 것**이 돼 --fresh 가 아무것도 건너뛰지 못한다. RatioCard 를 고쳤는데
+# StageCard 89컷을 다시 굽는 건 말이 안 된다.
+# 컷이 쓰는 카드 파일 + 모두가 기대는 공용 파일만 본다.
+_SHARED = [f for f in (
+    'paper.jsx', 'Fonts.jsx', 'MotionWrap.jsx', 'MotionShell.jsx',
+    'cardRegistry.jsx', 'Root.jsx', 'index.jsx', 'shared.jsx', 'layout.jsx',
+) if os.path.exists(os.path.join(MOTION, 'src', f))]
+
+
+def _watch_for(card):
+    """이 컷이 기대는 파일들. 없는 이름은 조용히 빠진다"""
+    names = list(_SHARED)
+    if card:
+        names.append(f'{card}.jsx')
+    out = []
+    for n in names:
+        f = os.path.join(MOTION, 'src', n)
+        if os.path.exists(f):
+            out.append(f)
+    return out
 FPS = 30
 
 
@@ -83,12 +104,15 @@ def stale(out, props):
 
     무엇과 견주나: 결과물이 **설계(scene_props)보다 뒤에 만들어졌고**,
     그 컷이 쓰는 **소재 파일보다도 뒤**면 다시 구울 이유가 없다.
-    카드 코드(motion/src)가 바뀌었으면 전부 다시 구워야 하므로 그것도 본다.
+    그 컷이 쓰는 **카드 파일과 공용 파일**이 바뀌었으면 다시 굽는다 —
+    남의 카드가 바뀐 것은 이 컷과 상관이 없다.
     """
     if not os.path.exists(out):
         return True
     made = os.path.getmtime(out)
-    for src in _WATCH:
+    # 컴포지션 이름은 늘 'MotionWrap' 이다. 진짜 카드는 props 안에 있다 —
+    # 인자로 받은 card 를 쓰면 언제나 MotionWrap.jsx 만 보게 된다
+    for src in _watch_for(props.get('card')):
         if os.path.getmtime(src) > made:
             return True
     for name in re.findall(r'"([^"]+\.(?:jpg|jpeg|png|svg|webp|mp4|webm|mov))"',
