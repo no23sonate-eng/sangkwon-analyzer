@@ -128,7 +128,9 @@ export const SpecGridCard = ({
               {it.icon ? (
                 <div style={{marginBottom: it.label ? SP.TIGHT : SP.NEAR, display: 'flex',
                              justifyContent: 'center'}}>
-                  <Icon name={it.icon} size={n <= 2 ? 84 : 68} theme={theme} />
+                  <Icon name={it.icon} size={n <= 2 ? 84 : 68} theme={theme}
+                        draw={interpolate(frame, [d + 4, d + 30], [0, 1],
+                                          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})} />
                 </div>
               ) : null}
               {/* 라벨이 비면 빈 줄 하나가 값 위에 남는다 — 아예 안 그린다 */}

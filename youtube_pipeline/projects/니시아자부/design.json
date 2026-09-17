@@ -26,7 +26,7 @@
    "BigStatsCard",
    "후 — 후크는 숫자 하나로 연다. 먹 판에서 시작해 시선을 모은다",
    {
-    "title": "대한민국 65세 이상",
+    "title": "KOREA · AGE 65+",
     "items": [
      {
       "display": "20",
@@ -52,13 +52,13 @@
     "merge": true,
     "groups": [
      {
-      "label": "65세 이상",
+      "label": "AGE 65+",
       "value": 1,
       "display": "1,072만 명",
       "hot": true
      },
      {
-      "label": "그 외",
+      "label": "OTHERS",
       "value": 4,
       "display": "",
       "gone": false
@@ -79,20 +79,20 @@
     },
     "rails": [
      {
-      "label": "일본",
+      "label": "JAPAN",
       "events": [
        {
         "at": 2005,
-        "label": "20% 도달"
+        "label": "REACHES 20%"
        }
       ]
      },
      {
-      "label": "한국",
+      "label": "KOREA",
       "events": [
        {
         "at": 2026,
-        "label": "21년 뒤",
+        "label": "21 YRS LATER",
         "hot": true
        }
       ]
@@ -100,25 +100,25 @@
     ],
     "theme": "blueprint",
     "source": "통계청 · 총무성 통계국",
-    "sub": "고령인구 20%를 넘은 해 · 21년 차이"
+    "sub": "YEAR AGE-65+ PASSED 20% · 21-YR GAP"
    }
   ],
   "3": [
    "CompareCard",
    "후 — 지금 시점의 두 값. 나란히 놓아야 '아직 일본이 훨씬 위'가 선다",
    {
-    "leftTitle": "한국",
+    "leftTitle": "KOREA",
     "leftValue": "20%",
     "leftLines": [
      "2026"
     ],
-    "rightTitle": "일본",
+    "rightTitle": "JAPAN",
     "rightValue": "29%",
     "rightLines": [
      "2025"
     ],
     "source": "통계청 · 총무성 통계국 · 배경 Pexels",
-    "sub": "65세 이상 비율",
+    "sub": "SHARE AGE 65+",
     "bg": {
      "backdrop": "니시아자부/elder_group_outdoor.jpg",
      "veil": 0.94
@@ -142,7 +142,7 @@
     "yTo": 40,
     "yUnit": "%",
     "series": [],
-    "note": "과거 통계청 전망",
+    "note": "KOSTAT PAST PROJECTION",
     "source": "통계청 장래인구추계",
     "_balance": "#4~#6 은 같은 축에 곡선을 얹는 3컷 빌드다. #4 만 가운데로 옮기면 #5 에서 축이 튄다"
    }
@@ -165,7 +165,7 @@
     "yUnit": "%",
     "series": [
      {
-      "label": "한국",
+      "label": "KOREA",
       "hot": true,
       "endLabel": "37%",
       "points": [
@@ -192,7 +192,7 @@
       ]
      }
     ],
-    "note": "2045년 37% = 과거 통계청 전망 · 사이 구간은 추세를 그린 것",
+    "note": "2045 · 37% = KOSTAT PAST PROJECTION · INTERPOLATED",
     "source": "통계청 장래인구추계"
    }
   ],
@@ -214,7 +214,7 @@
     "yUnit": "%",
     "series": [
      {
-      "label": "일본",
+      "label": "JAPAN",
       "endLabel": "36.3%",
       "points": [
        [
@@ -240,7 +240,7 @@
       ]
      },
      {
-      "label": "한국",
+      "label": "KOREA",
       "hot": true,
       "endLabel": "37%",
       "points": [
@@ -271,7 +271,7 @@
      "x": 2043,
      "label": "2043"
     },
-    "note": "과거 통계청 전망 · 사이 구간은 추세를 그린 것",
+    "note": "KOSTAT PAST PROJECTION · INTERPOLATED",
     "source": "통계청 장래인구추계 · 총무성 통계국",
     "_motion": {
      "punchAt": 2.0,
@@ -325,12 +325,12 @@
     "sub": "일본 유료노인홈 · 한국 노인복지주택",
     "bars": [
      {
-      "label": "일본",
+      "label": "JAPAN",
       "value": 12061,
       "displayValue": "12,061곳"
      },
      {
-      "label": "한국",
+      "label": "KOREA",
       "value": 39,
       "displayValue": "39곳",
       "hot": true
@@ -366,7 +366,7 @@
    "BigStatsCard",
    "후 — 썸네일 문장이 그대로 나오는 자리. 조건 자막이 빠지면 안 되는 숫자다",
    {
-    "title": "부부 2인 입주일시금",
+    "title": "ENTRY FEE · COUPLE",
     "items": [
      {
       "display": "50",
@@ -375,7 +375,7 @@
       "hot": true
      }
     ],
-    "caption": "119㎡ 타입 · 2인 · 75세 기준 · 환율 900~1,000원 구간",
+    "caption": "119㎡ · COUPLE · AGE 75 · ₩900–1,000 / ¥100",
     "theme": "ink",
     "source": "파크웰스테이트 니시아자부 요금표 · 배경 파크웰스테이트 니시아자부 공식",
     "_motion": {
@@ -456,7 +456,7 @@
      {
       "lat": 35.6656,
       "lon": 139.7307,
-      "label": "도쿄 미드타운"
+      "label": "TOKYO MIDTOWN"
      },
      {
       "lat": 35.6603,
@@ -471,7 +471,7 @@
      {
       "lat": 35.6582,
       "lon": 139.7222,
-      "label": "니시아자부",
+      "label": "NISHIAZABU",
       "hot": true
      }
     ],
@@ -503,7 +503,7 @@
      {
       "lat": 35.6582,
       "lon": 139.7222,
-      "label": "미나토구 니시아자부 4-17-24",
+      "label": "NISHIAZABU 4-17-24, MINATO",
       "hot": true
      }
     ],
@@ -540,12 +540,12 @@
      {
       "lat": 35.6582,
       "lon": 139.7222,
-      "label": "니시아자부",
+      "label": "NISHIAZABU",
       "hot": true
      }
     ],
     "source": "© OpenStreetMap contributors",
-    "sub": "세 역에서 도보 약 12분",
+    "sub": "3 STATIONS · ~12 MIN WALK",
     "route": {
      "points": [
       [
@@ -586,7 +586,7 @@
    "BigStatsCard",
    "설 — 회사의 나이를 말하는 컷. 연도 하나면 된다",
    {
-    "title": "미쓰이부동산 창립",
+    "title": "MITSUI FUDOSAN · FOUNDED",
     "items": [
      {
       "display": "1941",
@@ -594,7 +594,7 @@
       "hot": true
      }
     ],
-    "caption": "2026년 기준 85년",
+    "caption": "85 YRS AS OF 2026",
     "source": "미쓰이부동산 회사소개"
    }
   ],
@@ -654,15 +654,15 @@
       "events": [
        {
         "at": 1941,
-        "label": "창립"
+        "label": "FOUNDED"
        },
        {
         "at": 1968,
-        "label": "가스미가세키 빌딩"
+        "label": "KASUMIGASEKI BLDG"
        },
        {
         "at": 2007,
-        "label": "도쿄 미드타운"
+        "label": "TOKYO MIDTOWN"
        }
       ]
      }
@@ -683,7 +683,7 @@
       "hot": true
      }
     ],
-    "caption": "안도 타다오 설계 · 도쿄 미드타운 내",
+    "caption": "TADAO ANDO · TOKYO MIDTOWN",
     "source": "21_21 DESIGN SIGHT 공식"
    }
   ],
@@ -822,7 +822,7 @@
    "CompareCard",
    "이어서 — 1호점도 같은 방식이었다. 두 사례가 겹치면 그건 습관이 아니라 전략이다",
    {
-    "leftTitle": "니시아자부",
+    "leftTitle": "NISHIAZABU",
     "leftValue": "보유 부지",
     "leftLines": [],
     "rightTitle": "하마다야마",
@@ -864,10 +864,10 @@
    {
     "title": "",
     "leftTitle": "미쓰이부동산 레지덴셜",
-    "leftValue": "소유",
+    "leftValue": "OWNS",
     "leftLines": [],
     "rightTitle": "미쓰이부동산 레지덴셜 웰네스",
-    "rightValue": "운영",
+    "rightValue": "OPERATE",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식 · 배경 Pexels",
     "bg": {
@@ -913,11 +913,11 @@
    "설 — 투자·개발 주체와 운영 주체는 결국 다르다는 일반화",
    {
     "title": "",
-    "leftTitle": "투자 · 개발",
-    "leftValue": "자본",
+    "leftTitle": "INVEST · DEVELOP",
+    "leftValue": "CAPITAL",
     "leftLines": [],
-    "rightTitle": "운영",
-    "rightValue": "서비스",
+    "rightTitle": "OPERATE",
+    "rightValue": "SERVICE",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식"
    }
@@ -1034,7 +1034,7 @@
     },
     "rails": [
      {
-      "label": "높이 기준선",
+      "label": "HEIGHT LIMIT",
       "events": [
        {
         "at": 1980,
@@ -1046,7 +1046,7 @@
     ],
     "theme": "blueprint",
     "source": "건축기준법",
-    "title": "1980 신내진기준"
+    "title": "1980 · NEW SEISMIC CODE"
    }
   ],
   "49": [
@@ -1057,12 +1057,12 @@
     "unit": "m",
     "items": [
      {
-      "label": "법 기준선",
+      "label": "LEGAL LIMIT",
       "meters": 60,
       "shape": "slab"
      },
      {
-      "label": "니시아자부",
+      "label": "NISHIAZABU",
       "meters": 125,
       "shape": "slab",
       "hot": true
@@ -1091,16 +1091,16 @@
      {
       "display": "2,123",
       "unit": "평",
-      "label": "대지"
+      "label": "SITE"
      },
      {
       "display": "13,900",
       "unit": "평",
-      "label": "연면적",
+      "label": "GFA",
       "hot": true
      }
     ],
-    "caption": "㎡ → 평 환산은 직접 계산한 값",
+    "caption": "㎡ → 평 · OWN CALC.",
     "source": "파크웰스테이트 니시아자부 공식",
     "bg": {
      "backdrop": "니시아자부/service_pavilion.jpg",
@@ -1179,7 +1179,7 @@
       "from": 2,
       "to": 3,
       "label": "돌봄 전용 층",
-      "note": "객실 60실",
+      "note": "60 ROOMS",
       "hot": true
      },
      {
@@ -1229,7 +1229,7 @@
    "BigStatsCard",
    "설 — 돌봄 층의 규모",
    {
-    "title": "2·3층 돌봄 전용",
+    "title": "2F–3F CARE",
     "items": [
      {
       "display": "60",
@@ -1290,7 +1290,7 @@
       "from": 2,
       "to": 3,
       "label": "돌봄 전용 층",
-      "note": "객실 60실"
+      "note": "60 ROOMS"
      },
      {
       "from": 4,
@@ -1367,7 +1367,7 @@
     ],
     "rightValue": "신라호텔",
     "rightLines": [],
-    "caption": "두 호텔의 자리를 견주기 위한 비유다",
+    "caption": "ANALOGY — NOT A RANKING",
     "theme": "ink",
     "source": "사진 Wikimedia · CC0 · CC BY-SA 4.0",
     "leftImage": "니시아자부/hibiya_imperial.jpg",
@@ -1413,7 +1413,7 @@
    {
     "items": [
      {
-      "label": "설립 목적",
+      "label": "PURPOSE",
       "value": "외국 손님을 맞을 호텔",
       "note": ""
      }
@@ -1450,7 +1450,7 @@
    "BigStatsCard",
    "설 — 단추를 몇 종이나 갖고 있나",
    {
-    "title": "상비 단추",
+    "title": "BUTTONS IN STOCK",
     "items": [
      {
       "display": "200",
@@ -1485,7 +1485,7 @@
    "BigStatsCard",
    "설 — 그 손을 만드는 데 걸리는 시간",
    {
-    "title": "세탁 부문 연수",
+    "title": "LAUNDRY TRAINING",
     "items": [
      {
       "display": "4",
@@ -1519,7 +1519,7 @@
    {
     "items": [
      {
-      "label": "원래 대본",
+      "label": "ORIGINAL SCRIPT",
       "value": "없던 대사"
      }
     ],
@@ -1609,7 +1609,7 @@
       "from": 35,
       "to": 36,
       "label": "다이닝",
-      "note": "제국호텔 · 화식 · 양식 · 중식",
+      "note": "제국호텔 · JAPANESE · WESTERN · CHINESE",
       "hot": true
      }
     ],
@@ -1622,7 +1622,7 @@
    {
     "from": "예약",
     "to": "예약 없음",
-    "toLabel": "니시아자부",
+    "toLabel": "NISHIAZABU",
     "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
@@ -1662,13 +1662,13 @@
    {
     "items": [
      {
-      "label": "공용부",
-      "value": "전체",
+      "label": "COMMON AREAS",
+      "value": "ALL",
       "note": ""
      },
      {
-      "label": "일반 객실",
-      "value": "전체",
+      "label": "UNITS",
+      "value": "ALL",
       "note": ""
      }
     ],
@@ -1729,7 +1729,7 @@
       }
      ]
     ],
-    "note": "미쓰이 발표 기준",
+    "note": "PER MITSUI",
     "scrim": 0.5,
     "source": "미쓰이 공식 릴리스 2024.7.29 · 배경 Pexels"
    }
@@ -1789,7 +1789,7 @@
    {
     "items": [
      {
-      "label": "일본 의료법",
+      "label": "JP MEDICAL LAW",
       "value": "의사 · 의료법인 · 비영리법인"
      }
     ],
@@ -1847,7 +1847,7 @@
       "value": "소화기내과"
      }
     ],
-    "caption": "공식 표기 · 이 외 진료과가 더 있다",
+    "caption": "OFFICIAL LIST · NOT EXHAUSTIVE",
     "theme": "blueprint",
     "source": "파크웰스테이트 니시아자부 medicalcare"
    }
@@ -1866,7 +1866,7 @@
    "BigStatsCard",
    "설 — 입주자에게 주어지는 횟수",
    {
-    "title": "연간 건강진단",
+    "title": "ANNUAL CHECK-UP",
     "items": [
      {
       "display": "1",
@@ -1886,11 +1886,11 @@
    "설 — 무료와 유료가 갈리는 자리",
    {
     "title": "",
-    "leftTitle": "건강진단",
-    "leftValue": "연 1회",
+    "leftTitle": "CHECK-UP",
+    "leftValue": "1× / YEAR",
     "leftLines": [],
-    "rightTitle": "일상 진료",
-    "rightValue": "유상",
+    "rightTitle": "DAILY CARE",
+    "rightValue": "PAID",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식",
     "bg": {
@@ -1903,12 +1903,12 @@
    "BigStatsCard",
    "설 — 사람이 늘 있다는 것",
    {
-    "title": "간호 스태프",
+    "title": "NURSING STAFF",
     "items": [
      {
       "display": "24시간",
       "unit": "",
-      "label": "365일",
+      "label": "365 DAYS",
       "hot": true
      }
     ],
@@ -1926,9 +1926,9 @@
    {
     "items": [
      {
-      "label": "이사장",
+      "label": "FOUNDER",
       "value": "德永祐二",
-      "note": "게이오대 의학부 1987년 졸업"
+      "note": "KEIO MED · CLASS OF 1987"
      }
     ],
     "theme": "blueprint",
@@ -1995,10 +1995,10 @@
    "설 — 한 건물 안의 두 회사",
    {
     "title": "",
-    "leftTitle": "같은 건물",
-    "leftValue": "1층",
+    "leftTitle": "SAME BUILDING",
+    "leftValue": "1F",
     "leftLines": [],
-    "rightTitle": "다른 회사",
+    "rightTitle": "DIFFERENT COMPANY",
     "rightValue": "게이에이카이",
     "rightLines": [
      "웰네스 운영 아님"
@@ -2017,12 +2017,12 @@
    {
     "items": [
      {
-      "value": "건물 안",
+      "value": "INSIDE",
       "note": "",
       "icon": "DoorOpen"
      },
      {
-      "value": "대로변 별도",
+      "value": "STREET-SIDE",
       "note": "",
       "icon": "Stethoscope"
      }
@@ -2050,7 +2050,7 @@
    "BigStatsCard",
    "설 — 입주자만 쓰는 시간대",
    {
-    "title": "입주자 전용",
+    "title": "RESIDENTS ONLY",
     "items": [
      {
       "display": "13:30–15:00",
@@ -2071,9 +2071,9 @@
    {
     "title": "",
     "leftTitle": "13:30–15:00",
-    "leftValue": "입주자 전용",
+    "leftValue": "RESIDENTS ONLY",
     "leftLines": [],
-    "rightTitle": "그 외 시간",
+    "rightTitle": "OTHER HOURS",
     "rightValue": "외부 환자",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식"
@@ -2110,10 +2110,10 @@
    "설 — 돌봄을 맡은 회사가 어디서 나왔나",
    {
     "title": "",
-    "leftTitle": "모회사",
+    "leftTitle": "PARENT",
     "leftValue": "도쿄해상",
     "leftLines": [],
-    "rightTitle": "자회사",
+    "rightTitle": "SUBSIDIARY",
     "rightValue": "베터라이프서비스",
     "rightLines": [],
     "source": "도쿄해상일동 베터라이프서비스"
@@ -2143,11 +2143,11 @@
    "CompareCard",
    "설 — 법이 막느냐 안 막느냐. 이게 두 장의 차이 전부다",
    {
-    "leftTitle": "의료",
-    "leftValue": "불가",
+    "leftTitle": "MEDICAL",
+    "leftValue": "NO",
     "leftLines": [],
-    "rightTitle": "돌봄",
-    "rightValue": "가능",
+    "rightTitle": "CARE",
+    "rightValue": "YES",
     "rightLines": [],
     "source": "일본 의료법 · 개호보험법"
    }
@@ -2185,10 +2185,10 @@
    "설 — 파는 쪽과 하는 쪽이 같아진다",
    {
     "title": "",
-    "leftTitle": "판다",
+    "leftTitle": "SELLS",
     "leftValue": "간병보험",
     "leftLines": [],
-    "rightTitle": "한다",
+    "rightTitle": "DELIVERS",
     "rightValue": "실제 서비스",
     "rightLines": [],
     "source": "도쿄해상일동 베터라이프서비스"
@@ -2219,15 +2219,15 @@
    {
     "items": [
      {
-      "value": "헬퍼가 방으로",
+      "value": "HELPER VISITS",
       "icon": "House"
      },
      {
-      "value": "케어 플랜",
+      "value": "CARE PLAN",
       "icon": "ClipboardList"
      },
      {
-      "value": "자비 부담",
+      "value": "SELF-PAID",
       "icon": "WashingMachine"
      }
     ],
@@ -2263,7 +2263,7 @@
    "BigStatsCard",
    "설 — 케어 플랜이 정하는 것은 결국 횟수다",
    {
-    "title": "케어 플랜",
+    "title": "CARE PLAN",
     "items": [
      {
       "display": "주 몇 회",
@@ -2442,12 +2442,12 @@
    {
     "bars": [
      {
-      "label": "심주 없이",
+      "label": "WITHOUT CORE",
       "value": 100,
       "displayValue": "100"
      },
      {
-      "label": "심주 있을 때",
+      "label": "WITH CORE",
       "value": 50,
       "displayValue": "최대 −50%",
       "hot": true
@@ -2481,7 +2481,7 @@
       "events": [
        {
         "at": 2011,
-        "label": "동일본대지진 · 시공 중",
+        "label": "2011 TOHOKU QUAKE · UNDER CONSTRUCTION",
         "hot": true
        }
       ]
@@ -2499,7 +2499,7 @@
    "BigStatsCard",
    "설 — 결과는 숫자 하나다",
    {
-    "title": "작업자 · 건물 피해",
+    "title": "INJURIES · DAMAGE",
     "items": [
      {
       "display": "0",
@@ -2523,13 +2523,13 @@
      {
       "photo": "니시아자부/tokyo_dome.jpg",
       "name": "도쿄돔",
-      "sub": "1988 · 닛켄셋케이 설계",
+      "sub": "1988 · NIKKEN SEKKEI",
       "lines": []
      },
      {
       "photo": "니시아자부/obayashi_2846_03.jpg",
       "name": "니시아자부",
-      "sub": "인테리어",
+      "sub": "INTERIOR",
       "lines": []
      }
     ],
@@ -2560,7 +2560,7 @@
    "BigStatsCard",
    "설 — 서점인데 돈을 내고 들어간다",
    {
-    "title": "분키츠 입장료",
+    "title": "BUNKITSU · ENTRY",
     "items": [
      {
       "display": "1,500",
@@ -2577,7 +2577,7 @@
    {
     "items": [
      {
-      "label": "장서",
+      "label": "COLLECTION",
       "value": "30,000권"
      }
     ],
@@ -2594,7 +2594,7 @@
    "실 — 그 값에 딸려 오는 것 ②",
    {
     "media": "니시아자부/coffee_sunlit.jpg",
-    "kicker": "커피 리필",
+    "kicker": "COFFEE REFILL",
     "lines": [
      [
       {
@@ -2682,7 +2682,7 @@
    "BigStatsCard",
    "설 — 니시아자부 쪽 규모",
    {
-    "title": "니시아자부 라이브러리",
+    "title": "LIBRARY",
     "items": [
      {
       "display": "1,800",
@@ -2703,9 +2703,9 @@
    {
     "items": [
      {
-      "label": "북 컨시어지",
+      "label": "BOOK CONCIERGE",
       "value": "주 1회 방문",
-      "note": "분키츠 롯폰기점에서"
+      "note": "FROM BUNKITSU ROPPONGI"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -2758,10 +2758,10 @@
    "설 — 두 층의 문턱이 다르다",
    {
     "title": "",
-    "leftTitle": "일반층",
+    "leftTitle": "GENERAL FLOORS",
     "leftValue": "만 60세 이상",
     "leftLines": [],
-    "rightTitle": "돌봄층",
+    "rightTitle": "CARE FLOORS",
     "rightValue": "만 65세 이상",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -2791,7 +2791,7 @@
    {
     "items": [
      {
-      "label": "신원인수인",
+      "label": "GUARANTOR",
       "value": "보증인"
      }
     ],
@@ -2893,7 +2893,7 @@
       "value": "본인"
      },
      {
-      "value": "신원인수인"
+      "value": "GUARANTOR"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -2935,7 +2935,7 @@
     "items": [
      {
       "value": "하루에 필요한 돌봄 시간",
-      "note": "분 단위"
+      "note": "IN MINUTES"
      }
     ],
     "source": "일본 개호보험법 · 배경 파크웰스테이트 니시아자부 공식",
@@ -2949,7 +2949,7 @@
    "BarChartCard",
    "설 — 등급이 곧 분이라는 걸 막대로 본다",
    {
-    "sub": "하루 · 분",
+    "sub": "MINUTES / DAY",
     "bars": [
      {
       "label": "요지원1",
@@ -2983,7 +2983,7 @@
       "hot": true
      }
     ],
-    "caption": "막대 길이는 구간 중앙값으로 그렸다",
+    "caption": "BARS = RANGE MIDPOINTS",
     "source": "일본 후생노동성 요개호인정 기준"
    }
   ],
@@ -3017,7 +3017,7 @@
    "BigStatsCard",
    "설 — 이 장의 주인공 숫자. 조건 자막이 없으면 못 쓰는 값이다",
    {
-    "title": "입주일시금",
+    "title": "ENTRY FEE",
     "items": [
      {
       "display": "5억 4천만",
@@ -3025,7 +3025,7 @@
       "hot": true
      }
     ],
-    "caption": "119㎡ 타입 · 2인 · 75세 기준",
+    "caption": "119㎡ · COUPLE · AGE 75",
     "theme": "blueprint",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
@@ -3043,17 +3043,15 @@
    "설 — 엔과 원을 나란히. 환율 구간을 같이 적는다",
    {
     "title": "",
-    "leftTitle": "엔",
+    "leftTitle": "JPY",
     "leftValue": "5억 4천만",
-    "leftLines": [
-     "입주일시금"
-    ],
-    "rightTitle": "원",
+    "leftLines": [],
+    "rightTitle": "KRW",
     "rightValue": "약 50억",
     "rightLines": [
      "환율 900~1,000원 구간"
     ],
-    "caption": "직접 계산한 값",
+    "caption": "OWN CALC.",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
      "backdrop": "니시아자부/yen_dollar.jpg",
@@ -3087,7 +3085,7 @@
    "BigStatsCard",
    "설 — 같은 방, 다른 나이",
    {
-    "title": "82세 입주 시",
+    "title": "ENTRY AT 82",
     "items": [
      {
       "display": "3억 7천만",
@@ -3095,7 +3093,7 @@
       "hot": true
      }
     ],
-    "caption": "같은 119㎡ 타입 · 2인",
+    "caption": "SAME 119㎡ · COUPLE",
     "theme": "blueprint",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
@@ -3108,16 +3106,16 @@
    "BarChartCard",
    "설 — 나이 일곱 살 차이가 값에서 어떻게 나오는지 막대 둘로",
    {
-    "title": "입주일시금",
-    "sub": "119㎡ · 2인",
+    "title": "ENTRY FEE",
+    "sub": "119㎡ · COUPLE",
     "bars": [
      {
-      "label": "75세 입주",
+      "label": "AGE 75",
       "value": 540,
       "displayValue": "5억 4천만 엔"
      },
      {
-      "label": "82세 입주",
+      "label": "AGE 82",
       "value": 370,
       "displayValue": "3억 7천만 엔",
       "hot": true
@@ -3147,7 +3145,7 @@
    {
     "items": [
      {
-      "label": "값의 근거",
+      "label": "BASIS",
       "value": "앞으로 살 기간"
      }
     ],
@@ -3196,10 +3194,10 @@
     "trunkLabel": "",
     "branches": [
      {
-      "label": "일찍"
+      "label": "EARLY"
      },
      {
-      "label": "늦게"
+      "label": "LATE"
      }
     ],
     "decided": null,
@@ -3221,7 +3219,7 @@
    "BigStatsCard",
    "설 — 그 수가 경쟁률이 된다",
    {
-    "title": "돌봄층 객실",
+    "title": "CARE-FLOOR UNITS",
     "items": [
      {
       "display": "60",
@@ -3236,10 +3234,10 @@
    "CompareCard",
    "설 — 한국은 아예 다른 방식으로 매긴다",
    {
-    "leftTitle": "인근 아파트 매매가",
+    "leftTitle": "NEARBY SALE PRICE",
     "leftValue": "70~80%",
     "leftLines": [],
-    "rightTitle": "전세가",
+    "rightTitle": "JEONSE PRICE",
     "rightValue": "110~130%",
     "rightLines": [],
     "source": "업계 통상 산정 방식 · 배경 Pexels",
@@ -3254,9 +3252,9 @@
    "설 — 그 개념이 일본엔 없다",
    {
     "from": "보증금",
-    "fromLabel": "한국",
+    "fromLabel": "KOREA",
     "to": "미리 낸 사용료",
-    "toLabel": "일본",
+    "toLabel": "JAPAN",
     "source": "파크웰스테이트 니시아자부 요금표"
    }
   ],
@@ -3266,7 +3264,7 @@
    {
     "items": [
      {
-      "label": "입주일시금",
+      "label": "ENTRY FEE",
       "value": "미리 낸 사용료"
      }
     ],
@@ -3287,7 +3285,7 @@
    "BigStatsCard",
    "설 — 보증금은 따로 있다",
    {
-    "title": "보증금",
+    "title": "DEPOSIT",
     "items": [
      {
       "display": "1",
@@ -3295,7 +3293,7 @@
       "hot": true
      }
     ],
-    "caption": "임대료 기준",
+    "caption": "BASED ON RENT",
     "source": "파크웰스테이트 니시아자부 요금표"
    }
   ],
@@ -3304,10 +3302,10 @@
    "설 — 두 돈의 성격이 정반대다",
    {
     "title": "",
-    "leftTitle": "입주일시금",
+    "leftTitle": "ENTRY FEE",
     "leftValue": "안 돌려준다",
     "leftLines": [],
-    "rightTitle": "보증금",
+    "rightTitle": "DEPOSIT",
     "rightValue": "돌려준다",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 요금표"
@@ -3321,13 +3319,13 @@
     "unit": "%",
     "items": [
      {
-      "label": "계약 즉시 소멸",
+      "label": "GONE AT SIGNING",
       "pct": 20,
-      "sub": "1억 800만 엔",
+      "sub": "¥108M",
       "hot": true
      }
     ],
-    "caption": "입주일시금 5억 4천만 엔 기준",
+    "caption": "ENTRY FEE ¥540M",
     "theme": "blueprint",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
@@ -3340,19 +3338,19 @@
    "CostStackCard",
    "설 — 5억 4천만 엔이 어떻게 갈리나. 사라지는 몫을 먼저 뗀다",
    {
-    "title": "입주일시금 5억 4천만 엔",
+    "title": "ENTRY FEE ¥540M",
     "unit": "만 엔",
     "totalLabel": "합계",
     "totalDisplay": "54,000",
     "parts": [
      {
-      "label": "계약 즉시 소멸 (20%)",
+      "label": "GONE AT SIGNING · 20%",
       "value": 10800,
       "display": "10,800",
       "hot": true
      },
      {
-      "label": "기간에 걸쳐 균등 소멸",
+      "label": "AMORTIZED",
       "value": 43200,
       "display": "43,200"
      }
@@ -3368,7 +3366,7 @@
    "BigStatsCard",
    "설 — 사라지는 금액 그 자체",
    {
-    "title": "계약 즉시 소멸",
+    "title": "GONE AT SIGNING",
     "items": [
      {
       "display": "1억 800만",
@@ -3386,9 +3384,9 @@
    {
     "items": [
      {
-      "label": "남은 80%",
+      "label": "REMAINING 80%",
       "value": "일정 기간 균등 소멸",
-      "note": "공식 공개 범위 120~360개월"
+      "note": "OFFICIAL RANGE 120–360 MONTHS"
      }
     ],
     "source": "파크웰스테이트 니시아자부 요금표 · 배경 Pexels",
@@ -3404,12 +3402,12 @@
    {
     "branches": [
      {
-      "label": "일시금",
-      "note": "한 번에 · 보증금 1개월분"
+      "label": "LUMP SUM",
+      "note": "ONE-OFF · DEPOSIT 1 MONTH"
      },
      {
-      "label": "월납",
-      "note": "매월 · 보증금 6개월분"
+      "label": "MONTHLY",
+      "note": "MONTHLY · DEPOSIT 6 MONTHS"
      }
     ],
     "decided": null,
@@ -3430,11 +3428,11 @@
    "CompareCard",
    "설 — 대신 보증금이 여섯 배가 된다",
    {
-    "title": "보증금",
-    "leftTitle": "일시금 방식",
+    "title": "DEPOSIT",
+    "leftTitle": "LUMP SUM",
     "leftValue": "1개월분",
     "leftLines": [],
-    "rightTitle": "월납 방식",
+    "rightTitle": "MONTHLY",
     "rightValue": "6개월분",
     "rightLines": [],
     "source": "파크웰스테이트 니시아자부 요금표",
@@ -3448,7 +3446,7 @@
    "BigStatsCard",
    "설 — 매달 따로 나가는 돈",
    {
-    "title": "월 부담",
+    "title": "MONTHLY",
     "items": [
      {
       "display": "52",
@@ -3456,7 +3454,7 @@
       "hot": true
      }
     ],
-    "caption": "119㎡ 타입 기준",
+    "caption": "119㎡ TYPE",
     "theme": "blueprint",
     "source": "파크웰스테이트 니시아자부 요금표 · 배경 Pexels",
     "bg": {
@@ -3469,7 +3467,7 @@
    "BigStatsCard",
    "이어서 — 같은 값을 원으로 옮긴다",
    {
-    "title": "월 부담",
+    "title": "MONTHLY",
     "items": [
      {
       "display": "약 500",
@@ -3477,7 +3475,7 @@
       "hot": true
      }
     ],
-    "caption": "직접 계산한 값 · 환율 900~1,000원 구간",
+    "caption": "OWN CALC. · ₩900–1,000 / ¥100",
     "source": "파크웰스테이트 니시아자부 요금표 · 배경 Pexels",
     "bg": {
      "backdrop": "니시아자부/han_river_skyline.jpg",
@@ -3489,24 +3487,24 @@
    "CostStackCard",
    "설 — 52만 엔이 무엇으로 되어 있나",
    {
-    "title": "월 52만 엔",
+    "title": "¥520K / MONTH",
     "unit": "만 엔",
     "totalLabel": "합계",
     "totalDisplay": "52",
     "parts": [
      {
-      "label": "기본서비스료",
+      "label": "BASE SERVICE FEE",
       "value": 35.2,
       "display": "35.2",
       "hot": true
      },
      {
-      "label": "공익비 (관리비 성격)",
+      "label": "COMMON CHARGES",
       "value": 16.8,
       "display": "16.8"
      }
     ],
-    "caption": "공익비는 합계에서 역산한 값",
+    "caption": "COMMON CHARGES BACK-CALCULATED",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
      "backdrop": "니시아자부/plan_tab04_item02.jpg",
@@ -3523,16 +3521,16 @@
      {
       "display": "50억",
       "unit": "",
-      "label": "들어갈 때"
+      "label": "AT ENTRY"
      },
      {
       "display": "500만",
       "unit": "원/월",
-      "label": "매달",
+      "label": "MONTHLY",
       "hot": true
      }
     ],
-    "caption": "119㎡ · 2인 · 75세 기준 · 직접 계산한 값",
+    "caption": "119㎡ · COUPLE · AGE 75 · OWN CALC.",
     "theme": "ink",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
@@ -3559,7 +3557,7 @@
    "BigStatsCard",
    "설 — 방 크기와 무관한 금액",
    {
-    "title": "기본서비스료",
+    "title": "BASE SERVICE FEE",
     "items": [
      {
       "display": "35만 2천",
@@ -3582,7 +3580,7 @@
      {
       "photo": "니시아자부/plan_39a_plan_img.jpg",
       "name": "39㎡",
-      "sub": "기본서비스료",
+      "sub": "BASE SERVICE FEE",
       "stat": "35.2",
       "statUnit": "만 엔",
       "lines": []
@@ -3590,7 +3588,7 @@
      {
       "photo": "니시아자부/plan_130a_plan_img.jpg",
       "name": "130㎡",
-      "sub": "기본서비스료",
+      "sub": "BASE SERVICE FEE",
       "stat": "35.2",
       "statUnit": "만 엔",
       "lines": [],
@@ -3629,12 +3627,12 @@
    "SpecGridCard",
    "설 — 가정을 먼저 화면에 박는다. 이 없이 다음 컷을 띄우면 안 된다",
    {
-    "title": "아래 계산의 가정",
+    "title": "ASSUMPTION",
     "items": [
      {
-      "label": "거주 기간",
-      "value": "20년",
-      "note": "가정 — 공식 상각기간 공개 범위는 120~360개월"
+      "label": "STAY",
+      "value": "20 YRS",
+      "note": "ASSUMPTION · OFFICIAL RANGE 120–360 MONTHS"
      }
     ],
     "theme": "blueprint",
@@ -3651,17 +3649,17 @@
    {
     "top": {
      "value": "5억 4천만 엔",
-     "label": "입주일시금"
+     "label": "ENTRY FEE"
     },
     "bottom": {
-     "value": "20년",
-     "label": "가정한 거주 기간"
+     "value": "20 YRS",
+     "label": "ASSUMED STAY"
     },
     "result": {
      "value": "월 225만 엔",
-     "label": "직접 계산한 값"
+     "label": "OWN CALC."
     },
-    "caption": "20년은 가정이다 · 실제 상각기간에 따라 달라진다",
+    "caption": "20 YRS IS AN ASSUMPTION · VARIES BY AMORTIZATION",
     "source": "파크웰스테이트 니시아자부 요금표 · 배경 Pexels",
     "bg": {
      "backdrop": "니시아자부/hl_calc_notes.jpg",
@@ -3673,24 +3671,24 @@
    "CostStackCard",
    "설 — 거기에 매달 내는 돈을 얹는다",
    {
-    "title": "월 실부담",
+    "title": "MONTHLY NET",
     "unit": "만 엔",
     "totalLabel": "합계",
     "totalDisplay": "277",
     "parts": [
      {
-      "label": "입주일시금 월 환산",
+      "label": "ENTRY FEE / MONTH",
       "value": 225,
       "display": "225"
      },
      {
-      "label": "월 부담금",
+      "label": "MONTHLY FEES",
       "value": 52,
       "display": "52",
       "hot": true
      }
     ],
-    "caption": "20년 가정 · 직접 계산한 값",
+    "caption": "20-YR ASSUMPTION · OWN CALC.",
     "source": "파크웰스테이트 니시아자부 요금표 · 배경 Pexels",
     "bg": {
      "backdrop": "니시아자부/documents_closeup.jpg",
@@ -3702,7 +3700,7 @@
    "BigStatsCard",
    "설 — 원으로 옮긴다",
    {
-    "title": "월 실부담",
+    "title": "MONTHLY NET",
     "items": [
      {
       "display": "약 2,600",
@@ -3710,7 +3708,7 @@
       "hot": true
      }
     ],
-    "caption": "2인 기준 · 20년 가정 · 직접 계산한 값",
+    "caption": "COUPLE · 20-YR ASSUMPTION · OWN CALC.",
     "theme": "blueprint",
     "source": "파크웰스테이트 니시아자부 요금표"
    }
@@ -3720,17 +3718,17 @@
    "설 — 1인당으로 나눠 본다",
    {
     "title": "",
-    "leftTitle": "2인",
+    "leftTitle": "COUPLE",
     "leftValue": "약 2,600만 원",
     "leftLines": [
      "월"
     ],
-    "rightTitle": "1인당",
+    "rightTitle": "PER PERSON",
     "rightValue": "약 1,300만 원",
     "rightLines": [
      "월"
     ],
-    "caption": "20년 가정 · 직접 계산한 값",
+    "caption": "20-YR ASSUMPTION · OWN CALC.",
     "source": "파크웰스테이트 니시아자부 요금표",
     "bg": {
      "backdrop": "니시아자부/plan_98b_plan_img.jpg",
@@ -3745,12 +3743,12 @@
     "items": [
      {
       "icon": "Utensils",
-      "value": "식비 별도",
-      "note": "2인 식사료 월 23.7만 엔"
+      "value": "MEALS EXTRA",
+      "note": "MEALS ¥237K / MONTH · COUPLE"
      },
      {
       "icon": "Droplets",
-      "value": "수도광열비 별도"
+      "value": "UTILITIES EXTRA"
      }
     ],
     "source": "파크웰스테이트 니시아자부 요금표",
@@ -3796,20 +3794,20 @@
     "merge": true,
     "groups": [
      {
-      "label": "입주자",
+      "label": "RESIDENTS",
       "value": 282,
       "display": "282명",
       "hot": true
      },
      {
-      "label": "빈 자리",
+      "label": "VACANT",
       "value": 320,
       "display": "320명",
       "gone": true
      }
     ],
     "legend": "right",
-    "caption": "정원 602명 · 2025년 7월 기준 · 개업 10개월 시점",
+    "caption": "CAPACITY 602 · JUL 2025 · 10 MONTHS IN",
     "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
    }
   ],
@@ -3821,13 +3819,13 @@
     "unit": "%",
     "items": [
      {
-      "label": "입주율",
+      "label": "OCCUPANCY",
       "pct": 47,
-      "sub": "282 / 602명",
+      "sub": "282 / 602",
       "hot": true
      }
     ],
-    "caption": "2025년 7월 기준 · 개업 10개월 시점",
+    "caption": "JUL 2025 · 10 MONTHS AFTER OPENING",
     "theme": "blueprint",
     "source": "후생노동성 개호사업소 공표시스템"
    }
@@ -3836,23 +3834,23 @@
    "BarChartCard",
    "설 — 정원이 유별나게 크다는 걸 막대로",
    {
-    "title": "정원",
-    "sub": "도쿄도 유료노인홈 평균 대비",
+    "title": "CAPACITY",
+    "sub": "VS TOKYO AVERAGE",
     "bars": [
      {
-      "label": "도쿄도 평균",
+      "label": "TOKYO AVG",
       "value": 67,
       "displayValue": "약 67명",
       "subValue": "역산값"
      },
      {
-      "label": "니시아자부",
+      "label": "NISHIAZABU",
       "value": 602,
       "displayValue": "602명",
       "hot": true
      }
     ],
-    "caption": "평균값은 공표된 '9배 이상'에서 역산한 값이다",
+    "caption": "AVG BACK-CALCULATED FROM '9×+'",
     "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
    }
   ],
@@ -3877,19 +3875,19 @@
     },
     "rails": [
      {
-      "label": "모집",
+      "label": "RECRUITING",
       "events": [
        {
         "at": 2022.3,
-        "label": "자료청구 시작"
+        "label": "INQUIRIES OPEN"
        },
        {
         "at": 2022.8,
-        "label": "모델룸 · 신청 접수"
+        "label": "MODEL ROOM · APPLICATIONS"
        },
        {
         "at": 2024.6,
-        "label": "개업",
+        "label": "OPENING",
         "hot": true
        }
       ]
@@ -3923,17 +3921,17 @@
    "BigStatsCard",
    "설 — 개업 석 달 전의 두 숫자",
    {
-    "title": "개업 3개월 전",
+    "title": "3 MONTHS BEFORE OPENING",
     "items": [
      {
       "display": "4,000",
       "unit": "건 이상",
-      "label": "문의"
+      "label": "INQUIRIES"
      },
      {
       "display": "180",
       "unit": "건",
-      "label": "신청",
+      "label": "APPLICATIONS",
       "hot": true
      }
     ],
@@ -3946,9 +3944,9 @@
    {
     "items": [
      {
-      "label": "개업 시점 보도",
+      "label": "PRESS AT OPENING",
       "value": "이미 절반이 계약",
-      "note": "보도 기준"
+      "note": "PER PRESS"
      }
     ],
     "source": "개업 전 보도"
@@ -3959,12 +3957,12 @@
    "설 — 두 숫자의 단위가 다르다는 게 이 컷의 전부다",
    {
     "title": "",
-    "leftTitle": "정원",
+    "leftTitle": "CAPACITY",
     "leftValue": "602명",
     "leftLines": [
      "사람 단위"
     ],
-    "rightTitle": "객실",
+    "rightTitle": "ROOMS",
     "rightValue": "400실",
     "rightLines": [
      "방 단위 · 공식 릴리스 기준"
@@ -3978,13 +3976,13 @@
    {
     "items": [
      {
-      "label": "계약",
-      "value": "방 단위",
+      "label": "CONTRACTS",
+      "value": "PER ROOM",
       "note": ""
      },
      {
-      "label": "입주율",
-      "value": "사람 단위"
+      "label": "OCCUPANCY",
+      "value": "PER PERSON"
      }
     ],
     "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준",
@@ -4027,16 +4025,16 @@
    "BarChartCard",
    "설 — 늘어난 양을 막대로",
    {
-    "title": "호실 수",
+    "title": "UNITS",
     "sub": "",
     "bars": [
      {
-      "label": "기존",
+      "label": "EXISTING",
       "value": 1091,
       "displayValue": "1,091호"
      },
      {
-      "label": "추가",
+      "label": "ADDED",
       "value": 1500,
       "displayValue": "1,500호",
       "hot": true
@@ -4058,7 +4056,7 @@
      {
       "photo": "니시아자부/pwsbrand_search_ph_hamadayama.jpg",
       "name": "하마다야마",
-      "sub": "1호점",
+      "sub": "NO. 1",
       "lines": []
      },
      {
@@ -4088,9 +4086,9 @@
    {
     "items": [
      {
-      "label": "오픈 3~4년 차",
+      "label": "YEAR 3–4",
       "value": "입주 완료 전망",
-      "note": "본인 견해 — 확정된 계획이 아니다"
+      "note": "MY VIEW — NOT A CONFIRMED PLAN"
      }
     ],
     "source": ""
@@ -4100,7 +4098,7 @@
    "BigStatsCard",
    "설 — 어떤 사람들이 사는가",
    {
-    "title": "입주자 평균연령",
+    "title": "AVG AGE",
     "items": [
      {
       "display": "79.3",
@@ -4108,7 +4106,7 @@
       "hot": true
      }
     ],
-    "caption": "2025년 7월 기준",
+    "caption": "AS OF JUL 2025",
     "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준 · 배경 Pexels",
     "bg": {
      "backdrop": "니시아자부/hl_tokyo_apt_night.jpg",
@@ -4125,21 +4123,21 @@
     "merge": true,
     "groups": [
      {
-      "label": "자립 판정",
+      "label": "INDEPENDENT",
       "value": 229,
       "display": "229명",
       "hot": true,
       "sub": "81.2%"
      },
      {
-      "label": "그 외",
+      "label": "OTHERS",
       "value": 53,
       "display": "53명",
       "gone": true
      }
     ],
     "legend": "right",
-    "caption": "입주자 282명 기준 · 2025년 7월",
+    "caption": "282 RESIDENTS · JUL 2025",
     "source": "후생노동성 개호사업소 공표시스템 · 2025.7 기준"
    }
   ],
@@ -4172,7 +4170,7 @@
      "일본은 지금",
      "규제를 조인다"
     ],
-    "sub": "일본 시장 전체 얘기",
+    "sub": "JAPAN-WIDE, NOT NISHIAZABU",
     "theme": "ink",
     "bg": {
      "backdrop": "니시아자부/japan_street_crowd.mp4",
@@ -4185,12 +4183,12 @@
    "StrikeSwapCard",
    "설 — 무엇이 무엇으로 바뀌나",
    {
-    "title": "유료노인홈",
+    "title": "유료노인홈 · PAID SENIOR HOME",
     "from": "신고제",
     "to": "등록제",
     "theme": "ink",
     "source": "후생노동성 とりまとめ · 배경 Pexels",
-    "note": "일본 시장 전체 얘기",
+    "note": "JAPAN-WIDE, NOT NISHIAZABU",
     "bg": {
      "backdrop": "니시아자부/stamping_document.jpg",
      "veil": 0.91,
@@ -4202,7 +4200,7 @@
    "BigStatsCard",
    "설 — 통로가 몇 개인지부터 못 박는다",
    {
-    "title": "실버타운 수익 통로",
+    "title": "REVENUE",
     "items": [
      {
       "display": "2",
@@ -4220,13 +4218,13 @@
    {
     "items": [
      {
-      "value": "입주자",
+      "value": "RESIDENTS",
       "note": "",
       "icon": "Home"
      },
      {
-      "value": "개호보험",
-      "note": "본인 부담 10~30%",
+      "value": "CARE INSURANCE",
+      "note": "10–30% OUT OF POCKET",
       "icon": "HeartHandshake"
      }
     ],
@@ -4241,24 +4239,24 @@
    "CostStackCard",
    "설 — 돌봄비는 대부분 보험이 낸다. 그 구조가 유인을 만든다",
    {
-    "title": "돌봄비",
+    "title": "CARE FEES",
     "unit": "%",
     "totalLabel": "합계",
     "totalDisplay": "100",
     "parts": [
      {
-      "label": "개호보험",
+      "label": "CARE INSURANCE",
       "value": 80,
       "display": "70~90"
      },
      {
-      "label": "본인 부담",
+      "label": "OUT OF POCKET",
       "value": 20,
       "display": "10~30",
       "hot": true
      }
     ],
-    "caption": "소득에 따라 달라진다 · 일본 시장 전체 얘기",
+    "caption": "VARIES BY INCOME · JAPAN-WIDE",
     "theme": "ink",
     "source": "후생노동성 とりまとめ"
    }
@@ -4271,7 +4269,7 @@
     "to": "돌봄비 최대",
     "theme": "ink",
     "source": "후생노동성 とりまとめ",
-    "note": "일본 시장 전체에서 나타난 구조",
+    "note": "JAPAN-WIDE PATTERN",
     "noStrike": true
    }
   ],
@@ -4279,22 +4277,22 @@
    "BarChartCard",
    "설 — 한도액을 끝까지 쓰는 쪽으로 기운다",
    {
-    "title": "개호보험 한도액 사용",
-    "sub": "문제가 된 구조 (일본 시장 전체 얘기)",
+    "title": "CARE INSURANCE CAP",
+    "sub": "THE PROBLEM PATTERN · JAPAN-WIDE",
     "bars": [
      {
-      "label": "필요한 만큼",
+      "label": "AS NEEDED",
       "value": 60,
       "displayValue": "일부"
      },
      {
-      "label": "한도액까지",
+      "label": "TO THE CAP",
       "value": 100,
       "displayValue": "최대",
       "hot": true
      }
     ],
-    "caption": "개념 도해 — 실제 사용률 통계가 아니다",
+    "caption": "CONCEPT — NOT USAGE DATA",
     "theme": "ink",
     "source": "후생노동성 とりまとめ"
    }
@@ -4335,13 +4333,13 @@
     "merge": true,
     "groups": [
      {
-      "label": "'고급' 분류",
+      "label": "'PREMIUM'",
       "value": 1494,
       "display": "1,494곳",
       "hot": true
      },
      {
-      "label": "그 외",
+      "label": "OTHERS",
       "value": 58035,
       "display": "58,035곳",
       "gone": true
@@ -4360,13 +4358,13 @@
     "unit": "%",
     "items": [
      {
-      "label": "'고급' 분류",
+      "label": "'PREMIUM'",
       "pct": 2.5,
-      "sub": "1,494 / 59,529곳",
+      "sub": "1,494 / 59,529",
       "hot": true
      }
     ],
-    "caption": "시설 자기 신고 기준 · 2026.8 조사",
+    "caption": "SELF-REPORTED · AUG 2026 SURVEY",
     "source": "PR TIMES 2026.8",
     "_motion": {
      "punchAt": 2.4,
@@ -4388,16 +4386,16 @@
    "BarChartCard",
    "설 — 후크에서 본 그 대비를 다시 세운다",
    {
-    "title": "주거형만 셀 때",
+    "title": "HOUSING ONLY",
     "sub": "일본 유료노인홈 · 한국 노인복지주택 (일본 2025 / 한국 2023)",
     "bars": [
      {
-      "label": "일본",
+      "label": "JAPAN",
       "value": 12061,
       "displayValue": "12,061곳"
      },
      {
-      "label": "한국",
+      "label": "KOREA",
       "value": 39,
       "displayValue": "39곳",
       "hot": true
@@ -4429,16 +4427,16 @@
    "BarChartCard",
    "설 — 합쳐 세면 격차가 확 준다",
    {
-    "title": "돌봄까지 합칠 때",
+    "title": "HOUSING + CARE",
     "sub": "일본 유료노인홈+개호시설 · 한국 노인주거복지+노인의료복지 (일본 2025 / 한국 2023)",
     "bars": [
      {
-      "label": "일본",
+      "label": "JAPAN",
       "value": 17258,
       "displayValue": "17,258곳"
      },
      {
-      "label": "한국",
+      "label": "KOREA",
       "value": 6436,
       "displayValue": "6,436곳",
       "hot": true
@@ -4452,11 +4450,11 @@
    "설 — 무엇을 지었고 무엇을 안 지었나",
    {
     "title": "",
-    "leftTitle": "돌봄이 필요해진 다음",
-    "leftValue": "지었다",
+    "leftTitle": "AFTER CARE IS NEEDED",
+    "leftValue": "BUILT",
     "leftLines": [],
-    "rightTitle": "그 전에 갈 곳",
-    "rightValue": "안 지었다",
+    "rightTitle": "BEFORE THAT",
+    "rightValue": "NOT BUILT",
     "rightLines": [],
     "source": "보건복지부 노인복지시설 현황"
    }
@@ -4525,7 +4523,7 @@
    "BigStatsCard",
    "설 — 직접 한 건 둘뿐이다",
    {
-    "title": "미쓰이가 직접 한 것",
+    "title": "DONE IN-HOUSE",
     "items": [
      {
       "display": "2",
@@ -4600,15 +4598,15 @@
    {
     "items": [
      {
-      "value": "매일",
+      "value": "DAILY",
       "icon": "Utensils"
      },
      {
-      "value": "24시간",
+      "value": "24H",
       "icon": "Siren"
      },
      {
-      "value": "같은 건물 안",
+      "value": "SAME BUILDING",
       "icon": "ArrowUpDown"
      }
     ],

@@ -772,12 +772,17 @@ export const Callout = ({x, y, dx = 200, dy = -160, title = '', sub = '', theme,
 // 그대로 앉는다. name 은 Lucide 컴포넌트 이름('Utensils', 'Stethoscope').
 // 없는 이름이면 **빈 칸이 아니라 빨간 네모**를 그린다 — 조용히 사라지면
 // 검수 시트에서 못 잡는다.
-export const Icon = ({name = '', size = 64, theme, color, strokeWidth = 1.6, opacity = 1, style = {}}) => {
+// draw: 0~1 — 획이 그려지는 정도. stroke-dasharray/offset 은 SVG 상속 속성이라
+// svg 뿌리에 걸면 안의 path·circle·line 전부에 먹는다. Lucide 아이콘의 획 길이는
+// 24 뷰박스에서 대개 80 이하 → 사이즈 배율 곱해도 320 이면 넉넉하다
+export const Icon = ({name = '', size = 64, theme, color, strokeWidth = 1.6, opacity = 1, style = {}, draw = 1}) => {
   const T = themeOf(theme);
   const C = name ? Lucide[name] : null;
   if (!C) {
     return <div style={{width: size, height: size, background: '#C0392B', opacity, ...style}} />;
   }
+  const L = 320;
+  const dash = draw >= 1 ? {} : {strokeDasharray: L, strokeDashoffset: L * (1 - Math.max(0, Math.min(1, draw)))};
   return <C size={size} color={color || T.ink} strokeWidth={strokeWidth}
-            absoluteStrokeWidth style={{opacity, display: 'block', ...style}} />;
+            absoluteStrokeWidth style={{opacity, display: 'block', ...dash, ...style}} />;
 };

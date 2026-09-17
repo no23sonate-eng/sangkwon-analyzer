@@ -51,8 +51,14 @@ export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5,
   // `motion: {transition: true}` 를 명시한 컷만 예외로 민다. 챕터가 바뀌는
   // 자리처럼 **전환 자체가 신호**일 때만 쓴다
   const move = Boolean(motion && motion.transition);
-  const {dir = 'left', push = 0, punchAt = null, punch = 0.04, exitSec = 0, bg} = motion || {};
-  const slow = move ? (push || 0.035) : 0;
+  const {dir = 'left', push = 0, punchAt = null, punch = 0.04, exitSec = 0, bg,
+         still = false} = motion || {};
+  // ── 2026-09-17 · 정지 컷의 숨 ─────────────────────────────────────────
+  // 위 주석은 "기본값도 1.2%/컷 만큼은 밀린다"고 했는데 코드는 0 이었다 — 전환
+  // 없는 컷 250개가 진입 애니메이션 뒤로 완전히 멎어 있었다. 사용자: "자연스러운
+  // 모션이 들어가야 한다." 컷 전체에 걸쳐 1.2% 만 아주 느리게 — 눈에 띄면
+  // 실패고, 멎어 있으면 슬라이드다. `motion: {still: true}` 면 완전히 세운다
+  const slow = move ? (push || 0.035) : (still ? 0 : 0.012);
   const enterF = move ? 16 : 0;
   // 밀려 들어오는 동안 드러날 수 있는 바탕색. MotionShell 이 스케일로 메우지만
   // 안전망으로 카드 테마를 따라간다. **`props.image` 유무로 판정하면 안 된다** —
