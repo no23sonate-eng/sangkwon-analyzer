@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW} from './paper';
+import {themeOf, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, stageTop, titleH, LW, estW} from './paper';
 
 // 연도 레일 카드 — 가로 연도축 위에 기간 막대와 사건 마커.
 // "좌→우로 아이콘 3개"류와 달리 **실제 시간 축**이 있어서, 기간의 길이 차이나
@@ -49,7 +49,9 @@ export const TimelineRailCard = ({
   // 148px 오른쪽으로 쏠려 있었다). 이름은 오른쪽 정렬이라 빈자리가
   // 그대로 여백이 된다 — 제일 긴 이름에 맞춰 칸을 줄인다
   const NAME_CH = Math.max(0, ...rails.map((r) => String(r.label || '').length));
-  const NAME_W = Math.min(430, Math.max(110, NAME_CH * 42 + 16));
+  // 글자 수 × 42 는 한글 기준이다. 라틴 'RECRUITING' 은 절반 폭이라 칸이 내용보다
+// 넓어져 레일이 오른쪽으로 103px 밀렸다(#224, check_balance). estW 로 잰다
+const NAME_W = Math.min(430, Math.max(110, Math.max(0, ...rails.map((r) => estW(String(r.label || ''), 42))) + 16));
   const NAME_GAP = 76;
   const RAIL_W = hasLabel ? 1060 : 1300;
   const X0 = hasLabel

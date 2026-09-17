@@ -123,7 +123,9 @@ def measure(a_path, b_path):
         return {'text': n_text, 'skip': '글자 없음'}
     worst = {'text': n_text, 'ratio': 0.0, 'fill': 0.0, 'box': None, 'kind': ''}
     # 글자를 단어·줄로 뭉친다 (12px 이면 글자 사이는 붙고 다른 줄은 안 붙는다)
-    for x0, y0, x1, y1, _ in blobs(dilate(text, 12), step=4, pad=DILATE):
+    # 상자 여유 3px — 5 로 두니 이름표 상자 테두리(글자에서 14px, 설계)가 걸렸다(#44·#151).
+    # 글자를 뭉치는 12px 도 10 으로: 12+5=17 이 테두리에 닿았다
+    for x0, y0, x1, y1, _ in blobs(dilate(text, 10), step=4, pad=3):
         w, h = x1 - x0, y1 - y0
         if w < 24 or h < 24:
             continue

@@ -54,18 +54,21 @@ export const MotionWrap = ({card = '', props = {}, motion = {}, durationSec = 5,
   const {dir = 'left', push = 0, punchAt = null, punch = 0.04, exitSec = 0, bg,
          still = false} = motion || {};
   // ── 2026-09-17 · 정지 컷의 숨 ─────────────────────────────────────────
-  // 위 주석은 "기본값도 1.2%/컷 만큼은 밀린다"고 했는데 코드는 0 이었다 — 전환
-  // 없는 컷 250개가 진입 애니메이션 뒤로 완전히 멎어 있었다. 사용자: "자연스러운
-  // 모션이 들어가야 한다." 컷 전체에 걸쳐 1.2% 만 아주 느리게 — 눈에 띄면
-  // 실패고, 멎어 있으면 슬라이드다. `motion: {still: true}` 면 완전히 세운다
-  const slow = move ? (push || 0.035) : (still ? 0 : 0.012);
+  // 전환 없는 250컷이 진입 뒤 완전히 멎어 있었다. 처음엔 1.2% **확대**를 깔았다가
+  // 되돌렸다 — MotionShell 주석 그대로 "자막 안전선을 재서 짠 여백이 잘려 나간다".
+  // check_bleed 17컷 · check_settled 70컷이 그 증거였다.
+  // 그래서 반대로 간다: 0.99 에서 설계 크기(1.0)로 **자라 들어온다.** 설계 여백을
+  // 절대 넘지 않고, 끝나기 14프레임 전에 멎어 정착 검사도 통과한다.
+  // `motion: {still: true}` 면 완전히 세운다
+  const slow = move ? (push || 0.035) : 0;
+  const breath = move || still ? 0 : 0.01;
   const enterF = move ? 16 : 0;
   // 밀려 들어오는 동안 드러날 수 있는 바탕색. MotionShell 이 스케일로 메우지만
   // 안전망으로 카드 테마를 따라간다. **`props.image` 유무로 판정하면 안 된다** —
   // MapCard 도 image 를 받는데 밝은 카드라 검은 띠가 생겼다 (샘플 v2 에서 확인).
   // 어두운 전면 실사 카드는 이름으로 고정한다.
   return (
-    <MotionShell durationSec={durationSec} dir={dir} push={slow} enterF={enterF}
+    <MotionShell durationSec={durationSec} dir={dir} push={slow} breath={breath} enterF={enterF}
                  punchAt={punchAt == null ? null
                           // 펀치 스프링은 22프레임이 필요하다. #220(2.2초)에
                           // 1.6초를 찍었더니 2.33초에 끝나 **컷 밖으로 넘어갔다** —

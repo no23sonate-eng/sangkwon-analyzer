@@ -15,7 +15,7 @@ import {PAPER} from './paper';
 // punchAt 이 프레임에서 한 번 더 강조 스케일. null 이면 없음
 export const MotionShell = ({
   children, durationSec = 5, dir = 'left', enterF = 16, exitF = 0,
-  push = 0.05, punchAt = null, punch = 0.04, bg = PAPER,
+  push = 0.05, punchAt = null, punch = 0.04, bg = PAPER, breath = 0,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -41,6 +41,12 @@ export const MotionShell = ({
 
   // ② 홀드 내내 아주 느린 스케일 인 + (선택) 한 번의 강조 푸시
   const slow = interpolate(frame, [0, total], [1, 1 + push], {extrapolateRight: 'clamp'});
+  // 숨 — 설계 크기 아래에서 시작해 설계 크기로 자란다. 끝나기 14프레임 전에 도착:
+  // 마지막 0.4초가 멎어 있어야 check_settled 가 '다 자랐다'고 본다
+  const br = breath > 0
+    ? interpolate(frame, [0, Math.max(1, total - 14)], [1 - breath, 1],
+                  {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+    : 1;
   const hit = punchAt == null ? 0
     : spring({frame: frame - punchAt, fps, config: {damping: 200, stiffness: 90}, durationInFrames: 22});
 
@@ -56,7 +62,7 @@ export const MotionShell = ({
   const cover = (dx || dy)
     ? 1.012 + Math.max(dx * 2 / 1920, dy * 2 / 1080)   // 1.2% 는 반올림 여유
     : 1;
-  const scale = Math.max(slow + hit * punch, cover);
+  const scale = Math.max(slow * br + hit * punch, cover);
 
   return (
     <AbsoluteFill style={{background: bg, overflow: 'hidden'}}>
