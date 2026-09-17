@@ -19,7 +19,9 @@ ID=$(echo "$URL" | sed -E 's/.*(v=|youtu\.be\/)([A-Za-z0-9_-]{11}).*/\2/')
 OUT="레퍼런스_$ID"; mkdir -p "$OUT"; cd "$OUT"
 
 echo "== 정보·자막 =="
-yt-dlp --no-warnings -J "$URL" > 정보_전체.json
+# android 클라이언트가 봇 차단을 제일 잘 넘는다 (web 은 "Sign in to confirm")
+YT="yt-dlp --no-warnings --extractor-args youtube:player_client=android"
+$YT -J "$URL" > 정보_전체.json
 python3 - <<'PY'
 import json; d=json.load(open('정보_전체.json'))
 json.dump({'title':d.get('title'),'channel':d.get('channel'),'duration':d.get('duration'),
@@ -27,7 +29,7 @@ json.dump({'title':d.get('title'),'channel':d.get('channel'),'duration':d.get('d
           open('정보.json','w'), ensure_ascii=False, indent=1)
 print(d.get('title'), '·', d.get('duration'), '초 · 챕터', len(d.get('chapters') or []))
 PY
-yt-dlp --no-warnings --skip-download --write-auto-sub --write-sub --sub-lang "ko,en,ja" --sub-format vtt -o "자막" "$URL" >/dev/null 2>&1 || true
+$YT --skip-download --write-auto-sub --write-sub --sub-lang "ko,en,ja" --sub-format vtt -o "자막" "$URL" >/dev/null 2>&1 || true
 for v in 자막*.vtt; do [ -e "$v" ] && python3 - "$v" <<'PY' && break
 import re,sys
 lines=[]; last=''
@@ -42,8 +44,37 @@ PY
 done
 
 echo "== 영상 (720p 면 충분하다) =="
-yt-dlp --no-warnings -f "bv*[height<=720]+ba/b[height<=720]" -o "영상.%(ext)s" "$URL" >/dev/null
-V=$(ls 영상.* | head -1)
+$YT -f "bv*[height<=720]+ba/b[height<=720]" -o "영상.%(ext)s" "$URL" >/dev/null 2>&1 || true
+V=$(ls 영상.* 2>/dev/null | head -1)
+if [ -z "$V" ]; then
+  # 본편이 403 이면 스토리보드(탐색용 160×90 스프라이트)로 — 저해상도지만 구조는 다 보인다
+  echo "본편 못 받음 → 스토리보드로 간다"
+  $YT -f "sb0/sb1" -o "sb.%(ext)s" "$URL" >/dev/null 2>&1
+  python3 - <<'PY2'
+import email, io
+from email import policy
+from PIL import Image, ImageDraw
+msg = email.message_from_bytes(open("sb.mhtml","rb").read(), policy=policy.default)
+tiles = []
+for part in msg.walk():
+    if part.get_content_type().startswith("image/"):
+        im = Image.open(io.BytesIO(part.get_payload(decode=True))).convert("RGB"); W,H = im.size
+        for r in range(H//90):
+            for c in range(W//160):
+                t = im.crop((c*160, r*90, (c+1)*160, (r+1)*90))
+                if sum(t.resize((1,1)).getpixel((0,0))) > 15: tiles.append(t)
+import json; dur = json.load(open("정보.json"))["duration"] or 1; step = dur/max(1,len(tiles))
+for p in range(0, len(tiles), 48):
+    b = tiles[p:p+48]; rows = (len(b)+7)//8
+    s = Image.new("RGB", (8*324, rows*200), "#111"); d = ImageDraw.Draw(s)
+    for i,t in enumerate(b):
+        x,y = (i%8)*324, (i//8)*200; s.paste(t.resize((320,180)), (x+2,y+2)); sec = int((p+i)*step)
+        d.text((x+4,y+184), f"{sec//60:02d}:{sec%60:02d}", fill="#EEE")
+    s.save(f"시트_{p//48+1:02d}.png")
+print("스토리보드 시트", (len(tiles)+47)//48, "장 ·", len(tiles), "프레임")
+PY2
+  rm -f sb.mhtml 정보_전체.json; echo; echo "→ $(pwd) 의 시트_*.png 와 자막.txt 를 올리면 된다"; exit 0
+fi
 
 echo "== 프레임 시트 (${STEP}초 간격) =="
 mkdir -p _f && ffmpeg -v error -i "$V" -vf "fps=1/${STEP},scale=480:-1" _f/f%04d.png

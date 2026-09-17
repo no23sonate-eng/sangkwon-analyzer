@@ -1,0 +1,401 @@
+00:00:00 Check this out. This shot doesn't exist.
+00:00:00 It There's no drone, there's no footage,
+00:00:03 it's not real building, of course. It
+00:00:03 all started with this Google Earth
+00:00:07 screenshot, which is kind of crazy if
+00:00:07 you ask me. I want to show you how I got
+00:00:11 from here to there, and also I want to
+00:00:11 show you two other AI workflows that
+00:00:15 I've been using that I really like and I
+00:00:15 want to share with you. Because
+00:00:18 honestly, I'm the type of architect that
+00:00:18 really doesn't know how to feel about AI
+00:00:23 yet. Sometimes I like it, sometimes I
+00:00:23 don't. I want to learn as many tools as
+00:00:27 possible to communicate better as you an
+00:00:27 architect, but I don't want to use tools
+00:00:32 that strip off my creativity or take all
+00:00:32 the fun away from my job. So, when I was
+00:00:38 putting this video together, I made
+00:00:38 myself three questions. And every
+00:00:40 workflow had to pass all three to make
+00:00:40 it in, sort of. Is this replacing a
+00:00:45 meaningful creative decision that I
+00:00:45 should be taking as an architect? Is it
+00:00:49 generating unnecessary images or AI slop
+00:00:49 that the project really doesn't need?
+00:00:55 And three, is it just doing something
+00:00:55 that I could do better myself? And I'm
+00:00:59 not going to lie, I threw stuff out.
+00:00:59 There were some workflows that I didn't
+00:01:01 include in this video just because of
+00:01:01 that. They didn't pass that filter. And
+00:01:05 for this video, I'll be using Magnific
+00:01:05 for all of the three workflows. It's a
+00:01:08 platform that stores all the current
+00:01:08 models you already use, like Nano
+00:01:13 Banana, ChatGPT, Flux, and many others
+00:01:13 into one space. So, instead of paying a
+00:01:18 lot of different AIs that can do one
+00:01:18 specific thing good, you subscribe to
+00:01:22 one that has all of them, and you can
+00:01:22 work with all of them at once. Now, all
+00:01:26 the prompts are going to be below. You
+00:01:26 can paste them into whatever model
+00:01:29 you're already paying for, but here each
+00:01:29 output feeds the next one, so that's why
+00:01:35 I'm working with Magnific for this. The
+00:01:35 first workflow is to turn your Google
+00:01:39 Earth images into high-quality drone
+00:01:39 images. So, for this, we need three
+00:01:43 things. First of all, a Google Earth
+00:01:43 image, of course, obviously. Second of
+00:01:47 all, to insert our building into this
+00:01:47 image. And third of all, to increase the
+00:01:51 quality of the image. So, I'm going to
+00:01:51 go into Google Maps. I'm going to search
+00:01:55 for my site, which is this one. I'm
+00:01:55 going to tilt my view, you know, just
+00:01:59 where I find that it fits really well
+00:01:59 and adjust it slightly. And I'm just
+00:02:03 going to take a screenshot of this view.
+00:02:03 Of course, if you have a high-quality
+00:02:07 source of satellite imagery, it can be
+00:02:07 much, much better. But here, I'm working
+00:02:12 with this level of quality since it's
+00:02:12 the one the majority of us have access
+00:02:16 to. Then we go into Magnific
+00:02:16 into spaces and create a new space.
+00:02:23 And import our image or just drag it in.
+00:02:23 Now, many of you are probably used to
+00:02:27 using AI in a chat kind of format, which
+00:02:27 you can also have in Magnific. But for
+00:02:32 this, I prefer a node-based workflow
+00:02:32 where I can actually see where the
+00:02:36 prompt is, what images is it
+00:02:36 referencing, what I want out of it, and
+00:02:40 how to make it repeatable onto other
+00:02:40 projects. So, after I paste my image,
+00:02:44 I'm going to go to generate image, add
+00:02:44 an image generator node, and paste in
+00:02:49 this prompt. I'll have a Google Docs
+00:02:49 with all the prompts I use below just in
+00:02:53 case you want to use them as well. But
+00:02:53 before we click on generate, I want to
+00:02:56 add some context onto this prompt
+00:02:56 because the prompt is telling it what to
+00:03:00 do, but I want it to understand the
+00:03:00 location so it can generate similar
+00:03:05 images. So, I'm going to create a text
+00:03:05 node on the left and add some context
+00:03:09 information for this prompt. So, here
+00:03:09 I'm just typing where this image is
+00:03:13 located, the architectural style, some
+00:03:13 geographic features, and more details.
+00:03:18 You can copy the structure as well if
+00:03:18 you want. And now, let's click on
+00:03:21 generate. So, this was my first try and,
+00:03:21 you know, just look at this. I mean, it
+00:03:25 invented a whole street here that
+00:03:25 doesn't exist and the scale of
+00:03:28 everything is completely off. But this
+00:03:28 is something that, of course, we don't
+00:03:30 want. But what actually fixed it for me
+00:03:30 was making the prompt shorter. [music]
+00:03:35 So, I found that giving it a ton a ton
+00:03:35 of text and a ton of restrictions
+00:03:39 actually made the image worse. And after
+00:03:39 I adjusted my prompt, I think it looks
+00:03:43 pretty good. I can correct things here
+00:03:43 and there, but overall, it cleaned up
+00:03:48 the image perfectly. Now, the The step
+00:03:48 is to insert the building. and since I
+00:03:53 had this project modeled in D5 render, I
+00:03:53 just pushed out a quick render from D5.
+00:03:59 More or less from the perspective the
+00:03:59 aerial image was already on with the
+00:04:03 materials and lighting of course also
+00:04:03 adjusted for this. Then I dragged my
+00:04:07 image into the spaces area and I created
+00:04:07 a new image generator node from our last
+00:04:13 image and connected the building image
+00:04:13 as a reference just like this. And then
+00:04:18 I'm going to paste this prompt which is
+00:04:18 pretty pretty simple and click on
+00:04:22 generate. And honestly, it did the job
+00:04:22 pretty good on the first try, but just
+00:04:27 in case it doesn't for you or did it or
+00:04:27 it inserts the building bigger than you
+00:04:31 wanted to, you can always double click
+00:04:31 on the image. You can go to edit and
+00:04:36 either write what you want it to do
+00:04:36 like, "Hey, can you make the building
+00:04:40 bigger?" Or with the retouch brush right
+00:04:40 here, you can select the area and tell
+00:04:45 it what you want specifically. I found
+00:04:45 that, you know, just writing what I
+00:04:49 wanted to do works really well. Now,
+00:04:49 before upscaling, I want to readjust the
+00:04:53 composition just a bit. So, I'll add
+00:04:53 another image generator node and prompt
+00:04:58 it to add some volumetric cloud shadows
+00:04:58 everywhere except the actual building.
+00:05:04 Just so I can redirect the eye of the
+00:05:04 viewer directly to the building. And
+00:05:08 this was the result. It was pretty cool,
+00:05:08 right? I mean, honestly, I liked it a
+00:05:11 lot. Now, the last step is to enhance
+00:05:11 the quality of this image so we can have
+00:05:16 more detail. So, I'm going to create a
+00:05:16 new node on the image. I'm going to add
+00:05:19 an image upscaler and here you can test
+00:05:19 out either the position or the creative
+00:05:24 upscaler, but with both of them I got
+00:05:24 completely different results, but I
+00:05:28 really like the creative upscaler
+00:05:28 optimized for photography. And that's
+00:05:33 it. This is what we started with and
+00:05:33 this is where we ended up. I mean,
+00:05:37 that's a Google Earth screenshot. And
+00:05:37 going back to my three questions, I
+00:05:41 think this one is easy. It's not
+00:05:41 replacing a design decision at all. What
+00:05:44 it's replacing is hours of modeling a
+00:05:44 context that I would never model by hand
+00:05:49 anyway. Because getting to this level of
+00:05:49 image through a 3D program would take a
+00:05:54 lot of hours and a lot of dedication or
+00:05:54 buying a drone or hiring a drone
+00:05:59 photographer and spending some money on
+00:05:59 that, which of course would not be a
+00:06:03 good use of my money. Now, let's go on
+00:06:03 to our next workflow and we're going to
+00:06:07 keep using this exact same image. So,
+00:06:07 for the second workflow, I'll be
+00:06:12 converting the drone image we just made
+00:06:12 into a day-to-night timelapse. And here
+00:06:18 it's also three steps that are very
+00:06:18 quick, which is first of all, we [music]
+00:06:21 need to make a night version of the
+00:06:21 image. Second of all, we need to connect
+00:06:24 the day and the night version together.
+00:06:24 And third, we need to upscale it. And by
+00:06:29 the way, for this workflow, I'm trying
+00:06:29 out the new Magnific desktop app, which
+00:06:33 has all of my current projects and
+00:06:33 workflows. I just have to open my space
+00:06:38 and that's it. But it pretty much works
+00:06:38 exactly like the website. So, to
+00:06:42 transform my current image into a night
+00:06:42 mode, I'll add an image generator node
+00:06:47 to my upscaled image. Then inside the
+00:06:47 generator, I'll paste this prompt,
+00:06:51 [music]
+00:06:51 which basically is just telling the AI
+00:06:54 to replicate the same image but in a
+00:06:54 night version with warm street lamps,
+00:07:00 glowing windows, and car tail lights.
+00:07:00 And I made sure to indicate that the
+00:07:04 main building has to be brighter than
+00:07:04 the rest of the city so it can stand out
+00:07:09 much more. And then we click on
+00:07:09 generate. And I mean, look. Look how
+00:07:13 well it holds the frame. The streets are
+00:07:13 in the same place. The building is in
+00:07:18 the same place. And after that image is
+00:07:18 generated, I am going to right-click on
+00:07:22 the canvas, anywhere on the canvas, and
+00:07:22 I'm going to select a video generator.
+00:07:26 Then I'm going to connect the first day
+00:07:26 image to the start of the animation and
+00:07:30 the night image to the end of the
+00:07:30 animation. It's pretty straightforward,
+00:07:34 honestly.
+00:07:34 Now I'm going to select the length, the
+00:07:37 model, the resolution, and just type to
+00:07:37 create a timelapse of these two images,
+00:07:43 also indicating some additional keywords
+00:07:43 like the cloud movement, traffic stops,
+00:07:48 sun settings, and the light of the
+00:07:48 building kind of like turning on as soon
+00:07:51 as it gets darker. And we click on
+00:07:51 generate. Now, a video's final quality
+00:07:55 can really change depending on the model
+00:07:55 that you choose, the length, and the
+00:07:59 overall quality. So, for my test, I
+00:07:59 found that the latest version of
+00:08:03 SeaDance 2.5 works really well to get
+00:08:03 some good realistic results. And by the
+00:08:09 time you watch this, there's probably a
+00:08:09 better model out, but I think the
+00:08:13 workflow is still going to be the same,
+00:08:13 right? You have a day image, you have a
+00:08:16 night image, and you connect them
+00:08:16 through a video, and you tell it what's
+00:08:20 supposed to happen in between. Now, if
+00:08:20 you had some extra credits to spare and
+00:08:23 wanted to use this in a final
+00:08:23 presentation, you need to increase the
+00:08:27 quality to either 2K or 4K just so it
+00:08:27 looks much better. So, for this, I I can
+00:08:32 just click on upscale right here. I can
+00:08:32 select the settings. I chose creative
+00:08:36 and natural quality, and this is what it
+00:08:36 put out after a few seconds. And this is
+00:08:40 the kind of thing that you show to a
+00:08:40 client when you need them to get it in 5
+00:08:44 seconds. And this is what I think the AI
+00:08:44 is actually for. It's not replacing any
+00:08:49 meaningful creative decision. It's
+00:08:49 helping me explain an idea that I
+00:08:53 already had. Now, for the last workflow,
+00:08:53 I want to address a problem that the
+00:08:57 majority of architectural animations
+00:08:57 always have. Because when you look at
+00:09:00 this animation that I did in D5 Render
+00:09:00 of my project, you can see that, I mean,
+00:09:05 I think that although it's a pretty good
+00:09:05 animation, it still doesn't make you
+00:09:09 feel inside of the project, right? Or
+00:09:09 understand what the project actually
+00:09:14 does. It doesn't give you that sense or
+00:09:14 that feeling. And for this, we usually
+00:09:18 need shots of things that some rendering
+00:09:18 programs just aren't specialized in. So,
+00:09:23 here we need three things. We need the
+00:09:23 media of the previous shots. We need a
+00:09:27 character that can thread all these
+00:09:27 shots together, and we need a really
+00:09:31 good prompt that can be the director
+00:09:31 here and tell the AI what we want it to
+00:09:35 do. Big caveat here, this one consumes a
+00:09:35 lot of credits. So, I would leave this
+00:09:40 kind of video for the final stages of
+00:09:40 the project when you're presenting to
+00:09:44 the client and you're sure the
+00:09:44 animations you import into Magnific are
+00:09:48 the final ones, unless you have a ton of
+00:09:48 credits to spare. But for this, we're
+00:09:52 not going to go to the spaces area.
+00:09:52 We're just going to go to the homepage.
+00:09:56 I'm going to click on video, and I'm
+00:09:56 going to select the video generator. And
+00:10:00 here we go to add media and add all the
+00:10:00 important media we want the final video
+00:10:05 to reference. So, I'm adding the final
+00:10:05 renders and most importantly the final
+00:10:09 animation I created with D5 Render. Now,
+00:10:09 you don't want to add a bunch a bunch of
+00:10:14 information here. You just want to have
+00:10:14 videos and images that complement each
+00:10:18 other and show the project in the best
+00:10:18 way in the most clearest way possible.
+00:10:22 So, I added exterior images, aerial
+00:10:22 images, close-ups, and wide shots as
+00:10:27 well. Now, if you generated a video with
+00:10:27 just these shots, chances are that it
+00:10:31 would come out looking pretty good. But
+00:10:31 if you're going to use AI, I personally
+00:10:35 think that you should use it for things
+00:10:35 that are nearly impossible to do on your
+00:10:39 own and that can really make your
+00:10:39 project easier to understand. So,
+00:10:43 instead of a bunch of disconnected
+00:10:43 shots, I'm going to pick one person and
+00:10:46 let her carry the whole video, the whole
+00:10:46 story. So, every shot feels like it
+00:10:51 belongs somewhere instead of like a
+00:10:51 generic highlight reel of your building.
+00:10:56 So, I'm going to go to add media. I'm
+00:10:56 going to go to the character tab, and
+00:11:00 here you can pick from a series of
+00:11:00 pre-made characters. And you can also
+00:11:04 build your own. If you're going to do
+00:11:04 this for a real presentation, I'd build
+00:11:07 one that matches who the project that
+00:11:07 you're working with is actually for. And
+00:11:12 for this video, I'll just use a pre-made
+00:11:12 one to save time. This one specifically
+00:11:16 is called Aideen. Now, I have the images
+00:11:16 of my building and I have the character.
+00:11:20 What I need to do is direct the AI and
+00:11:20 tell it what I want through a really
+00:11:25 good prompt. I'll divide this prompt
+00:11:25 into categories. So, the first one is
+00:11:29 general category of what this animation
+00:11:29 should be. The second one is a a subject
+00:11:33 category of what I want the character
+00:11:33 specifically to do. The third one is a
+00:11:37 camera category telling it to use the
+00:11:37 existing images and the reference
+00:11:41 images. And then a style category of how
+00:11:41 the shot should look like, how cinematic
+00:11:46 the shot should look. And finally a
+00:11:46 sound category telling it that I want
+00:11:51 some ambient sound, some footsteps, some
+00:11:51 conversations, some natural sounds of
+00:11:55 the whole context. And then I'm going to
+00:11:55 select the 1080p resolution. I want it
+00:12:00 to be as long as possible. So for now
+00:12:00 this is the 30-second animation.
+00:12:06 I'm going to select 16 by 9 and I'm
+00:12:06 going to leave the sound on. And after a
+00:12:10 few minutes this was the result that I
+00:12:10 got and honestly I was amazed. And not
+00:12:15 because I didn't think that AI could
+00:12:15 complete this task, but more because I
+00:12:20 was able to see my project differently
+00:12:20 and kind of understand it better. I was
+00:12:25 really excited. So this is the one I
+00:12:25 went back and forth on the most because
+00:12:28 it's the one that does the most when
+00:12:28 presenting it to a client. But of course
+00:12:32 the design is mine. The renders are the
+00:12:32 ones that I did. The framing is the one
+00:12:36 that I chose. All of that already
+00:12:36 existed. And obviously I can't fill
+00:12:41 people inside a building that doesn't
+00:12:41 exist in this such a realistic way. So
+00:12:44 AI really helped me telling this kind of
+00:12:44 story. And those are the three workflows
+00:12:48 that I found useful to communicate ideas
+00:12:48 better without compromising an
+00:12:52 architect's creativity or design
+00:12:52 decisions. And I really want to
+00:12:56 emphasize on this because it's very easy
+00:12:56 to get carried away and start generating
+00:13:00 AI slop just for the sake of using an AI
+00:13:00 tool which is not the point at all. So
+00:13:04 if you're wondering whether you should
+00:13:04 use AI on your own projects probably my
+00:13:09 three questions can help you out a bit.
+00:13:09 Is it going to replace a meaningful
+00:13:13 creative decision? Is it going to
+00:13:13 generate unnecessary images or AI slop?
+00:13:18 Or is it doing something that you could
+00:13:18 do better by yourself? And you want to
+00:13:21 be honest with the answers because some
+00:13:21 of them are going to be yes and you
+00:13:24 might want to restructure your workflow
+00:13:24 so it's not solely AI dependent. And if
+00:13:28 you're going to use AI, I would really
+00:13:28 suggest using a platform like Magnific.
+00:13:33 It joins all of your most used AI models
+00:13:33 and gives you the best option depending
+00:13:39 on the case. And it has a node-based
+00:13:39 workflow that's easy to use and it's
+00:13:42 easy to replicate in other projects.
+00:13:42 Now, I'm curious, which of these
+00:13:45 workflows do you think you'll actually
+00:13:45 use? Let me know in the comments. And
+00:13:49 shout out to Magnific for making this
+00:13:49 collab happen. Everything you saw today
+00:13:53 was built inside of Magnific. If you
+00:13:53 want to find out more about it, I'll
+00:13:57 leave a link in the description. And if
+00:13:57 you want to see more AI tutorials,
+00:14:00 comment down below what kind of video
+00:14:00 would you like me to make around AI.
+00:14:04 That's it for this video. Thank you all
+00:14:04 for watching, and I'll see you in the
+00:14:08 next one. Bye.
