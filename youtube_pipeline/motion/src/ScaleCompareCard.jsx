@@ -121,11 +121,19 @@ export const ScaleCompareCard = ({
 
   const AX = 176;                                 // 눈금 축 x
   const span = 1920 - AX - 150;
-  const slot = (span / n) * (1 - tight);
-  // tight 를 주면 폭이 줄어든 만큼 다시 가운데로 밀어 넣는다
-  const shift = ((span / n) * n - slot * n) / 2;
-  const cxOf = (i) => AX + 70 + shift + slot * i + slot / 2;
+  // ── 2026-09-17 · 막대 둘이 화면 폭을 나눠 가지니 오른쪽이 비었다 ──────
+  // 칸을 span/n 으로 잡으면 막대 둘일 때 칸이 797px 인데 막대는 190px 이다.
+  // 막대가 칸 가운데 앉으니 마지막 막대 오른쪽으로 360px 이 빈다 — check_balance
+  // 가 #49 를 '왼쪽으로 137px' 로 잡았다. 칸을 막대에 맞게 좁히고(최대 560)
+  // 막대 무리를 축 오른쪽 공간 가운데에 앉힌다
+  // (처음엔 칸을 좁혀 가운데 모았다 — 더 나빠졌다, −216px. 축 눈금 라벨이
+  //  x=89 부터 시작하니 잉크 중심을 960 에 두려면 마지막 막대가 **오른쪽 끝**
+  //  근처(≈1770)까지 가야 한다. 모으는 게 아니라 펼치는 것이다)
+  const slot = Math.min(span / n, 560) * (1 - tight);
   const bodyW = Math.min(190, slot * 0.5);
+  const first = AX + 70 + slot / 2;               // 첫 막대 중심
+  const last = 1920 - 150 - bodyW / 2 - 40;       // 마지막 막대 오른쪽 가장자리가 여백 40 안쪽에
+  const cxOf = (i) => (n === 1 ? (first + last) / 2 : first + (last - first) * i / (n - 1));
 
   const ticks = [];
   for (let m = step; m <= axisMax; m += step) ticks.push(m);

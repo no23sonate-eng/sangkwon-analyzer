@@ -99,7 +99,11 @@ export const RatioCard = ({
   const R = one ? 310 : (n === 1 ? 262 : (n === 2 ? 210 : 158));
   // 파이 중심. 라벨(위)·수치(아래)를 합쳐 한 덩어리로 앉힌다
   // 원 바닥이 캡션 줄을 밟지 않게 아래로 한 번 더 막는다 (#195·#220)
-  const FLOOR = CONTENT_BOTTOM - (caption ? 74 : 12);
+  // ── 2026-09-17 · 캡션이 원의 아래 호를 가로질렀다 ─────────────────────
+  // FLOOR 가 캡션 **윗선**(CONTENT_BOTTOM−74)이라 원 바닥이 거기에 정확히
+  // 닿았다. 캡션 글자는 그 선에서 아래로 40px 자라니 호와 겹친다 — #196 을
+  // check_overlap 이 잡았다(431px 세로 겹침의 아래쪽 절반). 캡션 위로 한 칸 띄운다
+  const FLOOR = CONTENT_BOTTOM - (caption ? 74 + SP.GAP : 12);
   const CY = one
     ? Math.min(stageTop(titleH(title, sub) + 64 + R * 2, {top: 170}) + titleH(title, sub) + 64 + R,
                FLOOR - R)

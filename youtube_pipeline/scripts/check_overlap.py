@@ -40,6 +40,7 @@ SOURCE_STRIP = 100      # 우상단 출처 띠 — 늘 글자라 뺀다
 TEXT_DIFF = 28          # 두 스틸의 화소 차이가 이보다 크면 글자
 GRAD = 34               # 구조(가장자리) 문턱 — check_balance 와 같은 생각
 DILATE = 5              # 글자를 이만큼 부풀려 '글자 자리'로 본다 (간격까지 본다)
+LINE_FILL = 0.45        # 글자 상자 안 한 줄(열)에 구조가 이만큼 깔리면 선이 가로지른 것
 
 # ── 설계상 글자가 구조 위에 앉는 카드 ────────────────────────────────────
 # StrikeSwapCard 는 취소선이 글자를 **지나가는 것**이 문법이다 — 22컷이 전부
@@ -57,12 +58,50 @@ def edges(im):
     return np.maximum(gx, gy)
 
 
+def erode(mask, r):
+    im = Image.fromarray((mask * 255).astype(np.uint8))
+    return np.asarray(im.filter(ImageFilter.MinFilter(2 * r + 1))) > 0
+
+
 def dilate(mask, r):
     im = Image.fromarray((mask * 255).astype(np.uint8))
     return np.asarray(im.filter(ImageFilter.MaxFilter(2 * r + 1))) > 0
 
 
+def blobs(mask, step=4, pad=0):
+    """마스크의 연결 덩어리 상자들. step 으로 줄여서 8방향 BFS — 글자 수백 개도 금방."""
+    m = mask[::step, ::step]
+    H, W = m.shape
+    seen = np.zeros_like(m, dtype=bool)
+    out = []
+    ys, xs = np.where(m)
+    for y0, x0 in zip(ys.tolist(), xs.tolist()):
+        if seen[y0, x0]:
+            continue
+        stack = [(y0, x0)]; seen[y0, x0] = True
+        miny = maxy = y0; minx = maxx = x0; n = 0
+        while stack:
+            y, x = stack.pop(); n += 1
+            miny, maxy, minx, maxx = min(miny, y), max(maxy, y), min(minx, x), max(maxx, x)
+            for dy in (-1, 0, 1):
+                for dx in (-1, 0, 1):
+                    yy, xx = y + dy, x + dx
+                    if 0 <= yy < H and 0 <= xx < W and m[yy, xx] and not seen[yy, xx]:
+                        seen[yy, xx] = True; stack.append((yy, xx))
+        out.append((max(0, minx * step - pad), max(0, miny * step - pad),
+                    min(mask.shape[1], (maxx + 1) * step + pad), min(mask.shape[0], (maxy + 1) * step + pad), n))
+    return out
+
+
 def measure(a_path, b_path):
+    """글자 덩어리(단어·줄)마다, 그 상자 안을 선이 가로지르는지 / 구조가 얼마나 깔렸는지.
+
+    겹친 픽셀을 뭉쳐 '뻗음'을 재던 방식은 둘 다 틀렸다 — 전체 bbox 는 멀리 떨어진
+    점 둘을 431px 선으로 만들었고(#196), 덩어리별 bbox 는 점선 위 글자를 획마다
+    끊어 22px 로 만들었다(#45 양성 대조). 선은 **글자 상자를 가로지르는가**로 본다:
+    상자 안에서 한 줄(또는 한 열)에 구조가 상자 폭의 LINE_FILL 이상 깔리면 선이다.
+    점선은 ~60%, 실선은 100%, 범례 네모 테두리는 ~7% 다.
+    """
     A = Image.open(a_path).convert('RGB')
     B = Image.open(b_path).convert('RGB')
     if A.size != B.size:
@@ -71,25 +110,31 @@ def measure(a_path, b_path):
     b = np.asarray(B, dtype=np.int16)
     text = np.abs(a - b).max(axis=2) > TEXT_DIFF
     text[:SOURCE_STRIP, :] = False
-    n_text = int(text.sum())
-    if n_text < 400:                       # 글자가 사실상 없다
-        return {'text': n_text, 'skip': '글자 없음'}
-    zone = dilate(text, DILATE)
-    # 글자를 끈 프레임의 구조. 글자 자리 **바로 밑**의 가장자리만 본다
+    # 글자를 끈 프레임에서 **이미 강한 가장자리인 픽셀은 글자가 아니다.** 노란 조각·
+    # 원 테두리는 두 렌더 사이에 안티앨리어싱이 미세하게 달라 '글자'로 잡힌다
     e = edges(B) > GRAD
     e[:SOURCE_STRIP, :] = False
-    hit = zone & e
-    n_hit = int(hit.sum())
-    ratio = n_hit / max(1, int(zone.sum()))
-    ys, xs = np.where(hit)
-    box = (int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())) if n_hit else None
-    # ── 두 번째 기준: 선이 글자를 가로지르는가 ─────────────────────────────
-    # 양성 대조(#45 "60m" 을 점선 위에 얹음)가 비율로는 2.2% 였다. 점선은
-    # 가늘어서 글자 자리 18,000px 중 411px 뿐이다. 비율은 **면**의 겹침만 본다.
-    # 선 겹침은 겹친 픽셀이 얼마나 **뻗어 있는가**로 잡는다 — 191px 가로로.
-    reach = max(box[2] - box[0], box[3] - box[1]) if box else 0
-    return {'text': n_text, 'zone': int(zone.sum()), 'hit': n_hit, 'ratio': ratio,
-            'box': box, 'reach': reach}
+    text &= ~dilate(e, 1)
+    text = erode(text, 1)                  # 2~5px 슬리버 제거. 글자 획은 3px 이상이다
+    n_text = int(text.sum())
+    if n_text < 400:
+        return {'text': n_text, 'skip': '글자 없음'}
+    worst = {'text': n_text, 'ratio': 0.0, 'fill': 0.0, 'box': None, 'kind': ''}
+    # 글자를 단어·줄로 뭉친다 (12px 이면 글자 사이는 붙고 다른 줄은 안 붙는다)
+    for x0, y0, x1, y1, _ in blobs(dilate(text, 12), step=4, pad=DILATE):
+        w, h = x1 - x0, y1 - y0
+        if w < 24 or h < 24:
+            continue
+        sub = e[y0:y1, x0:x1]
+        ratio = float(sub.mean())                     # 상자 안 구조 비율 (면 겹침)
+        rows = sub.sum(axis=1) / max(1, w)            # 한 줄이 상자 폭을 얼마나 채우나
+        cols = sub.sum(axis=0) / max(1, h)
+        fill = float(max(rows.max() if w >= 40 else 0, cols.max() if h >= 40 else 0))
+        if ratio > worst['ratio'] or fill > worst['fill']:
+            if fill >= worst['fill'] or ratio > worst['ratio']:
+                worst.update({'ratio': max(ratio, worst['ratio']), 'fill': max(fill, worst['fill']),
+                              'box': (x0, y0, x1, y1) if (fill >= LINE_FILL or ratio > worst['ratio']) else worst['box']})
+    return worst
 
 
 def main():
@@ -98,10 +143,6 @@ def main():
     ap.add_argument('--tol', type=float, default=0.12,
                     help='글자 자리 중 구조가 차지하는 비율 상한')
     ap.add_argument('--ids', type=int, nargs='*')
-    ap.add_argument('--reach', type=int, default=60,
-                    help='겹친 픽셀이 이만큼(px) 뻗어 있으면 선이 글자를 가로지른 것')
-    ap.add_argument('--min-px', type=int, default=120,
-                    help='선 겹침으로 치려면 겹친 픽셀이 최소 이만큼')
     ap.add_argument('--verbose', '-v', action='store_true')
     a = ap.parse_args()
 
@@ -135,18 +176,17 @@ def main():
             continue
         seen += 1
         # 면 겹침(비율) 또는 선 겹침(뻗은 길이 + 최소 픽셀) — 둘 중 하나면 걸린다
-        line_cross = m['hit'] >= a.min_px and m['reach'] >= a.reach
+        line_cross = m['fill'] >= LINE_FILL
         if m['ratio'] > a.tol or line_cross:
             rows.append((sid, card, m))
         if a.verbose:
-            print(f'    #{sid:3d} {card:18s} ratio {m["ratio"]:.3f} hit {m["hit"]:5d} reach {m["reach"]:4d}')
+            print(f'    #{sid:3d} {card:18s} 면 {m["ratio"]:.3f} · 선 채움 {m["fill"]:.2f}')
 
     print(f'{a.project} — 글자 있는 컷 {seen}개 검사 (구조 비율 상한 {a.tol:.0%})')
     for sid, card, m in rows:
-        x0, y0, x1, y1 = m['box']
+        x0, y0, x1, y1 = m['box'] or (0, 0, 0, 0)
         kind = '면' if m['ratio'] > a.tol else '선'
-        print(f'  #{sid:3d} {card:18s} {kind} 겹침 — 구조 {m["ratio"]:.0%} · 겹친 픽셀 {m["hit"]} · '
-              f'뻗음 {m["reach"]}px  (x {x0}~{x1} · y {y0}~{y1})')
+        print(f'  #{sid:3d} {card:18s} {kind} 겹침 — 구조 {m["ratio"]:.0%} · 선 채움 {m["fill"]:.0%}  (글자 상자 x {x0}~{x1} · y {y0}~{y1})')
     print(f'  걸린 컷 {len(rows)}개' if rows else '  글자가 구조 위에 앉은 컷 없음')
     if bydesign:
         from collections import Counter

@@ -172,6 +172,10 @@ def main():
     # 겹침 검사용. 같은 프레임을 글자만 끄고 한 장 더 굽는다 (stills_notext/)
     ap.add_argument('--no-text', action='store_true',
                     help='글자를 투명하게 한 스틸 (check_overlap.py 가 쓴다)')
+    # 보통 스틸만 다시 굽고 글자 끈 스틸을 안 구우면 check_overlap 이 그 차이를
+    # 전부 '글자'로 잡는다 — #49·#127 이 그렇게 헛걸렸다. 둘을 한 번에 굽는다
+    ap.add_argument('--pair', action='store_true',
+                    help='--still 에서 보통 스틸과 글자 끈 스틸을 둘 다 굽는다')
     # 되살릴 때 쓴다 — 살아남은 컷은 건너뛰고 없는 것만 굽는다
     ap.add_argument('--fresh', action='store_true',
                     help='이미 최신인 결과물은 건너뛴다 (스냅샷 복구용)')
@@ -179,7 +183,18 @@ def main():
     ap.add_argument('-j', '--jobs', type=int, default=0,
                     help='동시에 띄울 렌더 수 (기본: 코어-1, 최대 3)')
     a = ap.parse_args()
+    if a.pair and a.still:
+        # 같은 인자로 두 번 — 보통 · 글자 끔. 하나라도 실패하면 실패다
+        import copy
+        rc = 0
+        for nt in (False, True):
+            b = copy.copy(a); b.pair = False; b.no_text = nt
+            rc |= _run(b)
+        return rc
+    return _run(a)
 
+
+def _run(a):
     proj = os.path.join(ROOT, 'projects', a.project)
     outdir = os.path.join(proj, ('stills_notext' if a.no_text else 'stills') if a.still else 'clips')
     os.makedirs(outdir, exist_ok=True)
@@ -192,6 +207,7 @@ def main():
     else:
         fails = [s[0] for s in scenes if not render(*s, a.still, outdir, a.fresh, a.no_text)]
     print(('FAILS: ' + str(fails)) if fails else f'all ok ({len(scenes)} scenes) → {outdir}', flush=True)
+    return 1 if fails else 0
     sys.exit(1 if fails else 0)
 
 
