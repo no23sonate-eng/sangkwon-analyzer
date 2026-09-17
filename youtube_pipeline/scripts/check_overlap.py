@@ -116,6 +116,13 @@ def measure(a_path, b_path):
     # 원 테두리는 두 렌더 사이에 안티앨리어싱이 미세하게 달라 '글자'로 잡힌다
     e = edges(B) > GRAD
     e[:SOURCE_STRIP, :] = False
+    # 화면 끝에서 끝까지 이어지는 선은 **종이 격자**다(청사진 테마의 굵은 기준선).
+    # 글자는 격자 위에 앉는 게 종이의 문법이라 구조로 세지 않는다. 카드가 그리는
+    # 선(레일·축·칸 테두리)은 화면 폭의 75% 를 안 넘으니 남는다. #224 가 걸렸다
+    full_rows = e.sum(axis=1) > e.shape[1] * 0.9
+    full_cols = e.sum(axis=0) > e.shape[0] * 0.9
+    e[full_rows, :] = False
+    e[:, full_cols] = False
     text &= ~dilate(e, 1)
     text = erode(text, 1)                  # 2~5px 슬리버 제거. 글자 획은 3px 이상이다
     n_text = int(text.sum())

@@ -108,7 +108,9 @@ export const titleBottom = (title, sub, align = 'center') => {
 export const estW = (s, size) => {
   let u = 0;
   for (const ch of String(s ?? '')) {
-    u += /[　-鿿가-힯＀-｠]/.test(ch) ? 1 : 0.62;
+    // 라틴 0.62 는 소문자 섞인 글 기준이다. 라벨을 영문 **대문자**로 바꾸자
+    // 'GUARANTOR' 가 칸을 넘었다(#169) — A2Z 대문자는 0.8em 가까이 된다
+    u += /[　-鿿가-힯＀-｠]/.test(ch) ? 1 : /[A-Z0-9]/.test(ch) ? 0.8 : 0.62;
   }
   return u * size;
 };
