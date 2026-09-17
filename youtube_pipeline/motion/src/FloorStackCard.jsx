@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperTitle, PaperSource, PaperCaption,
-        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, estW, useFitEnd} from './paper';
+        YELLOW, CONTENT_BOTTOM, fadeIn, LW, FS, estW, useFitEnd, DimLine} from './paper';
 
 // ── 층 쌓기 ───────────────────────────────────────────────────────────────
 // 한 건물 안에서 **층이 곧 기능**인 곳을 그린다.
@@ -254,6 +254,16 @@ export const FloorStackCard = ({
                        color: T.soft, wordBreak: 'keep-all'}}>{m.label}</div>
         </div>
       ))}
+
+      {/* 치수선 — 탑 왼쪽에 양끝 T 로 막힌 세로선. 숫자(125m)는 위에 그대로 두고
+          선만 더한다. 선이 없으면 숫자가 탑 옆에 '적혀' 있고, 선이 있으면
+          탑을 '잰' 것이 된다. 탑과 같은 마스크로 같이 자란다 */}
+      <svg width={1920} height={1080} style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
+        <g clipPath="url(#fs-grow)">
+          <DimLine x={TX - 30} y1={TOP} y2={BOT} theme={theme} cap={10}
+                   opacity={0.75 * fadeIn(frame, 12, 10)} />
+        </g>
+      </svg>
 
       {/* 전체 높이 — 탑 왼쪽 위 */}
       <div style={{position: 'absolute', left: TX - H_W, top: TOP - 12, width: H_W - 40,

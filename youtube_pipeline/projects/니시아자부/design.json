@@ -808,19 +808,16 @@
    }
   ],
   "33": [
-   "CompareCard",
-   "설 — 사서 짓는 것과 갖고 있던 걸 바꾸는 것은 사업 구조가 다르다",
+   "StageCard",
+   "땅을 산 게 아니라 있던 오피스 부지를 바꿨다 — 같은 발자국 위 두 건물. 비교표보다 그림 하나가 빠르다",
    {
-    "title": "땅을 어떻게 마련했나",
-    "leftTitle": "사서 짓기",
-    "leftValue": "매입",
-    "leftLines": [],
-    "rightTitle": "니시아자부",
-    "rightValue": "보유 부지 전환",
-    "rightLines": [
-     "미쓰이 오피스 빌딩 부지"
-    ],
-    "source": "파크웰스테이트 니시아자부 공식"
+    "media": "니시아자부/hf_site_conversion.png",
+    "fit": "contain",
+    "scrim": 0,
+    "size": 64,
+    "lines": [],
+    "source": "개념도 · Higgsfield 생성 (실제 건물 아님)",
+    "onPaper": true
    }
   ],
   "34": [
@@ -973,25 +970,29 @@
     "name": "요네모토 아츠시 (米本厚)",
     "role": "미쓰이부동산 레지덴셜 시니어레지던스 사업부 개발실 주관",
     "theme": "ink",
-    "source": "마이나비뉴스 2024.7.29 · 마이라이프뉴스 2024.8.1"
+    "source": "마이나비뉴스 2024.7.29 · 마이라이프뉴스 2024.8.1 (사진)",
+    "inset": "니시아자부/yonemoto_atsushi.jpg"
    }
   ],
   "45": [
-   "FloorStackCard",
-   "이어서 — 같은 탑에 법이 긋는 선을 얹는다. 두 배가 넘는다는 걸 선으로 본다",
+   "StageCard",
+   "건축기준법 60m 선 — 셋 중 하나만 선을 넘는다. 그림이 규칙을 진다",
    {
-    "floors": 36,
-    "heightM": 125,
-    "zones": [],
-    "human": true,
-    "markM": [
-     {
-      "m": 60,
-      "label": "건축기준법 60m"
-     }
+    "media": "니시아자부/hf_60m_line.png",
+    "fit": "contain",
+    "scrim": 0,
+    "size": 72,
+    "lines": [
+     [
+      {
+       "t": "60m",
+       "hot": true
+      }
+     ]
     ],
-    "source": "건축기준법 · 파크웰스테이트 니시아자부 공식",
-    "theme": "blueprint"
+    "source": "개념도 · Higgsfield 생성 (실제 건물 아님) · 건축기준법",
+    "align": "left",
+    "onPaper": true
    }
   ],
   "46": [
@@ -1160,45 +1161,15 @@
    }
   ],
   "55": [
-   "FloorStackCard",
-   "설 — 여기서 탑에 기능이 들어온다. 이 장의 답이다",
+   "StageCard",
+   "층마다 기능이 다르다 — 단면으로 연 탑. 다음 컷의 층 도표가 여기서 들어간다",
    {
-    "floors": 36,
-    "heightM": 125,
-    "zones": [
-     {
-      "from": 1,
-      "to": 1,
-      "label": "니시아자부 메디컬 클리닉",
-      "note": "의료법인사단 게이에이카이"
-     },
-     {
-      "from": 2,
-      "to": 3,
-      "label": "돌봄 전용 층",
-      "note": "객실 60실"
-     },
-     {
-      "from": 4,
-      "to": 4,
-      "label": "TOKIORI",
-      "note": "도쿄해상일동 베터라이프서비스"
-     },
-     {
-      "from": 9,
-      "to": 9,
-      "label": "대욕장",
-      "note": ""
-     },
-     {
-      "from": 35,
-      "to": 36,
-      "label": "다이닝",
-      "note": "제국호텔"
-     }
-    ],
-    "human": true,
-    "source": "파크웰스테이트 니시아자부 공식"
+    "media": "니시아자부/hf_section_tower.png",
+    "fit": "contain",
+    "scrim": 0,
+    "lines": [],
+    "source": "개념도 · Higgsfield 생성 (실제 건물 아님)",
+    "onPaper": true
    }
   ],
   "56": [
@@ -1560,10 +1531,7 @@
     "source": "일본 보도 인용 · 우리말 옮김 · 사진 Wikimedia CC BY-SA 4.0",
     "name": "키아누 리브스",
     "role": "영화 「JM」 · 촬영 중 애드립",
-    "bg": {
-     "backdrop": "니시아자부/keanu_reeves.jpg",
-     "veil": 0.84
-    }
+    "inset": "니시아자부/keanu_reeves.jpg"
    }
   ],
   "78": [
@@ -2474,28 +2442,29 @@
    }
   ],
   "138": [
-   "SpecGridCard",
-   "설 — 탑 한가운데 세운 기둥의 크기",
+   "StageCard",
+   "심주 — 8m 기둥이 가운데를 관통한다. 격자 안의 노란 기둥 하나면 된다",
    {
-    "title": "심주(心柱)",
-    "items": [
-     {
-      "label": "직경",
-      "value": "8m",
-      "note": ""
-     },
-     {
-      "label": "무게",
-      "value": "11,000t",
-      "note": "콘크리트"
-     }
+    "media": "니시아자부/hf_core_column.png",
+    "fit": "contain",
+    "scrim": 0,
+    "size": 64,
+    "lines": [
+     [
+      {
+       "t": "직경 8m",
+       "hot": true
+      }
+     ],
+     [
+      {
+       "t": "11,000t"
+      }
+     ]
     ],
-    "theme": "ink",
-    "source": "도쿄 스카이트리 공식",
-    "bg": {
-     "backdrop": "니시아자부/construction_lowangle.jpg",
-     "veil": 0.93
-    }
+    "source": "개념도 · Higgsfield 생성 (실제 건물 아님) · 스카이트리 구조",
+    "align": "left",
+    "onPaper": true
    }
   ],
   "139": [

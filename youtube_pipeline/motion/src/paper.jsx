@@ -338,7 +338,7 @@ export const PaperGrain = ({theme, dark = false, opacity = 1}) => {
 // 크림 종이 배경 + 옅은 격자 + 가장자리 비네트
 // backdrop 을 주면 격자 아래에 살아 있는 실사가 깔린다 — 판이 멎지 않는다.
 export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 0, dir = 0,
-                         grain = true}) => {
+                         grain = true, marks = true}) => {
   const T = themeOf(theme, dark);
   const nv = Math.floor(1920 / T.step) - 1;
   const nh = Math.floor(1080 / T.step) - 1;
@@ -379,6 +379,9 @@ export const PaperBg = ({dark = false, theme, backdrop = '', veil = 0.9, blur = 
           ))}
         </g>
       ) : null}
+      {/* 모서리 재단선 — 격자 십자가 '도면'이면 이건 '도면 한 장'이다.
+          격자와 같이 걷힌다(사진이 진할수록). 사진 컷은 marks={false} */}
+      {marks ? <CropMarks theme={theme} opacity={0.5} /> : null}
       {/* 십자는 청사진엔 안 찍는다 — 이미 굵은 기준선이 그 역할을 한다 */}
       {!T.fine ? (
         <g stroke={T.grid} strokeWidth={1.6}>
@@ -599,6 +602,165 @@ export const PaperCaption = ({children, theme, dark = false, opacity = 1, top = 
                  fontFamily: 'A2Z Light, sans-serif', fontSize: 31, color: T.soft,
                  opacity, wordBreak: 'keep-all'}}>
       {children}
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ── 도면 조각 넷 (2026-09-17 · B1M 111 W 57th 편 해부에서) ────────────────
+// 받은 분석의 절반은 이미 있었다(격자 십자 · 휜 화살표 · 검정 상자 · 실루엣).
+// 없던 것은 넷 — 전부 **도면**의 서명이다. 색은 먹 + 노랑 그대로.
+// 규칙 하나가 다섯 항목 전부에 깔려 있었다: **이름 Bold / 수치 Light, 위아래.**
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── 이름 Bold / 수치 Light ────────────────────────────────────────────────
+// 위는 무엇인지, 아래는 얼마인지. 카드마다 따로 정하지 않게 한 조각으로.
+export const PairLabel = ({title = '', sub = '', size = FS.LABEL, theme, color,
+                           align = 'left', opacity = 1, style = {}}) => {
+  const T = themeOf(theme);
+  return (
+    <div style={{textAlign: align, opacity, wordBreak: 'keep-all', ...style}}>
+      <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: size, lineHeight: 1.15,
+                   letterSpacing: '-0.01em', color: color || T.ink}}>{title}</div>
+      {sub ? (
+        <div style={{marginTop: SP.TIGHT, fontFamily: 'A2Z Light, sans-serif',
+                     fontSize: Math.round(size * 0.78), lineHeight: 1.3,
+                     color: color || T.soft, fontVariantNumeric: 'tabular-nums'}}>{sub}</div>
+      ) : null}
+    </div>
+  );
+};
+
+// ── 모서리 크롭마크 ─────────────────────────────────────────────────────────
+// 화면(또는 상자) 네 모서리의 `+`. 격자 십자는 교차점에 찍히고, 이건 **모서리**에
+// 찍힌다 — 인쇄 도면의 재단선이다. 있으면 판이 '화면'이 아니라 '도면 한 장'
+// 으로 읽힌다. 상자에 쓸 때는 모서리 **바깥**으로 살짝 삐져나오게 한다
+// (B1M 로어서드) — 안쪽에 두면 그냥 테두리 장식이다.
+// 기본 inset 18 · len 11 — PaperSource 가 top 34 / right 34 에 앉으니 그 **바깥**
+// 띠에 둬야 한다. 44 로 두었더니 우상단 마크가 출처 줄 끝(2024.8.1+)에 붙었다
+export const CropMarks = ({x = 0, y = 0, w = 1920, h = 1080, inset = 18, len = 11,
+                           theme, stroke, strokeWidth = LW.HAIR, opacity = 0.55}) => {
+  const T = themeOf(theme);
+  const s = stroke || T.ink;
+  const pts = [[x + inset, y + inset], [x + w - inset, y + inset],
+               [x + inset, y + h - inset], [x + w - inset, y + h - inset]];
+  return (
+    <g stroke={s} strokeWidth={strokeWidth} opacity={opacity} strokeLinecap="butt">
+      {pts.map(([px, py], i) => (
+        <g key={i}>
+          <line x1={px - len} y1={py} x2={px + len} y2={py} />
+          <line x1={px} y1={py - len} x2={px} y2={py + len} />
+        </g>
+      ))}
+    </g>
+  );
+};
+
+// ── 테크 박스 — 종이 상자 + HAIR 테두리 + 모서리 밖 십자 ──────────────────
+// 인터뷰이 이름표(로어서드)의 형태. 검정 상자(annotate.jsx)는 사진 위에서
+// 무조건 읽히는 쪽이고, 이건 **밝은 판 위**의 이름표다.
+// photo 를 주면 왼쪽에 인물 인셋이 붙는다 — 얼굴 위에는 아무 글자도 안 얹는다.
+export const TechBox = ({x, y, w, h, theme, photo = '', photoW = 0, children,
+                         opacity = 1, mark = 14, pad = 24}) => {
+  const T = themeOf(theme);
+  const pw = photo ? (photoW || h) : 0;
+  return (
+    <div style={{position: 'absolute', left: x, top: y, width: w, height: h, opacity}}>
+      <svg width={w + mark * 2 + 4} height={h + mark * 2 + 4}
+           style={{position: 'absolute', left: -mark - 2, top: -mark - 2, overflow: 'visible'}}>
+        <rect x={mark + 2} y={mark + 2} width={w} height={h}
+              fill={T.paper} stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.96} />
+        <CropMarks x={mark + 2} y={mark + 2} w={w} h={h} inset={0} len={mark}
+                   theme={theme} opacity={0.7} />
+      </svg>
+      {photo ? (
+        <div style={{position: 'absolute', left: 0, top: 0, width: pw, height: h,
+                     overflow: 'hidden', borderRight: `${LW.HAIR}px solid ${T.ink}`}}>
+          <Img src={/^https?:/.test(photo) ? photo : staticFile(photo)}
+               style={{width: '100%', height: '100%', objectFit: 'cover',
+                       filter: 'grayscale(0.15) contrast(1.04)'}} />
+        </div>
+      ) : null}
+      <div style={{position: 'absolute', left: pw + pad, top: 0, right: pad, height: h,
+                   display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// ── 치수선 — 양끝 T 로 막힌 세로선 + 세로로 눕힌 라벨 ─────────────────────
+// Bracket 은 가로 틱이다. 이건 건물 옆에 **세워서** "125m · 지상 36층" 을 다는
+// 도면 치수선. 라벨은 선을 따라 눕는다 — 가로로 쓰면 그냥 캡션이다.
+// progress 로 위에서 아래로(또는 아래에서 위로) 자란다.
+export const DimLine = ({x, y1, y2, label = '', sub = '', theme, stroke, side = 'left',
+                         cap = 12, progress = 1, opacity = 1, size = FS.SMALL}) => {
+  const T = themeOf(theme);
+  const s = stroke || T.ink;
+  const top = Math.min(y1, y2), bot = Math.max(y1, y2);
+  const len = (bot - top) * Math.max(0, Math.min(1, progress));
+  const yEnd = top + len;
+  const midY = (top + bot) / 2;
+  const tx = side === 'left' ? x - 14 : x + 14;
+  const rot = side === 'left' ? -90 : 90;
+  return (
+    <g opacity={opacity}>
+      <line x1={x} y1={top} x2={x} y2={yEnd} stroke={s} strokeWidth={LW.HAIR} />
+      <line x1={x - cap} y1={top} x2={x + cap} y2={top} stroke={s} strokeWidth={LW.HAIR} />
+      {progress >= 0.999 ? (
+        <line x1={x - cap} y1={bot} x2={x + cap} y2={bot} stroke={s} strokeWidth={LW.HAIR} />
+      ) : null}
+      {progress >= 0.999 && label ? (
+        <g transform={`translate(${tx} ${midY}) rotate(${rot})`}>
+          <text x={0} y={0} textAnchor="middle" dominantBaseline={side === 'left' ? 'auto' : 'hanging'}
+                fill={T.ink} fontFamily="A2Z Medium, sans-serif" fontSize={size}
+                style={{fontVariantNumeric: 'tabular-nums'}}>{label}</text>
+          {sub ? (
+            <text x={0} y={side === 'left' ? -size * 0.95 : size * 1.05} textAnchor="middle"
+                  dominantBaseline={side === 'left' ? 'auto' : 'hanging'}
+                  fill={T.soft} fontFamily="A2Z Light, sans-serif" fontSize={Math.round(size * 0.78)}>{sub}</text>
+          ) : null}
+        </g>
+      ) : null}
+    </g>
+  );
+};
+
+// ── 직선 지시선 — 원점 도트 + HAIR 사선 + 상자 (Bold / Light) ───────────────
+// annotate.jsx 의 휜 화살표는 **편집자가 가리킬 때** 쓴다. 이건 **치수를 잴 때**
+// 쓴다 — 드론샷 위 "18m WIDE / 435m TALL". 직선이라야 잰 값으로 읽힌다.
+// 어두운 실사 위에서는 먹 상자 + 흰 글자, 밝은 판 위에서는 종이 상자 + 먹 글자.
+export const Callout = ({x, y, dx = 200, dy = -160, title = '', sub = '', theme,
+                         onPhoto = true, progress = 1, opacity = 1}) => {
+  const T = themeOf(theme);
+  const p = Math.max(0, Math.min(1, progress));
+  const ex = x + dx * Math.min(1, p / 0.6), ey = y + dy * Math.min(1, p / 0.6);
+  const boxOn = p > 0.62 ? Math.min(1, (p - 0.62) / 0.38) : 0;
+  const bg = onPhoto ? '#0B0E12' : T.paper;
+  const fg = onPhoto ? '#FFFFFF' : T.ink;
+  const fg2 = onPhoto ? 'rgba(255,255,255,0.72)' : T.soft;
+  const line = onPhoto ? '#FFFFFF' : T.ink;
+  const bw = Math.max(estW(title, FS.LABEL), estW(sub, FS.SMALL)) + 44;
+  const bx = dx >= 0 ? ex : ex - bw;
+  const by = dy <= 0 ? ey - (sub ? 96 : 62) : ey;
+  return (
+    <div style={{position: 'absolute', inset: 0, opacity, pointerEvents: 'none'}}>
+      <svg width={1920} height={1080} style={{position: 'absolute', inset: 0}}>
+        <circle cx={x} cy={y} r={6} fill={line} />
+        <circle cx={x} cy={y} r={13} fill="none" stroke={line} strokeWidth={LW.HAIR} opacity={0.7} />
+        <line x1={x} y1={y} x2={ex} y2={ey} stroke={line} strokeWidth={LW.HAIR} />
+      </svg>
+      <div style={{position: 'absolute', left: bx, top: by, width: bw, opacity: boxOn,
+                   background: bg, border: onPhoto ? 'none' : `${LW.HAIR}px solid ${T.ink}`,
+                   padding: '10px 22px', boxSizing: 'border-box'}}>
+        <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: FS.LABEL, lineHeight: 1.1,
+                     color: fg, whiteSpace: 'nowrap'}}>{title}</div>
+        {sub ? (
+          <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: FS.SMALL,
+                       lineHeight: 1.2, color: fg2, whiteSpace: 'nowrap',
+                       fontVariantNumeric: 'tabular-nums'}}>{sub}</div>
+        ) : null}
+      </div>
     </div>
   );
 };

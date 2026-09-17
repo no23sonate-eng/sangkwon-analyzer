@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, PaperBg, PaperSource, YELLOW, CONTENT_BOTTOM, SP} from './paper';
+import {themeOf, PaperBg, PaperSource, YELLOW, CONTENT_BOTTOM, SP, LW} from './paper';
 
 // ── 인용구 ────────────────────────────────────────────────────────────────
 // **말한 사람이 있는 문장**에 쓴다. 기사 본문을 놓고 형광펜을 긋는 건
@@ -14,7 +14,7 @@ import {themeOf, PaperBg, PaperSource, YELLOW, CONTENT_BOTTOM, SP} from './paper
 //
 // quote2 — 같은 사람의 두 번째 말. 절반 지점에서 넘어간다
 export const QuoteCard = ({
-  quote = '', quote2 = '', name = '', role = '', photo = '',
+  quote = '', quote2 = '', name = '', role = '', photo = '', inset = '',
   source = '', theme, bg = {},
 }) => {
   useA2ZFonts();
@@ -62,14 +62,36 @@ export const QuoteCard = ({
           {body(quote, qo * o1, qy)}
           {has2 ? body(quote2, o2, interpolate(o2, [0, 1], [14, 0])) : null}
 
-          <div style={{position: 'absolute', left: 88, bottom: 56, opacity: attr}}>
-            <div style={{width: 48, height: 3, background: YELLOW, marginBottom: SP.NEAR}} />
-            <div style={{fontFamily: 'A2Z Medium, sans-serif',
-                         fontSize: 31, color: TEXT}}>{name}</div>
-            {role ? (
-              <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif',
-                           fontSize: 27, color: '#7A8089'}}>{role}</div>
+          {/* 이름표 — B1M 로어서드의 형태. 상자 테두리는 HAIR, 네 모서리 바깥으로
+              십자가 삐져나온다. 안쪽에 두면 테두리 장식이고 바깥에 두면 재단선이다.
+              얼굴 사진은 이름표 **왼쪽 칸**에만 — 얼굴 위에 글자를 얹지 않는다 (규칙 12) */}
+          <div style={{position: 'absolute', left: 88, bottom: 52, opacity: attr,
+                       display: 'flex', alignItems: 'stretch',
+                       border: `${LW.HAIR}px solid ${TEXT}`, background: PAPER}}>
+            {[['left', 'top'], ['right', 'top'], ['left', 'bottom'], ['right', 'bottom']].map(([hx, vy]) => (
+              <svg key={hx + vy} width={24} height={24} style={{position: 'absolute', overflow: 'visible',
+                   [hx]: -13, [vy]: -13}}>
+                <line x1={0} y1={12} x2={24} y2={12} stroke={TEXT} strokeWidth={LW.HAIR} opacity={0.85} />
+                <line x1={12} y1={0} x2={12} y2={24} stroke={TEXT} strokeWidth={LW.HAIR} opacity={0.85} />
+              </svg>
+            ))}
+            {inset ? (
+              <div style={{width: 96, height: 96, overflow: 'hidden',
+                           borderRight: `${LW.HAIR}px solid ${TEXT}`, flex: 'none'}}>
+                <Img src={/^https?:/.test(inset) ? inset : staticFile(inset)}
+                     style={{width: '100%', height: '100%', objectFit: 'cover',
+                             objectPosition: 'center 20%', filter: 'grayscale(1) contrast(1.05)'}} />
+              </div>
             ) : null}
+            <div style={{padding: '14px 24px 14px 22px', display: 'flex', flexDirection: 'column',
+                         justifyContent: 'center', minHeight: inset ? 96 : 0}}>
+              <div style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 31, lineHeight: 1.15,
+                           color: TEXT, whiteSpace: 'nowrap'}}>{name}</div>
+              {role ? (
+                <div style={{marginTop: 4, fontFamily: 'A2Z Light, sans-serif', fontSize: 25,
+                             lineHeight: 1.25, color: '#7A8089', whiteSpace: 'nowrap'}}>{role}</div>
+              ) : null}
+            </div>
           </div>
         </div>
 

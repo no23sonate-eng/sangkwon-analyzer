@@ -27,6 +27,11 @@ export const StageCard = ({
   kicker = '',             // 위에 작게 한 줄 (연도·분류)
   note = '',               // 아래 작게 한 줄 (근거·가정)
   fit = 'cover',           // 'contain' 이면 자르지 않고 다 보여 준다 (지도·조감도)
+  // ── 2026-09-17 · 크림 종이 도해 위 ─────────────────────────────────────
+  // 힉스필드 개념도(종이 톤)를 올리니 흰 글자·발광이 안 읽혔다. 이 카드의
+  // 글자는 어두운 실사용이다. onPaper 면 잉크 글자 + 형광펜 띠, 스크림 없음.
+  // 발광은 어두운 바탕에서만 성립한다 — 크림 위에서는 번져 흐릿하기만 하다
+  onPaper = false,
   // ── 2026-09-09 · 세로 영상을 가운데로 자르면 주인공이 밖으로 나간다 ──────
   // care_hands.mp4 는 1920×3414 다. cover 로 16:9 에 맞추면 가운데 31% 만
   // 남는데, 그 자리가 하필 흰 셔츠라 6.3초 내내 흰 화면이었다. 정작 이 컷의
@@ -63,7 +68,14 @@ export const StageCard = ({
   if (top + blockH > CONTENT_BOTTOM) top = CONTENT_BOTTOM - blockH;
   if (top < 120) top = 120;
 
-  const SH = '0 3px 26px rgba(0,0,0,0.86)';
+  const SH = onPaper ? 'none' : '0 3px 26px rgba(0,0,0,0.86)';
+  const INK_ = '#1A1A18';
+  const C_MAIN = onPaper ? INK_ : '#FFFFFF';
+  const C_SOFT = onPaper ? 'rgba(26,26,24,0.62)' : 'rgba(255,255,255,0.72)';
+  const C_NOTE = onPaper ? 'rgba(26,26,24,0.6)' : 'rgba(255,255,255,0.7)';
+  const hotStyle = onPaper
+    ? {background: YELLOW, color: INK_, padding: '0 0.18em', boxDecorationBreak: 'clone'}
+    : {color: YELLOW};
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Light, sans-serif', background: '#0B0E12'}}>
@@ -95,38 +107,38 @@ export const StageCard = ({
                                    objectPosition: focus || 'center'}} />}
       </AbsoluteFill>
       {/* 위아래로 살짝 더 눌러 준다 — 가운데 글자가 앉을 자리 */}
-      <AbsoluteFill style={{background: `rgba(11,14,18,${scrim})`}} />
-      <AbsoluteFill style={{background:
-        'radial-gradient(120% 78% at 50% 50%, rgba(11,14,18,0.28) 0%, rgba(11,14,18,0) 62%)'}} />
+      {onPaper ? null : <AbsoluteFill style={{background: `rgba(11,14,18,${scrim})`}} />}
+      {onPaper ? null : <AbsoluteFill style={{background:
+        'radial-gradient(120% 78% at 50% 50%, rgba(11,14,18,0.28) 0%, rgba(11,14,18,0) 62%)'}} />}
 
       <div style={{position: 'absolute', left: 140, right: 140, top,
                    textAlign: align, opacity: fadeIn(frame, 6, 18)}}>
         {kicker ? (
           <div style={{marginBottom: SP.NEAR, fontSize: 31, letterSpacing: '0.18em',
-                       color: 'rgba(255,255,255,0.72)', textShadow: SH}}>
+                       color: C_SOFT, textShadow: SH}}>
             {kicker}
           </div>
         ) : null}
         {rows.map((segs, i) => (
-          <div key={i} style={{fontSize: FS, lineHeight: 1.34, color: '#FFFFFF',
+          <div key={i} style={{fontSize: FS, lineHeight: 1.34, color: C_MAIN,
                                textShadow: SH, wordBreak: 'keep-all',
                                opacity: fadeIn(frame, 8 + i * 7, 16),
                                transform: `translateY(${(1 - fadeIn(frame, 8 + i * 7, 16)) * 14}px)`}}>
             {segs.map((s, j) => (
-              <span key={j} style={s.hot ? {color: YELLOW} : undefined}>{s.t}</span>
+              <span key={j} style={s.hot ? hotStyle : undefined}>{s.t}</span>
             ))}
           </div>
         ))}
         {note ? (
           <div style={{marginTop: SP.GAP, fontSize: 31, letterSpacing: '0.02em',
-                       color: 'rgba(255,255,255,0.7)', textShadow: SH,
+                       color: C_NOTE, textShadow: SH,
                        opacity: fadeIn(frame, 26), wordBreak: 'keep-all'}}>
             {note}
           </div>
         ) : null}
       </div>
 
-      <PaperSource source={source} theme={theme} onPhoto />
+      <PaperSource source={source} theme={theme} onPhoto={!onPaper} />
     </AbsoluteFill>
   );
 };
