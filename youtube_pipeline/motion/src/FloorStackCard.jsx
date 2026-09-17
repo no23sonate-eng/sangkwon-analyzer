@@ -214,7 +214,7 @@ export const FloorStackCard = ({
                     stroke={T.ink} strokeWidth={LW.HAIR} opacity={0.6} />
               {/* 선에서 띄우되 자막선은 넘지 않는다 — 44 를 그냥 더했더니
                   바닥이 낮은 컷(#55·#62)에서 13px 넘어갔다 */}
-              <text x={x - 34} y={Math.min(BOT + 44, CONTENT_BOTTOM - 10)} textAnchor="end" fill={T.soft}
+              <text x={x - 34} y={BOT - 14} textAnchor="end" fill={T.soft}
                     style={{fontFamily: 'A2Z Light, sans-serif', fontSize: 29}}>
                 사람 1.7m
               </text>
@@ -260,7 +260,9 @@ export const FloorStackCard = ({
           탑을 '잰' 것이 된다. 탑과 같은 마스크로 같이 자란다 */}
       <svg width={1920} height={1080} style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
         <g clipPath="url(#fs-grow)">
-          <DimLine x={TX - 30} y1={TOP} y2={BOT} theme={theme} cap={10}
+          {/* 높이표(…TX−40)에서 10px 뿐이라 check_overlap 이 #126 을 잡았다 —
+              탑 쪽으로 붙인다. 치수선은 재는 대상 곁에 서는 게 맞다 */}
+          <DimLine x={TX - 14} y1={TOP} y2={BOT} theme={theme} cap={10}
                    opacity={0.75 * fadeIn(frame, 12, 10)} />
         </g>
       </svg>

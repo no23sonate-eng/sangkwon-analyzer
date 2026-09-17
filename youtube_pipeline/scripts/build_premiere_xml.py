@@ -33,6 +33,23 @@ def dur_sec(path):
     return int(m[1]) * 3600 + int(m[2]) * 60 + float(m[3])
 
 
+def nframes(path):
+    """영상 스트림의 프레임 수. **컨테이너 길이로 세면 안 된다.**
+
+    sec25_cut26 은 컨테이너가 7.445초(→224프레임)인데 영상 스트림은 7.400초,
+    222프레임이다. 프리미어는 스트림을 보므로 XML 이 224 를 요구하면 끝
+    2프레임이 오프라인(검정)으로 뜬다 — check_premiere --deep 이 30컷을 잡았다.
+    ffprobe 의 nb_frames 는 디코드 실측과 같다(222). 못 읽으면 길이로 돌아간다
+    """
+    r = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                        '-show_entries', 'stream=nb_frames', '-of', 'csv=p=0', path],
+                       capture_output=True, text=True)
+    s = r.stdout.strip().strip(',')
+    if s.isdigit() and int(s) > 0:
+        return int(s)
+    return int(round(dur_sec(path) * FPS))
+
+
 def esc(t):
     return (str(t).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
 
@@ -67,7 +84,7 @@ def main():
         label = ((p.get('props') or {}).get('label')
                  or (p.get('props') or {}).get('title') or '')
         for f in mine:
-            n = int(round(dur_sec(os.path.join(clipdir, f)) * FPS))
+            n = nframes(os.path.join(clipdir, f))
             if n <= 0:
                 print(f'[warn] {f} 길이 0', file=sys.stderr)
                 continue
@@ -95,13 +112,15 @@ def main():
             f'<marker><name>{esc(title)}</name><in>0</in><out>-1</out></marker>'
             f'</clipitem>')
 
+    # <sequence> 자식 순서는 프리미어가 스스로 내보내는 순서(duration · rate · name · media)로.
+    # name 을 앞에 두면 열리긴 하지만 check_premiere 가 규격 어긋남으로 잡는다
     xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xmeml>
 <xmeml version="4">
 <sequence id="seq-1">
-  <name>{esc(SEQ)}</name>
   <duration>{cum}</duration>
   <rate><timebase>{FPS}</timebase><ntsc>FALSE</ntsc></rate>
+  <name>{esc(SEQ)}</name>
   <media><video>
     <format><samplecharacteristics><rate><timebase>{FPS}</timebase><ntsc>FALSE</ntsc></rate><width>1920</width><height>1080</height><pixelaspectratio>square</pixelaspectratio></samplecharacteristics></format>
     <track>{chr(10).join(items)}</track>

@@ -146,6 +146,14 @@ def main():
                                                   .split('file://', 1)[-1]))
         else:
             p = (xmlp.parent / pu).resolve()
+        # pathurl 은 일부러 폴더 없이 파일 이름만 든다(포터블 — 프리미어가 폴더를
+        # 한 번 물어보고 나머지를 알아서 붙인다). 그러니 /sec00_cut01.mp4 는
+        # 절대경로로는 없는 게 정상이다. 우리 clips/ 에서 찾는다
+        if not p.exists():
+            for cand in (xmlp.parent / 'clips' / p.name, xmlp.parent / p.name):
+                if cand.exists():
+                    p = cand
+                    break
         if not p.exists():
             gone.append(f'#{i} {p.name}')
             continue

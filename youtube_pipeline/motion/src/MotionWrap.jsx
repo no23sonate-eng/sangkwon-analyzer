@@ -20,7 +20,7 @@ const DARK_CARDS = new Set([
 const HIDE_TEXT_CSS = `
   * { color: transparent !important; text-shadow: none !important;
       -webkit-text-fill-color: transparent !important; }
-  span { background: transparent !important; }
+  span:not([data-swatch]) { background: transparent !important; }
   svg text, svg tspan { fill: transparent !important; stroke: none !important; }
 `;
 

@@ -194,7 +194,7 @@ export const RatioCard = ({
           <div key={i} style={{position: 'absolute', left: LEG_X, width: legUsed, top: y,
                                opacity: fade(24 + i * 10)}}>
             <div style={{display: 'flex', alignItems: 'baseline', gap: 18}}>
-              <span style={{width: 22, height: 22, background: c, flex: '0 0 auto',
+              <span data-swatch style={{width: 22, height: 22, background: c, flex: '0 0 auto',
                             border: `${LW.HAIR}px solid ${T.ink}`, alignSelf: 'center'}} />
               <span style={{fontFamily: 'A2Z Medium, sans-serif', fontSize: 42,
                             color: T.ink, wordBreak: 'keep-all'}}>{it.label}</span>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useA2ZFonts} from './Fonts';
-import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom} from './paper';
+import {themeOf, THEMES, PaperBg, PaperTitle, PaperSource, YELLOW, CONTENT_BOTTOM, fadeIn, LW, titleBottom, SP} from './paper';
 import {fit} from './layout';
 
 // ── 절대 스케일 비교 ─────────────────────────────────────────────────────
@@ -177,7 +177,8 @@ export const ScaleCompareCard = ({
           );
         })}
 
-        {/* 사람 — 절대 스케일의 기준. 바닥선 왼쪽 끝에 세운다 */}
+        {/* 사람 — 절대 스케일의 기준. 바닥선 왼쪽 끝에 세운다.
+            라벨은 바닥선 **위**에 — 선 위에 걸치면 check_overlap 이 잡는다 (#49) */}
         {showHuman ? <Figure T={T} x={AX + 34} baseY={baseY} mpp={1 / mpp} o={fadeIn(frame, 34)} /> : null}
       </svg>
 
@@ -191,7 +192,7 @@ export const ScaleCompareCard = ({
         </div>
       ))}
       {showHuman ? (
-        <div style={{position: 'absolute', left: AX + 58, top: baseY - 46, opacity: fadeIn(frame, 40),
+        <div style={{position: 'absolute', left: AX + 58, top: baseY - 46 - SP.NEAR, opacity: fadeIn(frame, 40),
                      fontFamily: 'A2Z Light, sans-serif', fontSize: 27, color: T.soft}}>
           사람 1.7{unit}
         </div>

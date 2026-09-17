@@ -48,7 +48,9 @@ LINE_FILL = 0.45        # 글자 상자 안 한 줄(열)에 구조가 이만큼 
 # 얹는 카드라 사진의 구조가 글자 밑에 있는 게 당연하다. 이건 규칙 13 의
 # '잘못 겹침'이 아니라 그 카드가 하는 일이다. 안 재고, 안 쟀다고 센다.
 # StageCard 라도 onPaper(종이 톤 개념도)는 잰다 — #45·#138 이 거기서 났다
-BY_DESIGN = {'StrikeSwapCard', 'PhotoSplitCard', 'ArchiveCard', 'FullBleedCard', 'LowerThirdCard'}
+# 지도 지명은 도로·경계 위에 앉는 게 지도의 문법이다 (#15·#17·#18 이 걸렸다)
+BY_DESIGN = {'StrikeSwapCard', 'PhotoSplitCard', 'ArchiveCard', 'FullBleedCard', 'LowerThirdCard',
+             'MapCard', 'GeoMapCard'}
 
 
 def edges(im):

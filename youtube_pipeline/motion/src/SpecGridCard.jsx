@@ -52,7 +52,9 @@ export const SpecGridCard = ({
     * (bare ? 1.35 : lite ? 1.18 : 1);
   const lSize = n === 1 ? FS.LABEL : FS.SMALL;
   const nSize = n === 1 ? FS.SMALL : FS.MICRO + 2;
-  const cellH = bare ? 190 : (n === 1 ? 300 : 250) - (lite ? 46 : 0);
+  // 아이콘(68~84px)이 값 위에 얹히면 칸이 그만큼 커야 한다. 안 키웠더니 값이 칸
+  // 아래 선을 밟았다 (#217·#244, check_overlap 선 채움 100%)
+  const cellH = (bare ? 190 : (n === 1 ? 300 : 250) - (lite ? 46 : 0)) + (hasIcon ? 96 : 0);
 
   const GRID_W = n === 1 ? 1180 : n === 3 ? 1560 : 1440;
   const GRID_H = cellH * ROWS;
