@@ -66,7 +66,11 @@ def main():
     a = ap.parse_args()
 
     pdir = ROOT / 'projects' / a.project
-    xmlp = pdir / '프리미어' / f'{a.project}.xml'
+    # build_premiere_xml.py 는 <프로젝트>_타임라인.xml 로 쓴다. 예전 경로(프리미어/)는
+    # 없는 파일을 열려다 죽었다 — 파이프라인 한가운데서 조용히
+    xmlp = pdir / f'{a.project}_타임라인.xml'
+    if not xmlp.exists():
+        xmlp = pdir / '프리미어' / f'{a.project}.xml'
     errs, warns = [], []
 
     # 1 ─ 문법

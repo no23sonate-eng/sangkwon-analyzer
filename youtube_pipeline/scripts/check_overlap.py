@@ -41,6 +41,14 @@ TEXT_DIFF = 28          # 두 스틸의 화소 차이가 이보다 크면 글자
 GRAD = 34               # 구조(가장자리) 문턱 — check_balance 와 같은 생각
 DILATE = 5              # 글자를 이만큼 부풀려 '글자 자리'로 본다 (간격까지 본다)
 
+# ── 설계상 글자가 구조 위에 앉는 카드 ────────────────────────────────────
+# StrikeSwapCard 는 취소선이 글자를 **지나가는 것**이 문법이다 — 22컷이 전부
+# 걸렸다. 사진 위 자막(StageCard 실사, PhotoSplitCard)은 스크림을 깔고 글자를
+# 얹는 카드라 사진의 구조가 글자 밑에 있는 게 당연하다. 이건 규칙 13 의
+# '잘못 겹침'이 아니라 그 카드가 하는 일이다. 안 재고, 안 쟀다고 센다.
+# StageCard 라도 onPaper(종이 톤 개념도)는 잰다 — #45·#138 이 거기서 났다
+BY_DESIGN = {'StrikeSwapCard', 'PhotoSplitCard', 'ArchiveCard', 'FullBleedCard', 'LowerThirdCard'}
+
 
 def edges(im):
     g = np.asarray(im.convert('L'), dtype=np.float32)
@@ -103,13 +111,18 @@ def main():
     if not B_DIR.exists():
         sys.exit('stills_notext 가 없다 — render_parkside.py --still --no-text 를 먼저 돌려라')
 
-    rows, skipped, seen = [], [], 0
+    rows, skipped, seen, bydesign = [], [], 0, []
     for f in sorted(A_DIR.glob('*.png'), key=lambda p: int(re.match(r'sec(\d+)', p.name).group(1))):
         sid = int(re.match(r'sec(\d+)', f.name).group(1))
         if a.ids and sid not in a.ids:
             continue
         g = B_DIR / f.name
-        card = (design.get(str(sid)) or ['?'])[0]
+        row = design.get(str(sid)) or ['?', '', {}]
+        card = row[0]
+        props = row[2] if len(row) > 2 and isinstance(row[2], dict) else {}
+        if card in BY_DESIGN or (card == 'StageCard' and not props.get('onPaper')):
+            bydesign.append((sid, card))
+            continue
         if not g.exists():
             skipped.append((sid, card, 'notext 스틸 없음'))
             continue
@@ -135,6 +148,11 @@ def main():
         print(f'  #{sid:3d} {card:18s} {kind} 겹침 — 구조 {m["ratio"]:.0%} · 겹친 픽셀 {m["hit"]} · '
               f'뻗음 {m["reach"]}px  (x {x0}~{x1} · y {y0}~{y1})')
     print(f'  걸린 컷 {len(rows)}개' if rows else '  글자가 구조 위에 앉은 컷 없음')
+    if bydesign:
+        from collections import Counter
+        kc = Counter(c for _, c in bydesign)
+        print(f'  설계상 글자가 구조 위에 앉는 카드 {len(bydesign)}컷 — 안 쟀다: '
+              + ' · '.join(f'{c} {n}' for c, n in kc.most_common()))
     if skipped:
         kinds = {}
         for _, _, why in skipped:

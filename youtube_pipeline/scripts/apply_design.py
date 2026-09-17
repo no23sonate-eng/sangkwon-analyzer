@@ -148,6 +148,50 @@ def registered():
     return set(re.findall(r'^  (\w+Card),', txt, re.M))
 
 
+
+# ── 글자 예산 ───────────────────────────────────────────────────────────────
+# 자막은 사용자가 따로 태운다. 화면 글자는 숫자·단위 / 고유명사 / 가정·기준만
+# 남긴다는 규칙인데, 설계하다 보면 제목·라벨·보조줄이 조용히 쌓인다 —
+# 트림 두 번을 거친 뒤에도 덩어리 셋 이상인 컷이 100개 넘게 있었다.
+# 숫자·단위·출처·소재 경로를 뺀 **글자 덩어리**를 세서, 셋을 넘으면 렌더 전에
+# 걸어 준다. 어떤 글자가 세어졌는지 같이 찍는다 — 빼야 할 게 바로 보이게.
+TEXT_KEYS = {'title', 'sub', 'caption', 'kicker', 'note', 'label', 't', 'closingLine',
+             'lead', 'head', 'name', 'role', 'leftTitle', 'rightTitle', 'leftValue',
+             'rightValue', 'value', 'from', 'to', 'fromLabel', 'toLabel', 'trunkLabel',
+             'question', 'line', 'lines', 'display', 'leftLines', 'rightLines', 'imageTitle'}
+_NUMERIC = re.compile(r'^(약|이상|이하|안팎|이내|기준|[\d,.\s%~\-–·+/×x㎡㎥mMFkKtT엔원억만천층실명건회개세년월일호분초주회대])+$')
+TEXT_BUDGET = 4
+# 'label' 이 곧 그림인 카드 — 막대 이름·층 이름·지도 지명·구간 이름. 규칙이
+# 허용하는 '축·항목 이름'이라 세지 않는다. 제목·보조줄·값만 센다
+AXIS_LABEL_CARDS = {'BarChartCard', 'DotMatrixCard', 'RatioCard', 'CrossCurveCard',
+                    'FloorStackCard', 'TimelineRailCard', 'TimelineBarsCard', 'MapCard',
+                    'GeoMapCard', 'CostStackCard', 'FormulaCard', 'SeatDotsCard',
+                    'UnitBlocksCard', 'TrackRecordCard'}
+# 글자가 그 컷의 내용인 카드 — 인용문 · 챕터 제목 · 두 사진의 이름표
+TEXT_IS_CONTENT = {'QuoteCard', 'PlanTitleCard', 'PhotoSplitCard'}
+
+
+def text_blobs(props, card=''):
+    """숫자·단위가 아닌 글자 덩어리 목록. 출처·경로·인용 본문은 세지 않는다."""
+    out = []
+
+    def walk(o, key=''):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k.startswith('_') or k in ('source', 'media', 'image', 'photo', 'inset',
+                                              'bgImage', 'theme', 'quote', 'quote2', 'icon'):
+                    continue
+                walk(v, k)
+        elif isinstance(o, list):
+            for x in o:
+                walk(x, key)
+        elif isinstance(o, str) and key in TEXT_KEYS and o.strip() and not _NUMERIC.match(o.strip()):
+            if key == 'label' and card in AXIS_LABEL_CARDS:
+                return
+            out.append(o.strip())
+    walk(props)
+    return out
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('project')
@@ -396,8 +440,30 @@ def main():
         which = '적다 — 실존 건물·장소를 도형으로 그리고 있다' if pshare < PHOTO_BAND[0] \
             else '많다 — 사진 위 자막으로 때우고 있다'
         print(f'  ✗ 실사 계열 {pshare:.0%} · 권장 {PHOTO_BAND[0]:.0%}~{PHOTO_BAND[1]:.0%} 보다 {which}')
+    heavy, text_exempt = [], []
+    for e in scenes:
+        row = design.get(str(e['id']))
+        pr = row[2] if row and len(row) > 2 and isinstance(row[2], dict) else {}
+        if not row or row[0] in TEXT_IS_CONTENT:
+            continue
+        if pr.get('_text'):
+            text_exempt.append((e['id'], row[0], pr['_text']))   # 이유가 있어야 빠진다
+            continue
+        blobs = text_blobs(pr, row[0])
+        if len(blobs) > TEXT_BUDGET:
+            heavy.append((e['id'], row[0], blobs))
+    if heavy:
+        ok = False
+        print(f'  ✗ 글자 예산 초과 {len(heavy)}컷 (숫자·단위 빼고 덩어리 {TEXT_BUDGET} 초과) — 자막이 따로 나간다. 빼라:')
+        for sid, card, blobs in heavy[:14]:
+            print(f'      #{sid:3d} {card:16s} {len(blobs)}개  ' + ' | '.join(b[:12] for b in blobs[:6]))
+        if len(heavy) > 14:
+            print(f'      … 외 {len(heavy) - 14}컷')
+    if text_exempt:
+        print(f'  글자 예산 면제 {len(text_exempt)}컷 — 통과가 아니라 안 센 것이다: '
+              + ' · '.join(f'#{s}({w[:18]})' for s, _, w in text_exempt))
     if ok:
-        print('  ✓ 연속 없음 · 상한 이내 · 전부 등록된 카드')
+        print('  ✓ 연속 없음 · 상한 이내 · 전부 등록된 카드 · 글자 예산 이내')
 
     print(f'  내용 채운 컷 {filled}/{len(scenes)}')
     if not a.check:

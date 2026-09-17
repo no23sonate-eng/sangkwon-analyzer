@@ -36,10 +36,17 @@ export const QuoteCard = ({
                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}) : 0;
 
   const hasPhoto = Boolean(photo);
-  const size = Math.min(52, Math.max(34, Math.floor(3400 / Math.max(20, quote.length))));
+  // ── 2026-09-17 · 글자 양끝이 판 끝에 닿았다 ──────────────────────────
+  // 본문(body)이 position:absolute 에 left:0 / right:0 이라 **패딩 상자 전체**에
+  // 붙는다 — 패딩 88px 은 흐름 자식에게만 먹지 absolute 자식은 무시한다.
+  // 1280px 판에 1238px 글자가 앉아 있었다(#77). 여백을 본문에 직접 주고
+  // 판도 넓힌다. 글자는 판 안에서 숨 쉴 자리가 있어야 '인용'으로 읽힌다
+  const PAD_X = 112;
+  const PANEL_W = hasPhoto ? 1160 : 1380;
+  const size = Math.min(52, Math.max(34, Math.floor((PANEL_W - PAD_X * 2) * 2.7 / Math.max(20, quote.length))));
 
   const body = (txt, o, dy) => (
-    <div style={{position: 'absolute', left: 0, right: 0, top: 132, opacity: o,
+    <div style={{position: 'absolute', left: PAD_X, right: PAD_X, top: 132, opacity: o,
                  transform: `translateY(${dy}px)`,
                  fontFamily: 'Myeongjo, Georgia, serif', fontSize: size, lineHeight: 1.62,
                  color: TEXT, whiteSpace: 'pre-line', wordBreak: 'keep-all'}}>
@@ -54,9 +61,9 @@ export const QuoteCard = ({
 
       <div style={{position: 'relative', display: 'flex', alignItems: 'stretch',
                    background: PAPER, boxShadow: '0 26px 80px rgba(0,0,0,0.34)',
-                   maxWidth: 1560, maxHeight: CONTENT_BOTTOM - 80}}>
-        <div style={{position: 'relative', width: hasPhoto ? 1080 : 1280,
-                     padding: '72px 88px 84px', minHeight: 460}}>
+                   maxWidth: 1640, maxHeight: CONTENT_BOTTOM - 80}}>
+        <div style={{position: 'relative', width: PANEL_W,
+                     padding: `72px ${PAD_X}px 84px`, minHeight: 460}}>
           <div style={{fontFamily: 'Myeongjo, Georgia, serif', fontSize: 132, lineHeight: 0.7,
                        color: YELLOW, opacity: mark}}>“</div>
           {body(quote, qo * o1, qy)}
@@ -65,7 +72,7 @@ export const QuoteCard = ({
           {/* 이름표 — B1M 로어서드의 형태. 상자 테두리는 HAIR, 네 모서리 바깥으로
               십자가 삐져나온다. 안쪽에 두면 테두리 장식이고 바깥에 두면 재단선이다.
               얼굴 사진은 이름표 **왼쪽 칸**에만 — 얼굴 위에 글자를 얹지 않는다 (규칙 12) */}
-          <div style={{position: 'absolute', left: 88, bottom: 52, opacity: attr,
+          <div style={{position: 'absolute', left: PAD_X, bottom: 52, opacity: attr,
                        display: 'flex', alignItems: 'stretch',
                        border: `${LW.HAIR}px solid ${TEXT}`, background: PAPER}}>
             {[['left', 'top'], ['right', 'top'], ['left', 'bottom'], ['right', 'bottom']].map(([hx, vy]) => (

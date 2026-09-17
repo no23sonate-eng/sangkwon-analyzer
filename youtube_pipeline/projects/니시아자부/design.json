@@ -313,7 +313,6 @@
       }
      ]
     ],
-    "note": "건강할 때 들어가 사는 주거형",
     "scrim": 0.56,
     "source": "후생노동성 · 배경 Pexels"
    }
@@ -714,9 +713,7 @@
    "설 — 미쓰이의 맨션 이름이 Park 다. 그 이름에서 갈라져 나온다",
    {
     "from": "Park",
-    "fromLabel": "미쓰이 레지덴셜 맨션 시리즈",
     "to": "PARK WELLSTATE",
-    "toLabel": "시니어 레지던스",
     "arrowOnly": true,
     "source": "파크웰스테이트 브랜드 · 배경 Pexels",
     "bg": {
@@ -755,7 +752,8 @@
       "note": ""
      }
     ],
-    "source": "파크웰스테이트 브랜드"
+    "source": "파크웰스테이트 브랜드",
+    "_text": "#30 과 같은 빌드"
    }
   ],
   "30": [
@@ -779,7 +777,8 @@
       "note": ""
      }
     ],
-    "source": "파크웰스테이트 브랜드"
+    "source": "파크웰스테이트 브랜드",
+    "_text": "Park·Well·State 세 단어의 뜻이 이 컷의 내용이다"
    }
   ],
   "31": [
@@ -787,7 +786,6 @@
    "설 — 땅을 산 게 아니라 갖고 있던 걸 바꿨다. 그 교체가 이 컷의 전부다",
    {
     "from": "미쓰이 오피스 빌딩",
-    "fromLabel": "기존",
     "to": "시니어 레지던스",
     "toLabel": "2024",
     "source": "파크웰스테이트 니시아자부 공식 · 배경 Pexels",
@@ -824,17 +822,12 @@
    "CompareCard",
    "이어서 — 1호점도 같은 방식이었다. 두 사례가 겹치면 그건 습관이 아니라 전략이다",
    {
-    "title": "1호점 하마다야마",
     "leftTitle": "니시아자부",
     "leftValue": "보유 부지",
-    "leftLines": [
-     "미쓰이 오피스 빌딩"
-    ],
+    "leftLines": [],
     "rightTitle": "하마다야마",
     "rightValue": "부지 임차",
-    "rightLines": [
-     "NTT 사택 부지"
-    ],
+    "rightLines": [],
     "source": "R.E.port 2018 · 사진 파크웰스테이트 하마다야마 공식",
     "bg": {
      "backdrop": "니시아자부/hamadayama_entrance.jpg",
@@ -892,7 +885,6 @@
     "from": "한 회사",
     "fromLabel": "",
     "to": "그룹 안에서 임대차",
-    "toLabel": "소유 ↔ 운영",
     "source": "파크웰스테이트 니시아자부 공식"
    }
   ],
@@ -999,15 +991,12 @@
    "SpecGridCard",
    "설 — 60m를 넘으면 무엇이 더 필요한가. 두 가지다",
    {
-    "title": "60m를 넘으면",
     "items": [
      {
-      "label": "시간이력응답해석",
-      "value": "실제 지진파"
+      "value": "시간이력응답해석"
      },
      {
-      "label": "대신인정",
-      "value": "국토교통성 장관"
+      "value": "국토교통성 장관 인정"
      }
     ],
     "source": "건축기준법 · 배경 파크웰스테이트 니시아자부 공식",
@@ -1184,7 +1173,6 @@
       "from": 1,
       "to": 1,
       "label": "니시아자부 메디컬 클리닉",
-      "note": "의료법인사단 게이에이카이",
       "hot": false
      },
      {
@@ -1198,7 +1186,6 @@
       "from": 4,
       "to": 4,
       "label": "TOKIORI",
-      "note": "도쿄해상일동 베터라이프서비스",
       "hot": false
      },
      {
@@ -1212,7 +1199,6 @@
       "from": 35,
       "to": 36,
       "label": "다이닝",
-      "note": "제국호텔",
       "hot": false
      }
     ],
@@ -1298,8 +1284,7 @@
      {
       "from": 1,
       "to": 1,
-      "label": "니시아자부 메디컬 클리닉",
-      "note": "의료법인사단 게이에이카이"
+      "label": "니시아자부 메디컬 클리닉"
      },
      {
       "from": 2,
@@ -1310,8 +1295,7 @@
      {
       "from": 4,
       "to": 4,
-      "label": "TOKIORI",
-      "note": "도쿄해상일동 베터라이프서비스"
+      "label": "TOKIORI"
      },
      {
       "from": 9,
@@ -1322,8 +1306,7 @@
      {
       "from": 35,
       "to": 36,
-      "label": "다이닝",
-      "note": "제국호텔"
+      "label": "다이닝"
      }
     ],
     "human": true,
@@ -1378,12 +1361,10 @@
    "설 — 한국 시청자에게 위치를 잡아 주는 비유",
    {
     "title": "",
-    "leftTitle": "일본",
     "leftValue": "제국호텔",
     "leftLines": [
      "1890 · 도쿄 히비야"
     ],
-    "rightTitle": "한국",
     "rightValue": "신라호텔",
     "rightLines": [],
     "caption": "두 호텔의 자리를 견주기 위한 비유다",
@@ -1448,7 +1429,6 @@
    "StrikeSwapCard",
    "설 — 땅부터 남의 것이었다",
    {
-    "title": "개업 당시 땅",
     "from": "매입",
     "fromLabel": "",
     "to": "국유지 무상 대여",
@@ -1491,7 +1471,6 @@
    "설 — 떨어질 것 같으면 먼저 뗀다. 그 순서가 서비스다",
    {
     "from": "떨어지면 단다",
-    "fromLabel": "보통",
     "to": "미리 떼어 둔다",
     "toLabel": "제국호텔",
     "source": "제국호텔 공식 · 배경 Pexels",
@@ -1642,7 +1621,6 @@
    "설 — 예약이라는 절차가 사라진다",
    {
     "from": "예약",
-    "fromLabel": "보통",
     "to": "예약 없음",
     "toLabel": "니시아자부",
     "source": "파크웰스테이트 니시아자부 공식"
@@ -1682,7 +1660,6 @@
    "SpecGridCard",
    "설 — 얼굴인증이 들어간 범위",
    {
-    "title": "얼굴인증",
     "items": [
      {
       "label": "공용부",
@@ -1810,7 +1787,6 @@
    "SpecGridCard",
    "설 — 의료기관을 열 수 있는 주체는 셋뿐이다",
    {
-    "title": "의료기관을 열 수 있는 주체",
     "items": [
      {
       "label": "일본 의료법",
@@ -1857,7 +1833,6 @@
    "SpecGridCard",
    "설 — 진료과는 이름이 곧 내용이다. 사진 대신 목록으로",
    {
-    "title": "클리닉 진료과",
     "items": [
      {
       "label": "",
@@ -1949,17 +1924,11 @@
    "SpecGridCard",
    "설 — 운영 주체를 이름으로 세운다",
    {
-    "title": "클리닉 운영",
     "items": [
      {
-      "label": "게이에이카이 이사장",
+      "label": "이사장",
       "value": "德永祐二",
       "note": "게이오대 의학부 1987년 졸업"
-     },
-     {
-      "label": "클리닉 운영",
-      "value": "의료법인사단",
-      "note": "게이오대학병원 근무 후 개원"
      }
     ],
     "theme": "blueprint",
@@ -2028,9 +1997,7 @@
     "title": "",
     "leftTitle": "같은 건물",
     "leftValue": "1층",
-    "leftLines": [
-     "클리닉"
-    ],
+    "leftLines": [],
     "rightTitle": "다른 회사",
     "rightValue": "게이에이카이",
     "rightLines": [
@@ -2050,14 +2017,14 @@
    {
     "items": [
      {
-      "label": "입주자 입구",
       "value": "건물 안",
-      "note": ""
+      "note": "",
+      "icon": "DoorOpen"
      },
      {
-      "label": "클리닉 입구",
       "value": "대로변 별도",
-      "note": ""
+      "note": "",
+      "icon": "Stethoscope"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식 · 사진 니시아자부 메디컬 클리닉 공식",
@@ -2176,12 +2143,9 @@
    "CompareCard",
    "설 — 법이 막느냐 안 막느냐. 이게 두 장의 차이 전부다",
    {
-    "title": "주식회사가 할 수 있나",
     "leftTitle": "의료",
     "leftValue": "불가",
-    "leftLines": [
-     "의료법"
-    ],
+    "leftLines": [],
     "rightTitle": "돌봄",
     "rightValue": "가능",
     "rightLines": [],
@@ -2223,14 +2187,10 @@
     "title": "",
     "leftTitle": "판다",
     "leftValue": "간병보험",
-    "leftLines": [
-     "도쿄해상"
-    ],
+    "leftLines": [],
     "rightTitle": "한다",
     "rightValue": "실제 서비스",
-    "rightLines": [
-     "베터라이프서비스"
-    ],
+    "rightLines": [],
     "source": "도쿄해상일동 베터라이프서비스"
    }
   ],
@@ -2257,19 +2217,18 @@
    "SpecGridCard",
    "설 — 역할 셋을 한 판에 세운다",
    {
-    "title": "TOKIORI의 역할",
     "items": [
      {
-      "label": "방문개호",
-      "value": "헬퍼가 방으로"
+      "value": "헬퍼가 방으로",
+      "icon": "House"
      },
      {
-      "label": "거택개호지원",
-      "value": "케어 플랜"
+      "value": "케어 플랜",
+      "icon": "ClipboardList"
      },
      {
-      "label": "가사대행",
-      "value": "자비 부담"
+      "value": "자비 부담",
+      "icon": "WashingMachine"
      }
     ],
     "source": "TOKIORI · 배경 파크웰스테이트 니시아자부 공식",
@@ -2351,19 +2310,19 @@
    {
     "items": [
      {
-      "label": "식사",
       "value": "제국호텔",
-      "note": ""
+      "note": "",
+      "icon": "Utensils"
      },
      {
-      "label": "병원",
       "value": "게이에이카이",
-      "note": ""
+      "note": "",
+      "icon": "Stethoscope"
      },
      {
-      "label": "돌봄",
       "value": "베터라이프서비스",
-      "note": ""
+      "note": "",
+      "icon": "HeartHandshake"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -2481,8 +2440,6 @@
    "BarChartCard",
    "설 — 50%는 막대 두 개면 끝난다",
    {
-    "title": "지진 때 흔들림",
-    "sub": "심주 제진 구조",
     "bars": [
      {
       "label": "심주 없이",
@@ -2654,7 +2611,6 @@
    "SpecGridCard",
    "설 — 회사 이름이 곧 내용이다",
    {
-    "title": "분키츠를 만든 회사",
     "items": [
      {
       "label": "일본출판판매 (日販)",
@@ -2804,14 +2760,10 @@
     "title": "",
     "leftTitle": "일반층",
     "leftValue": "만 60세 이상",
-    "leftLines": [
-     "건강할 것"
-    ],
+    "leftLines": [],
     "rightTitle": "돌봄층",
     "rightValue": "만 65세 이상",
-    "rightLines": [
-     "돌봄 등급 있을 것"
-    ],
+    "rightLines": [],
     "source": "파크웰스테이트 니시아자부 공식",
     "bg": {
      "backdrop": "니시아자부/paperwork_desk.jpg",
@@ -2850,21 +2802,15 @@
    "SpecGridCard",
    "이어서 — 하는 일 셋",
    {
-    "title": "신원인수인의 역할",
     "items": [
      {
-      "label": "비용",
       "value": "대신 책임"
      },
      {
-      "label": "결정",
-      "value": "의견을 낸다",
-      "note": "응급 · 돌봄층 이동"
+      "value": "의견을 낸다"
      },
      {
-      "label": "퇴거 · 사망",
-      "value": "신병과 짐 인수",
-      "note": ""
+      "value": "신병과 짐 인수"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -2939,22 +2885,15 @@
    "SpecGridCard",
    "설 — 절차 세 가지",
    {
-    "title": "파크웰스테이트 위원회",
     "items": [
      {
-      "label": "지정 의사",
-      "value": "의견",
-      "note": ""
+      "value": "지정 의사"
      },
      {
-      "label": "본인",
-      "value": "의사 확인",
-      "note": ""
+      "value": "본인"
      },
      {
-      "label": "신원인수인",
-      "value": "의견",
-      "note": ""
+      "value": "신원인수인"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -2995,7 +2934,6 @@
    {
     "items": [
      {
-      "label": "기준",
       "value": "하루에 필요한 돌봄 시간",
       "note": "분 단위"
      }
@@ -3011,7 +2949,6 @@
    "BarChartCard",
    "설 — 등급이 곧 분이라는 걸 막대로 본다",
    {
-    "title": "요개호 등급별 기준 시간",
     "sub": "하루 · 분",
     "bars": [
      {
@@ -3256,16 +3193,13 @@
    "ForkPathCard",
    "설 — 언제 들어가느냐가 갈림길이다",
    {
-    "title": "언제 들어가나",
     "trunkLabel": "",
     "branches": [
      {
-      "label": "일찍",
-      "note": "비싸다 · 일반층"
+      "label": "일찍"
      },
      {
-      "label": "늦게",
-      "note": "싸다 · 돌봄층 60실"
+      "label": "늦게"
      }
     ],
     "decided": null,
@@ -3302,7 +3236,6 @@
    "CompareCard",
    "설 — 한국은 아예 다른 방식으로 매긴다",
    {
-    "title": "한국 시니어 레지던스 보증금",
     "leftTitle": "인근 아파트 매매가",
     "leftValue": "70~80%",
     "leftLines": [],
@@ -3469,8 +3402,6 @@
    "ForkPathCard",
    "설 — 내는 방식이 둘로 갈린다",
    {
-    "title": "내는 방식",
-    "trunkLabel": "입주",
     "branches": [
      {
       "label": "일시금",
@@ -3718,7 +3649,6 @@
    "FormulaCard",
    "설 — 나눗셈 하나가 이 장의 답이다",
    {
-    "title": "입주일시금을 월로 펴면",
     "top": {
      "value": "5억 4천만 엔",
      "label": "입주일시금"
@@ -3812,17 +3742,15 @@
    "SpecGridCard",
    "설 — 여기 안 들어간 게 있다는 걸 반드시 적는다",
    {
-    "title": "위 금액에 빠진 것",
     "items": [
      {
-      "label": "식비",
-      "value": "별도",
+      "icon": "Utensils",
+      "value": "식비 별도",
       "note": "2인 식사료 월 23.7만 엔"
      },
      {
-      "label": "수도광열비",
-      "value": "별도",
-      "note": ""
+      "icon": "Droplets",
+      "value": "수도광열비 별도"
      }
     ],
     "source": "파크웰스테이트 니시아자부 요금표",
@@ -4259,9 +4187,7 @@
    {
     "title": "유료노인홈",
     "from": "신고제",
-    "fromLabel": "지금",
     "to": "등록제",
-    "toLabel": "바뀌는 중",
     "theme": "ink",
     "source": "후생노동성 とりまとめ · 배경 Pexels",
     "note": "일본 시장 전체 얘기",
@@ -4292,17 +4218,16 @@
    "SpecGridCard",
    "설 — 돈이 들어오는 길이 둘이다",
    {
-    "title": "실버타운의 수익 통로",
     "items": [
      {
-      "label": "① 주거비",
       "value": "입주자",
-      "note": ""
+      "note": "",
+      "icon": "Home"
      },
      {
-      "label": "② 돌봄비",
       "value": "개호보험",
-      "note": "본인 부담 10~30%"
+      "note": "본인 부담 10~30%",
+      "icon": "HeartHandshake"
      }
     ],
     "source": "후생노동성 とりまとめ",
@@ -4343,9 +4268,7 @@
    "설 — 사람을 모으는 미끼와 실제로 버는 곳이 다르다",
    {
     "from": "주거비 싸게",
-    "fromLabel": "모으고",
     "to": "돌봄비 최대",
-    "toLabel": "번다",
     "theme": "ink",
     "source": "후생노동성 とりまとめ",
     "note": "일본 시장 전체에서 나타난 구조",
@@ -4531,14 +4454,10 @@
     "title": "",
     "leftTitle": "돌봄이 필요해진 다음",
     "leftValue": "지었다",
-    "leftLines": [
-     "요양시설"
-    ],
+    "leftLines": [],
     "rightTitle": "그 전에 갈 곳",
     "rightValue": "안 지었다",
-    "rightLines": [
-     "주거형"
-    ],
+    "rightLines": [],
     "source": "보건복지부 노인복지시설 현황"
    }
   ],
@@ -4556,27 +4475,22 @@
    "SpecGridCard",
    "설 — 네 조각을 한 판에. 이 영상의 논지다",
    {
-    "title": "누가 무엇을 했나",
     "items": [
      {
-      "label": "건물",
-      "value": "그룹 내부 임대차",
-      "note": "미쓰이부동산 레지덴셜"
+      "value": "미쓰이부동산 레지덴셜",
+      "icon": "Building2"
      },
      {
-      "label": "식사",
-      "value": "호텔 위탁",
-      "note": "제국호텔"
+      "value": "제국호텔",
+      "icon": "Utensils"
      },
      {
-      "label": "병원",
-      "value": "외부 법인",
-      "note": "법규 · 게이에이카이"
+      "value": "법규 · 게이에이카이",
+      "icon": "Stethoscope"
      },
      {
-      "label": "돌봄",
-      "value": "보험사 계열",
-      "note": "도쿄해상 계열"
+      "value": "도쿄해상 계열",
+      "icon": "HeartHandshake"
      }
     ],
     "source": "파크웰스테이트 니시아자부 공식",
@@ -4684,22 +4598,18 @@
    "SpecGridCard",
    "설 — 이 영상이 내내 본 세 가지가 그대로 답이 된다",
    {
-    "title": "아파트가 못 하는 것",
     "items": [
      {
-      "label": "밥",
       "value": "매일",
-      "note": "제국호텔"
+      "icon": "Utensils"
      },
      {
-      "label": "응급 대응",
       "value": "24시간",
-      "note": "클리닉"
+      "icon": "Siren"
      },
      {
-      "label": "돌봄으로 넘어가는 통로",
       "value": "같은 건물 안",
-      "note": "2·3층"
+      "icon": "ArrowUpDown"
      }
     ],
     "theme": "blueprint",

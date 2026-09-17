@@ -1,5 +1,6 @@
 import React from 'react';
 import {Img, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import * as Lucide from 'lucide-react';
 
 // ── 종이 설명 그래픽 공통 토큰 (2026-08-02, Billionaires' Row 레퍼런스) ──
 // B1M의 "밝은 종이 + 그리드 + 플랫 실루엣" 설명 문법을 채널 팔레트로 번역:
@@ -763,4 +764,20 @@ export const Callout = ({x, y, dx = 200, dy = -160, title = '', sub = '', theme,
       </div>
     </div>
   );
+};
+
+
+// ── 아이콘 ────────────────────────────────────────────────────────────────
+// 라벨을 글자 대신 그림으로. Lucide(ISC) — 먹선 하나짜리 선화라 종이 체계에
+// 그대로 앉는다. name 은 Lucide 컴포넌트 이름('Utensils', 'Stethoscope').
+// 없는 이름이면 **빈 칸이 아니라 빨간 네모**를 그린다 — 조용히 사라지면
+// 검수 시트에서 못 잡는다.
+export const Icon = ({name = '', size = 64, theme, color, strokeWidth = 1.6, opacity = 1, style = {}}) => {
+  const T = themeOf(theme);
+  const C = name ? Lucide[name] : null;
+  if (!C) {
+    return <div style={{width: size, height: size, background: '#C0392B', opacity, ...style}} />;
+  }
+  return <C size={size} color={color || T.ink} strokeWidth={strokeWidth}
+            absoluteStrokeWidth style={{opacity, display: 'block', ...style}} />;
 };

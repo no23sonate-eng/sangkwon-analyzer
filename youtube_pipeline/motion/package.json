@@ -10,6 +10,7 @@
     "@react-three/fiber": "^9.6.1",
     "@remotion/cli": "^4.0.500",
     "@remotion/three": "^4.0.502",
+    "lucide-react": "^1.47.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "remotion": "^4.0.500",

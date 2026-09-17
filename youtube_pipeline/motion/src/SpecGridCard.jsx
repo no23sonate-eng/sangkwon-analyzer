@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
 import {useA2ZFonts} from './Fonts';
 import {themeOf, PaperBg, PaperSource, PaperCaption, CONTENT_BOTTOM, fadeIn,
-        SP, LW, FS, stageTop} from './paper';
+        SP, LW, FS, stageTop, Icon, estW} from './paper';
 
 // ── 스펙시트 ──────────────────────────────────────────────────────────────
 // "지하 3층 지상 38층, 138m, 1,020실" 처럼 **성격이 다른 값이 나란히** 오는
@@ -40,7 +40,8 @@ export const SpecGridCard = ({
   // 두면 빈 칸처럼 보인다 → 키우고 칸 높이를 줄인다 (#101 진료과)
   const hasLabel = list.some((it) => it.label);
   const hasNote = list.some((it) => it.note);
-  const bare = !hasLabel && !hasNote;
+  const hasIcon = list.some((it) => it.icon);
+  const bare = !hasLabel && !hasNote && !hasIcon;
   // ── 2026-09-16 · 주석 줄을 걷어내고 나서 ───────────────────────────────
   // 화면 글자를 덜어내며 note 스무 개를 뺐다(나레이션이 이미 말하는 것들).
   // 그러자 칸 안이 라벨+값 둘뿐인 컷이 열넷 생겼는데, 칸 높이가 셋일 때
@@ -65,8 +66,15 @@ export const SpecGridCard = ({
   // 값 크기는 **칸마다 다르면 안 된다.** 글자수로 칸마다 재면 '대신 책임'과
   // '신병과 짐 인수' 가 다른 크기로 나와, 한 묶음이 아니라 따로 놓인 것으로
   // 읽힌다. 제일 긴 값에 맞춰 셋이 같은 크기를 쓴다
-  const vLong = Math.max(1, ...list.map((it) => String(it.value ?? '').length));
-  const vSize = Math.min(vBase, Math.max(34, Math.floor(cellW / Math.max(3, vLong) * 1.75)));
+  // ── 2026-09-17 · 값이 칸을 넘쳤다 ─────────────────────────────────────
+  // `cellW / 글자수 * 1.75` 는 글자 폭을 0.57em 으로 본 식이다 — 라틴 기준이다.
+  // 한글은 1em 이라 "베터라이프서비스"(8자)가 73px 로 584px, 520px 칸을
+  // 넘어 구분선에 붙었다(#133 · check_overlap 이 잡았다). estW 로 잰다
+  const PAD = 34 + SP.TIGHT;
+  const longest = list.reduce((a, it) => (estW(String(it.value ?? ''), 1) > estW(a, 1)
+    ? String(it.value ?? '') : a), '');
+  const vFit = Math.floor((cellW - PAD * 2) / Math.max(1, estW(longest, 1)));
+  const vSize = Math.min(vBase, Math.max(34, vFit));
 
   return (
     <AbsoluteFill style={{fontFamily: 'A2Z Regular, sans-serif'}}>
@@ -110,10 +118,17 @@ export const SpecGridCard = ({
           const v = String(it.value ?? '');
           return (
             <div key={i} style={{position: 'absolute', top: row * cellH, left: col * cellW,
-                                 width: cellW, height: cellH, padding: '0 34px',
+                                 width: cellW, height: cellH, padding: `0 ${PAD}px`,
                                  display: 'flex', flexDirection: 'column',
                                  alignItems: 'center', justifyContent: 'center',
                                  opacity: o, transform: `translateY(${dy}px)`}}>
+              {/* 아이콘 — 라벨 대신 그림. 글자는 자막이 이미 말한다 (규칙: 최소화) */}
+              {it.icon ? (
+                <div style={{marginBottom: it.label ? SP.TIGHT : SP.NEAR, display: 'flex',
+                             justifyContent: 'center'}}>
+                  <Icon name={it.icon} size={n <= 2 ? 84 : 68} theme={theme} />
+                </div>
+              ) : null}
               {/* 라벨이 비면 빈 줄 하나가 값 위에 남는다 — 아예 안 그린다 */}
               {it.label ? (
                 <div style={{fontFamily: 'A2Z Light, sans-serif', fontSize: lSize, color: T.soft,
