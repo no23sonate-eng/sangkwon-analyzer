@@ -32,11 +32,12 @@ python3 scripts/render_parkside.py --project 니시아자부 84
 
 ```
 AGENTS.md          ← 에이전트가 먼저 읽을 규칙. 채널 규칙 + 겪은 사고
-scripts/           Python 52개 — 설계·소재·렌더·검사·납품
-motion/src/        Remotion 카드 88종 + paper.jsx (디자인 시스템)
+scripts/           Python 55개 — 설계·소재·렌더·검사(7종)·납품
+motion/src/        Remotion 카드 88종 + paper.jsx (디자인 시스템 · 도면 조각 · Lucide 아이콘)
 projects/니시아자부/ design.json(설계 원본) · script.md(대본) · 출처.md(금지 사항)
 docs/              카드 고르기 · 설명을 그림으로 · 규칙과 함정
 bin/자료받기.sh     소재 사진 복구
+bin/레퍼런스뜯기.sh 유튜브 레퍼런스 → 프레임 시트 + 자막 (맥에서)
 ```
 
 **`design.json` 이 대본→화면의 단일 원본이다.** 컷 번호 → `[카드, 이유, props]`.
